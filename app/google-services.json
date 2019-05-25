@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "59424545142",
+    "firebase_url": "https://askapp-2a415.firebaseio.com",
+    "project_id": "askapp-2a415",
+    "storage_bucket": "askapp-2a415.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59424545142:android:fb2c557e6a3f7bf1",
+        "android_client_info": {
+          "package_name": "com.droid.solver.askapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "59424545142-giftpcpifvcug2860p56kdvt6pilhsaf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.droid.solver.askapp",
+            "certificate_hash": "9ca79a42e0c96c6958cddc99e7b8dc8644f95493"
+          }
+        },
+        {
+          "client_id": "59424545142-f0lju1vdueohbkce9bjghbpgk1a96i9a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6UCgL4hqnI_uVyop_GEU40mEX4FFdlkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "59424545142-f0lju1vdueohbkce9bjghbpgk1a96i9a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

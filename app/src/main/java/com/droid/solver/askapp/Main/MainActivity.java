@@ -1,0 +1,87 @@
+package com.droid.solver.askapp.Main;
+
+import android.graphics.Typeface;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
+import android.widget.Toast;
+
+import com.droid.solver.askapp.Account.AccountFragment;
+import com.droid.solver.askapp.Community.CommunityFragment;
+import com.droid.solver.askapp.Home.HomeFragment;
+import com.droid.solver.askapp.Question.QuestionFragment;
+import com.droid.solver.askapp.R;
+
+import java.lang.reflect.Type;
+
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private static final String HOME="home";
+    private static final String QUESTION="ic_question";
+    private static final String COMMUNITY="community";
+    private static final String ACCOUNT="ic_account";
+    BottomNavigationView bottomNavigationView;
+    FrameLayout frameLayout;
+    Toolbar toolbar;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        toolbar=findViewById(R.id.toolbar);
+        frameLayout=findViewById(R.id.fragment_container);
+        bottomNavigationView=findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        loadFragment(new HomeFragment(),HOME);
+
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Fragment fragment;
+        switch (menuItem.getItemId()){
+
+            case R.id.home:
+                fragment=new HomeFragment();
+                loadFragment(fragment,HOME);
+                return true;
+                case R.id.question:
+                    fragment=new QuestionFragment();
+                    loadFragment(fragment,QUESTION);
+                return true;
+            case R.id.community:
+                fragment=new CommunityFragment();
+                loadFragment(fragment,COMMUNITY);
+                return true;
+            case R.id.account:
+                fragment=new AccountFragment();
+                loadFragment(fragment,ACCOUNT);
+                return true;
+
+        }
+        return true;
+    }
+    private void loadFragment(Fragment fragment,String tag){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment,tag);
+        transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment=getSupportFragmentManager().findFragmentByTag(HOME);
+        if(fragment!=null&&fragment.isVisible()){
+            super.onBackPressed();
+        }else {
+            loadFragment(new HomeFragment(), HOME);
+            bottomNavigationView.setSelectedItemId(R.id.home);
+            bottomNavigationView.setSelected(true);
+        }
+    }
+}
