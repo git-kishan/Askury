@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Question;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
 import com.droid.solver.askapp.R;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -37,12 +39,14 @@ public class QuestionFragment extends Fragment {
                 switch (speedDialActionItem.getId()) {
                     case R.id.fab_action1:
                         Toast.makeText(getActivity(), "image poll is clicked", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getActivity(), ImagePollActivity.class));
                         return false; // true to keep the Speed Dial open
                     case R.id.fab_action2:
                         Toast.makeText(getActivity(), "survey is clicked", Toast.LENGTH_SHORT).show();
                         return false; // true to keep the Speed Dial open
                     case R.id.fab_action3:
                         Toast.makeText(getActivity(), "ask is clicked", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getActivity(),QuestionActivity.class));
                         return false; // true to keep the Speed Dial open
 
                     default:
