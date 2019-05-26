@@ -3,6 +3,7 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#cccccc</color>
     <color name="colorAccent">#82003d</color>
+    <color name="colorAccentFader">#BEB3105A</color>
     <color name="editTextUnderLineColor">#6F82003D</color>
     <color name="background">#47615e</color>
     <color name="progress_bar_overlay_color">#DACCCCCC</color>
@@ -19,5 +20,6 @@
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#ffffff</color>
     <color name="orcolor">#FF5722</color>
+    <color name="chip_fader_color">#46D8D6D6</color>
 
 </resources>

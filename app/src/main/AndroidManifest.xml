@@ -3,7 +3,7 @@
     package="com.droid.solver.askapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ImagePoll.ImagePollActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+        <activity android:name=".Survey.QuestionTakerActivity"
+           >
         </activity>
+        <activity android:name=".Survey.LanguageSelectionActivity" />
+        <activity
+            android:name=".ImagePoll.ImagePollActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity android:name=".Question.QuestionActivity" />
         <activity android:name=".Main.MainActivity" />
         <activity android:name=".SignInActivity">

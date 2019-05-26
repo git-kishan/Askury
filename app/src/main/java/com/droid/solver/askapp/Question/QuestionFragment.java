@@ -10,10 +10,10 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
 import com.droid.solver.askapp.R;
+import com.droid.solver.askapp.Survey.LanguageSelectionActivity;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
@@ -38,16 +38,14 @@ public class QuestionFragment extends Fragment {
             public boolean onActionSelected(SpeedDialActionItem speedDialActionItem) {
                 switch (speedDialActionItem.getId()) {
                     case R.id.fab_action1:
-                        Toast.makeText(getActivity(), "image poll is clicked", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getActivity(), ImagePollActivity.class));
-                        return false; // true to keep the Speed Dial open
+                        return false;
                     case R.id.fab_action2:
-                        Toast.makeText(getActivity(), "survey is clicked", Toast.LENGTH_SHORT).show();
-                        return false; // true to keep the Speed Dial open
+                        startActivity(new Intent(getActivity(), LanguageSelectionActivity.class));
+                        return false;
                     case R.id.fab_action3:
-                        Toast.makeText(getActivity(), "ask is clicked", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getActivity(),QuestionActivity.class));
-                        return false; // true to keep the Speed Dial open
+                        return false; // true to keep the floating button Speed Dial open
 
                     default:
                         return false;
