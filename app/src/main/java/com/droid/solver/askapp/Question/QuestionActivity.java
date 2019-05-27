@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
 import com.droid.solver.askapp.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -48,21 +49,31 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         anonymousSwitch=findViewById(R.id.anonymous);
         anonymousSwitch.setOnCheckedChangeListener(this);
         toolbar.setOnMenuItemClickListener(this);
-        dotsLoaderView.show();
     }
 
     @Override
     public boolean onMenuItemClick(final MenuItem menuItem) {
         if(menuItem.getItemId()==R.id.ask){
             Toast.makeText(this, "ask is clicked", Toast.LENGTH_SHORT).show();
+            menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
+            overlayFrameLayout.setVisibility(View.VISIBLE);
+            dotsLoaderView.show();
+
             Handler handler=new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
+                    dotsLoaderView.hide();
+                  overlayFrameLayout.setVisibility(View.GONE);
+                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
+                    Bundle bundle=new Bundle();
+                    bundle.putString("message", "Question uploaded successfully");
+                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+
 
                 }
-            }, 300);
+            }, 3000);
         }
         return true;
 
@@ -78,7 +89,6 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     @Override
     public void onClick(View view) {
-
-            Toast.makeText(this, "cross is clicked", Toast.LENGTH_SHORT).show();
+        onBackPressed();
     }
 }

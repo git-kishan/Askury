@@ -54,6 +54,8 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:visibility="gone"
+                        android:clickable="false"
+                        android:focusable="false"
                         android:background="@color/progress_bar_overlay_color"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -63,6 +65,7 @@
                             android:id="@+id/dotsLoaderView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_marginTop="100dp"
                             android:visibility="visible"
                             app:dlv_item_drawable="@drawable/ic_circle"
                             app:dlv_line_color="@color/colorAccent" />

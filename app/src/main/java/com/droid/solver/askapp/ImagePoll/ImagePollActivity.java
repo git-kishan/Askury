@@ -7,6 +7,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -14,6 +17,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -23,22 +28,27 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.droid.solver.askapp.BuildConfig;
 import com.droid.solver.askapp.R;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import steelkiwi.com.library.DotsLoaderView;
 
 public class ImagePollActivity extends AppCompatActivity implements View.OnClickListener,
         Toolbar.OnMenuItemClickListener,PassData {
 
+    private DotsLoaderView dotsLoaderView;
+    private FrameLayout overLayFrameLayout;
     private TextView orTextVeiw;
     private CardView rootCardView;
     private Toolbar toolbar;
@@ -53,6 +63,8 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private boolean isImage1Clicked,isImage2Clicked;
     private CardView image1CardView,image2CardView;
     private TextView option1,option2;
+    private String currentPhotoPath;
+    private String firstImageEncodedString="",secondImageEncodedString="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +74,9 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         toolbar.inflateMenu(R.menu.questionactivity_toolbar_menu);
         image1=findViewById(R.id.image1);
         image2=findViewById(R.id.image2);
+        dotsLoaderView=findViewById(R.id.dotsLoaderView);
         toolbar.setTitleMarginBottom(30);
+        overLayFrameLayout=findViewById(R.id.overlay_frame_layout);
         orTextVeiw=findViewById(R.id.or_text_view);
         rootCardView = findViewById(R.id.root_card_view);
         rootView=findViewById(R.id.root);
@@ -110,7 +124,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 hideSoftKeyboard(orTextVeiw);
                 break;
             default :
-                Toast.makeText(this, "navigation is clicked", Toast.LENGTH_SHORT).show();
+                onBackPressed();
                 break;
         }
     }
@@ -118,7 +132,22 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         if(menuItem.getItemId()==R.id.ask){
-            Toast.makeText(ImagePollActivity.this, "ask clicked", Toast.LENGTH_SHORT).show();
+            overLayFrameLayout.setVisibility(View.VISIBLE);
+            dotsLoaderView.show();
+            Handler handler=new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    overLayFrameLayout.setVisibility(View.GONE);
+                    dotsLoaderView.hide();
+                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
+                    Bundle bundle=new Bundle();
+                    bundle.putString("message", "Poll uploaded successfully");
+                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "imagepoll_dialog");
+                }
+            }, 3000);
+
         }
         return false;
     }
@@ -146,12 +175,31 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         photoPickerIntent.setType("image/*");
         if(photoPickerIntent.resolveActivity(getPackageManager())!=null){
             startActivityForResult(photoPickerIntent, PHOTO_PICKER_REQUEST_CODE);
+        }else {
+            Snackbar.make(rootView, "No camera app present", Snackbar.LENGTH_SHORT).show();
         }
 
 
     }
     private void onCameraClicked(){
-        Snackbar.make(rootView, "permission granted  in camera" , Toast.LENGTH_SHORT).show();
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+
+                }
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.example.android.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, CAMERE_REQUEST_CODE);
+
+            }
+        }
 
     }
     private void checkReadExternalStoragePermission(boolean isImage1Clicked, boolean isImage2Clicked,
@@ -201,42 +249,72 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         switch (requestCode){
             case PHOTO_PICKER_REQUEST_CODE:
                 if(resultCode==RESULT_OK&&data!=null){
-                    resizeSelectedImage(data);
+                    resizeImageSelectedFromGallery(data);
                     }else {
-                    Snackbar.make(rootView, "Error occur,select again ", Snackbar.LENGTH_LONG).setAction("retry",
+
+                    Snackbar snackbar=Snackbar.make(rootView, "Error occur,select again ", Snackbar.LENGTH_LONG).setAction("retry",
                             new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     onGalleryClicked(isImage1Clicked, isImage2Clicked,
                                             true, false);
                                 }
-                            }).show();
+                            });
+                    snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+                    View view=snackbar.getView();
+                    TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
+                    view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
+                    snackbar.show();
+
                 }
                 break;
             case CAMERE_REQUEST_CODE:
+                if(resultCode==RESULT_OK) {
+                    addPicInGallery();
+                    resizeImageCapturedFromCamera();
+                }else {
+
+                    Snackbar snackbar=Snackbar.make(rootView, "Error occur,select again ", Snackbar.LENGTH_LONG).setAction("retry",
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    onGalleryClicked(isImage1Clicked, isImage2Clicked,
+                                            true, false);
+                                }
+                            });
+                    snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+                    View view=snackbar.getView();
+                    TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
+                    view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
+                    snackbar.show();
+                }
                 break;
         }
     }
-    private void resizeSelectedImage(@Nullable Intent data){
+
+    private void resizeImageSelectedFromGallery(@Nullable Intent data){
         final Uri imageUri = data.getData();
         Bitmap bitmap=decodeSelectedImageUri(imageUri, image1.getWidth(),image1.getHeight());
         if(bitmap!=null) {
-            Bitmap b = Bitmap.createScaledBitmap(bitmap, image1.getWidth(), image1.getHeight(), false);
+            Bitmap compressedBitmap = Bitmap.createScaledBitmap(bitmap, image1.getWidth(), image1.getHeight(), false);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            b.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
             String encodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
-            //now upload both image to database
             if (isImage1Clicked) {
-                image1.setImageBitmap(b);
+                image1.setImageBitmap(compressedBitmap);
                 image1CardView.setVisibility(View.GONE);
                 option1.setVisibility(View.GONE);
+                firstImageEncodedString=encodedString;
 
 
             } else if (isImage2Clicked) {
-                image2.setImageBitmap(b);
+                image2.setImageBitmap(compressedBitmap);
                 image2CardView.setVisibility(View.GONE);
                 option2.setVisibility(View.GONE);
+                secondImageEncodedString=encodedString;
 
             }
         }
@@ -283,5 +361,64 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         return inSampleSize;
     }
 
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
 
+    private void addPicInGallery() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+    private void resizeImageCapturedFromCamera() {
+        int targetW = image1.getWidth();
+        int targetH = image1.getHeight();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(currentPhotoPath, options);
+        int capturedImageWidth = options.outWidth;
+        int capturedImageHeight = options.outHeight;
+        int scaleFactor = Math.min(capturedImageWidth/targetW, capturedImageHeight/targetH);
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = scaleFactor;
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
+        Bitmap compressedBitmap=null;
+        String encodedString=null;
+        if(bitmap!=null) {
+            compressedBitmap = Bitmap.createScaledBitmap(bitmap, image1.getWidth(), image1.getHeight(), false);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+             encodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
+            //now upload both image to database
+            if (isImage1Clicked) {
+                image1.setImageBitmap(compressedBitmap);
+                image1CardView.setVisibility(View.GONE);
+                option1.setVisibility(View.GONE);
+                firstImageEncodedString=encodedString;
+
+
+            } else if (isImage2Clicked) {
+                image2.setImageBitmap(compressedBitmap);
+                image2CardView.setVisibility(View.GONE);
+                option2.setVisibility(View.GONE);
+                secondImageEncodedString=encodedString;
+
+            }
+        }
+    }
+    private void uploadImagesToRemoteDatabase(){
+        //uploading image working here
+    }
 }
