@@ -1,8 +1,7 @@
 package com.droid.solver.askapp.Survey;
 
 import android.app.Activity;
-import android.graphics.Paint;
-import android.support.design.button.MaterialButton;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.res.ResourcesCompat;
@@ -10,16 +9,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.droid.solver.askapp.R;
+
+import java.util.ArrayList;
 
 public class QuestionTakerActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener, TextWatcher {
 
@@ -28,7 +29,10 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
     private AppCompatButton doneButton;
     private CardView appbarCardView;
     private ImageView backImageButton,addImageButton;
-    private RecyclerView recyclerView;
+    private int numberOfTimesAddButtonClicked=0;
+    private EditText options1EditText,option2EditText,option3EditText,option4EditText;
+    private ConstraintLayout submitButtonConstraintLayout;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,15 +41,26 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
         questionInputEditText=findViewById(R.id.input_edit_text);
         doneButton=findViewById(R.id.done_button);
         appbarCardView=findViewById(R.id.cardView);
+        submitButtonConstraintLayout=findViewById(R.id.child_constraint_layout);
+        progressBar=findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.GONE);
         backImageButton=findViewById(R.id.back_image_button);
         addImageButton=findViewById(R.id.add_image_button);
-        recyclerView=findViewById(R.id.recycler_view);
+        options1EditText =findViewById(R.id.option1);
+        option2EditText=findViewById(R.id.option2);
+        option3EditText=findViewById(R.id.option3);
+        option4EditText=findViewById(R.id.option4);
+        options1EditText.setVisibility(View.GONE);
+        option2EditText.setVisibility(View.GONE);
+        option3EditText.setVisibility(View.GONE);
+        option4EditText.setVisibility(View.GONE);
         doneButton.setOnClickListener(this);
         appbarCardView.setOnClickListener(this);
         questionInputEditText.setOnFocusChangeListener(this);
         questionInputEditText.addTextChangedListener(this);
         addImageButton.setOnClickListener(this);
         backImageButton.setOnClickListener(this);
+        submitButtonConstraintLayout.setOnClickListener(this);
         appbarCardView.requestFocus();
         hideSoftKeyboard(appbarCardView);
         questionInputEditText.setHint("What's your question");
@@ -55,6 +70,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
 
     }
     private void hideSoftKeyboard(View view){
+
         InputMethodManager imm = (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
         if(imm!=null)
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -78,7 +94,12 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
                 onBackPressed();
                 break;
             case R.id.add_image_button:
-                Toast.makeText(this, "add clicked", Toast.LENGTH_SHORT).show();
+                numberOfTimesAddButtonClicked++;
+                onAddButtonClicked();
+                break;
+            case R.id.child_constraint_layout:
+                submitButtonConstraintLayout.setEnabled(false);
+                progressBar.setVisibility(View.VISIBLE);
                 break;
 
         }
@@ -120,6 +141,21 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void afterTextChanged(Editable editable) {
+
+    }
+    private void onAddButtonClicked(){
+        if(numberOfTimesAddButtonClicked==1){
+            options1EditText.setVisibility(View.VISIBLE);
+        }
+        else if(numberOfTimesAddButtonClicked==2){
+            option2EditText.setVisibility(View.VISIBLE);
+        }else if(numberOfTimesAddButtonClicked==3){
+            option3EditText.setVisibility(View.VISIBLE);
+        }else if(numberOfTimesAddButtonClicked==4){
+            option4EditText.setVisibility(View.VISIBLE);
+        }else if(numberOfTimesAddButtonClicked>=5){
+            Toast.makeText(this, "option limit exceed", Toast.LENGTH_SHORT).show();
+        }
 
     }
 }

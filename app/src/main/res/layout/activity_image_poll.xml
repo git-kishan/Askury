@@ -29,6 +29,9 @@
                     app:title="Image poll" />
             </android.support.v7.widget.CardView>
             <android.support.v7.widget.CardView
+                android:id="@+id/root_card_view"
+                android:clickable="true"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +47,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:focusableInTouchMode="true"
                         app:hintAnimationEnabled="true"
                         app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                         android:theme="@style/TextInputEditText"
@@ -59,6 +63,10 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
+                            android:inputType="textMultiLine|text"
+                            android:imeOptions="actionDone"
+                            android:scrollbars="vertical"
+                            android:focusableInTouchMode="true"
                             android:maxHeight="100dp"
                             android:minHeight="50dp" />
                     </android.support.design.widget.TextInputLayout>
@@ -180,6 +188,7 @@
                             </android.support.v7.widget.CardView>
 
                             <TextView
+                                android:id="@+id/textView8"
                                 android:layout_width="85dp"
                                 android:layout_height="0dp"
                                 android:layout_marginTop="12dp"
@@ -197,17 +206,20 @@
                         android:layout_height="50dp"
                         android:background="@color/white"
                         app:cardCornerRadius="25dp"
-                        android:backgroundTint="@color/orcolor"
+                        android:backgroundTint="@color/colorAccent"
                         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/linearLayout">
 
                         <TextView
+                            android:id="@+id/or_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/aclonica"
                             android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:textColor="@color/white"
                             android:text="VS"
                             android:textSize="23sp" />

@@ -10,6 +10,9 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
 
 import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
 import com.droid.solver.askapp.R;
@@ -21,12 +24,16 @@ import com.leinardi.android.speeddial.SpeedDialView;
 public class QuestionFragment extends Fragment {
 
 
+    private Animation scaleInAnimation,scaleOutAnimation;
     SpeedDialView speedDialView;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
         speedDialView=view.findViewById(R.id.speedDial);
+        scaleInAnimation= AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_in);
+        scaleOutAnimation=AnimationUtils.loadAnimation(getActivity(),R.anim.fab_scale_out);
         addFabItem();
+        speedDialView.startAnimation(scaleInAnimation);
         return view;
     }
 
@@ -82,4 +89,9 @@ public class QuestionFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        speedDialView.startAnimation(scaleOutAnimation);
+        super.onDestroyView();
+    }
 }
