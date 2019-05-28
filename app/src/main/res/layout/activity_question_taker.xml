@@ -23,7 +23,7 @@
             app:expandedTitleMarginEnd="64dp">
 
             <android.support.v7.widget.CardView
-                android:id="@+id/cardView"
+                android:id="@+id/toolbar_card_view"
                 android:layout_width="match_parent"
                 android:elevation="5dp"
                 android:layout_height="match_parent">

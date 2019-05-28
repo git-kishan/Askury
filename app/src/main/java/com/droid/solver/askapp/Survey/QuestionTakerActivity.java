@@ -20,8 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.droid.solver.askapp.R;
 
-import java.util.ArrayList;
-
 public class QuestionTakerActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener, TextWatcher {
 
     private TextInputLayout questionInputLayout;
@@ -40,7 +38,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
         questionInputLayout=findViewById(R.id.textInputLayout);
         questionInputEditText=findViewById(R.id.input_edit_text);
         doneButton=findViewById(R.id.done_button);
-        appbarCardView=findViewById(R.id.cardView);
+        appbarCardView=findViewById(R.id.toolbar_card_view);
         submitButtonConstraintLayout=findViewById(R.id.child_constraint_layout);
         progressBar=findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
@@ -84,7 +82,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
                 appbarCardView.requestFocus();
                 hideSoftKeyboard(appbarCardView);
             break;
-            case R.id.cardView:
+            case R.id.toolbar_card_view:
                 questionInputEditText.clearFocus();
                 questionInputLayout.clearFocus();
                 appbarCardView.requestFocus();
