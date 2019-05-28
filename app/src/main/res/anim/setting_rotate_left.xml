@@ -2,10 +2,10 @@
 <rotate xmlns:android="http://schemas.android.com/apk/res/android"
     android:pivotX="50%"
     android:pivotY="50%"
-    android:fromDegrees="0"
-    android:toDegrees="30"
+    android:fromDegrees="60"
+    android:toDegrees="0"
     android:fillAfter="true"
     android:fillEnabled="true"
-    android:duration="2000">
+    android:duration="300">
 
 </rotate>

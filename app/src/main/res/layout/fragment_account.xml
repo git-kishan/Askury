@@ -2,6 +2,7 @@
 <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
+    android:scrollbars="none"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <android.support.constraint.ConstraintLayout
@@ -31,8 +32,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
-                    android:layout_width="0dp"
-                    android:layout_height="70dp"
+                    android:layout_width="74dp"
+                    android:layout_height="72dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:clickable="true"
@@ -40,10 +41,27 @@
                     android:src="@drawable/lawrence"
                     app:civ_border_color="@android:color/white"
                     app:civ_border_overlay="true"
-                    app:civ_border_width="3dp"
+                    app:civ_border_width="2dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="8dp"
+                    android:elevation="1dp"
+                    app:cardCornerRadius="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/profile_image">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_femenine" />
+                </android.support.v7.widget.CardView>
             </android.support.constraint.ConstraintLayout>
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -52,12 +70,13 @@
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/public_private_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Personal"
+                    tools:text="Public"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -65,9 +84,11 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
+                    android:id="@+id/setting_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:padding="5dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_settings_white"
@@ -82,113 +103,137 @@
             android:id="@+id/constraintLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/account_relative_round_corner_bottom_sheet"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/user_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="160dp"
                 android:layout_marginEnd="8dp"
-                android:text="Christian"
+                android:text="Jenifer Lawerence"
                 android:textColor="@android:color/black"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/about_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Not All Blank Cassettes Are Created Equal"
-                android:textSize="12sp"
+                android:text="software engineer | data scientiest | programmer"
+                android:textSize="11sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView15" />
+                app:layout_constraintTop_toBottomOf="@+id/user_name_text_view" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/follower_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginBottom="32dp"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:textSize="13sp"
                 android:text="Follower"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
+                android:id="@+id/follower_count_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="516"
                 android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:textSize="16sp"
+                android:background="?android:selectableItemBackground"
+                android:focusable="true"
+                android:clickable="true"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/textView16"
-                app:layout_constraintEnd_toEndOf="@+id/textView16"
+                app:layout_constraintBottom_toTopOf="@+id/follower_text_view"
+                app:layout_constraintEnd_toEndOf="@+id/follower_text_view"
                 app:layout_constraintHorizontal_bias="0.4"
-                app:layout_constraintStart_toStartOf="@+id/textView16"
-                app:layout_constraintTop_toBottomOf="@+id/textView18"
+                app:layout_constraintStart_toStartOf="@+id/follower_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/about_user"
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/following_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="32dp"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:textSize="13sp"
                 android:text="Following"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textView19"
-                app:layout_constraintStart_toEndOf="@+id/textView16" />
+                app:layout_constraintEnd_toStartOf="@+id/points_text_view"
+                app:layout_constraintStart_toEndOf="@+id/follower_text_view" />
 
             <TextView
-                android:id="@+id/textView20"
+                android:id="@+id/following_count_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="545"
+                android:focusable="true"
+                android:clickable="true"
+                android:background="?android:selectableItemBackground"
                 android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/textView17"
-                app:layout_constraintEnd_toEndOf="@+id/textView17"
+                app:layout_constraintBottom_toTopOf="@+id/following_text_view"
+                app:layout_constraintEnd_toEndOf="@+id/following_text_view"
                 app:layout_constraintHorizontal_bias="0.43"
-                app:layout_constraintStart_toStartOf="@+id/textView17"
-                app:layout_constraintTop_toBottomOf="@+id/textView18"
+                app:layout_constraintStart_toStartOf="@+id/following_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/about_user"
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/points_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="32dp"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:textSize="13sp"
                 android:text="Points"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
+                android:id="@+id/point_count_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="254"
                 android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:focusable="true"
+                android:clickable="true"
+                android:background="?android:selectableItemBackground"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/textView19"
-                app:layout_constraintEnd_toEndOf="@+id/textView19"
-                app:layout_constraintStart_toStartOf="@+id/textView19"
-                app:layout_constraintTop_toBottomOf="@+id/textView18"
+                app:layout_constraintBottom_toTopOf="@+id/points_text_view"
+                app:layout_constraintEnd_toEndOf="@+id/points_text_view"
+                app:layout_constraintStart_toStartOf="@+id/points_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/about_user"
                 app:layout_constraintVertical_bias="1.0" />
         </android.support.constraint.ConstraintLayout>
 
