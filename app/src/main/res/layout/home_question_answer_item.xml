@@ -87,72 +87,80 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayout3"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:selectableItemBackground"
+            android:layout_marginEnd="8dp"
+            android:maxHeight="200dp"
+            app:cardCornerRadius="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="5dp"
-                android:clickable="true"
-
-                android:focusable="true"
-                android:src="@drawable/lawrence"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="8dp"
-                android:alpha="0.7"
-                android:text="Jennifer lawrence"
-                android:textColor="@android:color/black"
-                android:textSize="10sp"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <android.support.v7.widget.CardView
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:minHeight="50dp"
-                android:maxHeight="250dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/circleImageView">
+                android:layout_height="match_parent">
 
-            </android.support.v7.widget.CardView>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/circleImageView"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
 
-        </android.support.constraint.ConstraintLayout>
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/lawrence"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="8dp"
+                    android:alpha="0.7"
+                    android:text="Jennifer lawrence"
+                    android:textColor="@android:color/black"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toEndOf="@+id/circleImageView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:maxHeight="100dp"
+                    android:text="yes there are several way to do this.first go to setting and then toolbar and then click on tools button to get decide what is happening"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/circleImageView" />
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
 
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:background="@color/progress_bar_overlay_color"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+            app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
         <com.like.LikeButton
             android:id="@+id/likeButton"
@@ -161,7 +169,7 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="16dp"
             app:anim_scale_factor="2"
             app:circle_end_color="@color/colorAccent"
             app:circle_start_color="@color/colorAccent"
@@ -184,7 +192,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="256k"
-            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/likeButton"
             app:layout_constraintStart_toEndOf="@+id/likeButton"
             app:layout_constraintTop_toTopOf="@+id/likeButton" />
@@ -194,11 +201,11 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
             android:focusable="true"
+            android:clickable="true"
+            android:background="?android:selectableItemBackground"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView16"
             app:layout_constraintTop_toBottomOf="@+id/view2"
@@ -210,7 +217,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:textSize="12sp"
             android:text="515k"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -226,7 +232,6 @@
             android:background="?android:selectableItemBackground"
             android:gravity="center"
             android:text="Want to answer"
-            android:textSize="12sp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
@@ -239,10 +244,10 @@
             android:layout_height="25dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:background="?android:selectableItemBackground"
+            android:layout_marginBottom="16dp"
             android:padding="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
