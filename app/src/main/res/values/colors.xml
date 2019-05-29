@@ -23,5 +23,6 @@
     <color name="chip_fader_color">#46D8D6D6</color>
     <color name="green_color">#CE5FDB60</color>
     <color name="accout_top_sheet_color">#82003D</color>
-    <color name="like_button_black">#7C030303</color>
+    <color name="like_button_black">#40030303</color>
+    <color name="like_button_red">#CA3524</color>
 </resources>
