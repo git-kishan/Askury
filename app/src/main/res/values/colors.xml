@@ -25,4 +25,10 @@
     <color name="accout_top_sheet_color">#82003D</color>
     <color name="like_button_black">#40030303</color>
     <color name="like_button_red">#CA3524</color>
+    <color name="image_poll_bottom_sheet_color">#97EEE9E9</color>
+    <color name="survey_box_color_white">#C1FFFFFF</color>
+    <color name="survey_light_pink">#79F3B6B6</color>
+    <color name="survey_light_green">#97A2FDC5</color>
+    <color name="survey_dark_pink">#E05555</color>
+    <color name="survey_dark_green">#18B651</color>
 </resources>
