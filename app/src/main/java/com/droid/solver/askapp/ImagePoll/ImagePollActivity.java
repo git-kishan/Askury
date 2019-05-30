@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.droid.solver.askapp.R;
+import com.facebook.login.widget.LoginButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -183,20 +184,20 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     }
     private void onCameraClicked(){
 
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
 
-                }
-                if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.example.android.fileprovider",
-                            photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, CAMERE_REQUEST_CODE);
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERE_REQUEST_CODE);
 
             }
         }
@@ -250,7 +251,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             case PHOTO_PICKER_REQUEST_CODE:
                 if(resultCode==RESULT_OK&&data!=null){
                     resizeImageSelectedFromGallery(data);
-                    }else {
+                }else {
 
                     Snackbar snackbar=Snackbar.make(rootView, "Error occur,select again ", Snackbar.LENGTH_LONG).setAction("retry",
                             new View.OnClickListener() {
@@ -299,16 +300,22 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         Bitmap bitmap=decodeSelectedImageUri(imageUri, image1.getWidth(),image1.getHeight());
         if(bitmap!=null) {
             Bitmap compressedBitmap = Bitmap.createScaledBitmap(bitmap, image1.getWidth(), image1.getHeight(), false);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-            String encodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+//            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+            ByteArrayOutputStream uploaderStream=new ByteArrayOutputStream();
+            uploaderBitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
+            byte [] uploderByteArray=uploaderStream.toByteArray();
+            String encodedString= Base64.encodeToString(uploderByteArray, Base64.DEFAULT);
+
             if (isImage1Clicked) {
                 image1.setImageBitmap(compressedBitmap);
                 image1CardView.setVisibility(View.GONE);
                 option1.setVisibility(View.GONE);
                 firstImageEncodedString=encodedString;
-
+                Log.i("TAG", "first image encoded string length:- "+encodedString.length());
 
             } else if (isImage2Clicked) {
                 image2.setImageBitmap(compressedBitmap);
@@ -316,6 +323,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 option2.setVisibility(View.GONE);
                 secondImageEncodedString=encodedString;
 
+                Log.i("TAG", "second image encoded string length :- "+encodedString.length());
             }
         }
     }
@@ -325,17 +333,11 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             options.inJustDecodeBounds = true;
             final InputStream imageStream = getContentResolver().openInputStream(uri);
             BitmapFactory.decodeStream(imageStream, null, options);
-            int selectedImageHeight = options.outHeight;
-            int selectedImageWidth = options.outWidth;
-            String imageType = options.outMimeType;
-            Log.i("TAG", "bitmap height :- " + selectedImageHeight);
-            Log.i("TAG", "bitmap width :- " + selectedImageWidth);
-            Log.i("TAG", "bitmap mime type   :- " + imageType);
-
             options.inSampleSize=calculateInSampleSize(options, requiredWidth, requiredHeight);
             options.inJustDecodeBounds=false;
             return BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
         }catch (FileNotFoundException e){
+
             Snackbar.make(rootView, "Unknown error", Snackbar.LENGTH_SHORT).show();
 
         }
@@ -397,16 +399,23 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         String encodedString=null;
         if(bitmap!=null) {
             compressedBitmap = Bitmap.createScaledBitmap(bitmap, image1.getWidth(), image1.getHeight(), false);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-             encodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
+            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+            ByteArrayOutputStream uploaderStream=new ByteArrayOutputStream();
+            uploaderBitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
+            byte [] uploderByteArray=uploaderStream.toByteArray();
+
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+//            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+            encodedString= Base64.encodeToString(uploderByteArray, Base64.DEFAULT);
             //now upload both image to database
             if (isImage1Clicked) {
                 image1.setImageBitmap(compressedBitmap);
                 image1CardView.setVisibility(View.GONE);
                 option1.setVisibility(View.GONE);
                 firstImageEncodedString=encodedString;
+                Log.i("TAG", "first image encoded string length :- "+encodedString.length());
 
 
             } else if (isImage2Clicked) {
@@ -414,11 +423,12 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 image2CardView.setVisibility(View.GONE);
                 option2.setVisibility(View.GONE);
                 secondImageEncodedString=encodedString;
-
+                Log.i("TAG", "second image encoded string length :- "+encodedString.length());
             }
         }
     }
     private void uploadImagesToRemoteDatabase(){
         //uploading image working here
     }
+
 }

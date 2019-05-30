@@ -92,8 +92,8 @@ public class SignInActivity extends AppCompatActivity {
                             String userName=user.getDisplayName();
                             String profilePicUrl=String.valueOf(user.getPhotoUrl());
                             String userId=user.getUid();
-                                userDetail.put("name", userName);
-                                userDetail.put("imageUrl", profilePicUrl);
+                                userDetail.put("userName", userName);
+                                userDetail.put("profilePicUrlLow", profilePicUrl);
                                 userDetail.put("userId", userId);
                                 Log.i("TAG", "user Name :- "+userName);
                                 Log.i("TAG", "profile pic :- "+profilePicUrl);

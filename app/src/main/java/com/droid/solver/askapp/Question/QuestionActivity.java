@@ -1,10 +1,14 @@
 package com.droid.solver.askapp.Question;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -27,9 +31,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.droid.solver.askapp.SignInActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -49,8 +63,13 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     private SwitchCompat anonymousSwitch;
     private CardView cardView ;
     private ConstraintLayout rootView;
-    private ImageView imageView;
+    private ImageView imageView,imageViewAdd;
     private static final int PHOTO_PICKER_REQUEST_CODE=60;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore root;
+    private String imageEncodedString=null;
+    private boolean isAnonymous=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,35 +87,43 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         anonymousSwitch=findViewById(R.id.anonymous);
         cardView=findViewById(R.id.cardView5);
         imageView=findViewById(R.id.image_view);
+        imageViewAdd=findViewById(R.id.image_view_add);
+        imageViewAdd.setVisibility(View.VISIBLE);
+        imageViewAdd.setOnClickListener(this);
+        imageViewAdd.setVisibility(View.VISIBLE);
         rootView=findViewById(R.id.root);
+        loadProfilePicFromFile();
+        setUserName();
         imageView.setOnClickListener(this);
         anonymousSwitch.setOnCheckedChangeListener(this);
         toolbar.setOnMenuItemClickListener(this);
+        auth=FirebaseAuth.getInstance();
+        user=auth.getCurrentUser();
+        if(user==null){
+            startActivity(new Intent(this, SignInActivity.class) );
+            finish();
+        }
+        root=FirebaseFirestore.getInstance();
     }
 
     @Override
     public boolean onMenuItemClick(final MenuItem menuItem) {
+
         if(menuItem.getItemId()==R.id.ask){
-            Toast.makeText(this, "ask is clicked", Toast.LENGTH_SHORT).show();
             menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
-            overlayFrameLayout.setVisibility(View.VISIBLE);
-            dotsLoaderView.show();
+            if(checkQuestionLength()){
 
-            Handler handler=new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dotsLoaderView.hide();
-                  overlayFrameLayout.setVisibility(View.GONE);
-                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                    Bundle bundle=new Bundle();
-                    bundle.putString("message", "Question uploaded successfully");
-                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                if(isNetworkAvailable()){
+                    overlayFrameLayout.setVisibility(View.VISIBLE);
+                    dotsLoaderView.show();
+                    uploadQuestionToRemoteDatabase();
 
-
+                }else {
+                    noInternetConnectionMessage();
                 }
-            }, 3000);
+            }
+
+
         }
         return true;
 
@@ -106,14 +133,18 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
         if(isChecked){
-            Toast.makeText(this, "anonymous", Toast.LENGTH_SHORT).show();
+            isAnonymous=true;
+            String temp=String.format(getResources().getString(R.string.user_name_asked), "somebody");
+            userNameAsked.setText(temp);
+        }else {
+            isAnonymous=false;
+            setUserName();
         }
     }
 
     @Override
     public void onClick(View view) {
-        if(view.getId()==R.id.image_view){
-
+        if(view.getId()==R.id.image_view||view.getId()==R.id.image_view_add){
             Intent photoPickerIntent=new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
             if(photoPickerIntent.resolveActivity(getPackageManager())!=null){
@@ -140,11 +171,18 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         Bitmap bitmap=decodeSelectedImageUri(imageUri,400 ,200);
         if(bitmap!=null) {
             Bitmap compressedBitmap = Bitmap.createScaledBitmap(bitmap, 400, 200, false);
+            imageViewAdd.setVisibility(View.GONE);
+            imageView.setImageBitmap(bitmap);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
-            String encodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
-            imageView.setImageBitmap(compressedBitmap);
+            Log.i("TAG", "byte array size :- "+byteArray.length);
+            if(byteArray.length>600000){
+                Snackbar.make(rootView,"Image size should be less than 600 kb" , Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+            imageEncodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
+            Log.i("TAG", "encode string length :- "+imageEncodedString.length());
 
 
 
@@ -168,6 +206,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         }
         return null;
     }
+
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
@@ -186,5 +225,91 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         }
 
         return inSampleSize;
+    }
+    private void loadProfilePicFromFile(){
+        SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        String path=preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
+        File file=new File(path,"profile_pic_low_resolution");
+        try {
+            Bitmap bitmap=BitmapFactory.decodeStream(new FileInputStream(file));
+            circularImageView.setImageBitmap(bitmap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    private void setUserName(){
+        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        String userName=preferences.getString(Constants.userName, null);
+        if(userName!=null) {
+            String temp = String.format(getResources().getString(R.string.user_name_asked), userName);
+            userNameAsked.setText(temp);
+        }
+
+    }
+    private boolean checkQuestionLength( ){
+        String data=String.valueOf(questionInputEditText.getText());
+        if(data.equals("null")){
+            return false;
+        }
+            long length=data.length();
+            if(length>2000){
+                Snackbar.make(rootView,"Question length must be less than 2000", Snackbar.LENGTH_LONG).show();
+                return false;
+            }else {
+                return true;
+            }
+
+    }
+    private void uploadQuestionToRemoteDatabase(){
+        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        String askerName=preferences.getString(Constants.userName, null);
+        String askerId=user.getUid();
+        long timeOfAsking=System.currentTimeMillis();
+        final String question=String.valueOf(questionInputEditText.getText());
+        String userImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
+        boolean isImageAttached=imageEncodedString!=null;
+
+        String uid=user.getUid();
+        AskQuestionModel model = new AskQuestionModel(askerName,
+                askerId, timeOfAsking, question, userImageUrl,isImageAttached,imageEncodedString,isAnonymous );
+        root.collection("user").document(uid).collection("question").add(model).
+                addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        dotsLoaderView.hide();
+
+                    overlayFrameLayout.setVisibility(View.GONE);
+                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
+                    Bundle bundle=new Bundle();
+                    bundle.putString("message", "Question uploaded successfully");
+                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                    questionInputEditText.setText("");
+                    imageView.setImageBitmap(null);
+                    imageViewAdd.setVisibility(View.VISIBLE);
+                    anonymousSwitch.setChecked(false);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                overlayFrameLayout.setVisibility(View.GONE);
+                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("message", "Failure occur ,try again...");
+                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                anonymousSwitch.setChecked(false);
+            }
+        });
+
+
+    }
+    private boolean isNetworkAvailable(){
+        ConnectivityManager comm= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo=comm.getActiveNetworkInfo();
+        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+    }
+    private void noInternetConnectionMessage(){
+        Snackbar.make(rootView, "No internet Connection Available",Snackbar.LENGTH_LONG).show();
     }
 }

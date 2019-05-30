@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.droid.solver.askapp.R;
 
@@ -28,9 +29,10 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
     private CardView appbarCardView;
     private ImageView backImageButton,addImageButton;
     private int numberOfTimesAddButtonClicked=0;
-    private EditText options1EditText,option2EditText,option3EditText,option4EditText;
+    private EditText option1EditText,option2EditText,option3EditText,option4EditText;
     private ConstraintLayout submitButtonConstraintLayout;
     private ProgressBar progressBar;
+    TextView optionATextView,optionBTextView,optionCTextView,optionDTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +46,19 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
         progressBar.setVisibility(View.GONE);
         backImageButton=findViewById(R.id.back_image_button);
         addImageButton=findViewById(R.id.add_image_button);
-        options1EditText =findViewById(R.id.option1);
+        optionATextView=findViewById(R.id.textView20);
+        optionBTextView=findViewById(R.id.textView21);
+        optionCTextView=findViewById(R.id.textView22);
+        optionDTextView=findViewById(R.id.textView23);
+        optionATextView.setVisibility(View.GONE);
+        optionBTextView.setVisibility(View.GONE);
+        optionCTextView.setVisibility(View.GONE);
+        optionDTextView.setVisibility(View.GONE);
+        option1EditText =findViewById(R.id.option1);
         option2EditText=findViewById(R.id.option2);
         option3EditText=findViewById(R.id.option3);
         option4EditText=findViewById(R.id.option4);
-        options1EditText.setVisibility(View.GONE);
+        option1EditText.setVisibility(View.GONE);
         option2EditText.setVisibility(View.GONE);
         option3EditText.setVisibility(View.GONE);
         option4EditText.setVisibility(View.GONE);
@@ -140,10 +150,11 @@ public class QuestionTakerActivity extends AppCompatActivity implements View.OnC
     @Override
     public void afterTextChanged(Editable editable) {
 
+
     }
     private void onAddButtonClicked(){
         if(numberOfTimesAddButtonClicked==1){
-            options1EditText.setVisibility(View.VISIBLE);
+            option1EditText.setVisibility(View.VISIBLE);
         }
         else if(numberOfTimesAddButtonClicked==2){
             option2EditText.setVisibility(View.VISIBLE);

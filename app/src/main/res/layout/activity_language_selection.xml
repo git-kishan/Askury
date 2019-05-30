@@ -17,12 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="109dp"
             android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
             android:elevation="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/cardView8"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/textView"
@@ -37,15 +37,16 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/cardView8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:elevation="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView3">
+            app:layout_constraintTop_toTopOf="parent">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -53,11 +54,13 @@
 
                 <android.support.design.chip.ChipGroup
                     android:id="@+id/chip_group"
-                    android:layout_width="0dp"
-                    android:layout_height="212dp"
+                    android:layout_width="259dp"
+                    android:layout_height="235dp"
                     android:layout_marginTop="18dp"
+                    android:layout_marginBottom="16dp"
                     android:padding="16dp"
                     app:chipSpacingVertical="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView4"
@@ -94,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="  Hindi  "
+                        android:text="  Hindi   "
                         android:textColor="@android:color/black"
                         app:chipBackgroundColor="@drawable/chip_state"
                         app:chipCornerRadius="14dp"
@@ -163,7 +166,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text=" French  "
+                        android:text=" French "
                         android:textColor="@android:color/black"
                         app:chipBackgroundColor="@drawable/chip_state"
                         app:chipCornerRadius="14dp" />
@@ -203,10 +206,8 @@
 
         <ImageView
             android:id="@+id/next_image_button"
-            android:layout_width="55dp"
+            android:layout_width="0dp"
             android:layout_height="55dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toTopOf="@+id/textView5"
             app:layout_constraintEnd_toEndOf="parent"
@@ -231,13 +232,13 @@
 
         <ImageView
             android:id="@+id/back_image_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginStart="16dp"
-            android:focusable="true"
-            android:clickable="true"
-            android:padding="5dp"
             android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_back" />

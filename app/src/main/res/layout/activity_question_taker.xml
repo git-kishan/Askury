@@ -93,12 +93,12 @@
 
                     <ImageView
                         android:id="@+id/back_image_button"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginStart="16dp"
-                        android:padding="5dp"
-                        android:background="?android:selectableItemBackground"
                         android:layout_marginTop="16dp"
+                        android:background="?android:selectableItemBackground"
+                        android:padding="5dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_back" />
@@ -285,6 +285,50 @@
                         app:layout_constraintTop_toTopOf="parent" />
                 </android.support.constraint.ConstraintLayout>
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Option A"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/option1"
+                app:layout_constraintStart_toEndOf="@+id/option1"
+                app:layout_constraintTop_toTopOf="@+id/option1" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Option B"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/option2"
+                app:layout_constraintStart_toEndOf="@+id/option2"
+                app:layout_constraintTop_toTopOf="@+id/option2" />
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Option C"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/option3"
+                app:layout_constraintStart_toEndOf="@+id/option3"
+                app:layout_constraintTop_toTopOf="@+id/option3" />
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Option D"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/option4"
+                app:layout_constraintStart_toEndOf="@+id/option4"
+                app:layout_constraintTop_toTopOf="@+id/option4" />
 
         </android.support.constraint.ConstraintLayout>
 

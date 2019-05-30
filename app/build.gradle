@@ -33,6 +33,7 @@ dependencies {
     implementation "com.leinardi.android:speed-dial:2.0.1"
     implementation 'com.steelkiwi:dots-loader-view:1.0.0'
     implementation 'com.github.jd-alexander:LikeButton:0.2.3'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.google.firebase:firebase-firestore:19.0.0'
     implementation 'com.google.firebase:firebase-storage:17.0.0'
     testImplementation 'junit:junit:4.12'
