@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.droid.solver.askapp.R;
 import com.squareup.picasso.Picasso;
@@ -26,26 +27,23 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
      this.context=context;
      this.questionModelArrayList=questionModelArrayList;
      inflater=LayoutInflater.from(context);
+
     }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         View view=null;
-        RecyclerView.ViewHolder viewHolder=null;
         switch (viewType){
             case QUESTION_WITH_IMAGE:
                  view=inflater.inflate(R.layout.question_question_item_with_image, viewGroup,false);
-                viewHolder=new  AskQuestionViewHolderWithImage(view);
-                break;
-
+                return new  AskQuestionViewHolderWithImage(view);
             case QUESTION_WITHOUT_IMAGE:
-                 view=inflater.inflate(R.layout.question_question_item_with_image, viewGroup,false);
-                 viewHolder= new AskQuestionViewHolderWithImage(view);
-                break;
+                 view=inflater.inflate(R.layout.question_question_item, viewGroup,false);
+                 return new AskQuestionViewHolderWithoutImage(view);
         }
+        return  null;
 
-        return viewHolder;
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
@@ -61,6 +59,9 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                 profileNameAsked=String.format(context.getString(R.string.user_name_asked), questionModelArrayList.get(i).getAskerName());
             }
 
+            Picasso.get().load(questionModelArrayList.get(i).getQuestionImageUrl()).
+                    into(((AskQuestionViewHolderWithImage) holder).questionImage);
+            ((AskQuestionViewHolderWithImage) holder).questionImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             ((AskQuestionViewHolderWithImage) holder).profileName.setText(profileNameAsked);
 
             // later about section add
@@ -72,10 +73,6 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                 ((AskQuestionViewHolderWithImage) holder).timeAgo.setText("");
             else
                 ((AskQuestionViewHolderWithImage) holder).timeAgo.setText(timeAgo);
-
-            byte [] imageByteArray=Base64.decode(questionModelArrayList.get(i).getImageEncodedString(), Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-            ((AskQuestionViewHolderWithImage) holder).questionImage.setImageBitmap(bitmap);
 
         }
         else if(holder instanceof AskQuestionViewHolderWithoutImage){
@@ -107,7 +104,8 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
         boolean isImageAttached=questionModelArrayList.get(position).isImageAttached();
         if(isImageAttached){
             return QUESTION_WITH_IMAGE;
-        }else {
+        }
+        else {
             return QUESTION_WITHOUT_IMAGE;
         }
     }

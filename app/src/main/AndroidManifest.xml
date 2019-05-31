@@ -34,6 +34,7 @@
             />
         <activity android:name=".Main.MainActivity"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|screenLayout"
             />
         <activity android:name=".SignInActivity">
             <intent-filter>

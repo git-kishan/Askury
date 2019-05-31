@@ -6,9 +6,9 @@ public class AskQuestionModel {
     private long timeOfAsking;
     private String question;
     private String userImageUrl;
-    private boolean isImageAttached;
-    private boolean isAnonymous;
-    private String imageEncodedString;
+    private boolean imageAttached;
+    private boolean anonymous;
+    private String questionImageUrl;
 
     public AskQuestionModel(){
 
@@ -19,17 +19,17 @@ public class AskQuestionModel {
                             long timeOfAsking,
                             String question,
                             String userImageUrl,
-                            boolean isImageAttached,
-                            String imageEncodedString,
-                            boolean isAnonymous){
+                            boolean imageAttached,
+                            String questionImageUrl,
+                            boolean anonymous){
         this.askerName=askerName;
         this.askerUid = askerUid;
         this.timeOfAsking=timeOfAsking;
         this.question=question;
         this.userImageUrl=userImageUrl;
-        this.isImageAttached=isImageAttached;
-        this.isAnonymous=isAnonymous;
-        this.imageEncodedString=imageEncodedString;
+        this.imageAttached=imageAttached;
+        this.anonymous=anonymous;
+        this.questionImageUrl=questionImageUrl;
     }
 
     public long getTimeOfAsking() {
@@ -55,15 +55,15 @@ public class AskQuestionModel {
     }
 
     public boolean isImageAttached() {
-        return isImageAttached;
+        return imageAttached;
     }
 
     public boolean isAnonymous() {
-        return isAnonymous;
+        return anonymous;
     }
 
-    public String getImageEncodedString() {
-        return imageEncodedString;
+    public String getQuestionImageUrl() {
+        return questionImageUrl;
     }
 }
 

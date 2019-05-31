@@ -34,12 +34,19 @@ import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
+import com.droid.solver.askapp.Survey.QuestionTakerActivity;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.w3c.dom.Document;
 
@@ -70,8 +77,11 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore root;
-    private String imageEncodedString=null;
     private boolean isAnonymous=false;
+    private StorageReference storageRootRef;
+    private UploadTask uploadTask;
+    private boolean isImageAttached;
+    private byte [] compressedByteArray=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +125,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             finish();
         }
         root=FirebaseFirestore.getInstance();
+        storageRootRef=FirebaseStorage.getInstance().getReference();
     }
 
     @Override
@@ -128,7 +139,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
                     overlayFrameLayout.setVisibility(View.VISIBLE);
                     dotsLoaderView.show();
-                    uploadQuestionToRemoteDatabase(menuItem);
+                    uploadImageToDatabase(menuItem);
 
                 }else {
                     noInternetConnectionMessage();
@@ -179,21 +190,28 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     }
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
         final Uri imageUri = data.getData();
-        Bitmap bitmap=decodeSelectedImageUri(imageUri,400 ,200);
-        if(bitmap!=null) {
-            Bitmap compressedBitmap = Bitmap.createScaledBitmap(bitmap, 400, 200, false);
+        Bitmap compressedBitmap=decodeSelectedImageUri(imageUri,250 ,250);
+        if(compressedBitmap!=null) {
             imageViewAdd.setVisibility(View.GONE);
-            imageView.setImageBitmap(bitmap);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
-            Log.i("TAG", "byte array size :- "+byteArray.length);
-            if(byteArray.length>600000){
-                Snackbar.make(rootView,"Image size should be less than 600 kb" , Snackbar.LENGTH_SHORT).show();
-                return;
-            }
-            imageEncodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
-            Log.i("TAG", "encode string length :- "+imageEncodedString.length());
+            compressedByteArray=byteArray;
+//            Log.i("TAG", "image selected size :- "+byteArray.length);
+//            Log.i("TAG", "compressed bitmap size :- "+compressedBitmap.getByteCount());
+            Bitmap bitmap=BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            imageView.setImageBitmap(bitmap);
+//            Log.i("TAG", "decoded bitmap size :- "+bitmap.getByteCount());
+
+
+
+//            Log.i("TAG", "byte array size :- "+byteArray.length);
+//            if(byteArray.length>600000){
+//                Snackbar.make(rootView,"Image size should be less than 600 kb" , Snackbar.LENGTH_SHORT).show();
+//                return;
+//            }
+//            imageEncodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
+//            Log.i("TAG", "encode string length :- "+imageEncodedString.length());
 
 
 
@@ -272,18 +290,74 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     }
 
-    private void uploadQuestionToRemoteDatabase(final MenuItem menuItem){
+    private void uploadImageToDatabase(final MenuItem menuItem){
+        if(compressedByteArray==null){
+            uploadQuestionToRemoteDatabase(menuItem, null);
+        }else {
+            String uid = user.getUid();
+            String currentTime = String.valueOf(System.currentTimeMillis());
+            String imageName = uid + "@" + currentTime;
+            final StorageReference questionImageRef = storageRootRef.child("question").child(imageName);
+            uploadTask = questionImageRef.putBytes(compressedByteArray);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    questionImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            uploadQuestionToRemoteDatabase(menuItem, uri.toString());
+                            Log.i("TAG", "url :- " + uri);
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            overlayFrameLayout.setVisibility(View.GONE);
+                            SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment = new SuccessfullyUploadDialogFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("message", "Failure occur ,try again...");
+                            imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                            imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                            anonymousSwitch.setChecked(false);
+                            showSnackBar("Question uploading failed ,try again...");
+                            Log.i("TAG", "failure occurs in getting url:-");
+
+
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    overlayFrameLayout.setVisibility(View.GONE);
+                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment = new SuccessfullyUploadDialogFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("message", "Failure occur ,try again...");
+                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                    anonymousSwitch.setChecked(false);
+                    showSnackBar("Question uploading failed ,try again...");
+
+                    Log.i("TAG", "failure occurs :-");
+
+                }
+            });
+        }
+    }
+    private void uploadQuestionToRemoteDatabase(final MenuItem menuItem,final String questionImageUrl){
+
+
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String askerName=preferences.getString(Constants.userName, null);
         String askerId=user.getUid();
         long timeOfAsking=System.currentTimeMillis();
         final String question=String.valueOf(questionInputEditText.getText());
         String userImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
-        boolean isImageAttached=imageEncodedString!=null;
+        isImageAttached=compressedByteArray!=null;
 
         String uid=user.getUid();
         AskQuestionModel model = new AskQuestionModel(askerName,
-                askerId, timeOfAsking, question, userImageUrl,isImageAttached,imageEncodedString,isAnonymous );
+                askerId, timeOfAsking, question, userImageUrl,isImageAttached,questionImageUrl,isAnonymous );
 
         String questionId=root.collection("user").document(uid).collection("question").document().getId();
         root.collection("user").document(uid).collection("question").document(questionId).set(model).

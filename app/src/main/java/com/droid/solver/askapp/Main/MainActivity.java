@@ -61,10 +61,11 @@ import javax.annotation.Nullable;
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener,ProfilePicSaver {
 
-    private static final String HOME="home";
-    private static final String QUESTION="ic_question";
-    private static final String COMMUNITY="community";
-    private static final String ACCOUNT="ic_account";
+    private static final String HOME = "home";
+    private static final String QUESTION = "ic_question";
+    private static final String COMMUNITY = "community";
+    private static final String ACCOUNT = "ic_account";
+    private static final String NO_INTERNET = "no_internet";
     BottomNavigationView bottomNavigationView;
     FrameLayout frameLayout;
     Toolbar toolbar;
@@ -72,92 +73,109 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseFirestore firestoreRoot;
     private FirebaseUser user;
     private String uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar=findViewById(R.id.toolbar);
-        toolbarCardView=findViewById(R.id.toolbar_card_view);
-        frameLayout=findViewById(R.id.fragment_container);
-        bottomNavigationView=findViewById(R.id.bottom_navigation);
+        toolbar = findViewById(R.id.toolbar);
+        toolbarCardView = findViewById(R.id.toolbar_card_view);
+        frameLayout = findViewById(R.id.fragment_container);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        firestoreRoot=FirebaseFirestore.getInstance();
-        user= FirebaseAuth.getInstance().getCurrentUser();
-        if(user==null){
-            startActivity(new Intent(this,SignInActivity.class));
+        firestoreRoot = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
-        uid=user.getUid();
-        loadFragment(new HomeFragment(),HOME);
+        uid = user.getUid();
+        loadFragment(new HomeFragment(), HOME);
         changeToolbarFont(toolbar, this);
-        SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-        String lowProfilePicPath=preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
-        String highProfilePath=preferences.getString(Constants.HIGH_PROFILE_PIC_PATH, null);
-        if(lowProfilePicPath==null&&highProfilePath==null){
+        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        String lowProfilePicPath = preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
+        String highProfilePath = preferences.getString(Constants.HIGH_PROFILE_PIC_PATH, null);
+        if (lowProfilePicPath == null && highProfilePath == null) {
             getProfilePicUrlFromRemoteDatabase();
         }
-    }
 
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Fragment fragment,tempFragment;
-        switch (menuItem.getItemId()){
+        Fragment fragment, tempFragment;
+        switch (menuItem.getItemId()) {
 
             case R.id.home:
-                tempFragment=getSupportFragmentManager().findFragmentByTag(HOME);
-                if(tempFragment!=null&&tempFragment.isVisible()){
+                tempFragment = getSupportFragmentManager().findFragmentByTag(HOME);
+                if (tempFragment != null && tempFragment.isVisible()) {
                     break;
                 }
-                fragment=new HomeFragment();
-                loadFragment(fragment,HOME);
+                fragment = new HomeFragment();
+                loadFragment(fragment, HOME);
                 return true;
-                case R.id.question:
-                    tempFragment=getSupportFragmentManager().findFragmentByTag(QUESTION);
-                    if(tempFragment!=null&&tempFragment.isVisible()){
-                        break;
-                    }
-                    fragment=new QuestionFragment();
-                    loadFragment(fragment,QUESTION);
+            case R.id.question:
+                tempFragment = getSupportFragmentManager().findFragmentByTag(QUESTION);
+                if (tempFragment != null && tempFragment.isVisible()) {
+                    break;
+                }
+                fragment = new QuestionFragment();
+                loadFragment(fragment, QUESTION);
                 return true;
             case R.id.community:
-                tempFragment=getSupportFragmentManager().findFragmentByTag(COMMUNITY);
-                if(tempFragment!=null&&tempFragment.isVisible()){
+                tempFragment = getSupportFragmentManager().findFragmentByTag(COMMUNITY);
+                if (tempFragment != null && tempFragment.isVisible()) {
                     break;
                 }
-                fragment=new CommunityFragment();
-                loadFragment(fragment,COMMUNITY);
+                fragment = new CommunityFragment();
+                loadFragment(fragment, COMMUNITY);
                 return true;
             case R.id.account:
-                tempFragment=getSupportFragmentManager().findFragmentByTag(ACCOUNT);
-                if(tempFragment!=null&&tempFragment.isVisible()){
+                tempFragment = getSupportFragmentManager().findFragmentByTag(ACCOUNT);
+                if (tempFragment != null && tempFragment.isVisible()) {
                     break;
                 }
-                fragment=new AccountFragment();
-                loadFragment(fragment,ACCOUNT);
+                fragment = new AccountFragment();
+                loadFragment(fragment, ACCOUNT);
                 return true;
 
         }
         return true;
     }
-    private void loadFragment(Fragment fragment,String tag){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment,tag);
-        transaction.commit();
+
+    private void loadFragment(Fragment fragment, String tag) {
+        if(!isNetworkAvailable()){
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,new NoInternetFragment(),NO_INTERNET)
+                    .addToBackStack(null).commit();
+
+        }else {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment, tag);
+            transaction.commit();
+        }
+
     }
 
     @Override
     public void onBackPressed() {
-        Fragment fragment=getSupportFragmentManager().findFragmentByTag(HOME);
-        if(fragment!=null&&fragment.isVisible()){
-            super.onBackPressed();
-        }else {
-            loadFragment(new HomeFragment(), HOME);
-            bottomNavigationView.setSelectedItemId(R.id.home);
-            bottomNavigationView.setSelected(true);
+        if(isNetworkAvailable()){
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(HOME);
+            if (fragment != null && fragment.isVisible()) {
+                super.onBackPressed();
+            } else {
+                loadFragment(new HomeFragment(), HOME);
+                bottomNavigationView.setSelectedItemId(R.id.home);
+                bottomNavigationView.setSelected(true);
+            }
         }
-    }
+        else {
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag(NO_INTERNET);
+            if(fragment!=null&& fragment.isVisible()){
+                finish();
+            }
+        }
 
+    }
 
 
     public static void changeToolbarFont(Toolbar toolbar, Activity context) {
@@ -178,69 +196,70 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onResult(Bitmap bitmap,boolean lowProfilePic,boolean highProfilePic) {  //save image to file and load image from file
+    public void onResult(Bitmap bitmap, boolean lowProfilePic, boolean highProfilePic) {  //save image to file and load image from file
 
-        if(lowProfilePic) {
+        if (lowProfilePic) {
 
-            if(bitmap!=null){
-                String path=saveProfilePicBitmapToFile(bitmap,lowProfilePic,highProfilePic);
-                saveProfileImagePathToSharedPreferences(path,lowProfilePic,highProfilePic);
+            if (bitmap != null) {
+                String path = saveProfilePicBitmapToFile(bitmap, lowProfilePic, highProfilePic);
+                saveProfileImagePathToSharedPreferences(path, lowProfilePic, highProfilePic);
 
             }
         }
-        if(highProfilePic){
-            if(bitmap!=null){
-                String path=saveProfilePicBitmapToFile(bitmap,lowProfilePic,highProfilePic);
-                saveProfileImagePathToSharedPreferences(path,lowProfilePic,highProfilePic);
+        if (highProfilePic) {
+            if (bitmap != null) {
+                String path = saveProfilePicBitmapToFile(bitmap, lowProfilePic, highProfilePic);
+                saveProfileImagePathToSharedPreferences(path, lowProfilePic, highProfilePic);
 
             }
         }
     }
-    private void getProfilePicUrlFromRemoteDatabase(){//download image and return bitmap from image
+
+    private void getProfilePicUrlFromRemoteDatabase() {//download image and return bitmap from image
         firestoreRoot.collection("user").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
                                 @Nullable FirebaseFirestoreException e) {
 
-                if(e!=null){
+                if (e != null) {
                     Log.i("TAG", "realtime listener profile pic failed");
                     return;
                 }
-                if(documentSnapshot!=null&&documentSnapshot.exists()){
-                    String lowProfilePicUrl=documentSnapshot.getString("profilePicUrlLow");
-                    String highProfilePicUrl=documentSnapshot.getString("profilePicUrlHigh");
-                    String userName=documentSnapshot.getString("userName");
-                    SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor =preferences.edit();
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    String lowProfilePicUrl = documentSnapshot.getString("profilePicUrlLow");
+                    String highProfilePicUrl = documentSnapshot.getString("profilePicUrlHigh");
+                    String userName = documentSnapshot.getString("userName");
+                    SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(Constants.userName, userName);
                     editor.putString(Constants.LOW_IMAGE_URL, lowProfilePicUrl);
                     editor.apply();
-                    Log.i("TAG", "user name :- "+userName);
-                    if(highProfilePicUrl==null)
-                        highProfilePicUrl=lowProfilePicUrl;
-                    ImageUrlToByteConvertor lowerAsyncTask=new ImageUrlToByteConvertor(
-                            MainActivity.this,true,false);
+                    Log.i("TAG", "user name :- " + userName);
+                    if (highProfilePicUrl == null)
+                        highProfilePicUrl = lowProfilePicUrl;
+                    ImageUrlToByteConvertor lowerAsyncTask = new ImageUrlToByteConvertor(
+                            MainActivity.this, true, false);
                     lowerAsyncTask.execute(lowProfilePicUrl);
-                    ImageUrlToByteConvertor higherAsyncTask=new ImageUrlToByteConvertor(MainActivity.this,
-                    false,true);
+                    ImageUrlToByteConvertor higherAsyncTask = new ImageUrlToByteConvertor(MainActivity.this,
+                            false, true);
                     higherAsyncTask.execute(highProfilePicUrl);
                 }
             }
         });
     }
 
-    private String saveProfilePicBitmapToFile(Bitmap bitmap,boolean lowProfilePic,boolean highProfilePic ){
+    private String saveProfilePicBitmapToFile(Bitmap bitmap, boolean lowProfilePic, boolean highProfilePic) {
         //save profile pic to file and return image path
-        File directory=getDir("image", Context.MODE_PRIVATE);
-        File path=null;
-        if(lowProfilePic) {
-             path = new File(directory, "profile_pic_low_resolution");
-        }else if(highProfilePic){
-             path = new File(directory, "profile_pic_high_resolution");
+        File directory = getDir("image", Context.MODE_PRIVATE);
+        File path = null;
+        if (lowProfilePic) {
+            path = new File(directory, "profile_pic_low_resolution");
+        } else if (highProfilePic) {
+            path = new File(directory, "profile_pic_high_resolution");
         }
-        FileOutputStream fileOutputStream=null;
+        FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream=new FileOutputStream(path);
+            fileOutputStream = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Toast.makeText(MainActivity.this, "Error occured", Toast.LENGTH_SHORT).show();
@@ -252,8 +271,7 @@ public class MainActivity extends AppCompatActivity implements
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
-        finally {
+        } finally {
             try {
                 fileOutputStream.close();
             } catch (IOException e) {
@@ -265,21 +283,21 @@ public class MainActivity extends AppCompatActivity implements
         return directory.getAbsolutePath();
     }
 
-    private void saveProfileImagePathToSharedPreferences(String path,boolean lowProfilePic,boolean highProfilePic ){
+    private void saveProfileImagePathToSharedPreferences(String path, boolean lowProfilePic, boolean highProfilePic) {
 
-        SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        if(lowProfilePic)
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (lowProfilePic)
             editor.putString(Constants.LOW_PROFILE_PIC_PATH, path);
-        else if(highProfilePic)
+        else if (highProfilePic)
             editor.putString(Constants.HIGH_PROFILE_PIC_PATH, path);
         editor.apply();
     }
 
-//    private void loadProfilePicFromFile(boolean lowProfilePic,boolean highProfilePic){
-//        SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE);
-//        String path=null;
-//        if(lowProfilePic)
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cmm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = cmm.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 //            path=sharedPreferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
 //        if(highProfilePic)
 //            path=sharedPreferences.getString(Constants.HIGH_PROFILE_PIC_PATH, null);
@@ -331,5 +349,5 @@ public class MainActivity extends AppCompatActivity implements
 //    }
 
 
-
+    }
 }
