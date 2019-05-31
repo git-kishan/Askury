@@ -100,6 +100,15 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user==null){
+            showSnackBar("Please sign in again...");
+            Handler handler=new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(QuestionActivity.this,SignInActivity.class));
+                    finish();
+                }
+            }, 1000);
             startActivity(new Intent(this, SignInActivity.class) );
             finish();
         }
@@ -110,13 +119,14 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     public boolean onMenuItemClick(final MenuItem menuItem) {
 
         if(menuItem.getItemId()==R.id.ask){
-            menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
             if(checkQuestionLength()){
 
                 if(isNetworkAvailable()){
+                    menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
+
                     overlayFrameLayout.setVisibility(View.VISIBLE);
                     dotsLoaderView.show();
-                    uploadQuestionToRemoteDatabase();
+                    uploadQuestionToRemoteDatabase(menuItem);
 
                 }else {
                     noInternetConnectionMessage();
@@ -260,7 +270,8 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             }
 
     }
-    private void uploadQuestionToRemoteDatabase(){
+
+    private void uploadQuestionToRemoteDatabase(final MenuItem menuItem){
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String askerName=preferences.getString(Constants.userName, null);
         String askerId=user.getUid();
@@ -288,6 +299,9 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
                     imageView.setImageBitmap(null);
                     imageViewAdd.setVisibility(View.VISIBLE);
                     anonymousSwitch.setChecked(false);
+
+                    menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -301,6 +315,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
                 anonymousSwitch.setChecked(false);
             }
         });
+        root.collection("question").add(model);
 
 
     }
@@ -309,7 +324,18 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         NetworkInfo activeNetworkInfo=comm.getActiveNetworkInfo();
         return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
     }
+    private void showSnackBar(String message){
+        Snackbar snackbar=Snackbar.make(rootView,  message, Snackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+        View view=snackbar.getView();
+        TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
+        view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
+        snackbar.show();
+    }
+
     private void noInternetConnectionMessage(){
         Snackbar.make(rootView, "No internet Connection Available",Snackbar.LENGTH_LONG).show();
     }
+
 }

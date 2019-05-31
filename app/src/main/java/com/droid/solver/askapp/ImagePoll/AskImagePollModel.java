@@ -11,7 +11,6 @@ public class AskImagePollModel {
     private long timeOfPolling;
     private int image1LikeNo;
     private int image2LikeNo;
-    private boolean isQuestionAttached;
     public AskImagePollModel(){
 
     }
@@ -23,8 +22,8 @@ public class AskImagePollModel {
                              String image2Encoded,
                              long timeOfPolling,
                              int image1LikeNo,
-                             int image2LikeNo,
-                             boolean isQuestionAttached){
+                             int image2LikeNo
+                             ){
         this.askerUid=askerUid;
         this.askerName=askerName;
         this.askerImageUrl=askerImageUrl;
@@ -34,7 +33,6 @@ public class AskImagePollModel {
         this.timeOfPolling=timeOfPolling;
         this.image1LikeNo=image1LikeNo;
         this.image2LikeNo=image2LikeNo;
-        this.isQuestionAttached=isQuestionAttached;
 
     }
 
@@ -74,8 +72,6 @@ public class AskImagePollModel {
         return image2Encoded;
     }
 
-    public boolean isQuestionAttached() {
-        return isQuestionAttached;
-    }
+
 }
 

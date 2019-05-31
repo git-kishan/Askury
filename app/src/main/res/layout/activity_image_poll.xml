@@ -245,6 +245,17 @@
                             android:textSize="23sp" />
                     </android.support.v7.widget.CardView>
 
+                    <TextView
+                        android:id="@+id/textView24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="40dp"
+                        android:textSize="12sp"
+                        android:text="Note :-Polling will be for 15 days"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
 
                 </android.support.constraint.ConstraintLayout>
 
