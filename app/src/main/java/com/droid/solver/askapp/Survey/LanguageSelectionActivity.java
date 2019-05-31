@@ -3,11 +3,15 @@ package com.droid.solver.askapp.Survey;
 import android.content.Intent;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.droid.solver.askapp.R;
 
@@ -18,6 +22,11 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
     private Chip chip;
     private Chip englishChip,chineseChip,hindiChip,spanishChip,arabicChip,malayChip;
     private Chip russianChip,bengaliChip,frenchChip,portgueseChip;
+    private CardView rootView;
+
+    public  final int [] languageNumber={0,1,2,3,4,5,6,7,8,9};
+    public  final String [] languageString={"English","Chinese","Hindi","Spanish","Arabic",
+            "Malay","Russian","Bengali","French","Portuguese"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +34,7 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
         chipGroup=findViewById(R.id.chip_group);
         nextImageButton=findViewById(R.id.next_image_button);
         backImageButton=findViewById(R.id.back_image_button);
+        rootView=findViewById(R.id.root_card_view);
         chipGroup.setOnCheckedChangeListener(this);
         nextImageButton.setOnClickListener(this);
         backImageButton.setOnClickListener(this);
@@ -45,7 +55,26 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
 
         switch (view.getId()){
             case R.id.next_image_button:
-                startActivity(new Intent(this, QuestionTakerActivity.class));
+                if(chip==null){
+                    showSnackBar("Select your survey language");
+                    return;
+                }
+                String data=chip.getText().toString().trim();
+                int languageIndex=-1;
+                for(int i=0;i<languageString.length;i++){
+                    if(languageString[i].trim().equals(data)){
+                        languageIndex=i;
+                        break;
+                    }
+                }
+                if(languageIndex==-1){
+                    showSnackBar("select your survey language");
+                    return;
+                }
+//                Toast.makeText(this, "text selection :- "+languageString[languageIndex], Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(LanguageSelectionActivity.this,QuestionTakerActivity.class);
+                intent.putExtra("languageIndex", languageIndex);
+                startActivity(intent);
                 break;
             case R.id.back_image_button:
                 onBackPressed();
@@ -77,5 +106,14 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
         bengaliChip.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
         frenchChip.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
         portgueseChip.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
+    }
+    private void showSnackBar(String message){
+        Snackbar snackbar=Snackbar.make(rootView,  message, Snackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+        View view=snackbar.getView();
+        TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
+        view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
+        snackbar.show();
     }
 }

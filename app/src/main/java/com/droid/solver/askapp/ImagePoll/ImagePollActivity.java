@@ -504,28 +504,30 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         AskImagePollModel pollModel=new AskImagePollModel(askerUid, askerName,
                 askerImageUrl, question, image1Encoded, image2Encoded,
                 timeOfPolling, image1LikeNo, image2LikeNo);
-        root.collection("user").document(askerUid).collection("imagePoll").add(pollModel)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        overLayFrameLayout.setVisibility(View.GONE);
-                        dotsLoaderView.hide();
-                        questionInputEditText.setText("");
-                        SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                        Bundle bundle=new Bundle();
-                        bundle.putString("message", "Poll uploaded successfully");
-                        imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                        imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "imagepoll_dialog");
-                        menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
-                        image1.setImageBitmap(null);
-                        image2.setImageBitmap(null);
-                        image1CardView.setVisibility(View.VISIBLE);
-                        image2CardView.setVisibility(View.VISIBLE);
+        String imagePollId=root.collection("user").document(askerUid).collection("imagePoll").document().getId();
+        root.collection("user").document(askerUid).collection("imagePoll").document(imagePollId)
+                .set(pollModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                overLayFrameLayout.setVisibility(View.GONE);
+                dotsLoaderView.hide();
+                questionInputEditText.setText("");
+                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("message", "Poll uploaded successfully");
+                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "imagepoll_dialog");
+                menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
+                image1.setImageBitmap(null);
+                image2.setImageBitmap(null);
+                image1CardView.setVisibility(View.VISIBLE);
+                image2CardView.setVisibility(View.VISIBLE);
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
                 questionInputEditText.setText("");
@@ -542,7 +544,8 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
             }
         });
-        root.collection("imagePoll").add(pollModel);
+
+        root.collection("imagePoll").document(imagePollId).set(pollModel);
 
 
     }

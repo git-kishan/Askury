@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:backgroundTint="#f7f7f7"
+    android:id="@+id/root_card_view"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
@@ -54,9 +55,11 @@
 
                 <android.support.design.chip.ChipGroup
                     android:id="@+id/chip_group"
-                    android:layout_width="259dp"
-                    android:layout_height="235dp"
+                    android:layout_width="268dp"
+                    android:layout_height="247dp"
+                    android:layout_marginStart="32dp"
                     android:layout_marginTop="18dp"
+                    android:layout_marginEnd="32dp"
                     android:layout_marginBottom="16dp"
                     android:padding="16dp"
                     app:chipSpacingVertical="8dp"
@@ -232,8 +235,8 @@
 
         <ImageView
             android:id="@+id/back_image_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:clickable="true"

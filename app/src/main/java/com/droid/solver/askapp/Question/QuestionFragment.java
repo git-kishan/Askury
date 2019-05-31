@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.view.animation.BounceInterpolator;
 import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.LanguageSelectionActivity;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
@@ -24,16 +26,21 @@ import com.leinardi.android.speeddial.SpeedDialView;
 public class QuestionFragment extends Fragment {
 
 
-    private Animation scaleInAnimation,scaleOutAnimation;
+    private Animation scaleInAnimation;
     SpeedDialView speedDialView;
+    private RecyclerView recyclerView;
+    ShimmerFrameLayout shimmerFrameLayout;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
         speedDialView=view.findViewById(R.id.speedDial);
         scaleInAnimation= AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_in);
-        scaleOutAnimation=AnimationUtils.loadAnimation(getActivity(),R.anim.fab_scale_out);
-        addFabItem();
         speedDialView.startAnimation(scaleInAnimation);
+        recyclerView=view.findViewById(R.id.recycler_view);
+        shimmerFrameLayout=view.findViewById(R.id.shimmer);
+        shimmerFrameLayout.startShimmer();
+
+        addFabItem();
         return view;
     }
 
@@ -91,7 +98,6 @@ public class QuestionFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        speedDialView.startAnimation(scaleOutAnimation);
         super.onDestroyView();
     }
 }

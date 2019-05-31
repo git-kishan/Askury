@@ -31,4 +31,5 @@
     <color name="survey_light_green">#97A2FDC5</color>
     <color name="survey_dark_pink">#E05555</color>
     <color name="survey_dark_green">#18B651</color>
+    <color name="shimmer_background_color">#dddddd</color>
 </resources>

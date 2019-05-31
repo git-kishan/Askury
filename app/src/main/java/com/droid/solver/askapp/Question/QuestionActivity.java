@@ -41,6 +41,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Document;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -132,7 +134,6 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
                     noInternetConnectionMessage();
                 }
             }
-
 
         }
         return true;
@@ -283,29 +284,32 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         String uid=user.getUid();
         AskQuestionModel model = new AskQuestionModel(askerName,
                 askerId, timeOfAsking, question, userImageUrl,isImageAttached,imageEncodedString,isAnonymous );
-        root.collection("user").document(uid).collection("question").add(model).
-                addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+
+        String questionId=root.collection("user").document(uid).collection("question").document().getId();
+        root.collection("user").document(uid).collection("question").document(questionId).set(model).
+                addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
+
                         dotsLoaderView.hide();
-
-                    overlayFrameLayout.setVisibility(View.GONE);
-                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                    Bundle bundle=new Bundle();
-                    bundle.putString("message", "Question uploaded successfully");
-                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
-                    questionInputEditText.setText("");
-                    imageView.setImageBitmap(null);
-                    imageViewAdd.setVisibility(View.VISIBLE);
-                    anonymousSwitch.setChecked(false);
-
-                    menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
+                        overlayFrameLayout.setVisibility(View.GONE);
+                        SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
+                        Bundle bundle=new Bundle();
+                        bundle.putString("message", "Question uploaded successfully");
+                        imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                        imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                        questionInputEditText.setText("");
+                        imageView.setImageBitmap(null);
+                        imageViewAdd.setVisibility(View.VISIBLE);
+                        anonymousSwitch.setChecked(false);
+                        menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+
+
                 overlayFrameLayout.setVisibility(View.GONE);
                 SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
                 Bundle bundle=new Bundle();
@@ -315,7 +319,8 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
                 anonymousSwitch.setChecked(false);
             }
         });
-        root.collection("question").add(model);
+
+        root.collection("question").document(questionId).set(model);
 
 
     }

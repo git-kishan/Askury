@@ -9,7 +9,7 @@ public class AskSurveyModel {
     private int maximumTimeOfSurvey;
     private boolean option1,option2,option3,option4;
     private int option1Count,option2Count,option3Count,option4Count;
-    private int languageSelectedNumber;
+    private int languageSelectedIndex;
 
 
     public AskSurveyModel(){}
@@ -23,7 +23,7 @@ public class AskSurveyModel {
                           boolean option3,boolean option4,
                           int option1Count,int option2Count,
                           int option3Count,int option4Count,
-                          int languageSelectedNumber){
+                          int languageSelectedIndex){
 
         this.askerUid=askerUid;
         this.askerName=askerName;
@@ -39,7 +39,7 @@ public class AskSurveyModel {
         this.option2Count=option2Count;
         this.option3Count=option3Count;
         this.option4Count=option4Count;
-        this.languageSelectedNumber=languageSelectedNumber;
+        this.languageSelectedIndex=languageSelectedIndex;
     }
 
     public String getAskerUid() {
@@ -98,8 +98,7 @@ public class AskSurveyModel {
         return option4Count;
     }
 
-    public int getLanguageSelectedNumber() {
-        return languageSelectedNumber;
+    public int getLanguageSelectedIndex() {
+        return languageSelectedIndex;
     }
-
 }

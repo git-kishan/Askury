@@ -9,6 +9,7 @@ public class AskQuestionModel {
     private boolean isImageAttached;
     private boolean isAnonymous;
     private String imageEncodedString;
+
     public AskQuestionModel(){
 
     }

@@ -31,7 +31,7 @@
             android:background="@drawable/survey_outline_box_ripple"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12">
+            app:layout_constraintTop_toBottomOf="@+id/question_textview">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -64,7 +64,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/profile_name_textview"
             android:layout_width="0dp"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
@@ -82,7 +82,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/about_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -90,11 +90,11 @@
             android:text="Freenlancer|writer"
             android:textSize="8sp"
             app:layout_constraintEnd_toStartOf="@+id/imageView8"
-            app:layout_constraintStart_toStartOf="@+id/textView10"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            app:layout_constraintStart_toStartOf="@+id/profile_name_textview"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name_textview" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/question_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -106,7 +106,7 @@
             android:fontFamily="sans-serif-condensed"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintTop_toBottomOf="@+id/about_textview" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
