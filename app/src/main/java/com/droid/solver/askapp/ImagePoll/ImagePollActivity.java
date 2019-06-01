@@ -501,10 +501,11 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         long timeOfPolling=System.currentTimeMillis();
         int image1LikeNo=0;
         int image2LikeNo=0;
+        String imagePollId=root.collection("user").document(askerUid).collection("imagePoll").document().getId();
         AskImagePollModel pollModel=new AskImagePollModel(askerUid, askerName,
                 askerImageUrl, question, image1Encoded, image2Encoded,
-                timeOfPolling, image1LikeNo, image2LikeNo);
-        String imagePollId=root.collection("user").document(askerUid).collection("imagePoll").document().getId();
+                timeOfPolling, image1LikeNo, image2LikeNo,imagePollId);
+
         root.collection("user").document(askerUid).collection("imagePoll").document(imagePollId)
                 .set(pollModel).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

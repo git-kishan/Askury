@@ -1,19 +1,14 @@
 package com.droid.solver.askapp.Question;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.droid.solver.askapp.R;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
@@ -23,6 +18,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
     private LayoutInflater inflater;
     public static final int QUESTION_WITHOUT_IMAGE=0;
     public static final int QUESTION_WITH_IMAGE=1;
+
     public AskQuestionRecyclerAdapter(Context context, ArrayList<AskQuestionModel> questionModelArrayList){
      this.context=context;
      this.questionModelArrayList=questionModelArrayList;

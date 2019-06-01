@@ -356,10 +356,13 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         isImageAttached=compressedByteArray!=null;
 
         String uid=user.getUid();
-        AskQuestionModel model = new AskQuestionModel(askerName,
-                askerId, timeOfAsking, question, userImageUrl,isImageAttached,questionImageUrl,isAnonymous );
-
         String questionId=root.collection("user").document(uid).collection("question").document().getId();
+        AskQuestionModel model = new AskQuestionModel(askerName,
+                askerId, questionId,timeOfAsking, question, userImageUrl,isImageAttached,questionImageUrl,
+                isAnonymous,0,0,0,null,
+                null,null,null,null,
+                null,false);
+
         root.collection("user").document(uid).collection("question").document(questionId).set(model).
                 addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

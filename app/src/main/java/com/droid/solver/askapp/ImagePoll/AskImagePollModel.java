@@ -6,11 +6,12 @@ public class AskImagePollModel {
     private String askerName;
     private String askerImageUrl;
     private String question;
-    private String image1Encoded;
-    private String image2Encoded;
+    private String image1Url;
+    private String image2Url;
     private long timeOfPolling;
     private int image1LikeNo;
     private int image2LikeNo;
+    private String imagePollId;
     public AskImagePollModel(){
 
     }
@@ -18,21 +19,24 @@ public class AskImagePollModel {
                              String askerName,
                              String askerImageUrl,
                              String question,
-                             String image1Encoded,
-                             String image2Encoded,
+                             String image1Url,
+                             String image2Url,
                              long timeOfPolling,
                              int image1LikeNo,
-                             int image2LikeNo
+                             int image2LikeNo,
+                             String imagePollId
                              ){
         this.askerUid=askerUid;
         this.askerName=askerName;
         this.askerImageUrl=askerImageUrl;
+        this.image2Url=image2Url;
         this.question=question;
-        this.image1Encoded=image1Encoded;
-        this.image2Encoded=image2Encoded;
+        this.image1Url =image1Url;
+        this.image1Url=image1Url;
         this.timeOfPolling=timeOfPolling;
         this.image1LikeNo=image1LikeNo;
         this.image2LikeNo=image2LikeNo;
+        this.imagePollId=imagePollId;
 
     }
 
@@ -64,14 +68,16 @@ public class AskImagePollModel {
         return timeOfPolling;
     }
 
-    public String getImage1Encoded() {
-        return image1Encoded;
+    public String getImage1Url() {
+        return image1Url;
     }
 
-    public String getImage2Encoded() {
-        return image2Encoded;
+    public String getImage2Url() {
+        return image2Url;
     }
 
-
+    public String getImagePollId() {
+        return imagePollId;
+    }
 }
 

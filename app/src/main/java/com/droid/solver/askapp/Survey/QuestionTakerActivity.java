@@ -387,12 +387,14 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         int option3Count=0;int option4Count=0;
         int languageSelectedIndex=languageIndex;
 
+        String surveyId=root.collection("user").document(askerUid).collection("survey").document().getId();
+
         AskSurveyModel surveyModel=new AskSurveyModel(askerUid, askerName, askerImageUrl,
                 question, timeOfSurvey, maximumTimeOfSurvey, option1,
-                option2, option3, option4, option1Count, option2Count,
-                option3Count, option4Count, languageSelectedIndex);
+                option2, option3, option4,optionToBeUploaded[0],optionToBeUploaded[1],optionToBeUploaded[2]
+                ,optionToBeUploaded[3], option1Count, option2Count,
+                option3Count, option4Count, languageSelectedIndex,surveyId);
 
-        String surveyId=root.collection("user").document(askerUid).collection("survey").document().getId();
         root.collection("user").document(askerUid).collection("survey").document(surveyId).set(surveyModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
