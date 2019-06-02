@@ -39,7 +39,7 @@
                     android:id="@+id/view1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/option1"
                     android:layout_width="wrap_content"
                     android:layout_centerInParent="true"
@@ -47,7 +47,7 @@
                     android:layout_height="match_parent"
                     android:text="Republic of India"
                     />
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/percent1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -63,7 +63,7 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <TextView
+        <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/profile_name_textview"
             android:layout_width="0dp"
             android:layout_height="18dp"
@@ -81,7 +81,7 @@
             app:layout_constraintStart_toEndOf="@+id/profile_image"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/about_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
             app:layout_constraintStart_toStartOf="@+id/profile_name_textview"
             app:layout_constraintTop_toBottomOf="@+id/profile_name_textview" />
 
-        <TextView
+        <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -159,7 +159,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/option2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -168,7 +168,7 @@
                     android:layout_marginTop="0dp"
                     android:gravity="center"
                     android:text="United states of America" />
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/percent2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -206,7 +206,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/option3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -215,7 +215,7 @@
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:text="Undemocrate China" />
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:layout_width="wrap_content"
                     android:id="@+id/percent3"
                     android:layout_height="match_parent"
@@ -256,7 +256,7 @@
                     android:id="@+id/view4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/option4"
                     android:layout_width="wrap_content"
                     android:gravity="center"
@@ -264,7 +264,7 @@
                     android:layout_height="match_parent"
                     android:text="Soviet union Russia"
                     />
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/percent4"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"

@@ -4,5 +4,9 @@
         <item>@font/astloch_bold</item>
         <item>@font/bitter</item>
         <item>@font/bubbler_one</item>
+        <item>@font/geo</item>
+        <item>@font/rochester</item>
+        <item>@font/wire_one</item>
+        <item>@font/open_sans</item>
     </array>
 </resources>

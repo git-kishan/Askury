@@ -3,6 +3,7 @@ package com.droid.solver.askapp.Community;
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
@@ -20,8 +21,8 @@ public class CommunityFragment extends Fragment implements View.OnClickListener 
 
 
     LinearLayout firstLayout,secondLayout,thirdLayout,fourthLayout;
-    TextView percent1,percent2,percent3,percent4;
-    TextView option1,option2,option3,option4;
+    EmojiTextView percent1,percent2,percent3,percent4;
+    EmojiTextView option1,option2,option3,option4;
     View view1,view2,view3,view4;
     public CommunityFragment() {
     }

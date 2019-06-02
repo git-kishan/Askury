@@ -56,7 +56,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
 
-                            <android.support.design.widget.TextInputEditText
+                            <android.support.text.emoji.widget.EmojiEditText
                                 android:id="@+id/input_edit_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
                             app:layout_constraintVertical_bias="0.0" />
 
-                        <TextView
+                        <android.support.text.emoji.widget.EmojiTextView
                             android:id="@+id/textView3"
                             android:layout_width="wrap_content"
                             android:layout_height="19dp"
@@ -132,7 +132,7 @@
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -170,7 +170,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+                <android.support.text.emoji.widget.EmojiEditText
                     android:id="@+id/option1"
                     android:layout_width="wrap_content"
                     android:layout_height="22dp"
@@ -187,7 +187,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view" />
 
-                <EditText
+                <android.support.text.emoji.widget.EmojiEditText
                     android:id="@+id/option2"
                     android:layout_width="wrap_content"
                     android:layout_height="22dp"
@@ -204,7 +204,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/option1" />
 
-                <EditText
+                <android.support.text.emoji.widget.EmojiEditText
                     android:id="@+id/option3"
                     android:layout_width="wrap_content"
                     android:layout_height="22dp"
@@ -222,7 +222,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/option2" />
 
-                <EditText
+                <android.support.text.emoji.widget.EmojiEditText
                     android:id="@+id/option4"
                     android:layout_width="wrap_content"
                     android:layout_height="22dp"
@@ -262,7 +262,7 @@
                         android:background="@drawable/relative_ripple"
                         android:layout_height="match_parent"
                         >
-                        <TextView
+                        <android.support.text.emoji.widget.EmojiTextView
                             android:id="@+id/submit_textview"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
@@ -296,7 +296,7 @@
                     </android.support.constraint.ConstraintLayout>
                 </RelativeLayout>
 
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/textView20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -307,7 +307,7 @@
                     app:layout_constraintStart_toEndOf="@+id/option1"
                     app:layout_constraintTop_toTopOf="@+id/option1" />
 
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/textView21"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -318,7 +318,7 @@
                     app:layout_constraintStart_toEndOf="@+id/option2"
                     app:layout_constraintTop_toTopOf="@+id/option2" />
 
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/textView22"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -329,7 +329,7 @@
                     app:layout_constraintStart_toEndOf="@+id/option3"
                     app:layout_constraintTop_toTopOf="@+id/option3" />
 
-                <TextView
+                <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/textView23"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

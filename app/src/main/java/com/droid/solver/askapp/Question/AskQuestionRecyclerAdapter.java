@@ -1,12 +1,16 @@
 package com.droid.solver.askapp.Question;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.R;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
@@ -18,7 +22,6 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
     private LayoutInflater inflater;
     public static final int QUESTION_WITHOUT_IMAGE=0;
     public static final int QUESTION_WITH_IMAGE=1;
-
     public AskQuestionRecyclerAdapter(Context context, ArrayList<AskQuestionModel> questionModelArrayList){
      this.context=context;
      this.questionModelArrayList=questionModelArrayList;
@@ -33,16 +36,16 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
         switch (viewType){
             case QUESTION_WITH_IMAGE:
                  view=inflater.inflate(R.layout.question_question_item_with_image, viewGroup,false);
-                return new  AskQuestionViewHolderWithImage(view);
+                return new  AskQuestionViewHolderWithImage(view,context);
             case QUESTION_WITHOUT_IMAGE:
                  view=inflater.inflate(R.layout.question_question_item, viewGroup,false);
-                 return new AskQuestionViewHolderWithoutImage(view);
+                 return new AskQuestionViewHolderWithoutImage(view,context);
         }
         return  null;
 
     }
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int i) {
 
         if(holder instanceof AskQuestionViewHolderWithImage){
             boolean isAnonymous=questionModelArrayList.get(i).isAnonymous();
@@ -82,6 +85,17 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                         into(((AskQuestionViewHolderWithoutImage) holder).profilePicture);
             }
 
+            ((AskQuestionViewHolderWithoutImage) holder).cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(context,AnswerActivity.class);
+                    intent.putExtra("askerUid",questionModelArrayList.get(i).getAskerUid());
+                    intent.putExtra("questionId", questionModelArrayList.get(i).getQuestionId());
+                    intent.putExtra("question", questionModelArrayList.get(i).getQuestion());
+                    intent.putExtra("timeOfAsking", questionModelArrayList.get(i).getQuestion());
+                    context.startActivity(intent);
+                }
+            });
             ((AskQuestionViewHolderWithoutImage) holder).profileName.setText(profileNameAsked);
             ((AskQuestionViewHolderWithoutImage) holder).question.setText(questionModelArrayList.get(i).getQuestion());
             long oldTime=questionModelArrayList.get(i).getTimeOfAsking();

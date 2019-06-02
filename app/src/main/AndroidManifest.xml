@@ -5,37 +5,47 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
-
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="false" />
+
+    <meta-data android:name="fontProviderRequests"
+        android:value="Noto Color Emoji Compat"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Survey.QuestionTakerActivity"
+        <activity android:name=".Answer.AnswerActivity"
             android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".Survey.LanguageSelectionActivity"
             android:screenOrientation="portrait"
-            />
+            >
+        </activity>
+        <activity
+            android:name=".Survey.QuestionTakerActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".Survey.LanguageSelectionActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ImagePoll.ImagePollActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <activity android:name=".Question.QuestionActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Main.MainActivity"
-            android:screenOrientation="portrait"
+        <activity
+            android:name=".Question.QuestionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Main.MainActivity"
             android:configChanges="orientation|screenSize|screenLayout"
-            />
+            android:screenOrientation="portrait" />
         <activity android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -67,6 +77,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
@@ -74,9 +85,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-
-            </meta-data>
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
     </application>
 

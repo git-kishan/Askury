@@ -10,8 +10,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.text.emoji.EmojiCompat;
+import android.support.text.emoji.FontRequestEmojiCompatConfig;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.provider.FontRequest;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -23,8 +26,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.droid.solver.askapp.Account.AccountFragment;
+import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.Community.CommunityFragment;
 import com.droid.solver.askapp.Home.HomeFragment;
+import com.droid.solver.askapp.Question.QuestionClickListener;
 import com.droid.solver.askapp.Question.QuestionFragment;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initEmojiFont();
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         toolbarCardView = findViewById(R.id.toolbar_card_view);
@@ -82,6 +88,34 @@ public class MainActivity extends AppCompatActivity implements
         if (lowProfilePicPath == null && highProfilePath == null) {
             getProfilePicUrlFromRemoteDatabase();
         }
+
+    }
+    private void initEmojiFont(){
+        FontRequest fontRequest = new FontRequest(
+                "com.google.android.gms.fonts",
+                "com.google.android.gms",
+                "Noto Color Emoji Compat",
+                R.array.com_google_android_gms_fonts_certs);
+        EmojiCompat.Config config ;
+        config=new FontRequestEmojiCompatConfig(this, fontRequest)
+                .setReplaceAll(true)
+                .setEmojiSpanIndicatorEnabled(false)
+                .registerInitCallback(new EmojiCompat.InitCallback() {
+                    @Override
+                    public void onInitialized() {
+                        Log.i("TAG", "emoji initiiazed");
+                        super.onInitialized();
+                    }
+
+                    @Override
+                    public void onFailed(@android.support.annotation.Nullable Throwable throwable) {
+                        Log.i("TAG", "emoji initilization failed");
+                        super.onFailed(throwable);
+                    }
+                });
+        EmojiCompat.init(config);
+
+
 
     }
 

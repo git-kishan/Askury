@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Question;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+
+import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
@@ -51,6 +54,7 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
     private ArrayList<AskQuestionModel> questionListFetchFromRemoteDatabase,questionListFetchFromLocalDatabase;
     private LinearLayoutManager layoutManager;
     private AskQuestionRecyclerAdapter adapter;
+    private Context context;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
@@ -118,11 +122,11 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
                 swipeRefreshLayout.setRefreshing(false);
                 swipeRefreshLayout.setEnabled(false);
 
-                if (!MainActivity.isDataLoadedFromRemoteInQuestionFragment) {
-                    loadDataFromRemoteDatabase();
-                    swipeRefreshLayout.setEnabled(true);
-                    swipeRefreshLayout.setRefreshing(true);
-                }
+//                if (!MainActivity.isDataLoadedFromRemoteInQuestionFragment) {
+//                    loadDataFromRemoteDatabase();
+//                    swipeRefreshLayout.setEnabled(true);
+//                    swipeRefreshLayout.setRefreshing(true);
+//                }
             }
             else  {
                 loadDataFromRemoteDatabase();
@@ -207,21 +211,28 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
     }
 
     @Override
+    public void onAttach(Context context) {
+        this.context=context;
+        super.onAttach(context);
+    }
+    private void goToAnswerActivity(){
+        startActivity(new Intent(context,AnswerActivity.class));
+
+    }
+    @Override
     public void onCardItemClicked(int position) {
         Log.i("TAG", "card  item clicked :- "+position);
-//        Toast.makeText(getActivity(), "card clicked position :- "+position,Toast.LENGTH_SHORT).show();
+        goToAnswerActivity();
     }
 
     @Override
     public void onProfileImageClicked(int position) {
-//        Toast.makeText(getActivity(), "profile image clicked position :- "+position,Toast.LENGTH_SHORT).show();
 
         Log.i("TAG", "profile image clicked :- "+position);
     }
 
     @Override
     public void onShareImageClicked(int position) {
-//        Toast.makeText(getActivity(), "share image clicked position :- "+position,Toast.LENGTH_SHORT).show();
         Log.i("TAG", "share image cilcked :- "+position);
     }
 }

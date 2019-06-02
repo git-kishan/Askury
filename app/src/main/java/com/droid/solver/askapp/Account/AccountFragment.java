@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
@@ -33,8 +34,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private TabLayout tabLayout;
     private ImageView settingimage;
     private CircleImageView profileImage;
-    private TextView profileName,accountStatusTextView,professionTextView;
-    private TextView followerCount,followingCount,pointCount;
+    private EmojiTextView profileName,professionTextView;
+    private TextView followerCount,followingCount,pointCount,accountStatusTextView;
     private TextView followerTextView,followingTextView,pointTextView;
     private String PUBLIC_ACCOUNT_STATUS="Public";
     private String PRIVATE_ACCOUNT_STATUS="Private";

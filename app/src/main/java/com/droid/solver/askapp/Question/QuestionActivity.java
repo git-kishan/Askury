@@ -14,6 +14,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.text.emoji.widget.EmojiEditText;
+import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -66,9 +68,9 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     private DotsLoaderView dotsLoaderView;
     private FrameLayout overlayFrameLayout;
     private CircleImageView circularImageView;
-    private TextView userNameAsked;
+    private EmojiTextView userNameAsked;
     private TextInputLayout questionInputLayout;
-    private TextInputEditText questionInputEditText;
+    private EmojiEditText questionInputEditText;
     private SwitchCompat anonymousSwitch;
     private CardView cardView ;
     private ConstraintLayout rootView;
@@ -87,6 +89,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
+
         toolbar=findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.questionactivity_toolbar_menu);
         toolbar.setNavigationOnClickListener(this);
@@ -157,10 +160,12 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         if(isChecked){
             isAnonymous=true;
             String temp=String.format(getResources().getString(R.string.user_name_asked), "somebody");
+            circularImageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_placeholder, null));
             userNameAsked.setText(temp);
         }else {
             isAnonymous=false;
             setUserName();
+            loadProfilePicFromFile();
         }
     }
 
@@ -197,23 +202,8 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
             compressedByteArray=byteArray;
-//            Log.i("TAG", "image selected size :- "+byteArray.length);
-//            Log.i("TAG", "compressed bitmap size :- "+compressedBitmap.getByteCount());
             Bitmap bitmap=BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
             imageView.setImageBitmap(bitmap);
-//            Log.i("TAG", "decoded bitmap size :- "+bitmap.getByteCount());
-
-
-
-//            Log.i("TAG", "byte array size :- "+byteArray.length);
-//            if(byteArray.length>600000){
-//                Snackbar.make(rootView,"Image size should be less than 600 kb" , Snackbar.LENGTH_SHORT).show();
-//                return;
-//            }
-//            imageEncodedString= Base64.encodeToString(byteArray, Base64.DEFAULT);
-//            Log.i("TAG", "encode string length :- "+imageEncodedString.length());
-
-
 
         }
     }

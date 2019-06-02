@@ -12,6 +12,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.text.emoji.widget.EmojiEditText;
+import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,16 +50,16 @@ public class QuestionTakerActivity extends AppCompatActivity implements
 
     private CoordinatorLayout coordinatorLayout;
     private TextInputLayout questionInputLayout;
-    private TextInputEditText questionInputEditText;
+    private EmojiEditText questionInputEditText;
     private AppCompatButton doneButton;
     private CardView appbarCardView;
     private ImageView backImageButton,addImageButton;
     private int numberOfTimesAddButtonClicked=0;
-    private EditText option1EditText,option2EditText,option3EditText,option4EditText;
+    private EmojiEditText option1EditText,option2EditText,option3EditText,option4EditText;
     private ConstraintLayout submitButtonConstraintLayout;
     private ProgressBar progressBar;
-    TextView submitTextView;
-    private TextView optionATextView,optionBTextView,optionCTextView,optionDTextView;
+    private EmojiTextView submitTextView;
+    private EmojiTextView optionATextView,optionBTextView,optionCTextView,optionDTextView;
     private boolean isOption1Available=false,isOption2Available=false,isOption3Available=false,isOption4Available=false;
     private int languageIndex;
     public  final String [] languageString={"English","Chinese","Hindi","Spanish","Arabic",

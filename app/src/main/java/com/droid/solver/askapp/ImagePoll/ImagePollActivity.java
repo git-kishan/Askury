@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.text.emoji.widget.EmojiEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -68,8 +69,9 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private CardView rootView;
     private ImageView image1,image2;
     private TextInputLayout questionInputLayout;
-    private TextInputEditText questionInputEditText;
+    private EmojiEditText questionInputEditText;
     private ImageSelectionFragment dialogFragment;
+    private static  final  int PERMISSION_REQUEST_READ_CAMERA=180;
     private static  final  int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE=170;
     private static final int PHOTO_PICKER_REQUEST_CODE=60;
     private static final int CAMERE_REQUEST_CODE=13;
@@ -195,7 +197,6 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
             this.isImage1Clicked=isImage1Clicked;
             this.isImage2Clicked=isImage2Clicked;
-
             checkReadExternalStoragePermission( isImage1Clicked,  isImage2Clicked,  isGalleryClicked,  isCameraClicked);
         }
     }
@@ -232,31 +233,40 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         }
 
     }
+
     private void checkReadExternalStoragePermission(boolean isImage1Clicked, boolean isImage2Clicked,
                                                     boolean isGalleryClicked, boolean isCameraClicked){
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP) {
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                            PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+
+                }
+            } else {
+                if (isGalleryClicked) {
+                    onGalleryClicked(isImage1Clicked, isImage2Clicked, isGalleryClicked, isCameraClicked);
+                } else if (isCameraClicked) {
+                    onCameraClicked();
+                }
             }
-            else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
-
-            }
-        } else {
-            if(isGalleryClicked){
-                onGalleryClicked(isImage1Clicked,isImage2Clicked,isGalleryClicked,isCameraClicked);
-            }else if(isCameraClicked){
+        }else {
+            if (isGalleryClicked) {
+                onGalleryClicked(isImage1Clicked, isImage2Clicked, isGalleryClicked, isCameraClicked);
+            } else if (isCameraClicked) {
                 onCameraClicked();
             }
         }
     }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions, @NonNull  int[] grantResults) {
