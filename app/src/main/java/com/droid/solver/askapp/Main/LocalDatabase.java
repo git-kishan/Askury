@@ -365,87 +365,87 @@ public class LocalDatabase extends SQLiteOpenHelper {
 //
 //     }
 
-     public void insertSurveyModelAsked(AskSurveyModel model){
-
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values=new ContentValues();
-
-        values.put(askerUid, model.getAskerUid());
-        values.put(askerName, model.getAskerName());
-        values.put(askerImageUrl, model.getAskerImageUrl());
-        values.put(question, model.getQuestion());
-        values.put(timeOfSurvey, model.getTimeOfSurvey());
-        values.put(maximumTimeOfSurvey, model.getMaximumTimeOfSurvey());
-        values.put(option1, model.isOption1());
-        values.put(option2, model.isOption2());
-        values.put(option3, model.isOption3());
-        values.put(option4, model.isOption4());
-        values.put(option1Value, model.getOption1Value());
-        values.put(option2Value, model.getOption2Value());
-        values.put(option3Value, model.getOption3Value());
-        values.put(option4Value,model.getOption4Value());
-        values.put(option1Count, model.getOption1Count());
-        values.put(option2Count, model.getOption2Count());
-        values.put(option3Count,model.getOption3Count());
-        values.put(option4Count,model.getOption4Count());
-        values.put(languageSelectedIndex, model.getLanguageSelectedIndex());
-        values.put(surveyId, model.getSurveyId());
-
-        database.insert(SURVEY_ASKED_TABLE, null,values);
-        values.clear();
-        database.close();
-
-     }
-     public void clearSurveyModelAsked(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        database.execSQL("DELETE FROM "+SURVEY_ASKED_TABLE);
-        database.close();
-
-     }
-     public ArrayList<AskSurveyModel> getSurveyAsked(){
-        ArrayList<AskSurveyModel> modelList=new ArrayList<>();
-        SQLiteDatabase database=this.getWritableDatabase();
-        String query="SELECT * FROM "+SURVEY_ASKED_TABLE;
-        Cursor cursor=database.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            do{
-                String maskerUid=cursor.getString(cursor.getColumnIndex(askerUid));
-                String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
-                String maskerImageUrl=cursor.getString(cursor.getColumnIndex(askerImageUrl));
-                String mquestion=cursor.getString(cursor.getColumnIndex(question));
-                long mtimeOfSurvey=cursor.getLong(cursor.getColumnIndex(timeOfSurvey));
-                int mmaximumTimeOfSurvey=cursor.getInt(cursor.getColumnIndex(maximumTimeOfSurvey));
-                boolean moption1=cursor.getInt(cursor.getColumnIndex(option1))!=0;
-                boolean moption2=cursor.getInt(cursor.getColumnIndex(option2))!=0;
-                boolean moption3=cursor.getInt(cursor.getColumnIndex(option3))!=0;
-                boolean moption4=cursor.getInt(cursor.getColumnIndex(option4))!=0;
-                String moption1Value=cursor.getString(cursor.getColumnIndex(option1Value));
-                String moption2Value=cursor.getString(cursor.getColumnIndex(option2Value));
-                String moption3Value=cursor.getString(cursor.getColumnIndex(option3Value));
-                String moption4Value=cursor.getString(cursor.getColumnIndex(option4Value));
-                int moption1Count=cursor.getInt(cursor.getColumnIndex(option1Count));
-                int moption2Count=cursor.getInt(cursor.getColumnIndex(option2Count));
-                int moption3Count=cursor.getInt(cursor.getColumnIndex(option3Count));
-                int moption4Count=cursor.getInt(cursor.getColumnIndex(option4Count));
-                int mlanguageSelectedIndex=cursor.getInt(cursor.getColumnIndex(languageSelectedIndex));
-                String msurveyId=cursor.getString(cursor.getColumnIndex(surveyId));
-
-                AskSurveyModel model = new AskSurveyModel(maskerUid, maskerName, maskerImageUrl,
-                        mquestion, mtimeOfSurvey, mmaximumTimeOfSurvey, moption1,
-                        moption2, moption3, moption4, moption1Value, moption2Value,
-                        moption3Value, moption4Value, moption1Count, moption2Count,
-                        moption3Count, moption4Count, mlanguageSelectedIndex, msurveyId);
-                modelList.add(model);
-
-            }while (cursor.moveToNext());
-            if(!cursor.isClosed())
-                cursor.close();
-            database.close();
-
-            return modelList;
-        }
-        return null;
-     }
+//     public void insertSurveyModelAsked(AskSurveyModel model){
+//
+//        SQLiteDatabase database = this.getWritableDatabase();
+//        ContentValues values=new ContentValues();
+//
+//        values.put(askerUid, model.getAskerUid());
+//        values.put(askerName, model.getAskerName());
+//        values.put(askerImageUrl, model.getAskerImageUrl());
+//        values.put(question, model.getQuestion());
+//        values.put(timeOfSurvey, model.getTimeOfSurvey());
+//        values.put(maximumTimeOfSurvey, model.getMaximumTimeOfSurvey());
+//        values.put(option1, model.isOption1());
+//        values.put(option2, model.isOption2());
+//        values.put(option3, model.isOption3());
+//        values.put(option4, model.isOption4());
+//        values.put(option1Value, model.getOption1Value());
+//        values.put(option2Value, model.getOption2Value());
+//        values.put(option3Value, model.getOption3Value());
+//        values.put(option4Value,model.getOption4Value());
+//        values.put(option1Count, model.getOption1Count());
+//        values.put(option2Count, model.getOption2Count());
+//        values.put(option3Count,model.getOption3Count());
+//        values.put(option4Count,model.getOption4Count());
+//        values.put(languageSelectedIndex, model.getLanguageSelectedIndex());
+//        values.put(surveyId, model.getSurveyId());
+//
+//        database.insert(SURVEY_ASKED_TABLE, null,values);
+//        values.clear();
+//        database.close();
+//
+//     }
+//     public void clearSurveyModelAsked(){
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        database.execSQL("DELETE FROM "+SURVEY_ASKED_TABLE);
+//        database.close();
+//
+//     }
+//     public ArrayList<AskSurveyModel> getSurveyAsked(){
+//        ArrayList<AskSurveyModel> modelList=new ArrayList<>();
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        String query="SELECT * FROM "+SURVEY_ASKED_TABLE;
+//        Cursor cursor=database.rawQuery(query, null);
+//        if(cursor.moveToFirst()){
+//            do{
+//                String maskerUid=cursor.getString(cursor.getColumnIndex(askerUid));
+//                String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
+//                String maskerImageUrl=cursor.getString(cursor.getColumnIndex(askerImageUrl));
+//                String mquestion=cursor.getString(cursor.getColumnIndex(question));
+//                long mtimeOfSurvey=cursor.getLong(cursor.getColumnIndex(timeOfSurvey));
+//                int mmaximumTimeOfSurvey=cursor.getInt(cursor.getColumnIndex(maximumTimeOfSurvey));
+//                boolean moption1=cursor.getInt(cursor.getColumnIndex(option1))!=0;
+//                boolean moption2=cursor.getInt(cursor.getColumnIndex(option2))!=0;
+//                boolean moption3=cursor.getInt(cursor.getColumnIndex(option3))!=0;
+//                boolean moption4=cursor.getInt(cursor.getColumnIndex(option4))!=0;
+//                String moption1Value=cursor.getString(cursor.getColumnIndex(option1Value));
+//                String moption2Value=cursor.getString(cursor.getColumnIndex(option2Value));
+//                String moption3Value=cursor.getString(cursor.getColumnIndex(option3Value));
+//                String moption4Value=cursor.getString(cursor.getColumnIndex(option4Value));
+//                int moption1Count=cursor.getInt(cursor.getColumnIndex(option1Count));
+//                int moption2Count=cursor.getInt(cursor.getColumnIndex(option2Count));
+//                int moption3Count=cursor.getInt(cursor.getColumnIndex(option3Count));
+//                int moption4Count=cursor.getInt(cursor.getColumnIndex(option4Count));
+//                int mlanguageSelectedIndex=cursor.getInt(cursor.getColumnIndex(languageSelectedIndex));
+//                String msurveyId=cursor.getString(cursor.getColumnIndex(surveyId));
+//
+//                AskSurveyModel model = new AskSurveyModel(maskerUid, maskerName, maskerImageUrl,
+//                        mquestion, mtimeOfSurvey, mmaximumTimeOfSurvey, moption1,
+//                        moption2, moption3, moption4, moption1Value, moption2Value,
+//                        moption3Value, moption4Value, moption1Count, moption2Count,
+//                        moption3Count, moption4Count, mlanguageSelectedIndex, msurveyId);
+//                modelList.add(model);
+//
+//            }while (cursor.moveToNext());
+//            if(!cursor.isClosed())
+//                cursor.close();
+//            database.close();
+//
+//            return modelList;
+//        }
+//        return null;
+//     }
 
 
 

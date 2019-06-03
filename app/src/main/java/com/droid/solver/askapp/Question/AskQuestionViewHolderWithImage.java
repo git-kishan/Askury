@@ -6,7 +6,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.droid.solver.askapp.R;
 
@@ -24,7 +23,7 @@ public class AskQuestionViewHolderWithImage extends RecyclerView.ViewHolder{
         shareImage=itemView.findViewById(R.id.share_image_view);
         questionImage = itemView.findViewById(R.id.question_image);
         profilePicture=itemView.findViewById(R.id.profile_image);
-        profileName=itemView.findViewById(R.id.profile_name_textview);
+        profileName=itemView.findViewById(R.id.asker_name);
         about=itemView.findViewById(R.id.about_textview);
         tapToMore=itemView.findViewById(R.id.tap_to_more_textview);
         question=itemView.findViewById(R.id.question_textview);

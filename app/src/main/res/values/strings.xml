@@ -1,12 +1,20 @@
 <resources>
-    <string name="app_name">AskApp</string>
-    <string name="facebook_app_id">395972514579548</string>
-    <string name="fb_login_protocol_scheme">fb395972514579548</string>
+    <string name="app_name" translatable="false">AskApp</string>
+    <string name="facebook_app_id" translatable="false">395972514579548</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb395972514579548</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="optionsNum" translatable="false">options %1$d</string>
+    <string name="user_name_asked" translatable="false">%1$s Asked </string>
+    <string name="someoneasked" translatable="false">Someone Asked</string>
+    <string name="private_info">Don\'t include private info</string>
+    <string name="provide_option_limit" translatable="false">Provide atleast two and atmost four options</string>
+    <string name="Done">Done</string>
+    <string name="optionB">Option B</string>
+    <string name="optionC">Option C</string>
+    <string name="optionD">Option D</string>
+    <string name="submit">Submit</string>
+    <string name="optionA">Option A</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="optionsNum">options %1$d</string>
-    <string name="user_name_asked">%1$s Asked </string>
-    <string name="someoneasked">Someone Asked</string>
+
 
 </resources>

@@ -62,6 +62,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -75,6 +76,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectStreamException;
+import java.lang.reflect.Field;
 import java.security.Permission;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -553,11 +555,18 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
         DocumentReference rootQuestionRef=firestoreRef.collection("question").document(questionId);
 
+        DocumentReference userQuestionRef=firestoreRef.collection("user").document(askerUid)
+                .collection("question").document(questionId);
+
+        Map<String,Object > tempMap=new HashMap<>();
+        tempMap.put("answerCount", FieldValue.increment(1));
+
         WriteBatch writeBatch=firestoreRef.batch();
 
         writeBatch.set(userAnswerRef, userAnswerModel);
         writeBatch.set(questionAnswer, questionAnswerModel);
         writeBatch.update(rootQuestionRef, map);
+        writeBatch.update(userQuestionRef, tempMap);
 
             writeBatch.commit().addOnCompleteListener(this, new OnCompleteListener<Void>() {
                 @Override

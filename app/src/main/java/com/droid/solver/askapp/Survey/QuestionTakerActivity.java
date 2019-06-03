@@ -1,8 +1,12 @@
 package com.droid.solver.askapp.Survey;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -21,6 +25,8 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -37,12 +43,18 @@ import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
+import com.google.firestore.v1.Write;
 
+import java.util.Locale;
 import java.util.prefs.Preferences;
 
 public class QuestionTakerActivity extends AppCompatActivity implements
@@ -68,6 +80,9 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore root;
+    private static AlertDialog failedDialog;
+    private Locale myLocale;
+    String currentLanguage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,6 +278,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         snackbar.show();
     }
 
+
     public boolean checkValidation(){
         checkOptionsEntered();
         if(questionInputEditText.getText().toString().trim().length()==0){
@@ -377,57 +393,66 @@ public class QuestionTakerActivity extends AppCompatActivity implements
 
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
 
-        String askerUid=user.getUid();
+        String askerId=user.getUid();
         String askerName=preferences.getString(Constants.userName, null);
-        String askerImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
+        String askerImageUrlLow=preferences.getString(Constants.LOW_IMAGE_URL, null);
+        String askerBio=preferences.getString(Constants.bio, null);
         final String question=questionInputEditText.getText().toString();
         long timeOfSurvey=System.currentTimeMillis();
-        int maximumTimeOfSurvey=15;
-        boolean option1=isOption1Available;boolean option2=isOption2Available;
-        final boolean option3=isOption3Available;boolean option4=isOption4Available;
-        int option1Count=0;int option2Count=0;
-        int option3Count=0;int option4Count=0;
+        boolean option1=isOption1Available;
+        boolean option2=isOption2Available;
+        boolean option3=isOption3Available;
+        boolean option4=isOption4Available;
+        String option1Value=option1EditText.getText().toString();
+        String option2Value=option2EditText.getText().toString();
+        String option3Value=option3EditText.getText().toString();
+        String option4Value=option4EditText.getText().toString();
+        int option1Count=0;
+        int option2Count=0;
+        int option3Count=0;
+        int option4Count=0;
         int languageSelectedIndex=languageIndex;
 
-        String surveyId=root.collection("user").document(askerUid).collection("survey").document().getId();
+        String surveyId=root.collection("user").document(askerId).collection("survey").document().getId();
 
-        AskSurveyModel surveyModel=new AskSurveyModel(askerUid, askerName, askerImageUrl,
-                question, timeOfSurvey, maximumTimeOfSurvey, option1,
-                option2, option3, option4,optionToBeUploaded[0],optionToBeUploaded[1],optionToBeUploaded[2]
-                ,optionToBeUploaded[3], option1Count, option2Count,
-                option3Count, option4Count, languageSelectedIndex,surveyId);
+        AskSurveyModel surveyModel=new AskSurveyModel(
+        askerId,askerName ,askerImageUrlLow ,askerBio , question,
+                timeOfSurvey, option1, option2, option3,
+                option4, option1Value, option2Value, option3Value,
+                option4Value, option1Count, option2Count, option3Count, option4Count,
+                languageSelectedIndex,surveyId);
+        WriteBatch writeBatch=root.batch();
+        DocumentReference rootSurveyRef=root.collection("survey").document(surveyId);
+        writeBatch.set(rootSurveyRef, surveyModel);
+        DocumentReference userSurveyRef=root.collection("user").document(askerId).
+                collection("survey").document(surveyId);
+        writeBatch.set(userSurveyRef, surveyModel);
 
-        root.collection("user").document(askerUid).collection("survey").document(surveyId).set(surveyModel)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                        submitButtonConstraintLayout.setEnabled(true);
-                        submitTextView.setText("Submit");
-                        progressBar.setVisibility(View.GONE);
-                        addImageButton.setEnabled(true);
-                        questionInputLayout.setEnabled(true);
-                        addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
-                                R.color.chip_fader_color, null));
-                        backImageButton.setEnabled(true);
-                        questionInputEditText.setText("");
-
-                        option1EditText.setText("");
-                        option2EditText.setText("");
-                        option3EditText.setText("");
-                        option4EditText.setText("");
-
-                        SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                        Bundle bundle=new Bundle();
-                        bundle.putString("message", "Survey uploaded successfully");
-                        imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                        imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+        writeBatch.commit().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
 
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                submitButtonConstraintLayout.setEnabled(true);
+                submitTextView.setText("Submit");
+                progressBar.setVisibility(View.GONE);
+                addImageButton.setEnabled(true);
+                questionInputLayout.setEnabled(true);
+                addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
+                        R.color.chip_fader_color, null));
+                backImageButton.setEnabled(true);
+                questionInputEditText.setText("");
+                option1EditText.setText("");
+                option2EditText.setText("");
+                option3EditText.setText("");
+                option4EditText.setText("");
+                showSuccessfullDialog();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+
 
                 submitButtonConstraintLayout.setEnabled(true);
                 submitTextView.setText("Submit");
@@ -438,17 +463,38 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                         R.color.chip_fader_color, null));
                 backImageButton.setEnabled(true);
 
-                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("message", "Survey uploading failed,try again");
-                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                AlertDialog.Builder builder=new AlertDialog.Builder(QuestionTakerActivity.this);
+                builder.setMessage("Survey is not accepted,Please try again");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        failedDialog.dismiss();
+                    }
+                });
+                failedDialog=builder.create();
+                failedDialog.show();
+
+
 
             }
         });
-        root.collection("survey").document(surveyId).set(surveyModel);
-
-
     }
-
+    private void showSuccessfullDialog(){
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setMessage("Survey accepetd.\nSurvey will be open for 30 days");
+        builder.setPositiveButton("got it", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Handler handler=new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onBackPressed();
+                    }
+                }, 300);
+            }
+        });
+        AlertDialog dialog=builder.create();
+        dialog.show();
+    }
 }

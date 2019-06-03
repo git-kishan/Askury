@@ -22,6 +22,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
     public AskQuestionRecyclerAdapter(Context context, ArrayList<RootQuestionModel> questionModelArrayList){
      this.context=context;
      this.questionModelArrayList=questionModelArrayList;
+     if(context!=null)
      inflater=LayoutInflater.from(context);
 
     }

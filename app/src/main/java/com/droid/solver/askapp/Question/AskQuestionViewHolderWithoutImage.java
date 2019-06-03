@@ -7,10 +7,8 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.droid.solver.askapp.Answer.AnswerActivity;
-import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
         cardView=itemView.findViewById(R.id.root_card_view);
         shareImage=itemView.findViewById(R.id.share_image_view);
         profilePicture = itemView.findViewById(R.id.profile_image);
-        profileName=itemView.findViewById(R.id.profile_name_textview);
+        profileName=itemView.findViewById(R.id.asker_name);
         about=itemView.findViewById(R.id.about_textview);
         timeAgo=itemView.findViewById(R.id.time_ago_textview);
         question=itemView.findViewById(R.id.question_textview);

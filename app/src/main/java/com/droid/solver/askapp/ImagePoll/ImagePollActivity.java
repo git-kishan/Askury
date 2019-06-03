@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.ImagePoll;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -41,12 +43,20 @@ import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.w3c.dom.Document;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -79,10 +89,13 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private CardView image1CardView,image2CardView;
     private TextView option1,option2;
     private String currentPhotoPath;
-    private String firstImageEncodedString=null,secondImageEncodedString=null;
+    private byte[] image1ByteArray,image2ByteArray;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore root;
+    private StorageReference rootStorageRef;
+    private UploadTask uploadTask;
+    private static AlertDialog errorDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +141,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             }, 1000);
         }
         root=FirebaseFirestore.getInstance();
+        rootStorageRef= FirebaseStorage.getInstance().getReference();
 
     }
 
@@ -168,12 +182,11 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             if(checkValidation()){
 
                 if(isInternetAvailable()){
-                    if(checkImageSize()) {
                         menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
                         overLayFrameLayout.setVisibility(View.VISIBLE);
                         dotsLoaderView.show();
-                        uploadImagesToRemoteDatabase(menuItem);
-                    }
+                        uploadFirstImageToStorage(menuItem);
+
                 }
                 else {
                     showSnackBar("No internet connection available");
@@ -336,30 +349,26 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
         final Uri imageUri = data.getData();
-        Bitmap bitmap=decodeSelectedImageUri(imageUri, image1.getWidth(),image1.getHeight());
+        Bitmap bitmap=decodeSelectedImageUri(imageUri, 250,300);
         if(bitmap!=null) {
-            Bitmap compressedBitmap = Bitmap.createScaledBitmap(bitmap, image1.getWidth(), image1.getHeight(), false);
-
-            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 500, 500, false);
             ByteArrayOutputStream uploaderStream=new ByteArrayOutputStream();
-            uploaderBitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
             byte [] uploderByteArray=uploaderStream.toByteArray();
-            String encodedString= Base64.encodeToString(uploderByteArray, Base64.DEFAULT);
+
 
             if (isImage1Clicked) {
-                image1.setImageBitmap(compressedBitmap);
+                image1.setImageBitmap(bitmap);
                 image1CardView.setVisibility(View.GONE);
                 option1.setVisibility(View.GONE);
-                firstImageEncodedString=encodedString;
-                Log.i("TAG", "first image encoded string length:- "+encodedString.length());
+                image1ByteArray=uploderByteArray;
+                Log.i("TAG", "image 1 selected :- "+image1ByteArray.length);
 
             } else if (isImage2Clicked) {
-                image2.setImageBitmap(compressedBitmap);
+                image2.setImageBitmap(bitmap);
                 image2CardView.setVisibility(View.GONE);
                 option2.setVisibility(View.GONE);
-                secondImageEncodedString=encodedString;
-
-                Log.i("TAG", "second image encoded string length :- "+encodedString.length());
+                image2ByteArray=uploderByteArray;
+                Log.i("TAG", "image 2 selected :- "+image2ByteArray.length);
             }
         }
     }
@@ -431,31 +440,27 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         options.inJustDecodeBounds = false;
         options.inSampleSize = scaleFactor;
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
-        Bitmap compressedBitmap=null;
-        String encodedString=null;
         if(bitmap!=null) {
-            compressedBitmap = Bitmap.createScaledBitmap(bitmap, image1.getWidth(), image1.getHeight(), false);
-            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 250, 300, false);
             ByteArrayOutputStream uploaderStream=new ByteArrayOutputStream();
             uploaderBitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
             byte [] uploderByteArray=uploaderStream.toByteArray();
 
-            encodedString= Base64.encodeToString(uploderByteArray, Base64.DEFAULT);
-            //now upload both image to database
             if (isImage1Clicked) {
-                image1.setImageBitmap(compressedBitmap);
+                image1.setImageBitmap(uploaderBitmap);
                 image1CardView.setVisibility(View.GONE);
                 option1.setVisibility(View.GONE);
-                firstImageEncodedString=encodedString;
-                Log.i("TAG", "first image encoded string length :- "+encodedString.length());
+                image1ByteArray=uploderByteArray;
+                Log.i("TAG", "image 1 selected :- "+image1ByteArray.length);
 
 
             } else if (isImage2Clicked) {
-                image2.setImageBitmap(compressedBitmap);
+                image2.setImageBitmap(uploaderBitmap);
                 image2CardView.setVisibility(View.GONE);
                 option2.setVisibility(View.GONE);
-                secondImageEncodedString=encodedString;
-                Log.i("TAG", "second image encoded string length :- "+encodedString.length());
+                image2ByteArray=uploderByteArray;
+                Log.i("TAG", "image 2 selected :- "+image2ByteArray.length);
+
             }
         }
     }
@@ -464,15 +469,14 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         if(data.equals("null")){
             showSnackBar("Put a valid question");
             return false;
-        }
-        if(firstImageEncodedString==null){
+        }if(image1ByteArray ==null){
             showSnackBar("Select first image");
             return false;
-        }
-        if(secondImageEncodedString==null){
+        }if(image2ByteArray ==null){
             showSnackBar("Select second image");
             return false;
         }
+
         return true;
 
     }
@@ -490,49 +494,107 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
     }
-    private boolean checkImageSize(){
-        int firstLength=firstImageEncodedString.length();
-        int secondLength=secondImageEncodedString.length();
-        if((firstLength+secondLength)>800000){
-            showSnackBar("Select image with lower resolution");
-            return false;
-        }
-        return true;
+
+    private void uploadFirstImageToStorage(final MenuItem menuItem){
+
+            final String uid = user.getUid();
+            String currentTime = String.valueOf(System.currentTimeMillis());
+            String image1Name = uid + "@" + currentTime+"image1";
+            final StorageReference image1Ref = rootStorageRef.child("imagePoll").child(image1Name);
+            uploadTask = image1Ref.putBytes(image1ByteArray);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    image1Ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.i("TAG", "image 1 url :- "+uri.toString());
+
+                            uploadSecondImageToStorage(uri.toString(),menuItem);
+                        }
+                    }) ;
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    overLayFrameLayout.setVisibility(View.GONE);
+                    dotsLoaderView.hide();
+                    menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
+                    showFailureDialog();
+                    showFailureDialog();
+                }
+            });
+
     }
 
-    private void uploadImagesToRemoteDatabase(final MenuItem menuItem){
+    private void uploadSecondImageToStorage(final String image1Url, final MenuItem menuItem){
+
+        final String uid = user.getUid();
+        String currentTime = String.valueOf(System.currentTimeMillis());
+        String image2Name=uid+"@"+currentTime+"image2";
+        final StorageReference image2Ref=rootStorageRef.child("imagePoll").child(image2Name);
+        uploadTask = image2Ref.putBytes(image2ByteArray);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                image2Ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.i("TAG", "image 2 url :- "+uri.toString());
+                        uploadImagesToRemoteDatabase(menuItem,image1Url,uri.toString());
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                overLayFrameLayout.setVisibility(View.GONE);
+                dotsLoaderView.hide();
+                menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
+                showFailureDialog();
+                showFailureDialog();
+            }
+        });
+
+    }
+
+    private void uploadImagesToRemoteDatabase(final MenuItem menuItem,String imageFirstUrl,String imageSecondUrl){
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-        String askerUid=user.getUid();
+        String askerId=user.getUid();
         String askerName=preferences.getString(Constants.userName, null);
-        String askerImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
+        String askerImageUrlLow=preferences.getString(Constants.LOW_IMAGE_URL, null);
+        String askerBio=preferences.getString(Constants.bio, null);
         final String question=questionInputEditText.getText().toString();
-        final String image1Encoded=firstImageEncodedString;
-        String image2Encoded=secondImageEncodedString;
+        final String image1Url=imageFirstUrl;
+        String image2Url=imageSecondUrl;
         long timeOfPolling=System.currentTimeMillis();
         int image1LikeNo=0;
         int image2LikeNo=0;
-        String imagePollId=root.collection("user").document(askerUid).collection("imagePoll").document().getId();
-        AskImagePollModel pollModel=new AskImagePollModel(askerUid, askerName,
-                askerImageUrl, question, image1Encoded, image2Encoded,
-                timeOfPolling, image1LikeNo, image2LikeNo,imagePollId);
+        String imagePollId=root.collection("user").document(askerId).collection("imagePoll").document().getId();
+        AskImagePollModel pollModel=new AskImagePollModel(
+                askerId, askerName, askerImageUrlLow, askerBio, question,
+                image1Url, image2Url, timeOfPolling, image1LikeNo, image2LikeNo, imagePollId);
 
-        root.collection("user").document(askerUid).collection("imagePoll").document(imagePollId)
-                .set(pollModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+        DocumentReference userImagePollRef=root.collection("user").document(askerId).
+                collection("imagePoll").document(imagePollId);
+
+        DocumentReference rootImagePollRef=root.collection("imagePoll").document(imagePollId);
+
+        WriteBatch batch=root.batch();
+        batch.set(userImagePollRef, pollModel);
+        batch.set(rootImagePollRef, pollModel);
+        batch.commit().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onComplete(@NonNull Task<Void> task) {
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
                 questionInputEditText.setText("");
-                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("message", "Poll uploaded successfully");
-                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "imagepoll_dialog");
                 menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
                 image1.setImageBitmap(null);
                 image2.setImageBitmap(null);
                 image1CardView.setVisibility(View.VISIBLE);
                 image2CardView.setVisibility(View.VISIBLE);
+                showSuccessfullDialog();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -541,24 +603,43 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
-                questionInputEditText.setText("");
-                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("message", "Failure occur ,try again...");
-                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "imagepoll_dialog");
                 menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
-                image1.setImageBitmap(null);
-                image1CardView.setVisibility(View.VISIBLE);
-                image2CardView.setVisibility(View.VISIBLE);
-                image2.setImageBitmap(null);
+                showFailureDialog();
+                showFailureDialog();
 
             }
         });
-
-        root.collection("imagePoll").document(imagePollId).set(pollModel);
-
-
     }
 
+    private void showSuccessfullDialog(){
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setMessage("Image Poll loaded successfully\nThank you .");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Handler handler=new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onBackPressed();
+                    }
+                }, 300);
+            }
+        });
+        AlertDialog dialog=builder.create();
+        dialog.show();
+
+    }
+    private void showFailureDialog(){
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setPositiveButton("got it", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                errorDialog.cancel();
+            }
+        });
+        builder.setMessage("Error occured, try again ...");
+        errorDialog=builder.create();
+        errorDialog.show();
+    }
 }

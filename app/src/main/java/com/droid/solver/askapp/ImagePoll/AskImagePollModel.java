@@ -2,9 +2,10 @@ package com.droid.solver.askapp.ImagePoll;
 
 public class AskImagePollModel {
 
-    private String askerUid;
+    private String askerId;
     private String askerName;
-    private String askerImageUrl;
+    private String askerImageUrlLow;
+    private String askerBio;
     private String question;
     private String image1Url;
     private String image2Url;
@@ -15,9 +16,10 @@ public class AskImagePollModel {
     public AskImagePollModel(){
 
     }
-    public AskImagePollModel(String askerUid,
+    public AskImagePollModel(String askerId,
                              String askerName,
-                             String askerImageUrl,
+                             String askerImageUrlLow,
+                             String askerBio,
                              String question,
                              String image1Url,
                              String image2Url,
@@ -26,9 +28,10 @@ public class AskImagePollModel {
                              int image2LikeNo,
                              String imagePollId
                              ){
-        this.askerUid=askerUid;
+        this.askerId=askerId;
         this.askerName=askerName;
-        this.askerImageUrl=askerImageUrl;
+        this.askerImageUrlLow=askerImageUrlLow;
+        this.askerBio=askerBio;
         this.image2Url=image2Url;
         this.question=question;
         this.image1Url =image1Url;
@@ -40,8 +43,12 @@ public class AskImagePollModel {
 
     }
 
-    public String getAskerImageUrl() {
-        return askerImageUrl;
+    public String getAskerImageUrlLow() {
+        return askerImageUrlLow;
+    }
+
+    public String getAskerBio() {
+        return askerBio;
     }
 
     public String getQuestion() {
@@ -52,8 +59,8 @@ public class AskImagePollModel {
         return askerName;
     }
 
-    public String getAskerUid() {
-        return askerUid;
+    public String getAskerId() {
+        return askerId;
     }
 
     public int getImage1LikeNo() {

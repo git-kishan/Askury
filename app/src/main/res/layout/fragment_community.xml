@@ -64,7 +64,7 @@
         </LinearLayout>
 
         <android.support.text.emoji.widget.EmojiTextView
-            android:id="@+id/profile_name_textview"
+            android:id="@+id/asker_name"
             android:layout_width="0dp"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
@@ -90,8 +90,8 @@
             android:text="Freenlancer|writer"
             android:textSize="8sp"
             app:layout_constraintEnd_toStartOf="@+id/imageView8"
-            app:layout_constraintStart_toStartOf="@+id/profile_name_textview"
-            app:layout_constraintTop_toBottomOf="@+id/profile_name_textview" />
+            app:layout_constraintStart_toStartOf="@+id/asker_name"
+            app:layout_constraintTop_toBottomOf="@+id/asker_name" />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"

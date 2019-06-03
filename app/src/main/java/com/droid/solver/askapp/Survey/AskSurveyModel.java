@@ -1,41 +1,47 @@
 package com.droid.solver.askapp.Survey;
 
 public class AskSurveyModel {
-    private String askerUid;
+    private String askerId;
     private String askerName;
-    private String askerImageUrl;
+    private String askerImageUrlLow;
+    private String askerBio;
     private String question;
     private long timeOfSurvey;
-    private int maximumTimeOfSurvey;
     private boolean option1,option2,option3,option4;
     private String option1Value,option2Value,option3Value,option4Value;
     private int option1Count,option2Count,option3Count,option4Count;
     private int languageSelectedIndex;
-    String surveyId;
+    private String surveyId;
 
 
     public AskSurveyModel(){}
-    public AskSurveyModel(String askerUid,
+    public AskSurveyModel(String askerId,
                           String askerName,
-                          String askerImageUrl,
+                          String askerImageUrlLow,
+                          String askerBio,
                           String question,
                           long timeOfSurvey,
-                          int maximumTimeOfSurvey,
-                          boolean option1,boolean option2,
-                          boolean option3,boolean option4,
-                          String option1Value,String option2Value,
-                          String option3Value,String option4Value,
-                          int option1Count,int option2Count,
-                          int option3Count,int option4Count,
+                          boolean option1,
+                          boolean option2,
+                          boolean option3,
+                          boolean option4,
+                          String option1Value,
+                          String option2Value,
+                          String option3Value,
+                          String option4Value,
+                          int option1Count,
+                          int option2Count,
+                          int option3Count,
+                          int option4Count,
                           int languageSelectedIndex,
                           String surveyId){
 
-        this.askerUid=askerUid;
+        this.askerId=askerId;
         this.askerName=askerName;
-        this.askerImageUrl=askerImageUrl;
+        this.askerImageUrlLow=askerImageUrlLow;
+        this.askerBio=askerBio;
         this.question=question;
         this.timeOfSurvey=timeOfSurvey;
-        this.maximumTimeOfSurvey=maximumTimeOfSurvey;
         this.option1=option1;
         this.option2=option2;
         this.option3=option3;
@@ -52,28 +58,29 @@ public class AskSurveyModel {
         this.surveyId=surveyId;
     }
 
-    public String getAskerUid() {
-        return askerUid;
+    public String getAskerId() {
+        return askerId;
     }
 
     public String getAskerName() {
         return askerName;
     }
 
+    public String getAskerBio() {
+        return askerBio;
+    }
+
     public String getQuestion() {
         return question;
     }
 
-    public int getMaximumTimeOfSurvey() {
-        return maximumTimeOfSurvey;
-    }
 
     public long getTimeOfSurvey() {
         return timeOfSurvey;
     }
 
-    public String getAskerImageUrl() {
-        return askerImageUrl;
+    public String getAskerImageUrlLow() {
+        return askerImageUrlLow;
     }
 
     public boolean isOption1() {
