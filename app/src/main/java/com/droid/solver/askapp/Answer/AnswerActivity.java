@@ -2,6 +2,7 @@ package com.droid.solver.askapp.Answer;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,10 +36,14 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,14 +52,21 @@ import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.facebook.share.model.SharePhoto;
+import com.google.android.gms.common.api.Batch;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firestore.v1.DocumentMask;
 import com.google.firestore.v1.FirestoreGrpc;
 
 import java.io.ByteArrayOutputStream;
@@ -62,9 +74,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectStreamException;
 import java.security.Permission;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import steelkiwi.com.library.DotsLoaderView;
 
 
 public class AnswerActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
@@ -84,13 +102,16 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     private ImageView nextButtonImage,crossButtonImage,attachImage;
     private byte [] compressedByteArray=null;
     private String currentPhotoPath;
+    private DotsLoaderView dotsLoaderView;
+    private FrameLayout overlayLayout;
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private FirebaseFirestore rootFirestoreRef;
+    private FirebaseFirestore firestoreRef;
     private StorageReference rootStorageRef;
     private UploadTask uploadTask;
-    private String askerUid,questionId,question;
+    private String askerUid,questionId,question,askerName,askerImageUrl,askerBio;
     private long timeOfAsking;
+    private ArrayList<String> questionType;
 
 
     @Override
@@ -102,7 +123,10 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         questionId=intent.getStringExtra("questionId");
         question=intent.getStringExtra("question");
         timeOfAsking=intent.getLongExtra("timeOfAsking", System.currentTimeMillis());
-
+        askerName=intent.getStringExtra("askerName");
+        askerImageUrl=intent.getStringExtra("askerImageUrl");
+        askerBio=intent.getStringExtra("askerBio");
+        questionType=intent.getStringArrayListExtra("questionType");
         rootView=findViewById(R.id.root_card_view);
         fontTextView = findViewById(R.id.font_text);
         fontCardView=findViewById(R.id.cardView10);
@@ -116,6 +140,10 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         crossButtonImage.setVisibility(View.GONE);
         galleryCardView=findViewById(R.id.cardView12);
         cameraCardView=findViewById(R.id.cardView13);
+        overlayLayout=findViewById(R.id.overlay_frame_layout);
+        dotsLoaderView=findViewById(R.id.dotsLoaderView);
+        dotsLoaderView.setVisibility(View.GONE);
+        overlayLayout.setVisibility(View.GONE);
         Typeface typeface=ResourcesCompat.getFont(this, fontId[1]);
         fontTextView.setTypeface(typeface);
         galleryCardView.setOnClickListener(this);
@@ -130,8 +158,9 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
-        rootFirestoreRef=FirebaseFirestore.getInstance();
+        firestoreRef=FirebaseFirestore.getInstance();
         rootStorageRef= FirebaseStorage.getInstance().getReference();
+
     }
 
     @Override
@@ -161,9 +190,18 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.imageView13:
                 if(checkValidation()){
                     if(isNetworkAvailable()){
-
+                        String uid=auth.getUid();
+                        if(askerUid!=null)
+                        if (uid.equals(askerUid)) {
+                            overlayLayout.setVisibility(View.VISIBLE);
+                            dotsLoaderView.setVisibility(View.GONE);
+                            showDialogMessage("You can't answer to your own question");
+                            return;
+                        }
+                        overlayLayout.setVisibility(View.VISIBLE);
+                        dotsLoaderView.setVisibility(View.VISIBLE);
+                        dotsLoaderView.show();
                         uploadImageToStorage();
-                        showDialog();
                     }else {
                         Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
                     }
@@ -415,9 +453,9 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
 
     }
-    private void showDialog(){
+    private void showDialogMessage(String message){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setMessage("Answered successfully \n\nThank you ")
+        builder.setMessage(message)
                 .setCancelable(true)
                 .setPositiveButton("got it", new DialogInterface.OnClickListener() {
                     @Override
@@ -457,7 +495,11 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-
+                    overlayLayout.setVisibility(View.GONE);
+                    dotsLoaderView.setVisibility(View.GONE);
+                    dotsLoaderView.hide();
+                    //show some error message
+                    Log.i("TAG", "exception occur in uploading images");
                 }
             });
         }else {
@@ -466,19 +508,79 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void uploadAnswerToRemoteDatabase(String answerImageUrl){
+    private void uploadAnswerToRemoteDatabase(@Nullable String answerImageUrl){
         String uid=auth.getUid();
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        String answererUid=preferences.getString(Constants.userId, null);
         String answererName=preferences.getString(Constants.userName, null);
         String answererImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
         String answer=answerEditText.getText().toString();
-        boolean imageAttached=compressedByteArray!=null;
-        String answerId=rootFirestoreRef.collection("user").document(uid).collection("answer").document().getId();
-        AnswerModel model=new AnswerModel(questionId, question, new String[]{},
-                timeOfAsking, System.currentTimeMillis(), answerId,answererName,answererImageUrl,imageAttached,answer,
-                answerImageUrl,fontSelected,false,0);
+        String answererBio=preferences.getString(Constants.bio, null);
+        final boolean imageAttached=compressedByteArray!=null;
+        String questionId=this.questionId;
 
+        String answerId=firestoreRef.collection("user").document(uid).collection("answer").document().getId();
+        UserAnswerModel userAnswerModel=new UserAnswerModel(
+                askerUid, askerName, askerImageUrl, askerBio,
+                questionId, question, questionType, timeOfAsking,
+                System.currentTimeMillis(), answerId, false, answer,
+                imageAttached, answererImageUrl, fontSelected, 0);
 
-    }
+        QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
+                askerUid, askerName, askerBio, askerImageUrl, questionType,
+                questionId, question, timeOfAsking, System.currentTimeMillis(),
+                answererUid, answererName, answererImageUrl, answererBio,
+                false, answerId, answer, imageAttached, true,
+                fontSelected, false, 0);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("recentAnswererId", uid);
+        map.put("recentAnswererImageUrlLow",answererImageUrl);
+        map.put("recentAnswererName", answererName);
+        map.put("recentAnswererBio", answererBio);
+        map.put("recentAnswerId", answerId);
+        map.put("recentAnswer", answer);
+        map.put("recentAnswerImageAttached", imageAttached);
+        map.put("recentAnswerImageUrl", answerImageUrl);
+        map.put("answerCount", FieldValue.increment(1));
+        map.put("recentAnswerLikeCount", 0);
+
+        DocumentReference userAnswerRef=firestoreRef.collection("user").
+                document(uid).collection("answer").document(answerId);
+
+        DocumentReference questionAnswer=firestoreRef.collection("user").document(askerUid)
+                .collection("question").document(questionId).collection("answer").document(answerId);
+
+        DocumentReference rootQuestionRef=firestoreRef.collection("question").document(questionId);
+
+        WriteBatch writeBatch=firestoreRef.batch();
+
+        writeBatch.set(userAnswerRef, userAnswerModel);
+        writeBatch.set(questionAnswer, questionAnswerModel);
+        writeBatch.update(rootQuestionRef, map);
+
+            writeBatch.commit().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    overlayLayout.setVisibility(View.GONE);
+                    dotsLoaderView.hide();
+                    dotsLoaderView.setVisibility(View.GONE);
+                    answerEditText.setText("");
+                    attachImage.setImageBitmap(null);
+                    Log.i("TAG","successfully commited batch" );
+                    showDialogMessage("Answered successfully \n\nThank you ");
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    overlayLayout.setVisibility(View.GONE);
+                    dotsLoaderView.hide();
+                    dotsLoaderView.setVisibility(View.GONE);
+                    //show some error message
+                    Log.i("TAG", "unsuccessful write");
+                }
+            });
+        }
 
 }

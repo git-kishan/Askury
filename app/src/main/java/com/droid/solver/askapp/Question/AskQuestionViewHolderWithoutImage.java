@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Question;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.droid.solver.askapp.Answer.AnswerActivity;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,6 +36,21 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
         tapToMore=itemView.findViewById(R.id.tap_to_more_textview);
 
 
+    }
+     void onCardClicked(Context context,int i,
+                              String askerUid,String questionId,String question,long timeOfAsking,
+                              String askerName,String askerImageUrl,String askerBio,ArrayList<String > questionType){
+
+                    Intent intent=new Intent(context,AnswerActivity.class);
+                    intent.putExtra("askerUid",askerUid);
+                    intent.putExtra("questionId",questionId);
+                    intent.putExtra("question", question);
+                    intent.putExtra("timeOfAsking", timeOfAsking);
+                    intent.putExtra("askerName",askerName);
+                    intent.putExtra("askerImageUrl", askerImageUrl);
+                    intent.putExtra("askerBio", askerBio);
+                    intent.putStringArrayListExtra("questionType",questionType);
+                    context.startActivity(intent);
     }
 
 

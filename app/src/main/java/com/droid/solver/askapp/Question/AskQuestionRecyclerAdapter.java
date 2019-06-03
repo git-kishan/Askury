@@ -3,7 +3,6 @@ package com.droid.solver.askapp.Question;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +17,9 @@ import java.util.ArrayList;
 public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
     private Context context;
-    private ArrayList<AskQuestionModel> questionModelArrayList;
+    private ArrayList<RootQuestionModel> questionModelArrayList;
     private LayoutInflater inflater;
-    public static final int QUESTION_WITHOUT_IMAGE=0;
-    public static final int QUESTION_WITH_IMAGE=1;
-    public AskQuestionRecyclerAdapter(Context context, ArrayList<AskQuestionModel> questionModelArrayList){
+    public AskQuestionRecyclerAdapter(Context context, ArrayList<RootQuestionModel> questionModelArrayList){
      this.context=context;
      this.questionModelArrayList=questionModelArrayList;
      inflater=LayoutInflater.from(context);
@@ -31,71 +28,25 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view=inflater.inflate(R.layout.question_question_item, viewGroup,false);
+        return new AskQuestionViewHolderWithoutImage(view,context);
 
-        View view=null;
-        switch (viewType){
-            case QUESTION_WITH_IMAGE:
-                 view=inflater.inflate(R.layout.question_question_item_with_image, viewGroup,false);
-                return new  AskQuestionViewHolderWithImage(view,context);
-            case QUESTION_WITHOUT_IMAGE:
-                 view=inflater.inflate(R.layout.question_question_item, viewGroup,false);
-                 return new AskQuestionViewHolderWithoutImage(view,context);
-        }
-        return  null;
 
     }
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int i) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int i) {
 
-        if(holder instanceof AskQuestionViewHolderWithImage){
-            boolean isAnonymous=questionModelArrayList.get(i).isAnonymous();
-            String profileNameAsked="";
-            if(isAnonymous){
-                profileNameAsked=context.getString(R.string.someoneasked);
-            }else {
-                Picasso.get().load(questionModelArrayList.get(i).getUserImageUrl()).
-                        placeholder(R.drawable.ic_placeholder).into(((AskQuestionViewHolderWithImage) holder).profilePicture);
-                profileNameAsked=String.format(context.getString(R.string.user_name_asked), questionModelArrayList.get(i).getAskerName());
-            }
 
-            Picasso.get().load(questionModelArrayList.get(i).getQuestionImageUrl()).
-                    into(((AskQuestionViewHolderWithImage) holder).questionImage);
-            ((AskQuestionViewHolderWithImage) holder).questionImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            ((AskQuestionViewHolderWithImage) holder).profileName.setText(profileNameAsked);
-
-            // later about section add
-            ((AskQuestionViewHolderWithImage) holder).question.setText(questionModelArrayList.get(i).getQuestion());
-            long oldTime=questionModelArrayList.get(i).getTimeOfAsking();
-            long currentTime=System.currentTimeMillis();
-            String timeAgo=getTime(oldTime, currentTime);
-            if(timeAgo==null)
-                ((AskQuestionViewHolderWithImage) holder).timeAgo.setText("");
-            else
-                ((AskQuestionViewHolderWithImage) holder).timeAgo.setText(timeAgo);
-
-        }
-        else if(holder instanceof AskQuestionViewHolderWithoutImage){
             boolean isAnonymous=questionModelArrayList.get(i).isAnonymous();
             String profileNameAsked="";
             if(isAnonymous){
                 profileNameAsked=context.getString(R.string.someoneasked);
             }else {
                 profileNameAsked=String.format(context.getString(R.string.user_name_asked), questionModelArrayList.get(i).getAskerName());
-                Picasso.get().load(questionModelArrayList.get(i).getUserImageUrl()).placeholder(R.drawable.ic_placeholder).
+                Picasso.get().load(questionModelArrayList.get(i).getAskerImageUrlLow()).placeholder(R.drawable.ic_placeholder).
                         into(((AskQuestionViewHolderWithoutImage) holder).profilePicture);
             }
 
-            ((AskQuestionViewHolderWithoutImage) holder).cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent=new Intent(context,AnswerActivity.class);
-                    intent.putExtra("askerUid",questionModelArrayList.get(i).getAskerUid());
-                    intent.putExtra("questionId", questionModelArrayList.get(i).getQuestionId());
-                    intent.putExtra("question", questionModelArrayList.get(i).getQuestion());
-                    intent.putExtra("timeOfAsking", questionModelArrayList.get(i).getQuestion());
-                    context.startActivity(intent);
-                }
-            });
             ((AskQuestionViewHolderWithoutImage) holder).profileName.setText(profileNameAsked);
             ((AskQuestionViewHolderWithoutImage) holder).question.setText(questionModelArrayList.get(i).getQuestion());
             long oldTime=questionModelArrayList.get(i).getTimeOfAsking();
@@ -106,20 +57,26 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
             else
                 ((AskQuestionViewHolderWithoutImage) holder).timeAgo.setText(timeAgo);
 
-        }
-    }
 
-    @Override
-    public int getItemViewType(int position) {
-        boolean isImageAttached=questionModelArrayList.get(position).isImageAttached();
-        if(isImageAttached){
-            return QUESTION_WITH_IMAGE;
-        }
-        else {
-            return QUESTION_WITHOUT_IMAGE;
-        }
-    }
+        ((AskQuestionViewHolderWithoutImage) holder).cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                String askerUid=questionModelArrayList.get(i).getAskerId();
+                String questionId=questionModelArrayList.get(i).getQuestionId();
+                String question=questionModelArrayList.get(i).getQuestion();
+                long timeOfAsking=questionModelArrayList.get(i).getTimeOfAsking();
+                String askerName=questionModelArrayList.get(i).getAskerName();
+                String askerImageUrl=questionModelArrayList.get(i).getAskerImageUrlLow();
+                String askerBio=questionModelArrayList.get(i).getAskerBio();
+                ArrayList<String> questionType= (ArrayList<String>) questionModelArrayList.get(i).getQuestionType();
+
+                ((AskQuestionViewHolderWithoutImage) holder).onCardClicked(context,i,
+                        askerUid,questionId,question,timeOfAsking,askerName,askerImageUrl,askerBio,questionType);
+            }
+        });
+
+    }
     @Override
     public int getItemCount() {
         return questionModelArrayList==null?0:questionModelArrayList.size();

@@ -5,22 +5,24 @@ public class UserInfoModel {
    private String userName;
    private String profilePicUrlLow;
    private String profilePicUrlHigh;
-   private String about;
+   private String bio;
    private int point;
-   private String language;
-   private String interest;
+   String country;
+   String [] language;
+   String [] interest;
    private int followerCount;
    private int followingCount;
 
    public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,
-                        String about,int  point ,String language,String interest,int followerCount,
+                        String bio,int  point ,String country,String []language,String [] interest,int followerCount,
                         int followingCount){
        this.userId=userId;
        this.userName=userName;
        this.profilePicUrlLow=profilePicUrlLow;
        this.profilePicUrlHigh=profilePicUrlHigh;
-       this.about=about;
+       this.bio =bio;
        this.point=point;
+       this.country=country;
        this.language=language;
        this.interest=interest;
        this.followerCount=followerCount;
@@ -47,15 +49,19 @@ public class UserInfoModel {
         return point;
     }
 
-    public String getAbout() {
-        return about;
+    public String getBio() {
+        return bio;
     }
 
-    public String getInterest() {
+    public String getCountry() {
+        return country;
+    }
+
+    public String[] getInterest() {
         return interest;
     }
 
-    public String getLanguage() {
+    public String[] getLanguage() {
         return language;
     }
 

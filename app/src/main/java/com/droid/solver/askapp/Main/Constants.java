@@ -12,6 +12,7 @@ public class Constants {
     public static final String profilePicHighUrl="profilePicHighUrl";
     public static final String profilePicLowByte="profilePicLowByte";
     public static final String profilePicLowUrl="profilePicLowUrl";
+    public static final String bio="bio";
 
     public  final int [] languageNumber={1,2,3,4,5,6,7,8,9,10};
     public  final String [] languageString={"English","Chinese","Hindi","Spanish","Arabic",

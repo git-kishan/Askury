@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import com.droid.solver.askapp.Question.AskQuestionModel;
+import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
 
 import java.util.ArrayList;
@@ -201,10 +201,24 @@ public class LocalDatabase extends SQLiteOpenHelper {
         values.put(userName, model.getUserName());
         values.put(profilePicUrlLow, model.getProfilePicUrlLow());
         values.put(profilePicUrlHigh, model.getProfilePicUrlHigh());
-        values.put(about, model.getAbout());
+        values.put(about, model.getBio());
         values.put(point, model.getPoint());
-        values.put(language,model.getLanguage());
-        values.put(interest, model.getInterest());
+        String [] mlanguage=model.getLanguage();
+        StringBuilder builder=new StringBuilder();
+        for(int i=0;i<mlanguage.length;i++){
+            builder.append(mlanguage[i]);
+            builder.append("@");
+        }
+        values.put(language,builder.toString());
+
+         String [] minterest=model.getInterest();
+         builder=new StringBuilder();
+
+        for(int i=0;i<minterest.length;i++){
+            builder.append(minterest[i]);
+            builder.append("@");
+        }
+        values.put(interest, builder.toString());
         values.put(followerCount, model.getFollowerCount());
         values.put(followingCount, model.getFollowingCount());
 
@@ -218,80 +232,84 @@ public class LocalDatabase extends SQLiteOpenHelper {
         database.execSQL("DELETE FROM "+USER_INFO_TABLE);
         database.close();
     }
-     public UserInfoModel getUserInfo(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        String query="SELECT * FROM "+USER_INFO_TABLE+" ORDER BY "+userId+" DESC  LIMIT 1";
-        Cursor cursor=database.rawQuery(query, null);
-        if(cursor!=null)
-            cursor.moveToFirst();
+//     public UserInfoModel getUserInfo(){
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        String query="SELECT * FROM "+USER_INFO_TABLE+" ORDER BY "+userId+" DESC  LIMIT 1";
+//        Cursor cursor=database.rawQuery(query, null);
+//        if(cursor!=null)
+//            cursor.moveToFirst();
+//
+//        String muserId=cursor.getString(cursor.getColumnIndex(userId));
+//        String muserName=cursor.getString(cursor.getColumnIndex(userName));
+//        String mprofilePicUrlLow=cursor.getString(cursor.getColumnIndex(profilePicUrlLow));
+//        String mprofilePicUrlHigh=cursor.getString(cursor.getColumnIndex(profilePicUrlHigh));
+//        String mabout=cursor.getString(cursor.getColumnIndex(about));
+//        int mpoint=cursor.getInt(cursor.getColumnIndex(point));
+//        String mlanguage=cursor.getString(cursor.getColumnIndex(language));
+//        String minterest=cursor.getString(cursor.getColumnIndex(interest));
+//        int mfollowerCount=cursor.getInt(cursor.getColumnIndex(followerCount));
+//        int mfollowingCount=cursor.getInt(cursor.getColumnIndex(followingCount));
+//
+//        String [] languageArr=mlanguage.split("@");
+//        String [] interestArr=minterest.split("@");
+//
+//        UserInfoModel infoModel=new UserInfoModel(
+//        muserId,muserName ,mprofilePicUrlLow , mprofilePicUrlHigh, mabout,
+//                mpoint, )
+//
+//        if(!cursor.isClosed())
+//            cursor.close();
+//        database.close();
+//        return infoModel;
+//
+//    }
 
-        String muserId=cursor.getString(cursor.getColumnIndex(userId));
-        String muserName=cursor.getString(cursor.getColumnIndex(userName));
-        String mprofilePicUrlLow=cursor.getString(cursor.getColumnIndex(profilePicUrlLow));
-        String mprofilePicUrlHigh=cursor.getString(cursor.getColumnIndex(profilePicUrlHigh));
-        String mabout=cursor.getString(cursor.getColumnIndex(about));
-        int mpoint=cursor.getInt(cursor.getColumnIndex(point));
-        String mlanguage=cursor.getString(cursor.getColumnIndex(language));
-        String minterest=cursor.getString(cursor.getColumnIndex(interest));
-        int mfollowerCount=cursor.getInt(cursor.getColumnIndex(followerCount));
-        int mfollowingCount=cursor.getInt(cursor.getColumnIndex(followingCount));
-
-        UserInfoModel infoModel=new UserInfoModel(muserId, muserName, mprofilePicUrlLow,
-                mprofilePicUrlHigh, mabout, mpoint, mlanguage, minterest
-        , mfollowerCount, mfollowingCount);
-        if(!cursor.isClosed())
-            cursor.close();
-        database.close();
-        return infoModel;
-
-    }
-
-     public boolean insertQuestionAsked(ArrayList<AskQuestionModel> list){
-
-        SQLiteDatabase database=this.getWritableDatabase();
-        if(database.isOpen()){
-        if(list!=null)
-            for(int i=0;i<list.size();i++) {
-
-                AskQuestionModel model = list.get(i);
-                ContentValues values = new ContentValues();
-
-                values.put(askerName, model.getAskerName());
-                values.put(askerUid, model.getAskerUid());
-                values.put(questionId, model.getQuestionId());
-                values.put(timeOfAsking, model.getTimeOfAsking());
-                values.put(question, model.getQuestion());
-                values.put(userImageUrl, model.getUserImageUrl());
-                int tempIsImageAttached = model.isImageAttached() ? 1 : 0;
-                values.put(imageAttached, tempIsImageAttached);
-                values.put(questionImageUrl, model.getQuestionImageUrl());
-                int tempIsAnonymous = model.isAnonymous() ? 1 : 0;
-                values.put(anonymous, tempIsAnonymous);
-                values.put(likeCount, model.getLikeCount());
-                values.put(answerCount, model.getAnswerCount());
-                values.put(satisfiedByUserAnswerCount, model.getSatisfiedByUserAnswerCount());
-                values.put(recentUserAnswer, model.getRecentUserAnswer());
-                values.put(recentUserUid, model.getRecentUserUid());
-                values.put(recentUserImageUrl, model.getRecentUserImageUrl());
-                values.put(recentUserName, model.getRecentUserName());
-                values.put(recentUserAbout, model.getRecentUserAbout());
-                values.put(recentUserAnswerImageUrl, model.getRecentUserAnswerImageUrl());
-                int tempRecentUserAnswerImageAttached = model.isRecentUserAnswerImageAttached() ? 1 : 0;
-                values.put(recentUserAnswerImageAttached, tempRecentUserAnswerImageAttached);
-
-                long isOk = database.insert(QUESTION_ASKED_TABLE, null, values);
-                if (isOk == -1) {
-                    return false;
-                }
-                values.clear();
-            }
-
-            }else return false;
-
-        if(database.isOpen())
-           database.close();
-            return true;
-     }
+//     public boolean insertQuestionAsked(ArrayList<RootQuestionModel> list){
+//
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        if(database.isOpen()){
+//        if(list!=null)
+//            for(int i=0;i<list.size();i++) {
+//
+//                RootQuestionModel model = list.get(i);
+//                ContentValues values = new ContentValues();
+//
+//                values.put(askerName, model.getAskerName());
+//                values.put(askerUid, model.getAskerUid());
+//                values.put(questionId, model.getQuestionId());
+//                values.put(timeOfAsking, model.getTimeOfAsking());
+//                values.put(question, model.getQuestion());
+//                values.put(userImageUrl, model.getUserImageUrl());
+//                int tempIsImageAttached = model.isImageAttached() ? 1 : 0;
+//                values.put(imageAttached, tempIsImageAttached);
+//                values.put(questionImageUrl, model.getQuestionImageUrl());
+//                int tempIsAnonymous = model.isAnonymous() ? 1 : 0;
+//                values.put(anonymous, tempIsAnonymous);
+//                values.put(likeCount, model.getLikeCount());
+//                values.put(answerCount, model.getAnswerCount());
+//                values.put(satisfiedByUserAnswerCount, model.getSatisfiedByUserAnswerCount());
+//                values.put(recentUserAnswer, model.getRecentUserAnswer());
+//                values.put(recentUserUid, model.getRecentUserUid());
+//                values.put(recentUserImageUrl, model.getRecentUserImageUrl());
+//                values.put(recentUserName, model.getRecentUserName());
+//                values.put(recentUserAbout, model.getRecentUserAbout());
+//                values.put(recentUserAnswerImageUrl, model.getRecentUserAnswerImageUrl());
+//                int tempRecentUserAnswerImageAttached = model.isRecentUserAnswerImageAttached() ? 1 : 0;
+//                values.put(recentUserAnswerImageAttached, tempRecentUserAnswerImageAttached);
+//
+//                long isOk = database.insert(QUESTION_ASKED_TABLE, null, values);
+//                if (isOk == -1) {
+//                    return false;
+//                }
+//                values.clear();
+//            }
+//
+//            }else return false;
+//
+//        if(database.isOpen())
+//           database.close();
+//            return true;
+//     }
 
      public int  clearQuestionAsked(){
          SQLiteDatabase database=this.getWritableDatabase();
@@ -300,52 +318,52 @@ public class LocalDatabase extends SQLiteOpenHelper {
          return numberOfRowsDeleted;
 
      }
-     public ArrayList<AskQuestionModel> getQuestionAsked(){
-
-        ArrayList<AskQuestionModel> modelList=new ArrayList<>();
-        SQLiteDatabase database=this.getWritableDatabase();
-        String query="SELECT * FROM "+QUESTION_ASKED_TABLE;
-        Cursor cursor=database.rawQuery(query, null);
-
-        if(cursor.moveToFirst()){
-            do{
-                String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
-                String maskerUid=cursor.getString(cursor.getColumnIndex(askerUid));
-                String mquestionId=cursor.getString(cursor.getColumnIndex(questionId));
-                long mtimeOfAsking=cursor.getLong(cursor.getColumnIndex(timeOfAsking));
-                String mquestion=cursor.getString(cursor.getColumnIndex(question));
-                String muserImageUrl=cursor.getString(cursor.getColumnIndex(userImageUrl));
-                boolean mimageAttached=cursor.getInt(cursor.getColumnIndex(imageAttached))!=0;
-                String mquestionImageUrl=cursor.getString(cursor.getColumnIndex(questionImageUrl));
-                boolean manonymous=cursor.getInt(cursor.getColumnIndex(anonymous))!=0;
-                int mlikeCount=cursor.getInt(cursor.getColumnIndex(likeCount));
-                int manswerCount=cursor.getInt(cursor.getColumnIndex(answerCount));
-                int msatisfiedByUserAnswerCount=cursor.getInt(cursor.getColumnIndex(satisfiedByUserAnswerCount));
-                String mrecentUserAnswer=cursor.getString(cursor.getColumnIndex(recentUserAnswer));
-                String mrecentUserUid=cursor.getString(cursor.getColumnIndex(recentUserUid));
-                String mrecentUserImageUrl=cursor.getString(cursor.getColumnIndex(recentUserImageUrl));
-                String mrecentUserName=cursor.getString(cursor.getColumnIndex(recentUserName));
-                String mrecentUserAbout=cursor.getString(cursor.getColumnIndex(recentUserAbout));
-                String mrecentUserAnswerImageUrl=cursor.getString(cursor.getColumnIndex(recentUserAnswerImageUrl));
-                boolean mrecentUserAnswerImageAttached=cursor.getInt(cursor.getColumnIndex(recentUserAnswerImageAttached))!=0;
-
-                AskQuestionModel model=new AskQuestionModel(maskerName, maskerUid, mquestionId,
-                        mtimeOfAsking, mquestion, muserImageUrl, mimageAttached,
-                        mquestionImageUrl, manonymous, mlikeCount, manswerCount,
-                        msatisfiedByUserAnswerCount, mrecentUserAnswer, mrecentUserUid,
-                        mrecentUserImageUrl, mrecentUserName, mrecentUserAbout,
-                        mrecentUserAnswerImageUrl, mrecentUserAnswerImageAttached);
-                modelList.add(model);
-            }while (cursor.moveToNext());
-
-            if(!cursor.isClosed())
-                cursor.close();
-            database.close();
-            return modelList;
-        }
-        return null;
-
-     }
+//     public ArrayList<RootQuestionModel> getQuestionAsked(){
+//
+//        ArrayList<RootQuestionModel> modelList=new ArrayList<>();
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        String query="SELECT * FROM "+QUESTION_ASKED_TABLE;
+//        Cursor cursor=database.rawQuery(query, null);
+//
+//        if(cursor.moveToFirst()){
+//            do{
+//                String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
+//                String maskerUid=cursor.getString(cursor.getColumnIndex(askerUid));
+//                String mquestionId=cursor.getString(cursor.getColumnIndex(questionId));
+//                long mtimeOfAsking=cursor.getLong(cursor.getColumnIndex(timeOfAsking));
+//                String mquestion=cursor.getString(cursor.getColumnIndex(question));
+//                String muserImageUrl=cursor.getString(cursor.getColumnIndex(userImageUrl));
+//                boolean mimageAttached=cursor.getInt(cursor.getColumnIndex(imageAttached))!=0;
+//                String mquestionImageUrl=cursor.getString(cursor.getColumnIndex(questionImageUrl));
+//                boolean manonymous=cursor.getInt(cursor.getColumnIndex(anonymous))!=0;
+//                int mlikeCount=cursor.getInt(cursor.getColumnIndex(likeCount));
+//                int manswerCount=cursor.getInt(cursor.getColumnIndex(answerCount));
+//                int msatisfiedByUserAnswerCount=cursor.getInt(cursor.getColumnIndex(satisfiedByUserAnswerCount));
+//                String mrecentUserAnswer=cursor.getString(cursor.getColumnIndex(recentUserAnswer));
+//                String mrecentUserUid=cursor.getString(cursor.getColumnIndex(recentUserUid));
+//                String mrecentUserImageUrl=cursor.getString(cursor.getColumnIndex(recentUserImageUrl));
+//                String mrecentUserName=cursor.getString(cursor.getColumnIndex(recentUserName));
+//                String mrecentUserAbout=cursor.getString(cursor.getColumnIndex(recentUserAbout));
+//                String mrecentUserAnswerImageUrl=cursor.getString(cursor.getColumnIndex(recentUserAnswerImageUrl));
+//                boolean mrecentUserAnswerImageAttached=cursor.getInt(cursor.getColumnIndex(recentUserAnswerImageAttached))!=0;
+//
+//                RootQuestionModel model=new RootQuestionModel(maskerName, maskerUid, mquestionId,
+//                        mtimeOfAsking, mquestion, muserImageUrl, mimageAttached,
+//                        mquestionImageUrl, manonymous, mlikeCount, manswerCount,
+//                        msatisfiedByUserAnswerCount, mrecentUserAnswer, mrecentUserUid,
+//                        mrecentUserImageUrl, mrecentUserName, mrecentUserAbout,
+//                        mrecentUserAnswerImageUrl, mrecentUserAnswerImageAttached);
+//                modelList.add(model);
+//            }while (cursor.moveToNext());
+//
+//            if(!cursor.isClosed())
+//                cursor.close();
+//            database.close();
+//            return modelList;
+//        }
+//        return null;
+//
+//     }
 
      public void insertSurveyModelAsked(AskSurveyModel model){
 

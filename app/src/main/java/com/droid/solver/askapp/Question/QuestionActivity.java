@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.text.emoji.widget.EmojiEditText;
 import android.support.text.emoji.widget.EmojiTextView;
@@ -22,7 +21,6 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,14 +28,11 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
-import com.droid.solver.askapp.Survey.QuestionTakerActivity;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,17 +41,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import org.w3c.dom.Document;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import steelkiwi.com.library.DotsLoaderView;
@@ -142,7 +137,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
                     overlayFrameLayout.setVisibility(View.VISIBLE);
                     dotsLoaderView.show();
-                    uploadImageToDatabase(menuItem);
+                    uploadQuestionToRemoteDatabase(menuItem);
 
                 }else {
                     noInternetConnectionMessage();
@@ -267,7 +262,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     }
     private boolean checkQuestionLength( ){
         String data=String.valueOf(questionInputEditText.getText());
-        if(data.equals("null")){
+        if(data.trim().length()==0){
             return false;
         }
             long length=data.length();
@@ -282,7 +277,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     private void uploadImageToDatabase(final MenuItem menuItem){
         if(compressedByteArray==null){
-            uploadQuestionToRemoteDatabase(menuItem, null);
+            uploadQuestionToRemoteDatabase(menuItem);
         }else {
             String uid = user.getUid();
             String currentTime = String.valueOf(System.currentTimeMillis());
@@ -295,7 +290,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
                     questionImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            uploadQuestionToRemoteDatabase(menuItem, uri.toString());
+                            uploadQuestionToRemoteDatabase(menuItem);
                             Log.i("TAG", "url :- " + uri);
 
                         }
@@ -334,48 +329,61 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             });
         }
     }
-    private void uploadQuestionToRemoteDatabase(final MenuItem menuItem,final String questionImageUrl){
+
+    private void uploadQuestionToRemoteDatabase(final MenuItem menuItem){
 
 
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-        String askerName=preferences.getString(Constants.userName, null);
-        String askerId=user.getUid();
+        String userName=preferences.getString(Constants.userName, null);
+        String userId=user.getUid();
         long timeOfAsking=System.currentTimeMillis();
         final String question=String.valueOf(questionInputEditText.getText());
         String userImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
+        String bio=preferences.getString(Constants.bio, null);
         isImageAttached=compressedByteArray!=null;
 
         String uid=user.getUid();
         String questionId=root.collection("user").document(uid).collection("question").document().getId();
-        AskQuestionModel model = new AskQuestionModel(askerName,
-                askerId, questionId,timeOfAsking, question, userImageUrl,isImageAttached,questionImageUrl,
-                isAnonymous,0,0,0,null,
-                null,null,null,null,
-                null,false);
 
-        root.collection("user").document(uid).collection("question").document(questionId).set(model).
-                addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+        UserQuestionModel userQuestionModel=new UserQuestionModel(
+        userId,userName ,userImageUrl , bio,timeOfAsking ,
+                questionId, question, new ArrayList<String>(), 0, isAnonymous, false);
 
-                        dotsLoaderView.hide();
-                        overlayFrameLayout.setVisibility(View.GONE);
-                        SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                        Bundle bundle=new Bundle();
-                        bundle.putString("message", "Question uploaded successfully");
-                        imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                        imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
-                        questionInputEditText.setText("");
-                        imageView.setImageBitmap(null);
-                        imageViewAdd.setVisibility(View.VISIBLE);
-                        anonymousSwitch.setChecked(false);
-                        menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
+        RootQuestionModel rootQuestionModel=new RootQuestionModel(
+                        userId,userName ,userImageUrl ,isAnonymous ,
+                       bio,questionId, question, new ArrayList<String>(), timeOfAsking,
+                       null, null, null, null,
+                       null, null, false, null,
+                0, 0);
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+        WriteBatch writeBatch=root.batch();
+
+        DocumentReference userQuestionModelRef=root.collection("user").document(uid).collection("question").document(questionId);
+        writeBatch.set(userQuestionModelRef, userQuestionModel);
+
+        DocumentReference rootQuestionModelRef=root.collection("question").document(questionId);
+        writeBatch.set(rootQuestionModelRef, rootQuestionModel);
+
+        writeBatch.commit().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                dotsLoaderView.hide();
+                overlayFrameLayout.setVisibility(View.GONE);
+                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("message", "Question uploaded successfully");
+                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                questionInputEditText.setText("");
+                imageView.setImageBitmap(null);
+                imageViewAdd.setVisibility(View.VISIBLE);
+                anonymousSwitch.setChecked(false);
+                menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
 
                 overlayFrameLayout.setVisibility(View.GONE);
                 SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
@@ -387,10 +395,10 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             }
         });
 
-        root.collection("question").document(questionId).set(model);
-
 
     }
+
+
     private boolean isNetworkAvailable(){
         ConnectivityManager comm= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo=comm.getActiveNetworkInfo();

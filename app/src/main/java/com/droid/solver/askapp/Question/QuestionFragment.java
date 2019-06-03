@@ -3,7 +3,6 @@ package com.droid.solver.askapp.Question;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextPaint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +38,7 @@ import com.leinardi.android.speeddial.SpeedDialView;
 import java.util.ArrayList;
 
 
-public class QuestionFragment extends Fragment implements QuestionClickListener {
+public class QuestionFragment extends Fragment {
 
 
     private Animation scaleInAnimation;
@@ -51,7 +49,7 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
     private FirebaseUser user;
     private FirebaseFirestore root;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ArrayList<AskQuestionModel> questionListFetchFromRemoteDatabase,questionListFetchFromLocalDatabase;
+    private ArrayList<RootQuestionModel> questionListFetchFromRemoteDatabase,questionListFetchFromLocalDatabase;
     private LinearLayoutManager layoutManager;
     private AskQuestionRecyclerAdapter adapter;
     private Context context;
@@ -77,16 +75,14 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
         addFabItem();
         questionListFetchFromLocalDatabase=new ArrayList<>();
         questionListFetchFromRemoteDatabase=new ArrayList<>();
-        loadFromLocalDatabase();
+        loadDataFromRemoteDatabase();
         swipeRefreshLayout.setEnabled(true);
-        Log.i("TAG", "oncreate view");
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("TAG", "onActivityCreated");
         speedDialView.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
             @Override
             public boolean onActionSelected(SpeedDialActionItem speedDialActionItem) {
@@ -108,39 +104,39 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
         });
     }
 
-    private void loadFromLocalDatabase(){
-        Log.i("TAG", "fetch from local database");
-        LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
-        questionListFetchFromLocalDatabase = database.getQuestionAsked();
-        if(questionListFetchFromLocalDatabase!=null){
-            if(questionListFetchFromLocalDatabase.size()!=0) {
-                Log.i("TAG", "fetch from locally");
-                shimmerFrameLayout.setVisibility(View.GONE);
-                adapter = new AskQuestionRecyclerAdapter(getActivity(), questionListFetchFromLocalDatabase);
-                recyclerView.setAdapter(adapter);
-                swipeRefreshLayout.setEnabled(false);
-                swipeRefreshLayout.setRefreshing(false);
-                swipeRefreshLayout.setEnabled(false);
-
-//                if (!MainActivity.isDataLoadedFromRemoteInQuestionFragment) {
-//                    loadDataFromRemoteDatabase();
-//                    swipeRefreshLayout.setEnabled(true);
-//                    swipeRefreshLayout.setRefreshing(true);
-//                }
-            }
-            else  {
-                loadDataFromRemoteDatabase();
-                swipeRefreshLayout.setEnabled(true);
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        }else {
-            loadDataFromRemoteDatabase();
-            swipeRefreshLayout.setEnabled(true);
-            swipeRefreshLayout.setRefreshing(true);
-        }
-
-
-    }
+//    private void loadFromLocalDatabase(){
+//        Log.i("TAG", "fetch from local database");
+//        LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
+//        questionListFetchFromLocalDatabase = database.getQuestionAsked();
+//        if(questionListFetchFromLocalDatabase!=null){
+//            if(questionListFetchFromLocalDatabase.size()!=0) {
+//                Log.i("TAG", "fetch from locally");
+//                shimmerFrameLayout.setVisibility(View.GONE);
+//                adapter = new AskQuestionRecyclerAdapter(getActivity(), questionListFetchFromLocalDatabase);
+//                recyclerView.setAdapter(adapter);
+//                swipeRefreshLayout.setEnabled(false);
+//                swipeRefreshLayout.setRefreshing(false);
+//                swipeRefreshLayout.setEnabled(false);
+//
+////                if (!MainActivity.isDataLoadedFromRemoteInQuestionFragment) {
+////                    loadDataFromRemoteDatabase();
+////                    swipeRefreshLayout.setEnabled(true);
+////                    swipeRefreshLayout.setRefreshing(true);
+////                }
+//            }
+//            else  {
+//                loadDataFromRemoteDatabase();
+//                swipeRefreshLayout.setEnabled(true);
+//                swipeRefreshLayout.setRefreshing(true);
+//            }
+//        }else {
+//            loadDataFromRemoteDatabase();
+//            swipeRefreshLayout.setEnabled(true);
+//            swipeRefreshLayout.setRefreshing(true);
+//        }
+//
+//
+//    }
     private void addFabItem(){
 
         speedDialView.addActionItem(
@@ -180,23 +176,24 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
                 addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                AskQuestionModel model = documentSnapshot.toObject(AskQuestionModel.class);
+                                RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
                                 questionListFetchFromRemoteDatabase.add(model);
                             }
                             adapter =new AskQuestionRecyclerAdapter(getActivity(), questionListFetchFromRemoteDatabase);
                             recyclerView.setAdapter(adapter);
-                            LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
+//                            LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
                             adapter.notifyDataSetChanged();
-                            int deleted=database.clearQuestionAsked();
-                            boolean inserted=database.insertQuestionAsked(questionListFetchFromRemoteDatabase);
-                            Toast.makeText(getActivity(), "deleted :- "+deleted, Toast.LENGTH_SHORT).show();
+//                            int deleted=database.clearQuestionAsked();
+//                            boolean inserted=database.insertQuestionAsked(questionListFetchFromRemoteDatabase);
                             swipeRefreshLayout.setRefreshing(false);
                             swipeRefreshLayout.setEnabled(false);
                             shimmerFrameLayout.setVisibility(View.GONE);
-                            MainActivity.isDataLoadedFromRemoteInQuestionFragment=true;
-                        } else {
+//                            MainActivity.isDataLoadedFromRemoteInQuestionFragment=true;
+                        }
+                        else {
                             swipeRefreshLayout.setRefreshing(false);
                             swipeRefreshLayout.setEnabled(false);
                             Log.i("TAG", "exception occurs in getting documents :- " + task.getException());
@@ -219,20 +216,5 @@ public class QuestionFragment extends Fragment implements QuestionClickListener 
         startActivity(new Intent(context,AnswerActivity.class));
 
     }
-    @Override
-    public void onCardItemClicked(int position) {
-        Log.i("TAG", "card  item clicked :- "+position);
-        goToAnswerActivity();
-    }
 
-    @Override
-    public void onProfileImageClicked(int position) {
-
-        Log.i("TAG", "profile image clicked :- "+position);
-    }
-
-    @Override
-    public void onShareImageClicked(int position) {
-        Log.i("TAG", "share image cilcked :- "+position);
-    }
 }
