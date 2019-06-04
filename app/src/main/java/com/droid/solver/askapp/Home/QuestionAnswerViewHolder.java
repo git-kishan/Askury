@@ -19,6 +19,7 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     EmojiTextView question,answer;
     ImageView threeDot;
     LikeButton likeButton;
+    TextView likeCount,answerCount;
     ImageView numberOfAnswerImageView,wantToAnswerImageView;
     public QuestionAnswerViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -33,6 +34,8 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         answer=itemView.findViewById(R.id.answer_text_view);
         threeDot=itemView.findViewById(R.id.imageView4);
         likeButton=itemView.findViewById(R.id.likeButton);
+        likeCount=itemView.findViewById(R.id.textView16);
+        answerCount=itemView.findViewById(R.id.textView17);
         numberOfAnswerImageView=itemView.findViewById(R.id.imageView2);
         wantToAnswerImageView=itemView.findViewById(R.id.imageView3);
 

@@ -13,6 +13,7 @@ public class AskImagePollModel {
     private int image1LikeNo;
     private int image2LikeNo;
     private String imagePollId;
+
     public AskImagePollModel(){
 
     }

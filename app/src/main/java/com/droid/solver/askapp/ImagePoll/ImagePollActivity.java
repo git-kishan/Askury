@@ -349,7 +349,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
         final Uri imageUri = data.getData();
-        Bitmap bitmap=decodeSelectedImageUri(imageUri, 250,300);
+        Bitmap bitmap=decodeSelectedImageUri(imageUri, image1.getWidth(),image1.getHeight());
         if(bitmap!=null) {
             ByteArrayOutputStream uploaderStream=new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);

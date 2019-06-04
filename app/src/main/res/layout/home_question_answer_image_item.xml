@@ -5,9 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -21,64 +18,66 @@
             android:id="@+id/profile_image"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="3dp"
-            android:clickable="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
             android:background="?android:selectableItemBackground"
-            android:elevation="2dp"
+            android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/lawrence"
-            app:civ_border_color="@color/colorAccent"
+            android:src="@drawable/ic_placeholder"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/asker_name"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:gravity="start"
-            android:text="Sheena Rose"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?android:selectableItemBackground"
+            android:gravity="start"
             android:textColor="@android:color/black"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/profile_image"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Sheena Rose" />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/about_textview"
             android:layout_width="154dp"
             android:layout_height="wrap_content"
-            android:text="Freenlancer|writer"
+            android:layout_marginStart="3dp"
             android:textSize="8sp"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
-            app:layout_constraintTop_toBottomOf="@+id/asker_name" />
+            app:layout_constraintTop_toBottomOf="@+id/asker_name"
+            tools:text="Freenlancer|writer" />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:alpha="0.7"
-            android:text="Is there any possible way to scroll the firefox scrollbar "
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/about_textview" />
+            app:layout_constraintTop_toBottomOf="@+id/about_textview"
+            tools:text="Is there any possible way to scroll the firefox scrollbar " />
 
         <TextView
             android:id="@+id/time_ago_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="5 sec ago"
+            android:layout_marginStart="12dp"
             android:textSize="8sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_image"
+            tools:text="5 sec ago" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView"
@@ -90,7 +89,7 @@
             android:foreground="?android:selectableItemBackground"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
-            app:cardCornerRadius="4dp"
+            app:cardCornerRadius="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/question_textview">
@@ -105,7 +104,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:src="@drawable/lawrence"
+                    android:src="@drawable/ic_placeholder"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -113,14 +112,14 @@
                     android:id="@+id/answerer_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="8dp"
-                    android:alpha="0.7"
-                    android:text="Jennifer lawrence"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:alpha="0.8"
                     android:textColor="@android:color/black"
                     android:textSize="10sp"
                     app:layout_constraintStart_toEndOf="@+id/circleImageView"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Jennifer lawrence" />
 
                 <android.support.text.emoji.widget.EmojiTextView
                     android:id="@+id/answer_text_view"
@@ -130,8 +129,10 @@
                     android:maxLines="5"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
+                    android:textColor="@android:color/black"
+                    android:alpha="0.7"
                     android:maxHeight="100dp"
-                    android:text="yes there are several way to do this.first go to setting and then toolbar and then click on tools button to get decide what is happening"
+                    tools:text="yes there are several way to do this.first go to setting and then toolbar and then click on tools button to get decide what is happening"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -146,7 +147,9 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/lawrence"
+                    android:minHeight="50dp"
+                    android:maxHeight="220dp"
+                    android:background="@drawable/image_loading_background"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -161,20 +164,19 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            android:background="@color/progress_bar_overlay_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
         <com.like.LikeButton
             android:id="@+id/likeButton"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
             app:anim_scale_factor="2"
             app:circle_end_color="@color/like_button_red"
             app:circle_start_color="@color/like_button_red"
@@ -197,7 +199,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="256k"
+            tools:text="256k"
             android:textSize="12sp"
 
             app:layout_constraintBottom_toBottomOf="@+id/likeButton"
@@ -225,7 +227,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="515k"
+            tools:text="515k"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -267,19 +269,27 @@
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="8dp"
-            android:clickable="true"
-            android:padding="5dp"
-            android:focusable="true"
+            android:layout_width="29dp"
+            android:layout_height="29dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
             android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_three_button" />
 
     </android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/chip_fader_color"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        />
 </android.support.v7.widget.CardView>
 
 
