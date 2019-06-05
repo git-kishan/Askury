@@ -7,9 +7,9 @@ public class UserInfoModel {
    private String profilePicUrlHigh;
    private String bio;
    private int point;
-   String country;
-   String [] language;
-   String [] interest;
+   private String country;
+   private String [] language;
+   private String [] interest;
    private int followerCount;
    private int followingCount;
 
@@ -72,5 +72,6 @@ public class UserInfoModel {
     public String getProfilePicUrlLow() {
         return profilePicUrlLow;
     }
+
 
 }

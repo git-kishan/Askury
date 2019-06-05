@@ -15,6 +15,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private Context context;
     private ArrayList<Object> list;
@@ -49,7 +51,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 break;
             case SURVEY:
                 view=inflater.inflate(R.layout.home_survey, viewGroup,false);
-                viewHolder= new SurveyViewHolder(view);
+                viewHolder= new SurveyViewHolder(view,context);
                 break;
             case IMAGE_POLL:
                 view=inflater.inflate(R.layout.home_image_poll, viewGroup,false);
@@ -206,8 +208,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String askerImageUrlLow=((AskImagePollModel) list.get(i)).getAskerImageUrlLow();
                 String askerBio=((AskImagePollModel) list.get(i)).getAskerBio();
                 String askerQuestion=((AskImagePollModel) list.get(i)).getQuestion();
-                final  String image1Url=((AskImagePollModel) list.get(i)).getImage1Url();
-                final String image2Url=((AskImagePollModel) list.get(i)).getImage2Url();
+                String image1Url=((AskImagePollModel) list.get(i)).getImage1Url();
+                String image2Url=((AskImagePollModel) list.get(i)).getImage2Url();
                 long timeOfPolling=((AskImagePollModel) list.get(i)).getTimeOfPolling();
                 int image1LikeNo=((AskImagePollModel) list.get(i)).getImage1LikeNo();
                 int image2LikeNo=((AskImagePollModel) list.get(i)).getImage2LikeNo();
@@ -216,8 +218,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 askerName=askerName==null?"Unknown":askerName;
                 askerBio=askerBio==null?"":askerBio;
                 askerQuestion=askerQuestion==null?"":askerQuestion;
-//                image1Url=image1Url==null?"":image1Url;
-//                image2Url=image2Url==null?"":image2Url;
+                image1Url=image1Url==null?"":image1Url;
+                image2Url=image2Url==null?"":image2Url;
                 timeOfPolling=timeOfPolling==0?System.currentTimeMillis():timeOfPolling;
                 String timeAgo=getTime(timeOfPolling, System.currentTimeMillis());
 
@@ -225,34 +227,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                         into(((ImagePollViewHolder) holder).image1);
                 Picasso.get().load(image2Url).
                         into(((ImagePollViewHolder) holder).image2);
-                ((ImagePollViewHolder) holder).image1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent=new Intent(context,ImagePollOpenActivity.class);
-                        intent.putExtra("imageUrl", image1Url);
-                        context.startActivity(intent);
-                    }
-                });
-                ((ImagePollViewHolder) holder).image2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent=new Intent(context,ImagePollOpenActivity.class);
-                        intent.putExtra("imageUrl", image2Url);
-                        context.startActivity(intent);
-                    }
-                });
-                ((ImagePollViewHolder) holder).image1.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        return true;
-                    }
-                });
-                ((ImagePollViewHolder) holder).image2.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        return true;
-                    }
-                });
                 String userNameCreatedPoll=String.format(context.getString(R.string.username_created_a_poll), askerName);
                 ((ImagePollViewHolder) holder).profileName.setText(userNameCreatedPoll);
                 ((ImagePollViewHolder) holder).bio.setText(askerBio);
@@ -263,12 +237,63 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 Picasso.get().load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder).into(((ImagePollViewHolder) holder).profileImageView);
                 ((ImagePollViewHolder) holder).timeAgo.setText(timeAgo);
 
+                handleClickListenerOfImagePoll((ImagePollViewHolder) holder, (AskImagePollModel) list.get(i));
+
             }
 
         }
         else if(holder.getItemViewType()==SURVEY&&holder instanceof SurveyViewHolder){
             if(list.get(i) instanceof AskSurveyModel){
 
+                String askerId=((AskSurveyModel) list.get(i)).getAskerId();
+                String askerName=((AskSurveyModel) list.get(i)).getAskerName();
+                String askerImageUrlLow=((AskSurveyModel) list.get(i)).getAskerImageUrlLow();
+                String askerBio=((AskSurveyModel) list.get(i)).getAskerBio();
+                String question=((AskSurveyModel) list.get(i)).getQuestion();
+                long timeOfSurvey=((AskSurveyModel) list.get(i)).getTimeOfSurvey();
+                boolean option1=((AskSurveyModel) list.get(i)).isOption1();
+                boolean option2=((AskSurveyModel) list.get(i)).isOption2();
+                boolean option3=((AskSurveyModel) list.get(i)).isOption3();
+                boolean option4=((AskSurveyModel) list.get(i)).isOption4();
+                String option1Value=((AskSurveyModel) list.get(i)).getOption1Value();
+                String option2Value=((AskSurveyModel) list.get(i)).getOption2Value();
+                String option3Value=((AskSurveyModel) list.get(i)).getOption3Value();
+                String option4Value=((AskSurveyModel) list.get(i)).getOption4Value();
+                int option1Count=((AskSurveyModel) list.get(i)).getOption1Count();
+                int option2Count=((AskSurveyModel) list.get(i)).getOption2Count();
+                int option3Count=((AskSurveyModel) list.get(i)).getOption3Count();
+                int optin4Count=((AskSurveyModel) list.get(i)).getOption4Count();
+                int languageSelectedIndex=((AskSurveyModel) list.get(i)).getLanguageSelectedIndex();
+                String surveyId=((AskSurveyModel) list.get(i)).getSurveyId();
+
+                askerName=askerName==null?"Someone":askerName;
+                askerImageUrlLow=askerImageUrlLow==null?"":askerImageUrlLow;
+                askerBio=askerBio==null?"":askerBio;
+                question=question==null?"":question;
+
+                Picasso.get().load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder)
+                        .into(((SurveyViewHolder) holder).profileImage);
+                ((SurveyViewHolder) holder).question.setText(question);
+                ((SurveyViewHolder) holder).bio.setText(askerBio);
+                String someOneIsDoingASurvey=String.format(context.getString(R.string.some_one_is_doing_a_survey), askerName);
+                ((SurveyViewHolder) holder).profileName.setText(someOneIsDoingASurvey);
+
+                if(option1){
+                    ((SurveyViewHolder) holder).option1TextView.setText(option1Value);
+                    ((SurveyViewHolder) holder).container1.setVisibility(View.VISIBLE);
+                }if(option2){
+                    ((SurveyViewHolder) holder).option2TextView.setText(option2Value);
+                    ((SurveyViewHolder) holder).container2.setVisibility(View.VISIBLE);
+                }if(option3){
+                    ((SurveyViewHolder) holder).option3TextView.setText(option3Value);
+                    ((SurveyViewHolder) holder).container3.setVisibility(View.VISIBLE);
+                }
+                if(option4){
+                    ((SurveyViewHolder) holder).option4TextView.setText(option4Value);
+                    ((SurveyViewHolder) holder).container4.setVisibility(View.VISIBLE);
+                }
+
+                handleClickListenerOfSurvey((SurveyViewHolder)holder, (AskSurveyModel) list.get(i));
             }
         }
 
@@ -329,4 +354,70 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         return getTimeDifferenceInWords(diff);
     }
 
+    private void handleClickListenerOfImagePoll(final ImagePollViewHolder holder, final AskImagePollModel imagePollModel){
+
+        holder.image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onImage1SingleClicked(context,imagePollModel.getImage1Url());
+
+            }
+        });
+        holder.image2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onImage2SingleClicked(context,imagePollModel.getImage2Url());
+            }
+        });
+
+        holder.image1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.onImage1LongClicked(context, imagePollModel.getImage1LikeNo(), imagePollModel.getImage2LikeNo(),
+                        imagePollModel.getImagePollId());
+                return true;
+            }
+        });
+        holder.image2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.onImage2LongClicked(context, imagePollModel.getImage1LikeNo(),
+                        imagePollModel.getImage2LikeNo(),imagePollModel.getImagePollId());
+                return true;
+            }
+        });
+
+    }
+
+    private void handleClickListenerOfSurvey(final SurveyViewHolder holder,final AskSurveyModel surveyModel){
+
+        holder.container1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onContainer1Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
+                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+            }
+        });
+        holder.container2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onContainer2Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
+                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+            }
+        });
+        holder.container3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onContainer3Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
+                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+            }
+        });
+        holder.container4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onContainer4Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
+                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+            }
+        });
+    }
 }

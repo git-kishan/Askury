@@ -17,6 +17,7 @@ import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
+import com.droid.solver.askapp.Survey.AskSurveyModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -108,6 +109,23 @@ public class HomeFragment extends Fragment {
                     for(QueryDocumentSnapshot snapshot :task.getResult()){
                         AskImagePollModel askImagePollModel=snapshot.toObject(AskImagePollModel.class);
                         list.add(askImagePollModel);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+        surveyRef.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshot :task.getResult()){
+                        AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
+                        list.add(askSurveyModel);
                         adapter.notifyDataSetChanged();
                     }
                 }
