@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.droid.solver.askapp.Answer.QuestionAnswerModel;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
@@ -127,6 +129,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 ((QuestionAnswerViewHolder) holder).answerCount.setText(String.valueOf(answerCount));
                 ((QuestionAnswerViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
+                handleClickListenerOfQuestionAnswer((QuestionAnswerViewHolder) holder, (RootQuestionModel)list.get(i));
 
             }
 
@@ -195,10 +198,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 ((QuestionAnswerWithImageViewHolder) holder).answerCount.setText(String.valueOf(answerCount));
                 ((QuestionAnswerWithImageViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
 
+                handleClickListenerOfQuestionAnswerWithImage((QuestionAnswerWithImageViewHolder)holder,(RootQuestionModel)list.get(i));
             }
 
         }
-
 
         else if(holder.getItemViewType()==IMAGE_POLL&&holder instanceof ImagePollViewHolder){
 
@@ -359,14 +362,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onImage1SingleClicked(context,imagePollModel.getImage1Url());
+                holder.onImage1SingleClicked(context,imagePollModel.getImage1Url(),imagePollModel.getImage2Url());
 
             }
         });
         holder.image2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onImage2SingleClicked(context,imagePollModel.getImage2Url());
+                holder.onImage2SingleClicked(context,imagePollModel.getImage2Url(),imagePollModel.getImage1Url());
             }
         });
 
@@ -384,6 +387,12 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 holder.onImage2LongClicked(context, imagePollModel.getImage1LikeNo(),
                         imagePollModel.getImage2LikeNo(),imagePollModel.getImagePollId());
                 return true;
+            }
+        });
+        holder.threeDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onThreeDotClicked(context);
             }
         });
 
@@ -419,5 +428,31 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                         surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
             }
         });
+        holder.threeDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onThreeDotClicked(context);
+            }
+        });
     }
+
+    private void handleClickListenerOfQuestionAnswer(final QuestionAnswerViewHolder holder, RootQuestionModel rootQuestionModel){
+        holder.threeDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onThreeDotClicked(context);
+            }
+        });
+
+    }
+    private void handleClickListenerOfQuestionAnswerWithImage(final QuestionAnswerWithImageViewHolder holder, RootQuestionModel rootQuestionModel){
+        holder.threeDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onThreeDotClicked(context);
+            }
+        });
+    }
+
+
 }

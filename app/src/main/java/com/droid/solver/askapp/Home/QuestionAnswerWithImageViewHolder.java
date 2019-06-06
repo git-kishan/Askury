@@ -1,9 +1,11 @@
 package com.droid.solver.askapp.Home;
 
-import android.media.Image;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,9 +39,18 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         answer=itemView.findViewById(R.id.answer_text_view);
         threeDot=itemView.findViewById(R.id.imageView4);
         likeButton=itemView.findViewById(R.id.likeButton);
-        likeCount=itemView.findViewById(R.id.textView16);
+        likeCount=itemView.findViewById(R.id.delete_poll_text_view);
         answerCount=itemView.findViewById(R.id.textView17);
         numberOfAnswerImageView=itemView.findViewById(R.id.imageView2);
         wantToAnswerImageView=itemView.findViewById(R.id.imageView3);
+    }
+    public void onThreeDotClicked(Context context){
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();
     }
 }

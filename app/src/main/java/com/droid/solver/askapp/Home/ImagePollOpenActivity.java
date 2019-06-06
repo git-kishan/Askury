@@ -18,28 +18,35 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class ImagePollOpenActivity extends AppCompatActivity {
 
     private ImageView backImage;
-    private String imageUrl;
+    private String image1Url,image2Url;
     private ViewPager viewPager;
-
+    String [] imageUrlList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent=getIntent();
+        image1Url=intent.getStringExtra("image1Url");
+        image2Url=intent.getStringExtra("image2Url");
         setContentView(R.layout.activity_image_poll_open);
         backImage=findViewById(R.id.back_image);
-        Intent intent=getIntent();
+        imageUrlList=new String[2];
         viewPager=findViewById(R.id.view_pager);
-        imageUrl=intent.getStringExtra("imageUrl");
+
+        imageUrlList[0]=image1Url;
+        imageUrlList[1]=image2Url;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        ViewPager viewPager=findViewById(R.id.view_pager);
+        ImagePollViewPagerAdapter pagerAdapter=new ImagePollViewPagerAdapter(this, imageUrlList);
+        viewPager.setAdapter(pagerAdapter);
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-//        PhotoViewAttacher attacher=new PhotoViewAttacher(imageView);
-//        attacher.update();
+
+
     }
 
 }

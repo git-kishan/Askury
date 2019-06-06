@@ -16,8 +16,8 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.text.emoji.widget.EmojiEditText;
 import android.support.v4.app.ActivityCompat;
@@ -29,11 +29,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -42,7 +42,6 @@ import android.widget.TextView;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,8 +54,6 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import org.w3c.dom.Document;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -76,7 +73,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private TextView orTextVeiw;
     private CardView rootCardView;
     private Toolbar toolbar;
-    private CardView rootView;
+    private CardView rootView,orCardView;
     private ImageView image1,image2;
     private TextInputLayout questionInputLayout;
     private EmojiEditText questionInputEditText;
@@ -97,6 +94,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private UploadTask uploadTask;
     private static AlertDialog errorDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +105,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         image2=findViewById(R.id.image2);
         dotsLoaderView=findViewById(R.id.dotsLoaderView);
         toolbar.setTitleMarginBottom(30);
+        orCardView=findViewById(R.id.or_card_view);
         overLayFrameLayout=findViewById(R.id.overlay_frame_layout);
         orTextVeiw=findViewById(R.id.or_text_view);
         rootCardView = findViewById(R.id.root_card_view);
@@ -520,8 +519,8 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                     overLayFrameLayout.setVisibility(View.GONE);
                     dotsLoaderView.hide();
                     menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
-                    showFailureDialog();
-                    showFailureDialog();
+                    showCustomErrorDialog(menuItem);
+
                 }
             });
 
@@ -551,8 +550,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
                 menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
-                showFailureDialog();
-                showFailureDialog();
+                showCustomErrorDialog(menuItem);
             }
         });
 
@@ -594,7 +592,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 image2.setImageBitmap(null);
                 image1CardView.setVisibility(View.VISIBLE);
                 image2CardView.setVisibility(View.VISIBLE);
-                showSuccessfullDialog();
+                showCustomSuccessfullDialog();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -604,19 +602,27 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
                 menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
-                showFailureDialog();
-                showFailureDialog();
+                showCustomErrorDialog(menuItem);
 
             }
         });
     }
 
-    private void showSuccessfullDialog(){
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setMessage("Image Poll loaded successfully\nThank you .");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+    private void showCustomSuccessfullDialog() {
+        final ViewGroup viewGroup = findViewById(R.id.root);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        TextView textView=dialogView.findViewById(R.id.message_text_view);
+        textView.setText(getString(R.string.image_poll_uploaded_successfully));
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onDismiss(DialogInterface dialogInterface) {
                 Handler handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -626,20 +632,43 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 }, 300);
             }
         });
-        AlertDialog dialog=builder.create();
-        dialog.show();
 
     }
-    private void showFailureDialog(){
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setPositiveButton("got it", new DialogInterface.OnClickListener() {
+
+    private void showCustomErrorDialog(final MenuItem menuItem){
+
+        final ViewGroup viewGroup = findViewById(R.id.root);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_failure_dialog, viewGroup, false);
+        TextView textView=dialogView.findViewById(R.id.message_text_view);
+        textView.setText(getString(R.string.image_poll_uploading_failed));
+        MaterialButton retryButton=dialogView.findViewById(R.id.retry_button);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
+        alertDialog.show();
+
+        retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                errorDialog.cancel();
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                if(checkValidation()){
+
+                    if(isInternetAvailable()){
+                        menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
+                        overLayFrameLayout.setVisibility(View.VISIBLE);
+                        dotsLoaderView.show();
+                        uploadFirstImageToStorage(menuItem);
+
+                    }
+                    else {
+                        showSnackBar("No internet connection available");
+                    }
+                }
             }
         });
-        builder.setMessage("Error occured, try again ...");
-        errorDialog=builder.create();
-        errorDialog.show();
     }
+
+
 }

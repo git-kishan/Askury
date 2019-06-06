@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Question;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,19 +12,23 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.text.emoji.widget.EmojiEditText;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -369,11 +374,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             public void onComplete(@NonNull Task<Void> task) {
                 dotsLoaderView.hide();
                 overlayFrameLayout.setVisibility(View.GONE);
-                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("message", "Question uploaded successfully");
-                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                showCustomSuccessfullDialog();
                 questionInputEditText.setText("");
                 imageView.setImageBitmap(null);
                 imageViewAdd.setVisibility(View.VISIBLE);
@@ -386,11 +387,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             public void onFailure(@NonNull Exception e) {
 
                 overlayFrameLayout.setVisibility(View.GONE);
-                SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment=new SuccessfullyUploadDialogFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("message", "Failure occur ,try again...");
-                imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+                showCustomErrorDialog(menuItem);
                 anonymousSwitch.setChecked(false);
             }
         });
@@ -416,6 +413,67 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     private void noInternetConnectionMessage(){
         Snackbar.make(rootView, "No internet Connection Available",Snackbar.LENGTH_LONG).show();
+    }
+    private void showCustomSuccessfullDialog() {
+        final ViewGroup viewGroup = findViewById(R.id.root);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        TextView textView=dialogView.findViewById(R.id.message_text_view);
+        textView.setText(getString(R.string.question_uploading_successfully));
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                Handler handler=new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onBackPressed();
+                    }
+                }, 300);
+            }
+        });
+
+    }
+
+    private void showCustomErrorDialog(final MenuItem  menuItem){
+
+        final ViewGroup viewGroup = findViewById(R.id.root);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_failure_dialog, viewGroup, false);
+        TextView textView=dialogView.findViewById(R.id.message_text_view);
+        textView.setText(getString(R.string.question_uploading_failed));
+        MaterialButton retryButton=dialogView.findViewById(R.id.retry_button);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
+        alertDialog.show();
+
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                if(checkQuestionLength()){
+
+                    if(isNetworkAvailable()){
+                        menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
+
+                        overlayFrameLayout.setVisibility(View.VISIBLE);
+                        dotsLoaderView.show();
+                        uploadQuestionToRemoteDatabase(menuItem);
+
+                    }else {
+                        noInternetConnectionMessage();
+                    }
+                }
+            }
+        });
     }
 
 }

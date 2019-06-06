@@ -7,7 +7,7 @@
     <string name="user_name_asked" translatable="false">%1$s Asked </string>
     <string name="someoneasked" translatable="false">Someone Asked</string>
     <string name="private_info">Don\'t include private info</string>
-    <string name="provide_option_limit" translatable="false">Provide atleast two and atmost four options</string>
+    <string name="provide_option_limit" translatable="false">Provide atleast two or atmost four options</string>
     <string name="Done">Done</string>
     <string name="optionB">Option B</string>
     <string name="optionC">Option C</string>
@@ -16,6 +16,12 @@
     <string name="optionA">Option A</string>
     <string name="username_created_a_poll">%1$s created a poll</string>
     <string name="some_one_is_doing_a_survey">%1$s is doing a survey</string>
+    <string name="image_poll_uploading_failed">Image uploading failed,try again !</string>
+    <string name="image_poll_uploaded_successfully">Image poll uploaded successfully</string>
+    <string name="question_uploading_successfully">Your question uploaded successfully </string>
+    <string name="question_uploading_failed">Question uploading failed,try again !</string>
+    <string name="survey_accepted_successfull">Survey accepted successfully\nsurvey will be open for 30 days</string>
+    <string name="survey_accepted_failed">Survey uploading failed,try again !</string>
 
 
 </resources>

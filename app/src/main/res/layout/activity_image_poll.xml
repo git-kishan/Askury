@@ -206,6 +206,7 @@
                     </android.support.v7.widget.CardView>
 
                     <android.support.v7.widget.CardView
+                        android:id="@+id/or_card_view"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:background="@color/white"
@@ -252,7 +253,6 @@
         android:id="@+id/overlay_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
         android:visibility="gone"
         android:background="@color/progress_bar_overlay_color"
         >

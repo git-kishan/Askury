@@ -179,7 +179,7 @@
             app:icon_type="heart"
             app:is_enabled="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView16"
+            app:layout_constraintEnd_toStartOf="@+id/delete_poll_text_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2"
             app:layout_constraintVertical_bias="1.0"
@@ -188,7 +188,7 @@
             app:unlike_drawable="@drawable/ic_heart_black" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/delete_poll_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -209,7 +209,7 @@
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView16"
+            app:layout_constraintStart_toEndOf="@+id/delete_poll_text_view"
             app:layout_constraintTop_toBottomOf="@+id/view2"
             app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/ic_answer_given" />
@@ -261,8 +261,8 @@
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="29dp"
-            android:layout_height="29dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="12dp"
             android:background="?android:selectableItemBackground"

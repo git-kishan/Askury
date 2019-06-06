@@ -8,8 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -59,16 +61,18 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         leftWhiteHeart.setVisibility(View.GONE);
         rightWhiteHeart.setVisibility(View.GONE);
     }
-     void onImage1SingleClicked(final Context context,String url){
+     void onImage1SingleClicked(final Context context,String image1Url,String image2Url){
          Intent intent=new Intent(context, ImagePollOpenActivity.class);
-         intent.putExtra("imageUrl",url );
+         intent.putExtra("image1Url",image1Url );
+         intent.putExtra("image2Url", image2Url);
          context.startActivity(intent);
 
 
     }
-     void onImage2SingleClicked(final Context context,String url){
+     void onImage2SingleClicked(final Context context,String image1Url,String image2Url){
          Intent intent=new Intent(context, ImagePollOpenActivity.class);
-         intent.putExtra("imageUrl",url );
+         intent.putExtra("image1Url", image1Url);
+         intent.putExtra("image2Url", image2Url);
          context.startActivity(intent);
 
     }
@@ -195,5 +199,16 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         }, 1000);
 
 
+    }
+
+    void onThreeDotClicked(Context context){
+
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();
     }
 }

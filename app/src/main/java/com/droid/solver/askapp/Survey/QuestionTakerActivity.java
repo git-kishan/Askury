@@ -5,16 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.text.emoji.widget.EmojiEditText;
 import android.support.text.emoji.widget.EmojiTextView;
@@ -25,37 +23,31 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
 import com.droid.solver.askapp.Main.Constants;
+import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firestore.v1.Write;
 
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 public class QuestionTakerActivity extends AppCompatActivity implements
         View.OnClickListener, View.OnFocusChangeListener, TextWatcher {
@@ -83,7 +75,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     private static AlertDialog failedDialog;
     private Locale myLocale;
     String currentLanguage;
-
+    private boolean isuUploaded=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,6 +270,20 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         snackbar.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        if(isuUploaded) {
+            Intent intent = new Intent(QuestionTakerActivity.this,
+                    MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }else
+        {
+            super.onBackPressed();
+
+        }
+    }
 
     public boolean checkValidation(){
         checkOptionsEntered();
@@ -446,8 +452,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                 option2EditText.setText("");
                 option3EditText.setText("");
                 option4EditText.setText("");
-                showSuccessfullDialog();
-
+                showCustomSuccessfullDialog();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -462,39 +467,78 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                 addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
                         R.color.chip_fader_color, null));
                 backImageButton.setEnabled(true);
-
-                AlertDialog.Builder builder=new AlertDialog.Builder(QuestionTakerActivity.this);
-                builder.setMessage("Survey is not accepted,Please try again");
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        failedDialog.dismiss();
-                    }
-                });
-                failedDialog=builder.create();
-                failedDialog.show();
+                showCustomErrorDialog();
 
 
 
             }
         });
     }
-    private void showSuccessfullDialog(){
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setMessage("Survey accepetd.\nSurvey will be open for 30 days");
-        builder.setPositiveButton("got it", new DialogInterface.OnClickListener() {
+
+    private void showCustomSuccessfullDialog() {
+        final ViewGroup viewGroup = findViewById(R.id.root);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        TextView textView=dialogView.findViewById(R.id.message_text_view);
+        textView.setText(getString(R.string.survey_accepted_successfull));
+        final android.support.v7.app.AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onDismiss(DialogInterface dialogInterface) {
                 Handler handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        isuUploaded=true;
                         onBackPressed();
                     }
                 }, 300);
             }
         });
-        AlertDialog dialog=builder.create();
-        dialog.show();
+
+    }
+
+    private void showCustomErrorDialog(){
+
+        final ViewGroup viewGroup = findViewById(R.id.root);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_failure_dialog, viewGroup, false);
+        TextView textView=dialogView.findViewById(R.id.message_text_view);
+        textView.setText(getString(R.string.survey_accepted_failed));
+        MaterialButton retryButton=dialogView.findViewById(R.id.retry_button);
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        final android.support.v7.app.AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
+        alertDialog.show();
+
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                if(checkValidation()){
+                    if(isNetworkAvailable()){
+
+                        submitButtonConstraintLayout.setEnabled(false);
+                        submitTextView.setText("Uploading ...");
+                        progressBar.setVisibility(View.VISIBLE);
+                        addImageButton.setEnabled(false);
+                        questionInputLayout.setEnabled(false);
+                        addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
+                                R.color.chip_fader_color, null));
+                        backImageButton.setEnabled(false);
+                        uploadToRemoteDatabase();
+
+                    }else {
+                        showSnackBar("No internet connection");
+                    }
+                }
+            }
+        });
     }
 }

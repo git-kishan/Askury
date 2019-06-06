@@ -4,12 +4,15 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.droid.solver.askapp.R;
 
@@ -84,7 +87,6 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         changeBackGroundOfLinearLayout();
         changeColor(container4.getId());
     }
-
     private void changeColor(int id){
         switch (id){
             case R.id.linearLayout3:
@@ -140,4 +142,13 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         percent4.setVisibility(View.VISIBLE);
 
     }
+
+    void onThreeDotClicked(Context context){
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();    }
 }
