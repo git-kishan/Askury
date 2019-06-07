@@ -33,16 +33,26 @@ import com.droid.solver.askapp.Question.QuestionClickListener;
 import com.droid.solver.askapp.Question.QuestionFragment;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.SetOptions;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity implements
@@ -57,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements
     BottomNavigationView bottomNavigationView;
     FrameLayout frameLayout;
     Toolbar toolbar;
-    private CardView toolbarCardView;
     private FirebaseFirestore firestoreRoot;
     private FirebaseUser user;
     private String uid;
@@ -69,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements
         initEmojiFont();
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
-        toolbarCardView = findViewById(R.id.toolbar_card_view);
+        toolbar.inflateMenu(R.menu.toolbar_menu_main);
         frameLayout = findViewById(R.id.fragment_container);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -88,7 +97,27 @@ public class MainActivity extends AppCompatActivity implements
         if (lowProfilePicPath == null && highProfilePath == null) {
             getProfilePicUrlFromRemoteDatabase();
         }
-
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if(menuItem.getItemId()==R.id.log_out){
+                    FirebaseAuth.getInstance().signOut();
+                    SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor.clear();
+                    editor.apply();
+                    startActivity(new Intent(MainActivity.this,SignInActivity.class));
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+        if(isNetworkAvailable()){
+            initiliazeLikeList();
+        }
+        LocalDatabase database=new LocalDatabase(getApplicationContext());
+        database.getAnswerLikeModel();
     }
     private void initEmojiFont(){
         FontRequest fontRequest = new FontRequest(
@@ -316,56 +345,24 @@ public class MainActivity extends AppCompatActivity implements
         ConnectivityManager cmm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cmm.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-//            path=sharedPreferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
-//        if(highProfilePic)
-//            path=sharedPreferences.getString(Constants.HIGH_PROFILE_PIC_PATH, null);
-//
-//        if(path!=null){
-//            File file=null;
-//            if(lowProfilePic)
-//              file=new File(path,"profile_pic_low_resolution");
-//            else if(highProfilePic)
-//                file=new File(path,"profile_pic_high_resolution");
-//            try {
-//                Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
-//                if(lowProfilePic) {
-////                    Log.i("TAG", "loaded bitmap width  low:- " + bitmap.getWidth());
-////                    Log.i("TAG", "loaded bitmap height low :- " + bitmap.getHeight());
-////                    Log.i("TAG", "loaded bitmap size low :- " + bitmap.getByteCount());
-//                } if(highProfilePic) {
-////                    Log.i("TAG", "loaded bitmap width high :- " + bitmap.getWidth());
-////                    Log.i("TAG", "loaded bitmap height high:- " + bitmap.getHeight());
-////                    Log.i("TAG", "loaded bitmap size high:- " + bitmap.getByteCount());
-//                }
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }else {
-//            //load profile pic url from remote database
-//            getProfilePicUrlFromRemoteDatabase();
-//            Log.i("TAG", "profile pic path is not found in shared preferences ");
-//        }
-//
-//
-//    }
+    }
+    private void initiliazeLikeList(){
 
-//    private boolean isInternetConnectionAvailable(){
-//        ConnectivityManager connectivityManager=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
-//        NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
-//        return networkInfo!=null&&networkInfo.isConnected();
-//    }
-//
-//
-//
-//    private void createScaledBitmap(Bitmap bitmap){
-//        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-//        Bitmap bmp=Bitmap.createScaledBitmap(bitmap,300,300, false);
-//        bmp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-//        byte [] compressedBitmapByteArray=byteArrayOutputStream.toByteArray();
-//        String encodedString= Base64.encodeToString(compressedBitmapByteArray,Base64.DEFAULT);
-//
-//    }
+        int currentYear= Calendar.getInstance().get(Calendar.YEAR);
+     FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
+     DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("answerLike")
+             .document("like@"+currentYear);
 
+     ArrayList<String> answerLikeId=new ArrayList<>();
+     Map<String,Object> map=new HashMap<>();
+     map.put("answerLikeId", answerLikeId);
+
+     userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
+         @Override
+         public void onComplete(@NonNull Task<Void> task) {
+             Log.i("TAG", "array list created in remote database");
+         }
+     });
 
     }
 

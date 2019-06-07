@@ -1,23 +1,20 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.droid.solver.askapp.Answer.QuestionAnswerModel;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
+import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private Context context;
@@ -28,12 +25,19 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private static final int SURVEY=2;
     private static final int IMAGE_POLL=3;
     private static final int LOADING=4;
+    private   ArrayList<String> answerLikeList;
+    private  LocalDatabase localDatabase ;
 
     HomeRecyclerViewAdapter(Context context, ArrayList<Object> list){
         this.context=context;
         this.list=list;
-        if(context!=null)
-        inflater=LayoutInflater.from(context);
+        if(context!=null) {
+            inflater = LayoutInflater.from(context);
+            localDatabase = new LocalDatabase(context.getApplicationContext());
+            answerLikeList = localDatabase.getAnswerLikeModel();
+            if(answerLikeList==null)
+                answerLikeList=new ArrayList<>();
+        }
     }
 
     @NonNull
@@ -80,8 +84,16 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String askerBio=((RootQuestionModel) list.get(i)).getAskerBio();
                 String askerName=((RootQuestionModel) list.get(i)).getAskerName();
                 String recentAnswererName=((RootQuestionModel) list.get(i)).getRecentAnswererName();
+                String recentAnswerId=((RootQuestionModel) list.get(i)).getRecentAnswerId();
                 int likeCount=((RootQuestionModel) list.get(i)).getRecentAnswerLikeCount();
                 int answerCount=((RootQuestionModel) list.get(i)).getAnswerCount();
+
+                if(answerLikeList.contains(recentAnswerId)){
+                    ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
+                }else {
+                    ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
+                }
+
                 long timeOfAsking=((RootQuestionModel) list.get(i)).getTimeOfAsking();
                 if(timeOfAsking==0)
                     timeOfAsking=System.currentTimeMillis();
@@ -436,22 +448,84 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private void handleClickListenerOfQuestionAnswer(final QuestionAnswerViewHolder holder, RootQuestionModel rootQuestionModel){
+    private void handleClickListenerOfQuestionAnswer(final QuestionAnswerViewHolder holder,
+                                                     final RootQuestionModel rootQuestionModel){
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.onThreeDotClicked(context);
+            }
+        });
+        holder.wantToAnswerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onWantToAnswer(context,rootQuestionModel);
+            }
+        });
+        holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswersClicked(context, rootQuestionModel);
+            }
+        });
+        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                holder.onLiked(context, rootQuestionModel);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                holder.onDisliked(context, rootQuestionModel);
+            }
+        });
+        holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onNumberOfAnswerClicked(context, rootQuestionModel);
+            }
+        });
+    }
+
+    private void handleClickListenerOfQuestionAnswerWithImage(final QuestionAnswerWithImageViewHolder holder,
+                                                              final RootQuestionModel rootQuestionModel){
+
+        holder.threeDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onThreeDotClicked(context);
+            }
+        });
+        holder.wantToAnswerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onWantToAnswer(context, rootQuestionModel);
+            }
+        });
+        holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswersClicked(context, rootQuestionModel);
+            }
+        });
+        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                holder.onLiked(context, rootQuestionModel);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                holder.onDisliked(context, rootQuestionModel);
+            }
+        });
+        holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onNumberOfAnswerClicked(context, rootQuestionModel);
             }
         });
 
-    }
-    private void handleClickListenerOfQuestionAnswerWithImage(final QuestionAnswerWithImageViewHolder holder, RootQuestionModel rootQuestionModel){
-        holder.threeDot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.onThreeDotClicked(context);
-            }
-        });
     }
 
 

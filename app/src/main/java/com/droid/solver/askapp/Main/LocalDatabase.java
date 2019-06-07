@@ -20,6 +20,7 @@ import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=2;
+    private static final int DATABASE_VERSION=3;
 
     private static final String USER_INFO_TABLE="user_info_table";
     private static final String USER_QUESTION_MODEL="question_asked_table";
@@ -160,8 +161,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
             askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+image1Url+" TEXT ,"+image2Url+" TEXT ,"+timeOfPolling+" INTEGER ,"+
             image1LikeNo+" INTEGER ,"+image2LikeNo+" INTEGER ,"+imagePollId+" TEXT PRIMARY KEY"+")";
 
-    private static final String CREATE_TABLE_ANSWER_LIKE_TABLE="CREATE TABLE "+ANSWER_LIKE_TABLE+"("+questionId+" TEXT,"+
-            answerId+" TEXT PRIMARY KEY"+")";
+    private static final String CREATE_TABLE_ANSWER_LIKE_TABLE="CREATE TABLE "+ANSWER_LIKE_TABLE+"("+answerId+" TEXT PRIMARY KEY"+")";
 
     private static final String CREATE_TABLE_SURVEY_PARTICIPATED_TABLE="CREATE TABLE "+SURVEY_PARTICIPATED_TABLE+"("+surveyParticipatedId+
             " TEXT PRIMARY KEY,"+optionSelected+" INTEGER "+")";
@@ -657,23 +657,30 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return null;
      }
 
-     public void insertAnswerLikeModel(HashMap<String,String> likeMap){
+     public void insertAnswerLikeModel(ArrayList<String> list){
         SQLiteDatabase database=this.getWritableDatabase();
         if(database.isOpen()){
             ContentValues values=new ContentValues();
-            Set<String> questionIdSet=likeMap.keySet();
-            for(String key:questionIdSet){
-                values.put(questionId, key);
-                values.put(answerId, likeMap.get(key));
+            if(list!=null)
+            for(int i=0;i<list.size();i++){
+                values.put(answerId, list.get(i));
                 database.insert(ANSWER_LIKE_TABLE, null, values);
                 values.clear();
-
             }
             if(database.isOpen())
                 database.close();
 
             }
 
+        }
+        public void insertSingleAnswerLikeModel(String manswerId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(answerId, manswerId);
+        database.insert(ANSWER_LIKE_TABLE, null, values);
+        values.clear();
+        if(database.isOpen())
+            database.close();
         }
         public void clearAnswerLikeModel(){
             SQLiteDatabase database=this.getWritableDatabase();
@@ -681,26 +688,30 @@ public class LocalDatabase extends SQLiteOpenHelper {
             if(database.isOpen())
                 database.close();
         }
-        public HashMap<String,String> getAnswerLikeModel(){
+        public ArrayList<String> getAnswerLikeModel(){
         SQLiteDatabase database=this.getWritableDatabase();
         String query="SELECT * FROM "+ANSWER_LIKE_TABLE;
-        HashMap<String,String> likeMap=new HashMap<>();
-
+        ArrayList<String> list = new ArrayList<>();
         Cursor cursor=database.rawQuery(query, null);
         if(cursor.moveToFirst()){
             do{
-                String mquestionId=cursor.getString(cursor.getColumnIndex(questionId));
                 String manswerId=cursor.getString(cursor.getColumnIndex(answerId));
-                likeMap.put(mquestionId, manswerId);
+                list.add(manswerId);
 
             }while (cursor.moveToNext());
             if(database.isOpen())
                 database.close();
             if(!cursor.isClosed())
                 cursor.close();
-            return likeMap;
+            return list;
         }
         return null;
+    }
+    public void removeAnswerLikeModel(String manswerId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(ANSWER_LIKE_TABLE, answerId+"=?", new String[]{manswerId});
+        if(database.isOpen())
+            database.close();
     }
 
     public void insertSurveyParticipatedModel(HashMap<String,Integer> participatedMap){
@@ -717,9 +728,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
             }
             if(database.isOpen())
                 database.close();
-
         }
-
     }
     public void clearSurveyParticipatedModel(){
         SQLiteDatabase database=this.getWritableDatabase();
@@ -747,6 +756,13 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
         return null;
 
+    }
+    public void removeSurveyParticipatedModel(String msurveyParticipatedId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(SURVEY_PARTICIPATED_TABLE, surveyParticipatedId+"+=?", new String[]{msurveyParticipatedId});
+//        database.execSQL("DELETE FROM "+SURVEY_PARTICIPATED_TABLE+" WHERE "+surveyParticipatedId+"=="+msurveyParticipatedId);
+        if(database.isOpen())
+            database.close();
     }
 
     public void insertImagePollLikeModel(HashMap<String,Integer> imageLikeMap){
@@ -791,6 +807,13 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
         }
         return  null;
+    }
+    public void removeImagePollLikeModel(String mimagePollId){
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(IMAGE_POLL_LIKE_TABLE, imagePollId+"=?", new String[]{mimagePollId});
+//        database.execSQL("DELETE FROM "+IMAGE_POLL_LIKE_TABLE+" WHERE "+imagePollId+"=="+mimagePollId);
+        if(database.isOpen())
+            database.close();
     }
 
     public  void insertFollowerModel(ArrayList<Follower> list){
@@ -840,6 +863,13 @@ public class LocalDatabase extends SQLiteOpenHelper {
             return list;
         }
         return null;
+    }
+    public void removeFollowerModel(String mfollowerId){
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(FOLLOWER_TABLE, followerId+"=?", new String[]{mfollowerId});
+//        database.execSQL("DELETE FROM "+FOLLOWER_TABLE+" WHERE "+followerId+"=="+mfollowerId);
+        if(database.isOpen())
+            database.close();
     }
 
     public  void insertFollowingModel(ArrayList<Following> list){
@@ -891,6 +921,13 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
         return null;
     }
+    public void removeFollowingModel(String mfollowingId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(FOLLOWING_TABLE, followingId+"=?", new String[]{mfollowingId});
+//        database.execSQL("DELETE FROM "+FOLLOWING_TABLE+" WHERE "+followingId+"=="+mfollowingId);
+        if(database.isOpen())
+            database.close();
+    }
 
 
     public  void insertCommunityModel(ArrayList<Community> list){
@@ -940,6 +977,13 @@ public class LocalDatabase extends SQLiteOpenHelper {
             return list;
         }
         return null;
+    }
+    public void removeCommunityModel(String mcommunityId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(COMMUNITY_TABLE, communityId+"=?", new String[]{mcommunityId});
+        database.execSQL("DELETE FROM "+COMMUNITY_TABLE+" WHERE "+communityId+"=="+mcommunityId);
+        if(database.isOpen())
+            database.close();
     }
 
 

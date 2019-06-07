@@ -30,10 +30,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AccountFragment extends Fragment implements View.OnClickListener {
 
     private ViewPager viewPager;
-    private CardView toolbarCardViewActivity;
     private TabLayout tabLayout;
     private ImageView settingimage;
     private CircleImageView profileImage;
+    private CardView toolbarCardViewActivity;
     private EmojiTextView profileName,professionTextView;
     private TextView followerCount,followingCount,pointCount,accountStatusTextView;
     private TextView followerTextView,followingTextView,pointTextView;
@@ -88,7 +88,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         }
         tabLayout.getTabAt(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_questions_black, null));
         tabLayout.getTabAt(1).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_qa_black, null));
-        tabLayout.getTabAt(2).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_like_black, null));
     }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -102,7 +101,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getChildFragmentManager());
         pagerAdapter.addFragment(new AccountQuestionFragment());
         pagerAdapter.addFragment(new AccountQuestionAnswerFragment());
-        pagerAdapter.addFragment(new AccountLikeFragment());
         viewPager.setAdapter(pagerAdapter);
     }
     @Override

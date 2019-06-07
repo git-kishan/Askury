@@ -104,39 +104,7 @@ public class QuestionFragment extends Fragment {
         });
     }
 
-//    private void loadFromLocalDatabase(){
-//        Log.i("TAG", "fetch from local database");
-//        LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
-//        questionListFetchFromLocalDatabase = database.getQuestionAsked();
-//        if(questionListFetchFromLocalDatabase!=null){
-//            if(questionListFetchFromLocalDatabase.size()!=0) {
-//                Log.i("TAG", "fetch from locally");
-//                shimmerFrameLayout.setVisibility(View.GONE);
-//                adapter = new AskQuestionRecyclerAdapter(getActivity(), questionListFetchFromLocalDatabase);
-//                recyclerView.setAdapter(adapter);
-//                swipeRefreshLayout.setEnabled(false);
-//                swipeRefreshLayout.setRefreshing(false);
-//                swipeRefreshLayout.setEnabled(false);
-//
-////                if (!MainActivity.isDataLoadedFromRemoteInQuestionFragment) {
-////                    loadDataFromRemoteDatabase();
-////                    swipeRefreshLayout.setEnabled(true);
-////                    swipeRefreshLayout.setRefreshing(true);
-////                }
-//            }
-//            else  {
-//                loadDataFromRemoteDatabase();
-//                swipeRefreshLayout.setEnabled(true);
-//                swipeRefreshLayout.setRefreshing(true);
-//            }
-//        }else {
-//            loadDataFromRemoteDatabase();
-//            swipeRefreshLayout.setEnabled(true);
-//            swipeRefreshLayout.setRefreshing(true);
-//        }
-//
-//
-//    }
+
     private void addFabItem(){
 
         speedDialView.addActionItem(
@@ -172,8 +140,8 @@ public class QuestionFragment extends Fragment {
 
     private void loadDataFromRemoteDatabase() {
 
-        root.collection("question").get().
-                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        root.collection("question").
+                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
@@ -184,22 +152,17 @@ public class QuestionFragment extends Fragment {
                             }
                             adapter =new AskQuestionRecyclerAdapter(getActivity(), questionListFetchFromRemoteDatabase);
                             recyclerView.setAdapter(adapter);
-//                            LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
                             adapter.notifyDataSetChanged();
-//                            int deleted=database.clearQuestionAsked();
-//                            boolean inserted=database.insertQuestionAsked(questionListFetchFromRemoteDatabase);
                             swipeRefreshLayout.setRefreshing(false);
                             swipeRefreshLayout.setEnabled(false);
                             shimmerFrameLayout.setVisibility(View.GONE);
-//                            MainActivity.isDataLoadedFromRemoteInQuestionFragment=true;
                         }
                         else {
                             swipeRefreshLayout.setRefreshing(false);
                             swipeRefreshLayout.setEnabled(false);
                             Log.i("TAG", "exception occurs in getting documents :- " + task.getException());
                             shimmerFrameLayout.setVisibility(View.GONE);
-                            //show error getting in documents
-                            //task.getException()
+
                             Toast.makeText(getActivity(), "Network response is not good", Toast.LENGTH_LONG).show();
                         }
                     }

@@ -2,6 +2,7 @@ package com.droid.solver.askapp.Home;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v7.widget.RecyclerView;
@@ -9,9 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.droid.solver.askapp.Answer.AnswerActivity;
+import com.droid.solver.askapp.Answer.QuestionAnswerModel;
+import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.like.LikeButton;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,4 +60,36 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
         alertDialog.show();
     }
+    public void onWantToAnswer(Context context, RootQuestionModel model){
+
+        Intent intent=new Intent(context,AnswerActivity.class);
+        intent.putExtra("askerUid", model.getAskerId());
+        intent.putExtra("questionId", model.getQuestionId());
+        intent.putExtra("question", model.getQuestion());
+        intent.putExtra("timeOfAsking", model.getTimeOfAsking());
+        intent.putExtra("askerName", model.getAskerName());
+        intent.putExtra("askerImageUrl", model.getAskerImageUrlLow());
+        intent.putExtra("askerBio", model.getAskerBio());
+        intent.putStringArrayListExtra("questionType", (ArrayList<String>)model.getQuestionType());
+        context.startActivity(intent);
+
+    }
+
+    public void onAnswersClicked(Context context,RootQuestionModel model){
+        Toast.makeText(context, "number of answer clicked", Toast.LENGTH_SHORT).show();
+    }
+    public void onLiked(Context context,RootQuestionModel model){
+
+        Toast.makeText(context, "like ", Toast.LENGTH_SHORT).show();
+    }
+    public void onDisliked(Context context,RootQuestionModel model){
+        Toast.makeText(context, "dislike ", Toast.LENGTH_SHORT).show();
+
+    }
+    public void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
+        Intent intent =new Intent(context, com.droid.solver.askapp.Home.AnswerActivity.class);
+        context.startActivity(intent);
+    }
+
+
 }

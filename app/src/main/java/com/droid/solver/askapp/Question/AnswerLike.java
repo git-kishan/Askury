@@ -1,18 +1,18 @@
 package com.droid.solver.askapp.Question;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AnswerLike {
 
-    private HashMap<String,String> answerLikeMap;
-    //questionId
+    private ArrayList<String> answerLike;
     //answerId
-    public AnswerLike(HashMap<String,String> answerMap){
-        this.answerLikeMap=answerMap;
+    public AnswerLike(ArrayList<String> answerLike){
+        this.answerLike=answerLike;
     }
 
-    public HashMap<String, String> getAnswerLikeMap() {
-        return answerLikeMap;
+    public ArrayList<String> getAnswerLike() {
+        return answerLike;
     }
 }
 class SurveyParticipated{

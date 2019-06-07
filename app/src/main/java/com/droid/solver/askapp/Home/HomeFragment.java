@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
         CollectionReference surveyRef=rootRef.collection("survey");
         CollectionReference questionRef=rootRef.collection("question");
 
-        questionRef.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
+        questionRef.whereGreaterThanOrEqualTo("answerCount", 1).get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){

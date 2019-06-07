@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.Home.HomeFragment;
@@ -21,6 +22,11 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,6 +36,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firestore.v1.FirestoreGrpc;
@@ -46,12 +53,19 @@ public class SignInActivity extends AppCompatActivity {
     LoginButton loginButton;
     private FirebaseAuth auth;
     private FirebaseUser user;
+    GoogleSignInClient mGoogleSignInClient;
+    public static final int RC_SIGN_IN=313;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         callbackManager = CallbackManager.Factory.create();
         loginButton = findViewById(R.id.login_button);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user!=null){
@@ -72,10 +86,27 @@ public class SignInActivity extends AppCompatActivity {
             public void onError(FacebookException error) {
             }
         });
+
+        findViewById(R.id.google_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signInWithGoogle();
+            }
+        });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                Toast.makeText(SignInActivity.this,"Exception in on activity result  "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
     private void handleFacebookAccessToken(AccessToken token) {
@@ -124,6 +155,57 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 });
     }
+    private void signInWithGoogle(){
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = auth.getCurrentUser();
+                            FirebaseFirestore db=FirebaseFirestore.getInstance();
+                            Map<String,Object> userDetail = new HashMap<>();
+                            String userName=user.getDisplayName();
+                            String profilePicUrl=String.valueOf(user.getPhotoUrl());
+                            String userId=user.getUid();
+                            userDetail.put("userName", userName);
+                            userDetail.put("profilePicUrlLow", profilePicUrl);
+                            userDetail.put("userId", userId);
+                            Log.i("TAG", "user Name :- "+userName);
+                            Log.i("TAG", "profile pic :- "+profilePicUrl);
+                            Log.i("TAG", "userId :- "+userId);
+                            db.collection("user").document(userId).set(userDetail, SetOptions.merge())
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                                            finish();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(SignInActivity.this,"error occured in firestore" ,Toast.LENGTH_SHORT).show();
+                                    Log.i("TAG", "Error "+e.getLocalizedMessage());
+                                }
+                            });
+
+
+                            Toast.makeText(SignInActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+    }
+
 
 
 

@@ -62,11 +62,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firestore.v1.Document;
 import com.google.firestore.v1.DocumentMask;
 import com.google.firestore.v1.FirestoreGrpc;
 
@@ -83,6 +87,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import steelkiwi.com.library.DotsLoaderView;
 
@@ -129,6 +134,16 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         askerImageUrl=intent.getStringExtra("askerImageUrl");
         askerBio=intent.getStringExtra("askerBio");
         questionType=intent.getStringArrayListExtra("questionType");
+//
+//        Log.i("TAG", "asker Uid :-"+askerUid);
+//        Log.i("TAG", "questionId :- "+questionId);
+//        Log.i("TAG", "question :_ "+question);
+//        Log.i("TAG", "timeOfAsking :- "+timeOfAsking);
+//        Log.i("TAG", "asker Name :- "+askerName);
+//        Log.i("TAG", "askerImageUrl :- "+askerImageUrl);
+//        Log.i("TAG", "askerbio :- "+askerBio);
+//        if(questionType!=null)
+//            Log.i("TAG", "question type :- "+questionType.toString());
         rootView=findViewById(R.id.root_card_view);
         fontTextView = findViewById(R.id.font_text);
         fontCardView=findViewById(R.id.cardView10);
@@ -195,7 +210,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         String uid=auth.getUid();
                         if(askerUid!=null)
                         if (uid.equals(askerUid)) {
-                            overlayLayout.setVisibility(View.VISIBLE);
+                            overlayLayout.setVisibility(View.GONE);
                             dotsLoaderView.setVisibility(View.GONE);
                             showDialogMessage("You can't answer to your own question");
                             return;
@@ -211,6 +226,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                 break;
         }
     }
+
     private void swipefont(){
         Typeface answerFont=ResourcesCompat.getFont(this, fontId[editTextFontSelectedPosition]);
         Typeface textViewFont=ResourcesCompat.getFont(this, fontId[textViewFontSelectedPosition]);
@@ -490,7 +506,8 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     answerImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            uploadAnswerToRemoteDatabase(uri.toString());
+//                            uploadAnswerToRemoteDatabase(uri.toString());
+                            checkIfAnswerAlreadyExist(uri.toString());
                         }
                     });
                 }
@@ -505,70 +522,108 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                 }
             });
         }else {
-            uploadAnswerToRemoteDatabase(null);
+//            uploadAnswerToRemoteDatabase(null);
+            checkIfAnswerAlreadyExist(null);
         }
 
     }
 
-    private void uploadAnswerToRemoteDatabase(@Nullable String answerImageUrl){
+    private void checkIfAnswerAlreadyExist(final String imageUrl){
+        user=auth.getCurrentUser();
+        Log.i("TAG", "inside check function");
+
+        Query query=firestoreRef.collection("user").document(askerUid).collection("question").
+                document(questionId).collection("answer").whereEqualTo("answererId", user.getUid());
+        query.get().addOnCompleteListener(this, new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.i("TAG", "before loop :- ");
+                    int counter=0;
+                    String answerId=null;
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                        answerId=snapshot.getId();
+                        counter++;
+                    }
+                    if(counter==0){
+                        uploadAnswerToRemoteDatabase(imageUrl,false,null);
+
+                    }else if(counter>0){
+                        uploadAnswerToRemoteDatabase(imageUrl, true,answerId);
+                    }
+                }else {
+                    Log.i("TAG", "task failed:- ");
+
+                }
+            }
+        });
+
+    }
+
+    private void uploadAnswerToRemoteDatabase(@Nullable String answerImageUrl,boolean doOverride,String previousAnswerId){
         String uid=auth.getUid();
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-        String answererUid=preferences.getString(Constants.userId, null);
         String answererName=preferences.getString(Constants.userName, null);
         String answererImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
         String answer=answerEditText.getText().toString();
         String answererBio=preferences.getString(Constants.bio, null);
         final boolean imageAttached=compressedByteArray!=null;
         String questionId=this.questionId;
+        DocumentReference userAnswerRef=null;
+        DocumentReference questionAnswer=null;
+        DocumentReference rootQuestionRef=null;
+        DocumentReference userQuestionRef=null;
 
-        String answerId=firestoreRef.collection("user").document(uid).collection("answer").document().getId();
-        UserAnswerModel userAnswerModel=new UserAnswerModel(
-                askerUid, askerName, askerImageUrl, askerBio,
-                questionId, question, questionType, timeOfAsking,
-                System.currentTimeMillis(), answerId, false, answer,
-                imageAttached, answererImageUrl, fontSelected, 0);
+        if(previousAnswerId==null){
 
-        QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
-                askerUid, askerName, askerBio, askerImageUrl, questionType,
-                questionId, question, timeOfAsking, System.currentTimeMillis(),
-                answererUid, answererName, answererImageUrl, answererBio,
-                false, answerId, answer, imageAttached, true,
-                fontSelected, false, 0);
+            String answerId=firestoreRef.collection("user").document(uid).collection("answer").document().getId();
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("recentAnswererId", uid);
-        map.put("recentAnswererImageUrlLow",answererImageUrl);
-        map.put("recentAnswererName", answererName);
-        map.put("recentAnswererBio", answererBio);
-        map.put("recentAnswerId", answerId);
-        map.put("recentAnswer", answer);
-        map.put("recentAnswerImageAttached", imageAttached);
-        map.put("recentAnswerImageUrl", answerImageUrl);
-        map.put("answerCount", FieldValue.increment(1));
-        map.put("recentAnswerLikeCount", 0);
+            UserAnswerModel userAnswerModel=new UserAnswerModel(
+                    askerUid, askerName, askerImageUrl, askerBio,
+                    questionId, question, questionType, timeOfAsking,
+                    System.currentTimeMillis(), answerId, false, answer,
+                    imageAttached, answererImageUrl, fontSelected, 0);
 
-        DocumentReference userAnswerRef=firestoreRef.collection("user").
-                document(uid).collection("answer").document(answerId);
+            QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
+                    askerUid, askerName, askerBio, askerImageUrl, questionType,
+                    questionId, question, timeOfAsking, System.currentTimeMillis(),
+                    uid, answererName, answererImageUrl, answererBio,
+                    false, answerId, answer, imageAttached, true,
+                    fontSelected, false, 0);
 
-        DocumentReference questionAnswer=firestoreRef.collection("user").document(askerUid)
-                .collection("question").document(questionId).collection("answer").document(answerId);
+            Map<String, Object> map = new HashMap<>();
+            map.put("recentAnswererId", uid);
+            map.put("recentAnswererImageUrlLow",answererImageUrl);
+            map.put("recentAnswererName", answererName);
+            map.put("recentAnswererBio", answererBio);
+            map.put("recentAnswerId", answerId);
+            map.put("recentAnswer", answer);
+            map.put("recentAnswerImageAttached", imageAttached);
+            map.put("recentAnswerImageUrl", answerImageUrl);
+            map.put("answerCount", FieldValue.increment(1));
+            map.put("recentAnswerLikeCount", 0);
 
-        DocumentReference rootQuestionRef=firestoreRef.collection("question").document(questionId);
+            userAnswerRef=firestoreRef.collection("user").
+                    document(uid).collection("answer").document(answerId);
 
-        DocumentReference userQuestionRef=firestoreRef.collection("user").document(askerUid)
-                .collection("question").document(questionId);
+            questionAnswer = firestoreRef.collection("user").document(askerUid)
+                    .collection("question").document(questionId).collection("answer").document(answerId);
 
-        Map<String,Object > tempMap=new HashMap<>();
-        tempMap.put("answerCount", FieldValue.increment(1));
+             rootQuestionRef=firestoreRef.collection("question").document(questionId);
 
-        WriteBatch writeBatch=firestoreRef.batch();
+             userQuestionRef=firestoreRef.collection("user").document(askerUid)
+                    .collection("question").document(questionId);
 
-        writeBatch.set(userAnswerRef, userAnswerModel);
-        writeBatch.set(questionAnswer, questionAnswerModel);
-        writeBatch.update(rootQuestionRef, map);
-        writeBatch.update(userQuestionRef, tempMap);
+            Map<String,Object > tempMap=new HashMap<>();
+            tempMap.put("answerCount", FieldValue.increment(1));
 
-            writeBatch.commit().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            WriteBatch writeBatch = firestoreRef.batch();
+
+            writeBatch.set(userAnswerRef, userAnswerModel);
+            writeBatch.set(questionAnswer, questionAnswerModel);
+            writeBatch.set(rootQuestionRef, map, SetOptions.merge());
+            writeBatch.update(userQuestionRef, tempMap);
+            writeBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     overlayLayout.setVisibility(View.GONE);
@@ -578,7 +633,6 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     attachImage.setImageBitmap(null);
                     Log.i("TAG","successfully commited batch" );
                     showDialogMessage("Answered successfully \n\nThank you ");
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -590,6 +644,70 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     Log.i("TAG", "unsuccessful write");
                 }
             });
+
+        }
+        else {
+
+            UserAnswerModel userAnswerModel=new UserAnswerModel(
+                    askerUid, askerName, askerImageUrl, askerBio,
+                    questionId, question, questionType, timeOfAsking,
+                    System.currentTimeMillis(), previousAnswerId, false, answer,
+                    imageAttached, answererImageUrl, fontSelected, 0);
+
+            QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
+                    askerUid, askerName, askerBio, askerImageUrl, questionType,
+                    questionId, question, timeOfAsking, System.currentTimeMillis(),
+                    uid, answererName, answererImageUrl, answererBio,
+                    false, previousAnswerId, answer, imageAttached, true,
+                    fontSelected, false, 0);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("recentAnswererId", uid);
+            map.put("recentAnswererImageUrlLow",answererImageUrl);
+            map.put("recentAnswererName", answererName);
+            map.put("recentAnswererBio", answererBio);
+            map.put("recentAnswerId", previousAnswerId);
+            map.put("recentAnswer", answer);
+            map.put("recentAnswerImageAttached", imageAttached);
+            map.put("recentAnswerImageUrl", answerImageUrl);
+            map.put("recentAnswerLikeCount", 0);
+
+            userAnswerRef=firestoreRef.collection("user").
+                    document(uid).collection("answer").document(previousAnswerId);
+
+            questionAnswer = firestoreRef.collection("user").document(askerUid)
+                    .collection("question").document(questionId).collection("answer").document(previousAnswerId);
+
+            rootQuestionRef=firestoreRef.collection("question").document(questionId);
+
+            WriteBatch writeBatch = firestoreRef.batch();
+
+            writeBatch.set(userAnswerRef, userAnswerModel);
+            writeBatch.set(questionAnswer, questionAnswerModel);
+            writeBatch.set(rootQuestionRef, map, SetOptions.merge());
+
+            writeBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    overlayLayout.setVisibility(View.GONE);
+                    dotsLoaderView.hide();
+                    dotsLoaderView.setVisibility(View.GONE);
+                    answerEditText.setText("");
+                    attachImage.setImageBitmap(null);
+                    Log.i("TAG","successfully commited batch" );
+                    showDialogMessage("Answered successfully \n\nThank you ");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    overlayLayout.setVisibility(View.GONE);
+                    dotsLoaderView.hide();
+                    dotsLoaderView.setVisibility(View.GONE);
+                    //show some error message
+                    Log.i("TAG", "unsuccessful write");
+                }
+            });
+        }
         }
 
 }
