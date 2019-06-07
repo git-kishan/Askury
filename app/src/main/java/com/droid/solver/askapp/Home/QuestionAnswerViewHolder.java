@@ -102,10 +102,6 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
 
     public void onLiked(final Context context, final RootQuestionModel model){
-        Log.i("TAG", "like triggered");
-        Log.i("TAG", "asker id  :- "+model.getAskerId());
-        Log.i("TAG", "recent answerer id :-"+model.getRecentAnswererId());
-        Log.i("TAG", "recent answer id :- "+model.getRecentAnswerId());
 
         SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         final String likerId=user.getUid();
@@ -156,7 +152,7 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
                 if(likerId.equals(model.getAskerId())){
 
                 }
-                Log.i("TAG", "successfully dislike");
+                Log.i("TAG", "successfully like");
             }
         });
         int count=Integer.parseInt(likeCount.getText().toString())+1;
@@ -211,6 +207,7 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         database.removeAnswerLikeModel(model.getRecentAnswerId());
     }
+
     public void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
         Intent intent =new Intent(context, com.droid.solver.askapp.Home.AnswerActivity.class);
         context.startActivity(intent);

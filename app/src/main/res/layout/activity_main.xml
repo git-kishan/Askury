@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
+    android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +8,19 @@
     android:background="@color/chip_fader_color"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/progress_frame"
+        android:elevation="10dp"
+        android:background="@color/sd_overlay_color"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"

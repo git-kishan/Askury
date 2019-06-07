@@ -100,7 +100,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     private TextView fontTextView;
     private EmojiTextView questionTextView;
     private CardView fontCardView,galleryCardView,cameraCardView;
-    int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
+    public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
     int textViewFontSelectedPosition=0;
     int fontSelected=0;
     int editTextFontSelectedPosition;
@@ -232,6 +232,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         Typeface textViewFont=ResourcesCompat.getFont(this, fontId[textViewFontSelectedPosition]);
         answerEditText.setTypeface(answerFont);
         fontSelected=editTextFontSelectedPosition;
+        Log.i("TAG","font selected position :- "+fontSelected);
         fontTextView.setTypeface(textViewFont);
 
     }
@@ -602,6 +603,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             map.put("recentAnswerImageUrl", answerImageUrl);
             map.put("answerCount", FieldValue.increment(1));
             map.put("recentAnswerLikeCount", 0);
+            map.put("fontUsed", fontSelected);
 
             userAnswerRef=firestoreRef.collection("user").
                     document(uid).collection("answer").document(answerId);
@@ -671,6 +673,8 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             map.put("recentAnswerImageAttached", imageAttached);
             map.put("recentAnswerImageUrl", answerImageUrl);
             map.put("recentAnswerLikeCount", 0);
+            map.put("fontUsed", fontSelected);
+
 
             userAnswerRef=firestoreRef.collection("user").
                     document(uid).collection("answer").document(previousAnswerId);

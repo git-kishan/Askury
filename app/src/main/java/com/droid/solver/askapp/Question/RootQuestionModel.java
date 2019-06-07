@@ -23,9 +23,55 @@ public class RootQuestionModel {
     private String recentAnswerImageUrl;
     private int answerCount;
     private int recentAnswerLikeCount;
+    private int fontUsed;
+    private int point;
 
 
     public RootQuestionModel(){
+
+    }
+
+    public RootQuestionModel(
+            String askerId,
+            String askerName,
+            String askerImageUrlLow,
+            boolean anonymous,
+            String askerBio,
+            String questionId,
+            String question,
+            List<String> questionType,
+            long timeOfAsking,
+            String recentAnswererId,
+            String recentAnswererImageUrlLow,
+            String recentAnswererName,
+            String recentAnswererBio,
+            String recentAnswerId,
+            String recentAnswer,
+            boolean recentAnswerImageAttached,
+            String recentAnswerImageUrl,
+            int answerCount,
+            int recentAnswerLikeCount,
+            int fontUsed){
+        this.askerId=askerId;
+        this.askerName=askerName;
+        this.askerImageUrlLow=askerImageUrlLow;
+        this.anonymous=anonymous;
+        this.askerBio=askerBio;
+        this.questionId=questionId;
+        this.question=question;
+        this.questionType=questionType;
+        this.timeOfAsking=timeOfAsking;
+        this.recentAnswererId=recentAnswererId;
+        this.recentAnswererImageUrlLow=recentAnswererImageUrlLow;
+        this.recentAnswererName=recentAnswererName;
+        this.recentAnswererBio=recentAnswererBio;
+        this.recentAnswerId=recentAnswerId;
+        this.recentAnswer=recentAnswer;
+        this.recentAnswerImageAttached=recentAnswerImageAttached;
+        this.recentAnswerImageUrl=recentAnswerImageUrl;
+        this.answerCount=answerCount;
+        this.recentAnswerLikeCount=recentAnswerLikeCount;
+        this.fontUsed=fontUsed;
 
     }
     public RootQuestionModel(
@@ -47,7 +93,9 @@ public class RootQuestionModel {
             boolean recentAnswerImageAttached,
             String recentAnswerImageUrl,
             int answerCount,
-            int recentAnswerLikeCount){
+            int recentAnswerLikeCount,
+            int fontUsed,
+            int point){
         this.askerId=askerId;
         this.askerName=askerName;
         this.askerImageUrlLow=askerImageUrlLow;
@@ -67,6 +115,8 @@ public class RootQuestionModel {
         this.recentAnswerImageUrl=recentAnswerImageUrl;
         this.answerCount=answerCount;
         this.recentAnswerLikeCount=recentAnswerLikeCount;
+        this.fontUsed=fontUsed;
+        this.point=point;
 
     }
 
@@ -146,10 +196,12 @@ public class RootQuestionModel {
         return recentAnswerLikeCount;
     }
 
-
-
-
-
+    public int getFontUsed() {
+        return fontUsed;
+    }
+    public int getPoint() {
+        return point;
+    }
 }
 
 

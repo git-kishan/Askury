@@ -37,6 +37,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firestore.v1.FirestoreGrpc;
@@ -44,6 +45,8 @@ import com.google.firestore.v1.FirestoreGrpc;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -173,7 +176,7 @@ public class SignInActivity extends AppCompatActivity {
                             Map<String,Object> userDetail = new HashMap<>();
                             String userName=user.getDisplayName();
                             String profilePicUrl=String.valueOf(user.getPhotoUrl());
-                            String userId=user.getUid();
+                            final String userId=user.getUid();
                             userDetail.put("userName", userName);
                             userDetail.put("profilePicUrlLow", profilePicUrl);
                             userDetail.put("userId", userId);
@@ -184,8 +187,8 @@ public class SignInActivity extends AppCompatActivity {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                                            finish();
+                                            initializeLikeList(userId);
+
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -206,7 +209,24 @@ public class SignInActivity extends AppCompatActivity {
                 });
     }
 
+    private void initializeLikeList(String uid){
+        int currentYear= Calendar.getInstance().get(Calendar.YEAR);
+        FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
+        DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("answerLike")
+                .document("like@"+currentYear);
 
+        ArrayList<String> answerLikeId=new ArrayList<>();
+        Map<String,Object> map=new HashMap<>();
+        map.put("answerLikeId", answerLikeId);
 
+        userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                finish();
+                Log.i("TAG", "array list created in remote database");
+            }
+        });
+    }
 
 }

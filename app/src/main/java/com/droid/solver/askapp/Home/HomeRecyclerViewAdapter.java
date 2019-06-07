@@ -1,11 +1,15 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Question.RootQuestionModel;
@@ -27,6 +31,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private static final int LOADING=4;
     private   ArrayList<String> answerLikeList;
     private  LocalDatabase localDatabase ;
+    public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
+
 
     HomeRecyclerViewAdapter(Context context, ArrayList<Object> list){
         this.context=context;
@@ -87,6 +93,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String recentAnswerId=((RootQuestionModel) list.get(i)).getRecentAnswerId();
                 int likeCount=((RootQuestionModel) list.get(i)).getRecentAnswerLikeCount();
                 int answerCount=((RootQuestionModel) list.get(i)).getAnswerCount();
+                int fontUsed=((RootQuestionModel) list.get(i)).getFontUsed();
 
                 if(answerLikeList.contains(recentAnswerId)){
                     ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
@@ -95,52 +102,45 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
 
                 long timeOfAsking=((RootQuestionModel) list.get(i)).getTimeOfAsking();
-                if(timeOfAsking==0)
-                    timeOfAsking=System.currentTimeMillis();
+                timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
                 String timeAgo=getTime(timeOfAsking, System.currentTimeMillis());
-
 
                 if(anonymous){
                     ((QuestionAnswerViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
                     ((QuestionAnswerViewHolder) holder).askerName.setText("Someone wants to know");
                     ((QuestionAnswerViewHolder) holder).askerBio.setText("");
-                }else {
-                    if(askerImageUrl!=null)
-                    Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).into(((QuestionAnswerViewHolder) holder).askerImageView);
-                    else   ((QuestionAnswerViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
+                }
 
+                else {
+                    askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
+                    Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+                            into(((QuestionAnswerViewHolder) holder).askerImageView);
 
+                    askerName=askerName!=null?askerName:"Unknown";
+                    ((QuestionAnswerViewHolder) holder).askerName.setText(askerName);
 
-                    if(askerName!=null)
-                         ((QuestionAnswerViewHolder) holder).askerName.setText(askerName);
-                    else
-                        ((QuestionAnswerViewHolder) holder).askerName.setText("Unknown");
-
-                    if(askerBio!=null)
-                       ((QuestionAnswerViewHolder) holder).askerBio.setText(askerBio);
-                    else ((QuestionAnswerViewHolder) holder).askerBio.setText("");
+                    askerBio=askerBio!=null?askerBio:"";
+                    ((QuestionAnswerViewHolder) holder).askerBio.setText(askerBio);
                 }
                 ((QuestionAnswerViewHolder) holder).question.setText(question);
 
-                if(recentAnswererImageUrl!=null)
-                    Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).
-                            into(((QuestionAnswerViewHolder) holder).answererImageView);
-                else   ((QuestionAnswerViewHolder) holder).answererImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
-
+                recentAnswererImageUrl=recentAnswererName!=null?recentAnswererImageUrl:"";
+                Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+                        into(((QuestionAnswerViewHolder) holder).answererImageView);
 
                 ((QuestionAnswerViewHolder) holder).timeAgo.setText(timeAgo);
+                recentAnswererName=recentAnswererName!=null?recentAnswererName:"Unknown";
+                ((QuestionAnswerViewHolder) holder).answererName.setText(recentAnswererName);
 
-                if(recentAnswererName!=null)
-                    ((QuestionAnswerViewHolder) holder).answererName.setText(recentAnswererName);
-                else ((QuestionAnswerViewHolder) holder).answererName.setText("Unknown");
+                answer=answer!=null?answer : "";
+                ((QuestionAnswerViewHolder) holder).answer.setText(answer);
 
-                if(answer==null)
-                    ((QuestionAnswerViewHolder) holder).answer.setText("");
-                else
-                    ((QuestionAnswerViewHolder) holder).answer.setText(answer);
+                Typeface typeface= ResourcesCompat.getFont(context, fontId[fontUsed]);
+                ((QuestionAnswerViewHolder) holder).answer.setTypeface(typeface);
 
                 ((QuestionAnswerViewHolder) holder).answerCount.setText(String.valueOf(answerCount));
                 ((QuestionAnswerViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
+
                 handleClickListenerOfQuestionAnswer((QuestionAnswerViewHolder) holder, (RootQuestionModel)list.get(i));
 
             }
@@ -157,56 +157,60 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String recentAnswererImageUrl = ((RootQuestionModel) list.get(i)).getRecentAnswererImageUrlLow();
                 String askerBio = ((RootQuestionModel) list.get(i)).getAskerBio();
                 String askerName = ((RootQuestionModel) list.get(i)).getAskerName();
+                String recentAnswerId=((RootQuestionModel) list.get(i)).getRecentAnswerId();
                 String recentAnswererName = ((RootQuestionModel) list.get(i)).getRecentAnswererName();
                 int likeCount = ((RootQuestionModel) list.get(i)).getRecentAnswerLikeCount();
                 int answerCount = ((RootQuestionModel) list.get(i)).getAnswerCount();
                 long timeOfAsking = ((RootQuestionModel) list.get(i)).getTimeOfAsking();
-                if (timeOfAsking == 0)
-                    timeOfAsking = System.currentTimeMillis();
+                int fontUsed=((RootQuestionModel) list.get(i)).getFontUsed();
+
+                timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
                 String timeAgo = getTime(timeOfAsking, System.currentTimeMillis());
+
+                if(answerLikeList.contains(recentAnswerId)){
+                    ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
+                }else {
+                    ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
+                }
 
                 if (answerImageUrl != null)
                     Picasso.get().load(answerImageUrl)
                             .into(((QuestionAnswerWithImageViewHolder) holder).answerImageView);
+
                 if (anonymous) {
                     ((QuestionAnswerWithImageViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
                     ((QuestionAnswerWithImageViewHolder) holder).askerName.setText("Someone wants to know");
                     ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText("");
                 } else {
-                    if (askerImageUrl != null)
-                        Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).into(((QuestionAnswerWithImageViewHolder)
-                                holder).askerImageView);
-                    else
-                        ((QuestionAnswerWithImageViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
 
+                    askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
+                    Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+                            into(((QuestionAnswerWithImageViewHolder)
+                            holder).askerImageView);
 
-                    if (askerName != null)
-                        ((QuestionAnswerWithImageViewHolder) holder).askerName.setText(askerName);
-                    else
-                        ((QuestionAnswerWithImageViewHolder) holder).askerName.setText("Unknown");
-
-                    if (askerBio != null)
-                        ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText(askerBio);
-                    else ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText("");
+                    askerName=askerName!=null?askerName:"Unknown";
+                    ((QuestionAnswerWithImageViewHolder) holder).askerName.setText(askerName);
+                    askerBio=askerBio!=null?askerBio:"";
+                    ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText(askerBio);
                 }
-                ((QuestionAnswerWithImageViewHolder) holder).question.setText(question);
-                if (recentAnswererImageUrl != null)
-                    Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).
-                            into(((QuestionAnswerWithImageViewHolder) holder).answererImageView);
-                else
-                    ((QuestionAnswerWithImageViewHolder) holder).answererImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
 
+                ((QuestionAnswerWithImageViewHolder) holder).question.setText(question);
+                recentAnswererImageUrl=recentAnswererImageUrl!=null?recentAnswererImageUrl:"";
+
+                Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+                        into(((QuestionAnswerWithImageViewHolder) holder).answererImageView);
 
                 ((QuestionAnswerWithImageViewHolder) holder).timeAgo.setText(timeAgo);
 
-                if (recentAnswererName != null)
-                    ((QuestionAnswerWithImageViewHolder) holder).answererName.setText(recentAnswererName);
-                else ((QuestionAnswerWithImageViewHolder) holder).answererName.setText("Unknown");
+                recentAnswererName=recentAnswererName!=null?recentAnswererName:"Unknown";
+                ((QuestionAnswerWithImageViewHolder) holder).answererName.setText(recentAnswererName);
 
-                if (answer == null)
-                    ((QuestionAnswerWithImageViewHolder) holder).answer.setText("");
-                else
-                    ((QuestionAnswerWithImageViewHolder) holder).answer.setText(answer);
+                answer=answer!=null?answer:"";
+                ((QuestionAnswerWithImageViewHolder) holder).answer.setText(answer);
+
+                Typeface typeface= ResourcesCompat.getFont(context, fontId[fontUsed]);
+                ((QuestionAnswerViewHolder) holder).answer.setTypeface(typeface);
+
                 ((QuestionAnswerWithImageViewHolder) holder).answerCount.setText(String.valueOf(answerCount));
                 ((QuestionAnswerWithImageViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
 
@@ -313,7 +317,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         }
 
     }
-
     @Override
     public int getItemCount() {
         return list==null?0:list.size();

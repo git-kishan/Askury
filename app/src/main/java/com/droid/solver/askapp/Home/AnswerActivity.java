@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -13,12 +15,17 @@ import com.droid.solver.askapp.R;
 public class AnswerActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer2);
         toolbar=findViewById(R.id.toolbar);
         changeToolbarFont(toolbar, this);
+        recyclerView=findViewById(R.id.recycler_view);
+        layoutManager=new LinearLayoutManager(this);
+
     }
 
 

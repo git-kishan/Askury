@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Main;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.FontRequestEmojiCompatConfig;
@@ -23,12 +26,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.droid.solver.askapp.Account.AccountFragment;
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.Community.CommunityFragment;
 import com.droid.solver.askapp.Home.HomeFragment;
+import com.droid.solver.askapp.Question.AnswerLike;
 import com.droid.solver.askapp.Question.QuestionClickListener;
 import com.droid.solver.askapp.Question.QuestionFragment;
 import com.droid.solver.askapp.R;
@@ -42,6 +48,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.io.File;
@@ -70,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseFirestore firestoreRoot;
     private FirebaseUser user;
     private String uid;
+    private ProgressBar progressBar;
+    private FrameLayout progressFrameLayout;
 
 
     @Override
@@ -81,12 +92,16 @@ public class MainActivity extends AppCompatActivity implements
         toolbar.inflateMenu(R.menu.toolbar_menu_main);
         frameLayout = findViewById(R.id.fragment_container);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        progressBar=findViewById(R.id.progress_bar);
+        progressFrameLayout=findViewById(R.id.progress_frame);
+        progressFrameLayout.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         firestoreRoot = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            startActivity(new Intent(this, SignInActivity.class));
-            finish();
+            progressFrameLayout.setVisibility(View.VISIBLE);
+            clearDatabase();
+
         }
         uid = user.getUid();
         loadFragment(new HomeFragment(), HOME);
@@ -113,11 +128,7 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
-        if(isNetworkAvailable()){
-            initiliazeLikeList();
-        }
-        LocalDatabase database=new LocalDatabase(getApplicationContext());
-        database.getAnswerLikeModel();
+
     }
     private void initEmojiFont(){
         FontRequest fontRequest = new FontRequest(
@@ -346,24 +357,36 @@ public class MainActivity extends AppCompatActivity implements
         NetworkInfo activeNetworkInfo = cmm.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    private void initiliazeLikeList(){
 
-        int currentYear= Calendar.getInstance().get(Calendar.YEAR);
-     FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
-     DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("answerLike")
-             .document("like@"+currentYear);
+    private void fetchAnswerLikeDocuments(){
+        String uid=user.getUid();
+        Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
+                .collection("answerLike");
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for(QueryDocumentSnapshot snapshots:task.getResult()){
+                    AnswerLike answerLike=snapshots.toObject(AnswerLike.class);
 
-     ArrayList<String> answerLikeId=new ArrayList<>();
-     Map<String,Object> map=new HashMap<>();
-     map.put("answerLikeId", answerLikeId);
 
-     userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
-         @Override
-         public void onComplete(@NonNull Task<Void> task) {
-             Log.i("TAG", "array list created in remote database");
-         }
-     });
+                }
+            }
+        });
+    }
+    /// recover all answer like id from remote database and put in local dataase
+    ///recover all imagepoll like id form remote database and put in local database
+    ///recover all survey participated id from remote database and put in local database
+
+
+    private void clearDatabase(){
+        LocalDatabase database=new LocalDatabase(getApplicationContext());
+        database.clearAllTable();
+        signInAgain();
+    }
+    private void signInAgain(){
+        progressFrameLayout.setVisibility(View.GONE);
+        startActivity(new Intent(this, SignInActivity.class));
+        finish();
 
     }
-
 }

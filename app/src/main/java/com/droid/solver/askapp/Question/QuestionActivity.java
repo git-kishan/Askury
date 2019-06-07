@@ -359,7 +359,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
                        bio,questionId, question, new ArrayList<String>(), timeOfAsking,
                        null, null, null, null,
                        null, null, false, null,
-                0, 0);
+                0, 0,0);
 
         WriteBatch writeBatch=root.batch();
 
