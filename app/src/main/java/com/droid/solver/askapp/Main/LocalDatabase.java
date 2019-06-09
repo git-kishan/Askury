@@ -777,7 +777,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
             }
             if(database.isOpen())
                 database.close();
-
         }
     }
     public void clearImagePollLikeModel(){
@@ -810,7 +809,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
     public void removeImagePollLikeModel(String mimagePollId){
         SQLiteDatabase database = this.getWritableDatabase();
         database.delete(IMAGE_POLL_LIKE_TABLE, imagePollId+"=?", new String[]{mimagePollId});
-//        database.execSQL("DELETE FROM "+IMAGE_POLL_LIKE_TABLE+" WHERE "+imagePollId+"=="+mimagePollId);
         if(database.isOpen())
             database.close();
     }

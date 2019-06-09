@@ -108,7 +108,6 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         String likerName=preferences.getString(Constants.userName, null);
         String likerImageUrl=preferences.getString(Constants.profilePicLowUrl, null);
         String likerBio=preferences.getString(Constants.bio, null);
-        int currentYear= Calendar.getInstance().get(Calendar.YEAR);
 
         AnswerLikeModel answerLikeModel=new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio);
 
@@ -133,7 +132,7 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         DocumentReference rootQuestionModelRef=firestoreRootRef.collection("question").document(model.getQuestionId());
 
         DocumentReference userAnswerLikeRef=firestoreRootRef.collection("user").document(likerId).
-                collection("answerLike").document("like@"+currentYear);
+                collection("answerLike").document("like");
 
         Map<String,Object> userAnswerLikeMap=new HashMap<>();
         userAnswerLikeMap.put("answerLikeId",FieldValue.arrayUnion(model.getRecentAnswerId()));
@@ -163,7 +162,6 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     public void onDisliked(final Context context, final RootQuestionModel model){
         Log.i("TAG", "disliked triggered");
         String likerId=user.getUid();
-        int currentYear=Calendar.getInstance().get(Calendar.YEAR);
         Map<String ,Object> likeMap=new HashMap<>();
         likeMap.put("answerLikeCount", FieldValue.increment(-1));
 
@@ -184,7 +182,7 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         DocumentReference rootQuestionModelRef=firestoreRootRef.collection("question").document(model.getQuestionId());
 
         DocumentReference userAnswerLikeRef=firestoreRootRef.collection("user").document(likerId).
-                collection("answerLike").document("like@"+currentYear);
+                collection("answerLike").document("like");
 
         Map<String,Object> userAnswerLikeMap=new HashMap<>();
         userAnswerLikeMap.put("answerLikeId",FieldValue.arrayRemove(model.getRecentAnswerId()));

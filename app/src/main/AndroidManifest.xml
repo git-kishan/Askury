@@ -24,16 +24,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Home.AnswerActivity"></activity>
-        <activity android:name=".Home.ImagePollOpenActivity"></activity>
+        <activity android:name=".setting.SettingActivity"></activity>
+        <activity android:name=".Home.AnswerActivity" />
+        <activity android:name=".Home.ImagePollOpenActivity" />
         <activity
             android:name=".Answer.AnswerActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Survey.QuestionTakerActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Survey.LanguageSelectionActivity"
             android:screenOrientation="portrait" />

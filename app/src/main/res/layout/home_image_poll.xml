@@ -172,7 +172,6 @@
                     android:layout_marginStart="8dp"
                     android:visibility="visible"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/bottom_sheet_image_poll"
                     app:layout_constraintBottom_toBottomOf="@+id/constraintLayout6"
                     app:layout_constraintEnd_toEndOf="@+id/imageView11"
                     app:layout_constraintStart_toStartOf="@+id/imageView12">
@@ -209,7 +208,7 @@
                             android:id="@+id/text1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            tools:text="75%"
+                            tools:text="60%"
                             android:gravity="center"
                             android:textSize="18sp"
                             android:textColor="@android:color/black"
@@ -250,12 +249,12 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_white_heart"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView5"
                     app:layout_constraintEnd_toStartOf="@+id/cardView7"
-                    app:layout_constraintHorizontal_bias="0.55"
                     app:layout_constraintStart_toStartOf="@+id/imageView5"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="1.0" />
@@ -272,15 +271,14 @@
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/imageView6"
-                    app:layout_constraintHorizontal_bias="0.44"
                     app:layout_constraintStart_toEndOf="@+id/cardView7"
                     app:layout_constraintTop_toTopOf="@+id/imageView6"
-                    app:layout_constraintVertical_bias="0.99" />
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <ImageView
                     android:id="@+id/imageView11"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:visibility="visible"
@@ -292,8 +290,8 @@
 
                 <ImageView
                     android:id="@+id/imageView12"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:visibility="visible"

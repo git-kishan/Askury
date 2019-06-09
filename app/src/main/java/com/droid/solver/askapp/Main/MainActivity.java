@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.LinearGradient;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -22,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.text.LoginFilter;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +37,7 @@ import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.Community.CommunityFragment;
 import com.droid.solver.askapp.Home.HomeFragment;
 import com.droid.solver.askapp.Question.AnswerLike;
+import com.droid.solver.askapp.Question.ImagePollLike;
 import com.droid.solver.askapp.Question.QuestionClickListener;
 import com.droid.solver.askapp.Question.QuestionFragment;
 import com.droid.solver.askapp.R;
@@ -60,7 +63,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -81,13 +86,25 @@ public class MainActivity extends AppCompatActivity implements
     private String uid;
     private ProgressBar progressBar;
     private FrameLayout progressFrameLayout;
-
+    public static ArrayList<String> answerLikeList;
+    public static HashMap<String,Integer> imagePollLikeMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initEmojiFont();
         setContentView(R.layout.activity_main);
+        firestoreRoot = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            progressFrameLayout.setVisibility(View.VISIBLE);
+            clearDatabase();
+
+        }
+        answerLikeList=new ArrayList<>();
+        imagePollLikeMap=new HashMap<>();
+        uid = user.getUid();
+        fetchLikeDocumentsFromRemoteDatabase();
         toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.toolbar_menu_main);
         frameLayout = findViewById(R.id.fragment_container);
@@ -96,14 +113,6 @@ public class MainActivity extends AppCompatActivity implements
         progressFrameLayout=findViewById(R.id.progress_frame);
         progressFrameLayout.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        firestoreRoot = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            progressFrameLayout.setVisibility(View.VISIBLE);
-            clearDatabase();
-
-        }
-        uid = user.getUid();
         loadFragment(new HomeFragment(), HOME);
         changeToolbarFont(toolbar, this);
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
@@ -116,13 +125,13 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 if(menuItem.getItemId()==R.id.log_out){
+                    progressFrameLayout.setVisibility(View.VISIBLE);
                     FirebaseAuth.getInstance().signOut();
                     SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor=sharedPreferences.edit();
                     editor.clear();
                     editor.apply();
-                    startActivity(new Intent(MainActivity.this,SignInActivity.class));
-                    finish();
+                    clearDatabase();
                     return true;
                 }
                 return false;
@@ -358,23 +367,70 @@ public class MainActivity extends AppCompatActivity implements
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    private void fetchLikeDocumentsFromRemoteDatabase(){
+        fetchImagePollLikeDocuments();
+        fetchAnswerLikeDocuments();
+    }
+
     private void fetchAnswerLikeDocuments(){
+        final Set<String> set = new LinkedHashSet<>();
         String uid=user.getUid();
         Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
                 .collection("answerLike");
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for(QueryDocumentSnapshot snapshots:task.getResult()){
-                    AnswerLike answerLike=snapshots.toObject(AnswerLike.class);
+                if(task.isSuccessful()) {
+                    for (QueryDocumentSnapshot snapshots : task.getResult()) {
 
+                        AnswerLike answerLike = snapshots.toObject(AnswerLike.class);
+                        if (answerLike.getAnswerLikeId() != null)
+                            answerLikeList.addAll(answerLike.getAnswerLikeId());
+                    }
+                }
+                    else {
+                        Log.i("TAG", "error in fetching answer like documents ");
+                        //task is not successfull
+                    }
 
+                if(answerLikeList!=null) {
+                    set.addAll(answerLikeList);
+                    answerLikeList.clear();
+                    answerLikeList.addAll(set);
+                    LocalDatabase database = new LocalDatabase(getApplicationContext());
+                    database.insertAnswerLikeModel(answerLikeList);
                 }
             }
         });
     }
-    /// recover all answer like id from remote database and put in local dataase
-    ///recover all imagepoll like id form remote database and put in local database
+    private void fetchImagePollLikeDocuments(){
+        final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
+        Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
+                .collection("imagePollLike");
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshot:task.getResult()){
+                        ImagePollLike imagePollLike=snapshot.toObject(ImagePollLike.class);
+                        tempList.addAll(imagePollLike.getImagePollMapList());
+                    }
+                    for(int i=0;i<tempList.size();i++){
+//                        Log.i("TAG", "key :object :- "+tempList.get(i));
+                        imagePollLikeMap.putAll(tempList.get(i));
+                    }
+//                    Log.i("TAG", "new hash map :- "+imagePollLikeMap);
+                    LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
+                    localDatabase.clearImagePollLikeModel();
+                    localDatabase.insertImagePollLikeModel(imagePollLikeMap);
+
+                }else {
+                    Log.i("TAG", "error in fetching image poll like");
+                }
+            }
+        }) ;
+    }
+
     ///recover all survey participated id from remote database and put in local database
 
 

@@ -2,6 +2,7 @@ package com.droid.solver.askapp;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.LinearGradient;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import com.droid.solver.askapp.Home.HomeFragment;
 import com.droid.solver.askapp.Main.MainActivity;
+import com.droid.solver.askapp.Main.UserInfoModel;
+import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -38,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firestore.v1.FirestoreGrpc;
@@ -125,19 +129,19 @@ public class SignInActivity extends AppCompatActivity {
                             FirebaseUser user = auth.getCurrentUser();
                             String userName=user.getDisplayName();
                             String profilePicUrl=String.valueOf(user.getPhotoUrl());
-                            String userId=user.getUid();
+                            final String userId=user.getUid();
                                 userDetail.put("userName", userName);
                                 userDetail.put("profilePicUrlLow", profilePicUrl);
                                 userDetail.put("userId", userId);
-                                Log.i("TAG", "user Name :- "+userName);
-                                Log.i("TAG", "profile pic :- "+profilePicUrl);
-                                Log.i("TAG", "userId :- "+userId);
+//                                Log.i("TAG", "user Name :- "+userName);
+//                                Log.i("TAG", "profile pic :- "+profilePicUrl);
+//                                Log.i("TAG", "userId :- "+userId);
                                 db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                                                finish();
+                                                checkFirstTimeUser(userId);
+
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -180,14 +184,14 @@ public class SignInActivity extends AppCompatActivity {
                             userDetail.put("userName", userName);
                             userDetail.put("profilePicUrlLow", profilePicUrl);
                             userDetail.put("userId", userId);
-                            Log.i("TAG", "user Name :- "+userName);
-                            Log.i("TAG", "profile pic :- "+profilePicUrl);
-                            Log.i("TAG", "userId :- "+userId);
+//                            Log.i("TAG", "user Name :- "+userName);
+//                            Log.i("TAG", "profile pic :- "+profilePicUrl);
+//                            Log.i("TAG", "userId :- "+userId);
                             db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            initializeLikeList(userId);
+                                            checkFirstTimeUser(userId);
 
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -210,10 +214,9 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void initializeLikeList(String uid){
-        int currentYear= Calendar.getInstance().get(Calendar.YEAR);
         FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
         DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("answerLike")
-                .document("like@"+currentYear);
+                .document("like");
 
         ArrayList<String> answerLikeId=new ArrayList<>();
         Map<String,Object> map=new HashMap<>();
@@ -225,6 +228,46 @@ public class SignInActivity extends AppCompatActivity {
                 startActivity(new Intent(SignInActivity.this, MainActivity.class));
                 finish();
                 Log.i("TAG", "array list created in remote database");
+            }
+        });
+    }
+    private void initiliazeImagePollLikeList(final String uid){
+        FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
+        DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("imagePollLike")
+                .document("like");
+
+        ArrayList<String> imagePollMapList=new ArrayList<>();
+        Map<String,Object> map=new HashMap<>();
+        map.put("imagePollMapList", imagePollMapList);
+
+        userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                initializeLikeList(uid);
+                Log.i("TAG", "image poll like  list created in remote database");
+            }
+        });
+    }
+    private void checkFirstTimeUser(final String uid){
+        FirebaseFirestore.getInstance().collection("user").document(uid).get().addOnCompleteListener(
+                new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    UserInfoModel userInfoModel=task.getResult().toObject(UserInfoModel.class);
+                    if(userInfoModel.getFirstTimeUser()==0){//set firstTimeUser to 1 ,0 means first time user,1 means not first time user
+                        Map<String,Object> map = new HashMap<>();
+                        map.put("firstTimeUser", 1);
+                        FirebaseFirestore.getInstance().collection("user").document(uid).set(map,SetOptions.merge());
+                        initiliazeImagePollLikeList(uid);
+                    }else {
+                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                        finish();
+                    }
+
+                }else {
+                    Toast.makeText(SignInActivity.this, "Error occured", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

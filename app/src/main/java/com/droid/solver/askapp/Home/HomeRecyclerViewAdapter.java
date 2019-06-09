@@ -5,13 +5,16 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.LocalDatabase;
+import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
@@ -19,6 +22,7 @@ import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private Context context;
@@ -29,7 +33,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private static final int SURVEY=2;
     private static final int IMAGE_POLL=3;
     private static final int LOADING=4;
-    private   ArrayList<String> answerLikeList;
+    private   ArrayList<String> answerLikeListFromRemoteDatabase;
+    private ArrayList<String> answerLikeListFromLocalDatabase;
+    private HashMap<String,Integer> imagePollLikeMapFromLocalDatabase;
     private  LocalDatabase localDatabase ;
     public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
 
@@ -40,9 +46,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         if(context!=null) {
             inflater = LayoutInflater.from(context);
             localDatabase = new LocalDatabase(context.getApplicationContext());
-            answerLikeList = localDatabase.getAnswerLikeModel();
-            if(answerLikeList==null)
-                answerLikeList=new ArrayList<>();
+            localDatabase=new LocalDatabase(context.getApplicationContext());
+            answerLikeListFromRemoteDatabase=localDatabase.getAnswerLikeModel();
+            imagePollLikeMapFromLocalDatabase=localDatabase.getImagePollLikeModel();
         }
     }
 
@@ -95,11 +101,20 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 int answerCount=((RootQuestionModel) list.get(i)).getAnswerCount();
                 int fontUsed=((RootQuestionModel) list.get(i)).getFontUsed();
 
-                if(answerLikeList.contains(recentAnswerId)){
-                    ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
+                if(MainActivity.answerLikeList.size()>0){
+                    if(answerLikeListFromRemoteDatabase.contains(recentAnswerId)){
+                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
+                    }else {
+                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
+                    }
                 }else {
-                    ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
+                    if(answerLikeListFromLocalDatabase!=null && answerLikeListFromLocalDatabase.contains(recentAnswerId)){
+                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
+                    }else {
+                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
+                    }
                 }
+
 
                 long timeOfAsking=((RootQuestionModel) list.get(i)).getTimeOfAsking();
                 timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
@@ -140,6 +155,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 ((QuestionAnswerViewHolder) holder).answerCount.setText(String.valueOf(answerCount));
                 ((QuestionAnswerViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
+                if(likeCount==0)
+                    ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
 
                 handleClickListenerOfQuestionAnswer((QuestionAnswerViewHolder) holder, (RootQuestionModel)list.get(i));
 
@@ -167,10 +184,19 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
                 String timeAgo = getTime(timeOfAsking, System.currentTimeMillis());
 
-                if(answerLikeList.contains(recentAnswerId)){
-                    ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
+
+                if(MainActivity.answerLikeList.size()>0){
+                    if(answerLikeListFromRemoteDatabase.contains(recentAnswerId)){
+                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
+                    }else {
+                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
+                    }
                 }else {
-                    ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
+                    if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.contains(recentAnswerId)){
+                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
+                    }else {
+                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
+                    }
                 }
 
                 if (answerImageUrl != null)
@@ -209,10 +235,13 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 ((QuestionAnswerWithImageViewHolder) holder).answer.setText(answer);
 
                 Typeface typeface= ResourcesCompat.getFont(context, fontId[fontUsed]);
-                ((QuestionAnswerViewHolder) holder).answer.setTypeface(typeface);
+                ((QuestionAnswerWithImageViewHolder) holder).answer.setTypeface(typeface);
 
                 ((QuestionAnswerWithImageViewHolder) holder).answerCount.setText(String.valueOf(answerCount));
                 ((QuestionAnswerWithImageViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
+
+                if(likeCount==0)
+                    ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
 
                 handleClickListenerOfQuestionAnswerWithImage((QuestionAnswerWithImageViewHolder)holder,(RootQuestionModel)list.get(i));
             }
@@ -222,6 +251,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         else if(holder.getItemViewType()==IMAGE_POLL&&holder instanceof ImagePollViewHolder){
 
             if(list.get(i) instanceof AskImagePollModel){
+
                 String askerId=((AskImagePollModel) list.get(i)).getAskerId();
                 String askerName=((AskImagePollModel) list.get(i)).getAskerName();
                 String askerImageUrlLow=((AskImagePollModel) list.get(i)).getAskerImageUrlLow();
@@ -233,6 +263,24 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 int image1LikeNo=((AskImagePollModel) list.get(i)).getImage1LikeNo();
                 int image2LikeNo=((AskImagePollModel) list.get(i)).getImage2LikeNo();
                 String imagePollId=((AskImagePollModel) list.get(i)).getImagePollId();
+                if(imagePollId==null){
+                    list.remove(i);
+                    return;
+                }
+
+                    if(MainActivity.imagePollLikeMap!=null&&MainActivity.imagePollLikeMap.size()>0)
+                    {
+                        if (MainActivity.imagePollLikeMap.containsKey(imagePollId)) {
+                            ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
+                                    MainActivity.imagePollLikeMap.get(imagePollId));
+                        }
+
+                    }else if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
+                        if(imagePollLikeMapFromLocalDatabase.containsKey(imagePollId)){
+                            ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
+                                    imagePollLikeMapFromLocalDatabase.get(imagePollId));
+                        }
+                    }
 
                 askerName=askerName==null?"Unknown":askerName;
                 askerBio=askerBio==null?"":askerBio;
@@ -391,16 +439,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.image1.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                holder.onImage1LongClicked(context, imagePollModel.getImage1LikeNo(), imagePollModel.getImage2LikeNo(),
-                        imagePollModel.getImagePollId());
+                holder.onImage1LongClicked(context, imagePollModel);
                 return true;
             }
         });
         holder.image2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                holder.onImage2LongClicked(context, imagePollModel.getImage1LikeNo(),
-                        imagePollModel.getImage2LikeNo(),imagePollModel.getImagePollId());
+                holder.onImage2LongClicked(context,imagePollModel);
                 return true;
             }
         });

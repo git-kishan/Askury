@@ -22,6 +22,7 @@
     <string name="question_uploading_failed">Question uploading failed,try again !</string>
     <string name="survey_accepted_successfull">Survey accepted successfully\nsurvey will be open for 30 days</string>
     <string name="survey_accepted_failed">Survey uploading failed,try again !</string>
-
+    <string name="first_percentage">%1$d</string>
+    <string name="second_percentage">%1$d </string>
 
 </resources>

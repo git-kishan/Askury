@@ -26,7 +26,6 @@ public class RootQuestionModel {
     private int fontUsed;
     private int point;
 
-
     public RootQuestionModel(){
 
     }
@@ -202,6 +201,8 @@ public class RootQuestionModel {
     public int getPoint() {
         return point;
     }
+
 }
+
 
 

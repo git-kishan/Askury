@@ -67,73 +67,26 @@
             app:layout_constraintTop_toBottomOf="@+id/textView16"
             tools:text="Why it is better to choose computer science technology branch in national institure of technology patna" />
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <com.like.LikeButton
+            android:id="@+id/likeButton"
+            android:layout_width="29dp"
+            android:layout_height="33dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:anim_scale_factor="2"
+            app:circle_end_color="@color/like_button_red"
+            app:circle_start_color="@color/like_button_red"
+            app:dots_primary_color="@color/like_button_red"
+            app:dots_secondary_color="@color/like_button_red"
+            app:icon_size="20dp"
+            app:icon_type="heart"
+            app:is_enabled="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView19"
-            app:layout_constraintVertical_bias="0.0">
-
-            <com.like.LikeButton
-                android:id="@+id/likeButton"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                app:anim_scale_factor="2"
-                app:circle_end_color="@color/like_button_red"
-                app:circle_start_color="@color/like_button_red"
-                app:dots_primary_color="@color/like_button_red"
-                app:dots_secondary_color="@color/like_button_red"
-                app:icon_size="20dp"
-                app:icon_type="heart"
-                app:is_enabled="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:like_drawable="@drawable/ic_heart_red"
-                app:liked="false"
-                app:unlike_drawable="@drawable/ic_heart_black" />
-
-            <TextView
-                android:id="@+id/textView25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="150k"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/likeButton"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Want to answer"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView18"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView18"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_next_darker_fader" />
-        </android.support.constraint.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:like_drawable="@drawable/ic_heart_red"
+            app:liked="false"
+            app:unlike_drawable="@drawable/ic_heart_black" />
 
         <TextView
             android:id="@+id/textView27"

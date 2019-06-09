@@ -185,6 +185,9 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                         overLayFrameLayout.setVisibility(View.VISIBLE);
                         dotsLoaderView.show();
                         uploadFirstImageToStorage(menuItem);
+                        image1.setClickable(false);
+                        image2.setClickable(false);
+                        menuItem.setEnabled(false);
 
                 }
                 else {
@@ -516,6 +519,9 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    image1.setClickable(true);
+                    image2.setClickable(true);
+                    menuItem.setEnabled(true);
                     overLayFrameLayout.setVisibility(View.GONE);
                     dotsLoaderView.hide();
                     menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
@@ -547,6 +553,9 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                image1.setClickable(true);
+                image2.setClickable(true);
+                menuItem.setEnabled(true);
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
                 menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));
@@ -557,6 +566,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void uploadImagesToRemoteDatabase(final MenuItem menuItem,String imageFirstUrl,String imageSecondUrl){
+
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String askerId=user.getUid();
         String askerName=preferences.getString(Constants.userName, null);
@@ -581,9 +591,11 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         WriteBatch batch=root.batch();
         batch.set(userImagePollRef, pollModel);
         batch.set(rootImagePollRef, pollModel);
+
         batch.commit().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
                 questionInputEditText.setText("");
@@ -593,12 +605,17 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 image1CardView.setVisibility(View.VISIBLE);
                 image2CardView.setVisibility(View.VISIBLE);
                 showCustomSuccessfullDialog();
+                image1.setClickable(true);
+                image2.setClickable(true);
+                menuItem.setEnabled(true);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                image1.setClickable(true);
+                image2.setClickable(true);
+                menuItem.setEnabled(true);
                 overLayFrameLayout.setVisibility(View.GONE);
                 dotsLoaderView.hide();
                 menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_fader, null));

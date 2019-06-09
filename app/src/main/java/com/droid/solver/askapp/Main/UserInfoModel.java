@@ -12,7 +12,9 @@ public class UserInfoModel {
    private String [] interest;
    private int followerCount;
    private int followingCount;
+   private int firstTimeUser;
 
+   public UserInfoModel (){}
    public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,
                         String bio,int  point ,String country,String []language,String [] interest,int followerCount,
                         int followingCount){
@@ -27,7 +29,22 @@ public class UserInfoModel {
        this.interest=interest;
        this.followerCount=followerCount;
        this.followingCount=followingCount;
-   }
+   }  public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,
+                           String bio,int  point ,String country,String []language,String [] interest,int followerCount,
+                           int followingCount,int firstTimeUser){
+        this.userId=userId;
+        this.userName=userName;
+        this.profilePicUrlLow=profilePicUrlLow;
+        this.profilePicUrlHigh=profilePicUrlHigh;
+        this.bio =bio;
+        this.point=point;
+        this.country=country;
+        this.language=language;
+        this.interest=interest;
+        this.followerCount=followerCount;
+        this.followingCount=followingCount;
+        this.firstTimeUser=firstTimeUser;
+    }
 
     public String getUserName() {
         return userName;
@@ -73,5 +90,7 @@ public class UserInfoModel {
         return profilePicUrlLow;
     }
 
-
+    public int getFirstTimeUser() {
+        return firstTimeUser;
+    }
 }
