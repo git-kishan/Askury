@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
+import com.droid.solver.askapp.Main.ImagePollClickListener;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
@@ -30,7 +31,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment  {
 
 
     private RecyclerView recyclerView;
@@ -137,4 +138,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
+
 }

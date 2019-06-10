@@ -12,6 +12,7 @@ import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.R;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -22,6 +23,7 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
     EmojiTextView profileName,about,tapToMore;
     EmojiTextView question,timeAgo;
     CardView cardView;
+    View view;
     public AskQuestionViewHolderWithoutImage(View itemView, Context context){
         super(itemView);
         cardView=itemView.findViewById(R.id.root_card_view);
@@ -32,6 +34,7 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
         timeAgo=itemView.findViewById(R.id.time_ago_textview);
         question=itemView.findViewById(R.id.question_textview);
         tapToMore=itemView.findViewById(R.id.tap_to_more_textview);
+        view=itemView.findViewById(R.id.view9);
 
 
     }

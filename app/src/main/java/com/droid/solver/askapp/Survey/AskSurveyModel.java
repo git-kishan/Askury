@@ -5,6 +5,87 @@ public class AskSurveyModel {
     private String askerName;
     private String askerImageUrlLow;
     private String askerBio;
+
+    public void setAskerId(String askerId) {
+        this.askerId = askerId;
+    }
+
+    public void setAskerName(String askerName) {
+        this.askerName = askerName;
+    }
+
+    public void setAskerImageUrlLow(String askerImageUrlLow) {
+        this.askerImageUrlLow = askerImageUrlLow;
+    }
+
+    public void setAskerBio(String askerBio) {
+        this.askerBio = askerBio;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setTimeOfSurvey(long timeOfSurvey) {
+        this.timeOfSurvey = timeOfSurvey;
+    }
+
+    public void setOption1(boolean option1) {
+        this.option1 = option1;
+    }
+
+    public void setOption2(boolean option2) {
+        this.option2 = option2;
+    }
+
+    public void setOption3(boolean option3) {
+        this.option3 = option3;
+    }
+
+    public void setOption4(boolean option4) {
+        this.option4 = option4;
+    }
+
+    public void setOption1Value(String option1Value) {
+        this.option1Value = option1Value;
+    }
+
+    public void setOption2Value(String option2Value) {
+        this.option2Value = option2Value;
+    }
+
+    public void setOption3Value(String option3Value) {
+        this.option3Value = option3Value;
+    }
+
+    public void setOption4Value(String option4Value) {
+        this.option4Value = option4Value;
+    }
+
+    public void setOption1Count(int option1Count) {
+        this.option1Count = option1Count;
+    }
+
+    public void setOption2Count(int option2Count) {
+        this.option2Count = option2Count;
+    }
+
+    public void setOption3Count(int option3Count) {
+        this.option3Count = option3Count;
+    }
+
+    public void setOption4Count(int option4Count) {
+        this.option4Count = option4Count;
+    }
+
+    public void setLanguageSelectedIndex(int languageSelectedIndex) {
+        this.languageSelectedIndex = languageSelectedIndex;
+    }
+
+    public void setSurveyId(String surveyId) {
+        this.surveyId = surveyId;
+    }
+
     private String question;
     private long timeOfSurvey;
     private boolean option1,option2,option3,option4;

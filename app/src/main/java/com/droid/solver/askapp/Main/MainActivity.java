@@ -1,52 +1,47 @@
 package com.droid.solver.askapp.Main;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.LinearGradient;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.FontRequestEmojiCompatConfig;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.provider.FontRequest;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.text.LoginFilter;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.droid.solver.askapp.Account.AccountFragment;
-import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.Community.CommunityFragment;
 import com.droid.solver.askapp.Home.HomeFragment;
+import com.droid.solver.askapp.Home.ImagePollOpenFragment;
 import com.droid.solver.askapp.Question.AnswerLike;
 import com.droid.solver.askapp.Question.ImagePollLike;
-import com.droid.solver.askapp.Question.QuestionClickListener;
 import com.droid.solver.askapp.Question.QuestionFragment;
+import com.droid.solver.askapp.Question.SurveyParticipated;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,23 +49,18 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity implements
-        BottomNavigationView.OnNavigationItemSelectedListener,ProfilePicSaver {
+        BottomNavigationView.OnNavigationItemSelectedListener,ProfilePicSaver,ImagePollClickListener {
 
     public static boolean isDataLoadedFromRemoteInQuestionFragment=false;
     private static final String HOME = "home";
@@ -88,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements
     private FrameLayout progressFrameLayout;
     public static ArrayList<String> answerLikeList;
     public static HashMap<String,Integer> imagePollLikeMap;
+    public static HashMap<String,Integer> surveyParticipatedMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         answerLikeList=new ArrayList<>();
         imagePollLikeMap=new HashMap<>();
+        surveyParticipatedMap=new HashMap<>();
         uid = user.getUid();
         fetchLikeDocumentsFromRemoteDatabase();
         toolbar = findViewById(R.id.toolbar);
@@ -368,8 +360,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void fetchLikeDocumentsFromRemoteDatabase(){
+        fetchSurveyParticipatedDocuments();
         fetchImagePollLikeDocuments();
         fetchAnswerLikeDocuments();
+        Log.i("TAG","Fetch like documents from remote database called");
     }
 
     private void fetchAnswerLikeDocuments(){
@@ -419,6 +413,7 @@ public class MainActivity extends AppCompatActivity implements
 //                        Log.i("TAG", "key :object :- "+tempList.get(i));
                         imagePollLikeMap.putAll(tempList.get(i));
                     }
+                    tempList.clear();
 //                    Log.i("TAG", "new hash map :- "+imagePollLikeMap);
                     LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
                     localDatabase.clearImagePollLikeModel();
@@ -430,8 +425,33 @@ public class MainActivity extends AppCompatActivity implements
             }
         }) ;
     }
-
-    ///recover all survey participated id from remote database and put in local database
+    private void fetchSurveyParticipatedDocuments(){
+        final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
+        Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
+                .collection("surveyParticipated");
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshots:task.getResult()){
+                        SurveyParticipated surveyParticipated=snapshots.toObject(SurveyParticipated.class);
+                        tempList.addAll(surveyParticipated.getSurveyMapList());
+                    }
+                    for(int i=0;i<tempList.size();i++){
+                        surveyParticipatedMap.putAll(tempList.get(i));
+                    }
+                    tempList.clear();
+                    LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
+                    localDatabase.clearSurveyParticipatedModel();
+                    localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
+                    Log.i("TAG", "survey participated map :- "+surveyParticipatedMap);
+                    Log.i("TAG", "survey participated map size :- "+tempList.size());
+                }else {
+                    Log.i("TAG", "task is not successful in fetching survey participated documents");
+                }
+            }
+        });
+    }
 
 
     private void clearDatabase(){
@@ -445,4 +465,30 @@ public class MainActivity extends AppCompatActivity implements
         finish();
 
     }
+
+    @Override
+    public void onImagePollImageClicked(String imageUrl,View view) {
+
+        ImagePollOpenFragment fragment=new ImagePollOpenFragment();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fragment.setSharedElementReturnTransition(TransitionInflater.from(this).inflateTransition(R.transition.transition));
+            fragment.setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
+            fragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.transition));
+            fragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
+        }
+
+        Bundle bundle=new Bundle();
+        bundle.putString("imageUrl", imageUrl);
+        bundle.putString("imageTransitionName", view.getTransitionName());
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().
+                beginTransaction().
+                addSharedElement(view, view.getTransitionName()).
+                add(R.id.fragment_container, fragment,"image poll")
+                .addToBackStack(null).commit();
+
+    }
+
+
 }

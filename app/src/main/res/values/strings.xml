@@ -2,7 +2,6 @@
     <string name="app_name" translatable="false">AskApp</string>
     <string name="facebook_app_id" translatable="false">395972514579548</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb395972514579548</string>
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="optionsNum" translatable="false">options %1$d</string>
     <string name="user_name_asked" translatable="false">%1$s Asked </string>
     <string name="someoneasked" translatable="false">Someone Asked</string>
@@ -24,5 +23,8 @@
     <string name="survey_accepted_failed">Survey uploading failed,try again !</string>
     <string name="first_percentage">%1$d</string>
     <string name="second_percentage">%1$d </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

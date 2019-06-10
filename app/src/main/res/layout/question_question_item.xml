@@ -26,30 +26,29 @@
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:maxLines="1"
-            android:gravity="start"
+            android:layout_marginEnd="8dp"
+            android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?android:selectableItemBackground"
-            tools:text="Sheena Rose"
+            android:gravity="start"
+            android:maxLines="1"
             android:textColor="@android:color/black"
-            app:layout_constraintEnd_toStartOf="@+id/share_image_view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/profile_image"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Sheena Rose" />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/about_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            tools:text="Freenlancer|writer"
+            android:layout_marginEnd="8dp"
             android:maxLines="1"
-            android:textSize="8sp"
-            app:layout_constraintEnd_toStartOf="@+id/share_image_view"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
-            app:layout_constraintTop_toBottomOf="@+id/asker_name" />
+            app:layout_constraintTop_toBottomOf="@+id/asker_name"
+            tools:text="Freenlancer|writer" />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
@@ -58,16 +57,18 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="16dp"
+            android:alpha="0.7"
             android:maxLines="5"
             android:textColor="@android:color/black"
-            android:alpha="0.7"
-            tools:text="any scroll the firefox scrollbar s there any possible way to scroll the firefox scrollbar scroll the firefox scrollbar "
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/about_textview"
-            app:layout_constraintVertical_bias="0.0" />
+            tools:text="any scroll y scroll
+            y scroll the firefox scrollbar s there any possible way to scroll the fire
+             y scroll the firefox scrollbar s there any possible way to scroll the firey scroll the firefox scrollbar s there any possible way to scroll the fire
+            the firefox scrollbar s there any possible way to scroll the fire
+            the firefox scrollbar s there any possible way to scroll the firefox scrollbar scroll the firefox scrollbar " />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/time_ago_textview"
@@ -78,20 +79,6 @@
             android:textSize="8sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image" />
-
-        <ImageView
-            android:id="@+id/share_image_view"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:padding="5dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:selectableItemBackground"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_share_black_24dp" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
@@ -122,6 +109,7 @@
             app:layout_constraintTop_toBottomOf="@+id/question_textview" />
 
         <View
+            android:id="@+id/view9"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginStart="50dp"

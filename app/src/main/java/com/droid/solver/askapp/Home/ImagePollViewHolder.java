@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
+import com.droid.solver.askapp.Main.ImagePollClickListener;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,7 +44,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
     ImageView image1, image2, leftWhiteHeart, rightWhiteHeart, leftRedHeart, rightRedHeart, threeDot;
     private FirebaseUser user;
     private FirebaseFirestore firestoreRootRef;
-
+    private ImagePollClickListener listener;
     public ImagePollViewHolder(@NonNull View itemView) {
         super(itemView);
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -72,20 +73,17 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         rightWhiteHeart.setVisibility(View.GONE);
     }
 
-    void onImage1SingleClicked(final Context context, String image1Url, String image2Url) {
-        Intent intent = new Intent(context, ImagePollOpenActivity.class);
-        intent.putExtra("image1Url", image1Url);
-        intent.putExtra("image2Url", image2Url);
-        context.startActivity(intent);
+    void onImage1SingleClicked(final Context context, String imageUrl) {
 
+        listener= (ImagePollClickListener) context;
+        listener.onImagePollImageClicked(imageUrl,image1);
 
     }
 
-    void onImage2SingleClicked(final Context context, String image1Url, String image2Url) {
-        Intent intent = new Intent(context, ImagePollOpenActivity.class);
-        intent.putExtra("image1Url", image1Url);
-        intent.putExtra("image2Url", image2Url);
-        context.startActivity(intent);
+    void onImage2SingleClicked(final Context context, String imageUrl) {
+
+        listener= (ImagePollClickListener) context;
+        listener.onImagePollImageClicked(imageUrl, image2);
 
     }
 
@@ -152,7 +150,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                     public void run() {
                         leftWhiteHeart.setVisibility(View.GONE);
                         constraintLayout.setVisibility(View.VISIBLE);
-                        constraintLayout.animate().translationY(0f).setDuration(400).start();
+                        constraintLayout.animate().translationY(0f).setDuration(300).start();
                         Handler handler2 = new Handler();
                         handler2.postDelayed(new Runnable() {
                             @Override
@@ -188,7 +186,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                         }, 0);
 
                     }
-                }, 500);
+                }, 300);
             }
         }, 1000);
 
@@ -321,48 +319,50 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
 
     void showLike(final Context context, final int image1LikeNo, int image2LikeNo, final int choice) {
 
-        final int totalLikeOfBothImages = image1LikeNo+image2LikeNo;//till now in addition to current user
-        leftWhiteHeart.setVisibility(View.GONE);
-        rightWhiteHeart.setVisibility(View.GONE);
-        constraintLayout.setVisibility(View.VISIBLE);
-        constraintLayout.animate().translationY(0f).setDuration(50).start();
-        Handler handler2 = new Handler();
-        handler2.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int firstPercentage = image1LikeNo*100/(totalLikeOfBothImages);//white view1
-                int secondPercentage = 100 - firstPercentage;//black white
-                double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
-                ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
-                layoutParams.width = (int) view1Width;
-                if(firstPercentage==100) {
-                    view2.setVisibility(View.GONE);
-                    Log.i("TAG", "first percentage match parent");
-                }
-                view1.setLayoutParams(layoutParams);
-                ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
-                        view2.getHeight());
-                ((RelativeLayout.LayoutParams) params).setMarginStart((int) view1Width);
-                text2.setLayoutParams(params);
-                if (firstPercentage < 20)
-                    text1.setVisibility(View.GONE);
-                if (secondPercentage < 20)
-                    text2.setVisibility(View.GONE);
-                String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
-                String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
-                text1.setText(mfirstPercentage + "%");
-                text2.setText(msecondPercentage + "%");
-                if(choice==1) {
-                    leftRedHeart.setVisibility(View.VISIBLE);
+        if(choice!=0) {
+            final int totalLikeOfBothImages = image1LikeNo + image2LikeNo;//till now in addition to current user
+            leftWhiteHeart.setVisibility(View.GONE);
+            rightWhiteHeart.setVisibility(View.GONE);
+            constraintLayout.setVisibility(View.VISIBLE);
+            constraintLayout.animate().translationY(0f).setDuration(50).start();
+            Handler handler2 = new Handler();
+            handler2.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int firstPercentage = image1LikeNo * 100 / (totalLikeOfBothImages);//white view1
+                    int secondPercentage = 100 - firstPercentage;//black white
+                    double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
+                    ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
+                    layoutParams.width = (int) view1Width;
+                    if (firstPercentage == 100) {
+                        view2.setVisibility(View.GONE);
+                        Log.i("TAG", "first percentage match parent");
+                    }
+                    view1.setLayoutParams(layoutParams);
+                    ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                            view2.getHeight());
+                    ((RelativeLayout.LayoutParams) params).setMarginStart((int) view1Width);
+                    text2.setLayoutParams(params);
+                    if (firstPercentage < 20)
+                        text1.setVisibility(View.GONE);
+                    if (secondPercentage < 20)
+                        text2.setVisibility(View.GONE);
+                    String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
+                    String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
+                    text1.setText(mfirstPercentage + "%");
+                    text2.setText(msecondPercentage + "%");
+                    if (choice == 1) {
+                        leftRedHeart.setVisibility(View.VISIBLE);
 
+                    } else if (choice == 2) {
+                        rightRedHeart.setVisibility(View.VISIBLE);
+                    }
+                    image1.setLongClickable(false);
+                    image2.setLongClickable(false);
                 }
-                else if(choice ==2) {
-                    rightRedHeart.setVisibility(View.VISIBLE);
-                }
-                image1.setLongClickable(false);
-                image2.setLongClickable(false);
-            }
-        }, 0);
+            }, 0);
+
+        }
 
 
     }

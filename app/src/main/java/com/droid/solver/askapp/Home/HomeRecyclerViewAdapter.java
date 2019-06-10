@@ -7,6 +7,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -36,6 +37,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private   ArrayList<String> answerLikeListFromRemoteDatabase;
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private HashMap<String,Integer> imagePollLikeMapFromLocalDatabase;
+    private HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase;
     private  LocalDatabase localDatabase ;
     public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
 
@@ -49,6 +51,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             localDatabase=new LocalDatabase(context.getApplicationContext());
             answerLikeListFromRemoteDatabase=localDatabase.getAnswerLikeModel();
             imagePollLikeMapFromLocalDatabase=localDatabase.getImagePollLikeModel();
+            surveyParticipatedMapFromLocalDatabase=localDatabase.getSurveyParticipatedModel();
         }
     }
 
@@ -263,6 +266,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 int image1LikeNo=((AskImagePollModel) list.get(i)).getImage1LikeNo();
                 int image2LikeNo=((AskImagePollModel) list.get(i)).getImage2LikeNo();
                 String imagePollId=((AskImagePollModel) list.get(i)).getImagePollId();
+                ((ImagePollViewHolder) holder).image1.setTransitionName("image1"+i);
+                ((ImagePollViewHolder) holder).image2.setTransitionName("image2"+i);
+
                 if(imagePollId==null){
                     list.remove(i);
                     return;
@@ -271,14 +277,24 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     if(MainActivity.imagePollLikeMap!=null&&MainActivity.imagePollLikeMap.size()>0)
                     {
                         if (MainActivity.imagePollLikeMap.containsKey(imagePollId)) {
-                            ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
-                                    MainActivity.imagePollLikeMap.get(imagePollId));
+                            try {
+                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
+                                        MainActivity.imagePollLikeMap.get(imagePollId));
+                            }catch (NullPointerException e){
+                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
+                                        image2LikeNo, 0);
+                            }
                         }
 
                     }else if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
                         if(imagePollLikeMapFromLocalDatabase.containsKey(imagePollId)){
-                            ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
-                                    imagePollLikeMapFromLocalDatabase.get(imagePollId));
+                            try {
+                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
+                                        imagePollLikeMapFromLocalDatabase.get(imagePollId));
+                            }catch (NullPointerException e){
+                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
+                                        image2LikeNo, 0);
+                            }
                         }
                     }
 
@@ -311,6 +327,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         }
         else if(holder.getItemViewType()==SURVEY&&holder instanceof SurveyViewHolder){
             if(list.get(i) instanceof AskSurveyModel){
+                handleClickListenerOfSurvey((SurveyViewHolder)holder, (AskSurveyModel) list.get(i));
 
                 String askerId=((AskSurveyModel) list.get(i)).getAskerId();
                 String askerName=((AskSurveyModel) list.get(i)).getAskerName();
@@ -332,6 +349,27 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 int optin4Count=((AskSurveyModel) list.get(i)).getOption4Count();
                 int languageSelectedIndex=((AskSurveyModel) list.get(i)).getLanguageSelectedIndex();
                 String surveyId=((AskSurveyModel) list.get(i)).getSurveyId();
+
+                if(MainActivity.surveyParticipatedMap!=null&&MainActivity.surveyParticipatedMap.size()>0){
+                    try {
+                        if (MainActivity.surveyParticipatedMap.containsKey(surveyId)) {
+                            ((SurveyViewHolder) holder).showSelection(MainActivity.surveyParticipatedMap.get(surveyId),
+                                    (AskSurveyModel) list.get(i));
+                        }
+                    }catch (NullPointerException e){
+                        ((SurveyViewHolder) holder).showSelection(0, (AskSurveyModel)list.get(i));
+
+                    }
+                }else if(surveyParticipatedMapFromLocalDatabase!=null&&surveyParticipatedMapFromLocalDatabase.size()>0){
+                    try {
+                        if (surveyParticipatedMapFromLocalDatabase.containsKey(surveyId)) {
+                            ((SurveyViewHolder) holder).showSelection(surveyParticipatedMapFromLocalDatabase.get(surveyId),
+                                    (AskSurveyModel) list.get(i));
+                        }
+                    }catch (NullPointerException e){
+                        ((SurveyViewHolder) holder).showSelection(0, (AskSurveyModel)list.get(i));
+                    }
+                }else
 
                 askerName=askerName==null?"Someone":askerName;
                 askerImageUrlLow=askerImageUrlLow==null?"":askerImageUrlLow;
@@ -360,7 +398,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     ((SurveyViewHolder) holder).container4.setVisibility(View.VISIBLE);
                 }
 
-                handleClickListenerOfSurvey((SurveyViewHolder)holder, (AskSurveyModel) list.get(i));
+
             }
         }
 
@@ -425,14 +463,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onImage1SingleClicked(context,imagePollModel.getImage1Url(),imagePollModel.getImage2Url());
+                holder.onImage1SingleClicked(context,imagePollModel.getImage1Url());
 
             }
         });
         holder.image2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onImage2SingleClicked(context,imagePollModel.getImage2Url(),imagePollModel.getImage1Url());
+                holder.onImage2SingleClicked(context,imagePollModel.getImage2Url());
             }
         });
 
@@ -464,29 +502,25 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.container1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onContainer1Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
-                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+                holder.onContainer1Clicked(surveyModel);
             }
         });
         holder.container2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onContainer2Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
-                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+                holder.onContainer2Clicked(surveyModel);
             }
         });
         holder.container3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onContainer3Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
-                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+                holder.onContainer3Clicked(surveyModel);
             }
         });
         holder.container4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onContainer4Clicked(surveyModel.getOption1Count(),surveyModel.getOption2Count(),surveyModel.getOption3Count(),
-                        surveyModel.getOption4Count(),surveyModel.getAskerId(),surveyModel.getSurveyId());
+                holder.onContainer4Clicked(surveyModel);
             }
         });
         holder.threeDot.setOnClickListener(new View.OnClickListener() {

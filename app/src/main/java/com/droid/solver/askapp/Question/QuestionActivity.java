@@ -266,11 +266,16 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     }
     private boolean checkQuestionLength( ){
-        String data=String.valueOf(questionInputEditText.getText());
-        if(data.trim().length()==0){
+
+        if(questionInputEditText.getText()==null){
+            Snackbar.make(rootView,"Write your question", Snackbar.LENGTH_LONG).show();
             return false;
         }
-            long length=data.length();
+            long length=questionInputEditText.getText().toString().trim().length();
+        if(length==0){
+            Snackbar.make(rootView,"Write your question", Snackbar.LENGTH_LONG).show();
+            return false;
+        }
             if(length>2000){
                 Snackbar.make(rootView,"Question length must be less than 2000", Snackbar.LENGTH_LONG).show();
                 return false;

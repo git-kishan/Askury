@@ -4,7 +4,7 @@
     <item
 
         android:state_checked="true"
-        android:color="@color/icon_title" />
+        android:color="@color/colorAccent" />
 
     <item
         android:state_checked="false"

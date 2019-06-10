@@ -7,11 +7,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
-        <!--<item name="android:windowAnimationStyle">@style/customAnimations.scale</item>-->
+        <item name="android:windowContentTransitions">true</item>
 
     </style>
     <style name="Widget.CustomBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="android:fontFamily">@font/bubbler_one</item>
+
     </style>
     <style name="QuestionActivitytoolbarActionButton" parent="Widget.AppCompat.ActionButton">
         <item name="android:layout_marginRight">10dp</item>

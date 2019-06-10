@@ -243,8 +243,25 @@ public class SignInActivity extends AppCompatActivity {
         userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                initializeLikeList(uid);
+                initiliazeSurveyParticipatedList(uid);
                 Log.i("TAG", "image poll like  list created in remote database");
+            }
+        });
+    }
+    private void initiliazeSurveyParticipatedList(final String uid){
+        FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
+        DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("surveyParticipated")
+                .document("participated");
+
+        ArrayList<String> surveyMapList=new ArrayList<>();
+        Map<String,Object> map=new HashMap<>();
+        map.put("surveyMapList", surveyMapList);
+
+        userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                initializeLikeList(uid);
+                Log.i("TAG", "survye  participated list created in remote database");
             }
         });
     }

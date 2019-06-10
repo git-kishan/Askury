@@ -35,7 +35,7 @@ public class ImagePollOpenActivity extends AppCompatActivity {
         imageUrlList[0]=image1Url;
         imageUrlList[1]=image2Url;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         ViewPager viewPager=findViewById(R.id.view_pager);
         ImagePollViewPagerAdapter pagerAdapter=new ImagePollViewPagerAdapter(this, imageUrlList);
         viewPager.setAdapter(pagerAdapter);
