@@ -15,6 +15,7 @@ import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.FontRequestEmojiCompatConfig;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.provider.FontRequest;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public static void changeToolbarFont(Toolbar toolbar, Activity context) {
+    public  void changeToolbarFont(Toolbar toolbar, Activity context) {
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
             if (view instanceof TextView) {
@@ -250,8 +251,8 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public static void applyFont(TextView tv, Activity context) {
-        tv.setTypeface(Typeface.createFromAsset(context.getAssets(), "aclonica.ttf"));
+    public  void applyFont(TextView tv, Activity context) {
+        tv.setTypeface(ResourcesCompat.getFont(this, R.font.aclonica));
     }
 
     @Override
@@ -392,11 +393,13 @@ public class MainActivity extends AppCompatActivity implements
                     answerLikeList.clear();
                     answerLikeList.addAll(set);
                     LocalDatabase database = new LocalDatabase(getApplicationContext());
+                    database.clearAnswerLikeModel();
                     database.insertAnswerLikeModel(answerLikeList);
                 }
             }
         });
     }
+
     private void fetchImagePollLikeDocuments(){
         final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
         Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
@@ -425,6 +428,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }) ;
     }
+
     private void fetchSurveyParticipatedDocuments(){
         final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
         Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
@@ -453,12 +457,12 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-
     private void clearDatabase(){
         LocalDatabase database=new LocalDatabase(getApplicationContext());
         database.clearAllTable();
         signInAgain();
     }
+
     private void signInAgain(){
         progressFrameLayout.setVisibility(View.GONE);
         startActivity(new Intent(this, SignInActivity.class));

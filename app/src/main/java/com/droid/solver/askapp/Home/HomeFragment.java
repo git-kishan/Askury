@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
@@ -87,7 +89,8 @@ public class HomeFragment extends Fragment  {
 //                        Log.i("TAG", "asker id :- "+questionModel.getAskerId());
 //                        Log.i("TAG", "asker image url :- "+questionModel.getAskerImageUrlLow());
                         list.add(questionModel);
-                        adapter.notifyDataSetChanged();
+
+
                     }
 
                 }else {

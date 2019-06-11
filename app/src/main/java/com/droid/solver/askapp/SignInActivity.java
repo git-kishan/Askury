@@ -76,7 +76,7 @@ public class SignInActivity extends AppCompatActivity {
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user!=null){
-            startActivity(new Intent(SignInActivity.this,MainActivity.class));
+            startActivity(new Intent(SignInActivity.this,GenderSelectionActivity.class));
             finish();
         }
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -116,6 +116,7 @@ public class SignInActivity extends AppCompatActivity {
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
     private void handleFacebookAccessToken(AccessToken token) {
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -162,6 +163,7 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void signInWithGoogle(){
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -175,6 +177,7 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
                             FirebaseUser user = auth.getCurrentUser();
                             FirebaseFirestore db=FirebaseFirestore.getInstance();
                             Map<String,Object> userDetail = new HashMap<>();
@@ -184,9 +187,6 @@ public class SignInActivity extends AppCompatActivity {
                             userDetail.put("userName", userName);
                             userDetail.put("profilePicUrlLow", profilePicUrl);
                             userDetail.put("userId", userId);
-//                            Log.i("TAG", "user Name :- "+userName);
-//                            Log.i("TAG", "profile pic :- "+profilePicUrl);
-//                            Log.i("TAG", "userId :- "+userId);
                             db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -231,6 +231,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+
     private void initiliazeImagePollLikeList(final String uid){
         FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
         DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("imagePollLike")
@@ -248,6 +249,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+
     private void initiliazeSurveyParticipatedList(final String uid){
         FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
         DocumentReference userLikeRef=rootRef.collection("user").document(uid).collection("surveyParticipated")
@@ -265,6 +267,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+
     private void checkFirstTimeUser(final String uid){
         FirebaseFirestore.getInstance().collection("user").document(uid).get().addOnCompleteListener(
                 new OnCompleteListener<DocumentSnapshot>() {

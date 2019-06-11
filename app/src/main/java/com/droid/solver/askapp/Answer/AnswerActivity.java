@@ -583,14 +583,14 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
                     System.currentTimeMillis(), answerId, false, answer,
-                    imageAttached, answererImageUrl, fontSelected, 0);
+                    imageAttached, answerImageUrl, fontSelected, 0);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
                     askerUid, askerName, askerBio, askerImageUrl, questionType,
                     questionId, question, timeOfAsking, System.currentTimeMillis(),
                     uid, answererName, answererImageUrl, answererBio,
-                    false, answerId, answer, imageAttached, true,
-                    fontSelected, false, 0);
+                    false, answerId, answer, imageAttached, answerImageUrl,
+                    true, fontSelected, false, 0);
 
             Map<String, Object> map = new HashMap<>();
             map.put("recentAnswererId", uid);
@@ -654,13 +654,14 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
                     System.currentTimeMillis(), previousAnswerId, false, answer,
-                    imageAttached, answererImageUrl, fontSelected, 0);
+                    imageAttached, answerImageUrl, fontSelected, 0);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
                     askerUid, askerName, askerBio, askerImageUrl, questionType,
                     questionId, question, timeOfAsking, System.currentTimeMillis(),
                     uid, answererName, answererImageUrl, answererBio,
-                    false, previousAnswerId, answer, imageAttached, true,
+                    false, previousAnswerId, answer, imageAttached,answerImageUrl ,
+                    true,
                     fontSelected, false, 0);
 
             Map<String, Object> map = new HashMap<>();

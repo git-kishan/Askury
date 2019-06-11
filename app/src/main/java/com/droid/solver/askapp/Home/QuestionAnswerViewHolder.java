@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.Answer.AnswerActivity;
-import com.droid.solver.askapp.Answer.QuestionAnswerModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Question.RootQuestionModel;
@@ -25,16 +24,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.like.LikeButton;
 
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,7 +93,7 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
     public void onAnswersClicked(Context context,RootQuestionModel model){
 
-        Toast.makeText(context, "number of answer cicked", Toast.LENGTH_SHORT).show();
+
     }
 
     public void onLiked(final Context context, final RootQuestionModel model){
@@ -207,7 +202,15 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
 
     public void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
-        Intent intent =new Intent(context, com.droid.solver.askapp.Home.AnswerActivity.class);
+        Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
+        intent.putExtra("askerImageUrl", rootQuestionModel.getAskerImageUrlLow());
+        intent.putExtra("timeOfAsking", rootQuestionModel.getTimeOfAsking());
+        intent.putExtra("askerName", rootQuestionModel.getAskerName());
+        intent.putExtra("askerBio", rootQuestionModel.getAskerBio());
+        intent.putExtra("questionId", rootQuestionModel.getQuestionId());
+        intent.putExtra("question", rootQuestionModel.getQuestion());
+        intent.putExtra("askerId", rootQuestionModel.getAskerId());
+        intent.putExtra("anonymous", rootQuestionModel.isAnonymous());
         context.startActivity(intent);
     }
 }

@@ -20,6 +20,7 @@ public class QuestionAnswerModel {
     private String answerId;
     private String answer;
     private boolean imageAttached;
+    private String imageAttachedUrl;
     private boolean stringAttached;
     private int fontUsed;
     private boolean notifiedToAsker;
@@ -46,6 +47,7 @@ public class QuestionAnswerModel {
             String answerId,
             String answer,
             boolean imageAttached,
+            String imageAttachedUrl,
             boolean stringAttached,
             int fontUsed,
             boolean notifiedToAsker,
@@ -67,6 +69,7 @@ public class QuestionAnswerModel {
         this.answerId = answerId;
         this.answer = answer;
         this.imageAttached = imageAttached;
+        this.imageAttachedUrl=imageAttachedUrl;
         this.stringAttached = stringAttached;
         this.fontUsed = fontUsed;
         this.notifiedToAsker = notifiedToAsker;
@@ -141,6 +144,11 @@ public class QuestionAnswerModel {
     public boolean isImageAttached() {
         return imageAttached;
     }
+
+    public String getImageAttachedUrl() {
+        return imageAttachedUrl;
+    }
+
 
     public boolean isStringAttached() {
         return stringAttached;

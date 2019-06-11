@@ -24,8 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".setting.SettingActivity"></activity>
-        <activity android:name=".Home.AnswerActivity" />
+        <activity android:name=".GenderSelectionActivity"></activity>
+        <activity android:name=".InterestActivity" />
+        <activity android:name=".setting.SettingActivity" />
+        <activity android:name=".homeAnswer.AnswerActivity" />
         <activity android:name=".Home.ImagePollOpenActivity" />
         <activity
             android:name=".Answer.AnswerActivity"

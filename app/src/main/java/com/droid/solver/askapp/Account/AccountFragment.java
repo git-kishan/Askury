@@ -1,6 +1,10 @@
 package com.droid.solver.askapp.Account;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +26,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.facebook.share.model.SharePhoto;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -34,7 +47,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private ImageView settingimage;
     private CircleImageView profileImage;
     private CardView toolbarCardViewActivity;
-    private EmojiTextView profileName,professionTextView;
+    private EmojiTextView profileName,userBio;
     private TextView followerCount,followingCount,pointCount,accountStatusTextView;
     private TextView followerTextView,followingTextView,pointTextView;
     private String PUBLIC_ACCOUNT_STATUS="Public";
@@ -52,7 +65,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         profileName=view.findViewById(R.id.user_name_text_view);
         accountStatusTextView=view.findViewById(R.id.public_private_text_view);
         accountStatusTextView.setText(PUBLIC_ACCOUNT_STATUS);
-        professionTextView=view.findViewById(R.id.about_user);
+        userBio=view.findViewById(R.id.about_user);
         followerCount=view.findViewById(R.id.follower_count_number);
         followingCount=view.findViewById(R.id.following_count_number);
         pointCount=view.findViewById(R.id.point_count_number);
@@ -61,6 +74,12 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         pointTextView=view.findViewById(R.id.points_text_view);
         toolbarCardViewActivity.setVisibility(View.GONE);
         viewPager=view.findViewById(R.id.view_pager);
+        SharedPreferences preferences=getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        String userName=preferences.getString(Constants.userName, "");
+        String muserBio=preferences.getString(Constants.bio, "");
+        profileName.setText(userName);
+        userBio.setText(muserBio);
+
         setViewPager();
         setTabLayout(view);
         settingimage.setOnClickListener(this);
@@ -71,7 +90,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         followerCount.setOnClickListener(this);
         followingCount.setOnClickListener(this);
         pointCount.setOnClickListener(this);
-
         return view;
     }
 
@@ -92,7 +110,10 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        loadProfilePicFromFile();
+        followingCount.setText(String.valueOf(0));
+        followerCount.setText(String.valueOf(0));
+        pointCount.setText(String.valueOf(0));
 
 
 
@@ -161,4 +182,17 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
+    private void loadProfilePicFromFile(){
+        SharedPreferences preferences=getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        String path=preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
+        File file=new File(path,"profile_pic_low_resolution");
+        try {
+            Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
+            profileImage.setImageBitmap(bitmap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

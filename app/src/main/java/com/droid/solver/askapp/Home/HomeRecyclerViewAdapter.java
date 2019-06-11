@@ -34,7 +34,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private static final int SURVEY=2;
     private static final int IMAGE_POLL=3;
     private static final int LOADING=4;
-    private   ArrayList<String> answerLikeListFromRemoteDatabase;
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private HashMap<String,Integer> imagePollLikeMapFromLocalDatabase;
     private HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase;
@@ -49,7 +48,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             inflater = LayoutInflater.from(context);
             localDatabase = new LocalDatabase(context.getApplicationContext());
             localDatabase=new LocalDatabase(context.getApplicationContext());
-            answerLikeListFromRemoteDatabase=localDatabase.getAnswerLikeModel();
+            answerLikeListFromLocalDatabase=localDatabase.getAnswerLikeModel();
             imagePollLikeMapFromLocalDatabase=localDatabase.getImagePollLikeModel();
             surveyParticipatedMapFromLocalDatabase=localDatabase.getSurveyParticipatedModel();
         }
@@ -104,14 +103,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 int answerCount=((RootQuestionModel) list.get(i)).getAnswerCount();
                 int fontUsed=((RootQuestionModel) list.get(i)).getFontUsed();
 
-                if(MainActivity.answerLikeList.size()>0){
-                    if(answerLikeListFromRemoteDatabase.contains(recentAnswerId)){
+                if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
+                    if(MainActivity.answerLikeList.contains(recentAnswerId)){
                         ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
                     }else {
                         ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
                     }
-                }else {
-                    if(answerLikeListFromLocalDatabase!=null && answerLikeListFromLocalDatabase.contains(recentAnswerId)){
+                }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0) {
+                    if(answerLikeListFromLocalDatabase.contains(recentAnswerId)){
                         ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
                     }else {
                         ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
@@ -188,14 +187,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String timeAgo = getTime(timeOfAsking, System.currentTimeMillis());
 
 
-                if(MainActivity.answerLikeList.size()>0){
-                    if(answerLikeListFromRemoteDatabase.contains(recentAnswerId)){
+                if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
+                    if(MainActivity.answerLikeList.contains(recentAnswerId)){
                         ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
                     }else {
                         ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
                     }
-                }else {
-                    if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.contains(recentAnswerId)){
+                }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0){
+                    if(answerLikeListFromLocalDatabase.contains(recentAnswerId)){
                         ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
                     }else {
                         ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/root"
+    android:background="@drawable/temp1"
+    tools:context=".InterestActivity">
+
+    <android.support.design.chip.ChipGroup
+        android:id="@+id/chipGroupTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp">
+
+    </android.support.design.chip.ChipGroup>
+
+    <android.support.design.chip.ChipGroup
+        android:id="@+id/chipGroupBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:chipSpacingHorizontal="12sp"
+        app:chipSpacingVertical="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true">
+
+        <android.support.design.chip.Chip
+            android:id="@+id/painting"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Painting"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/acting"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Acting"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/graphic"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Graphic art"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+
+        <android.support.design.chip.Chip
+            android:id="@+id/programming"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Programming"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/cooking"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cooking"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/fitness"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fitness"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/music"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Music"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/fashion"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fashion"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/sport"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sport"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/gaming"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gaming"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/shopping"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shopping"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/movies"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Movies"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/student"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/designing"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Designing"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+
+        <android.support.design.chip.Chip
+            android:id="@+id/books"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Books"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+        <android.support.design.chip.Chip
+            android:id="@+id/marketing"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Marketing"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+        <android.support.design.chip.Chip
+            android:id="@+id/medical"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medical"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+        <android.support.design.chip.Chip
+            android:id="@+id/management"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Management"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            app:chipBackgroundColor="@color/white" />
+    </android.support.design.chip.ChipGroup>
+
+    <TextView
+        android:id="@+id/textView35"
+        android:layout_width="0dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:text="Select your interest"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/chipGroupBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/imageView20"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+         android:clickable="true"
+        android:focusable="true"
+        android:background="?android:selectableItemBackground"
+        android:layout_marginBottom="72dp"
+        android:src="@drawable/ic_circular_right_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

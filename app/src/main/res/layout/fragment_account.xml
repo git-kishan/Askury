@@ -6,21 +6,17 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingEnd="0dp"
         android:paddingStart="0dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".Account.AccountFragment">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="160dp"
             android:background="@android:color/transparent"
             android:elevation="1dp"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -58,6 +54,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/profile_image">
 
                     <ImageView
+                        android:id="@+id/type_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="3dp"
@@ -83,7 +80,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Public" />
+                    android:text="Public" />
 
                 <ImageView
                     android:id="@+id/setting_image"
@@ -117,9 +114,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="220dp"
+                android:layout_marginTop="160dp"
                 android:layout_marginEnd="8dp"
-                android:text="Jenifer Lawerence"
+                tools:text="Jenifer Lawerence"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -131,8 +128,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="software engineer | data scientiest | programmer"
-                android:textSize="11sp"
+                tools:text="software engineer | data scientiest | programmer"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/user_name_text_view" />
@@ -156,7 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="516"
+                tools:text="516"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:background="?android:selectableItemBackground"
@@ -191,7 +188,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="545"
+                tools:text="545"
                 android:focusable="true"
                 android:clickable="true"
                 android:background="?android:selectableItemBackground"
@@ -224,7 +221,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="254"
+                tools:text="254"
                 android:textColor="@android:color/black"
                 android:focusable="true"
                 android:clickable="true"
