@@ -106,7 +106,7 @@
                         android:minHeight="150dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/answer_edit_text"
-                        app:srcCompat="@drawable/lawrence" />
+                         />
 
                     <ImageView
                         android:id="@+id/imageView10"
@@ -116,7 +116,7 @@
                         android:layout_marginEnd="8dp"
                         android:elevation="10dp"
                         android:clickable="true"
-                        android:background="?android:selectableItemBackground"
+                        android:background="@drawable/ripple_background"
                         android:focusable="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/answer_edit_text"
@@ -132,7 +132,7 @@
                 android:clickable="true"
                 android:elevation="10dp"
                 android:focusable="true"
-                android:foreground="?android:selectableItemBackground"
+                android:foreground="@drawable/ripple_background"
                 app:cardCornerRadius="3dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -156,7 +156,7 @@
                 android:focusable="true"
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
-                android:foreground="?android:selectableItemBackground"
+                android:foreground="@drawable/ripple_background"
                 android:layout_marginBottom="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cardView10">
@@ -175,7 +175,7 @@
                 android:focusable="true"
                 android:clickable="true"
                 app:cardCornerRadius="3dp"
-                android:foreground="?android:selectableItemBackground"
+                android:foreground="@drawable/ripple_background"
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="32dp"
@@ -193,7 +193,7 @@
                 android:id="@+id/imageView13"
                 android:layout_width="51dp"
                 android:layout_height="44dp"
-                android:background="?android:selectableItemBackground"
+                android:background="@drawable/ripple_background"
                 android:clickable="true"
                 android:focusable="true"
                 android:layout_marginEnd="24dp"

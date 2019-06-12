@@ -2,16 +2,13 @@ package com.droid.solver.askapp.Home;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.R;
-import com.squareup.picasso.Picasso;
-
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ImagePollViewPagerAdapter extends PagerAdapter {
@@ -42,7 +39,7 @@ public class ImagePollViewPagerAdapter extends PagerAdapter {
 
         View view=inflater.inflate(R.layout.view_pager_layout, container,false);
         ImageView imageView=view.findViewById(R.id.image_view);
-        Picasso.get().load(imageUrlList[position]).into(imageView);
+        GlideApp.with(context).load(imageUrlList[position]).into(imageView);
         container.addView(view);
         PhotoViewAttacher attacher=new PhotoViewAttacher(imageView);
         attacher.update();

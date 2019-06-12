@@ -244,7 +244,7 @@
             android:padding="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_back" />
+            app:srcCompat="@drawable/ic_back_black" />
 
     </android.support.constraint.ConstraintLayout>
 

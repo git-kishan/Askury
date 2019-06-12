@@ -1,17 +1,15 @@
 package com.droid.solver.askapp.Question;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.droid.solver.askapp.Answer.AnswerActivity;
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.R;
-import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
@@ -44,7 +42,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                 profileNameAsked=context.getString(R.string.someoneasked);
             }else {
                 profileNameAsked=String.format(context.getString(R.string.user_name_asked), questionModelArrayList.get(i).getAskerName());
-                Picasso.get().load(questionModelArrayList.get(i).getAskerImageUrlLow()).placeholder(R.drawable.ic_placeholder).
+                GlideApp.with(context).load(questionModelArrayList.get(i).getAskerImageUrlLow()).placeholder(R.drawable.ic_placeholder).
                         into(((AskQuestionViewHolderWithoutImage) holder).profilePicture);
             }
 

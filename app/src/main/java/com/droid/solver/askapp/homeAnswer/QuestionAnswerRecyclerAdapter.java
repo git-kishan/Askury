@@ -6,11 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
 import com.droid.solver.askapp.R;
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
@@ -75,12 +73,12 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
            if(anonymous){
                ((QuestionViewHolder) holder).askerName.setText("Unknown");
                ((QuestionViewHolder) holder).askerBio.setText("");
-               Picasso.get().load(R.drawable.ic_placeholder).into(((QuestionViewHolder) holder).profileImage);
+               GlideApp.with(context).load(R.drawable.ic_placeholder).into(((QuestionViewHolder) holder).profileImage);
 
            }else {
                ((QuestionViewHolder) holder).askerName.setText(askerName);
                ((QuestionViewHolder) holder).askerBio.setText(bio);
-               Picasso.get().load(profileImageUrl).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
+               GlideApp.with(context).load(profileImageUrl).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
                        .into(((QuestionViewHolder) holder).profileImage);
            }
 
@@ -109,10 +107,10 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             ((AnswerViewHolder) holder).answerImage.setVisibility(View.GONE);
             if(answerImageUrl!=null){
                 ((AnswerViewHolder) holder).answerImage.setVisibility(View.VISIBLE);
-                Picasso.get().load(answerImageUrl).into(((AnswerViewHolder) holder).answerImage);
+                GlideApp.with(context).load(answerImageUrl).into(((AnswerViewHolder) holder).answerImage);
             }
             String timeAgoText=getTime(timeAgo, System.currentTimeMillis());
-            Picasso.get().load(profileImageUrl).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
+            GlideApp.with(context).load(profileImageUrl).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
                     .into(((AnswerViewHolder) holder).profileImage);
             ((AnswerViewHolder) holder).answererName.setText(answererName);
             ((AnswerViewHolder) holder).answererBio.setText(answererBio);

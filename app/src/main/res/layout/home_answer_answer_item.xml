@@ -20,6 +20,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:background="@drawable/ripple_background"
             android:src="@drawable/ic_placeholder"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -89,6 +90,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:background="@drawable/ripple_background"
             app:anim_scale_factor="2"
             app:circle_end_color="@color/like_button_red"
             app:circle_start_color="@color/like_button_red"

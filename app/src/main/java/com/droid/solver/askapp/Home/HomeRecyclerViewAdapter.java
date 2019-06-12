@@ -5,14 +5,10 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-
-import com.droid.solver.askapp.Answer.AnswerActivity;
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
@@ -21,7 +17,6 @@ import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
-import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -130,8 +125,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 else {
                     askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
-                    Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
-                            into(((QuestionAnswerViewHolder) holder).askerImageView);
+                    GlideApp.with(context).load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
+                            .into(((QuestionAnswerViewHolder) holder).askerImageView);
+//                    Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+//                            into(((QuestionAnswerViewHolder) holder).askerImageView);
 
                     askerName=askerName!=null?askerName:"Unknown";
                     ((QuestionAnswerViewHolder) holder).askerName.setText(askerName);
@@ -142,8 +139,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 ((QuestionAnswerViewHolder) holder).question.setText(question);
 
                 recentAnswererImageUrl=recentAnswererName!=null?recentAnswererImageUrl:"";
-                Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
-                        into(((QuestionAnswerViewHolder) holder).answererImageView);
+                GlideApp.with(context).load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
+                        .into(((QuestionAnswerViewHolder) holder).answererImageView);
+//                Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+//                        into(((QuestionAnswerViewHolder) holder).answererImageView);
 
                 ((QuestionAnswerViewHolder) holder).timeAgo.setText(timeAgo);
                 recentAnswererName=recentAnswererName!=null?recentAnswererName:"Unknown";
@@ -202,8 +201,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
 
                 if (answerImageUrl != null)
-                    Picasso.get().load(answerImageUrl)
-                            .into(((QuestionAnswerWithImageViewHolder) holder).answerImageView);
+                    GlideApp.with(context).load(answerImageUrl)
+                    .into(((QuestionAnswerWithImageViewHolder) holder).answerImageView);
+//                    Picasso.get().load(answerImageUrl)
+//                            .into(((QuestionAnswerWithImageViewHolder) holder).answerImageView);
 
                 if (anonymous) {
                     ((QuestionAnswerWithImageViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
@@ -212,7 +213,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 } else {
 
                     askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
-                    Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+                    GlideApp.with(context).load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
                             into(((QuestionAnswerWithImageViewHolder)
                             holder).askerImageView);
 
@@ -225,7 +226,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 ((QuestionAnswerWithImageViewHolder) holder).question.setText(question);
                 recentAnswererImageUrl=recentAnswererImageUrl!=null?recentAnswererImageUrl:"";
 
-                Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+                GlideApp.with(context).load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
                         into(((QuestionAnswerWithImageViewHolder) holder).answererImageView);
 
                 ((QuestionAnswerWithImageViewHolder) holder).timeAgo.setText(timeAgo);
@@ -305,9 +306,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 timeOfPolling=timeOfPolling==0?System.currentTimeMillis():timeOfPolling;
                 String timeAgo=getTime(timeOfPolling, System.currentTimeMillis());
 
-                Picasso.get().load(image1Url).
+                GlideApp.with(context).load(image1Url).
                         into(((ImagePollViewHolder) holder).image1);
-                Picasso.get().load(image2Url).
+                GlideApp.with(context).load(image2Url).
                         into(((ImagePollViewHolder) holder).image2);
                 String userNameCreatedPoll=String.format(context.getString(R.string.username_created_a_poll), askerName);
                 ((ImagePollViewHolder) holder).profileName.setText(userNameCreatedPoll);
@@ -316,7 +317,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 if(askerQuestion.equals(""))
                     ((ImagePollViewHolder) holder).question.setVisibility(View.GONE);
 
-                Picasso.get().load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder).into(((ImagePollViewHolder) holder).profileImageView);
+                GlideApp.with(context).load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder).into(((ImagePollViewHolder) holder).profileImageView);
                 ((ImagePollViewHolder) holder).timeAgo.setText(timeAgo);
 
                 handleClickListenerOfImagePoll((ImagePollViewHolder) holder, (AskImagePollModel) list.get(i));
@@ -375,7 +376,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 askerBio=askerBio==null?"":askerBio;
                 question=question==null?"":question;
 
-                Picasso.get().load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder)
+                GlideApp.with(context).load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder)
                         .into(((SurveyViewHolder) holder).profileImage);
                 ((SurveyViewHolder) holder).question.setText(question);
                 ((SurveyViewHolder) holder).bio.setText(askerBio);

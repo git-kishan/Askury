@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#cccccc</color>
+    <color name="ripple_color">#cccccc</color>
     <color name="colorAccent">#82003d</color>
     <color name="colorAccentFader">#BEB3105A</color>
     <color name="editTextUnderLineColor">#6F82003D</color>

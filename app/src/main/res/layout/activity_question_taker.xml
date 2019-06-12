@@ -43,7 +43,6 @@
                             android:maxHeight="120dp"
                             android:scaleType="centerCrop"
                             android:scrollbars="vertical"
-                            android:src="@drawable/lawrence"
                             app:boxCornerRadiusBottomEnd="5dp"
                             app:boxCornerRadiusBottomStart="5dp"
                             app:boxCornerRadiusTopEnd="5dp"
@@ -108,11 +107,11 @@
                             android:layout_height="25dp"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
-                            android:background="?android:selectableItemBackground"
+                            android:background="@drawable/ripple_background"
                             android:padding="5dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_back" />
+                            app:srcCompat="@drawable/ic_back_black" />
                     </android.support.constraint.ConstraintLayout>
 
                 </android.support.v7.widget.CardView>
@@ -157,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:background="?android:selectableItemBackground"
+                    android:background="@drawable/ripple_background"
                     android:clickable="true"
                     android:focusable="true"
                     app:layout_constraintEnd_toEndOf="parent"

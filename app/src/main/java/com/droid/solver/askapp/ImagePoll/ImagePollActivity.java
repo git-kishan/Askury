@@ -217,6 +217,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     }
     private void onGalleryClicked(boolean isImage1Clicked, boolean isImage2Clicked,
                                   boolean isGalleryClicked, boolean isCameraClicked){
+
         Intent photoPickerIntent=new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         if(photoPickerIntent.resolveActivity(getPackageManager())!=null){
@@ -280,7 +281,6 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             }
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -430,6 +430,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
+
     private void resizeImageCapturedFromCamera() {
         int targetW = image1.getWidth();
         int targetH = image1.getHeight();
@@ -466,6 +467,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             }
         }
     }
+
     private boolean checkValidation(){
         String data=String.valueOf(questionInputEditText.getText());
         if(data.equals("null")){
@@ -482,6 +484,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         return true;
 
     }
+
     private void showSnackBar(String message){
         Snackbar snackbar=Snackbar.make(rootView,  message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
@@ -491,6 +494,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
         snackbar.show();
     }
+
     private boolean isInternetAvailable(){
         ConnectivityManager connectivityManager= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();

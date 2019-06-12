@@ -30,10 +30,10 @@
         android:padding="5dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="?android:selectableItemBackground"
+        android:background="@drawable/ripple_background"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back" />
+        app:srcCompat="@drawable/ic_back_black" />
 </android.support.constraint.ConstraintLayout>

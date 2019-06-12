@@ -76,7 +76,7 @@ public class SignInActivity extends AppCompatActivity {
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user!=null){
-            startActivity(new Intent(SignInActivity.this,GenderSelectionActivity.class));
+            startActivity(new Intent(SignInActivity.this,MainActivity.class));
             finish();
         }
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -129,14 +129,9 @@ public class SignInActivity extends AppCompatActivity {
                             Map<String,Object> userDetail = new HashMap<>();
                             FirebaseUser user = auth.getCurrentUser();
                             String userName=user.getDisplayName();
-                            String profilePicUrl=String.valueOf(user.getPhotoUrl());
                             final String userId=user.getUid();
                                 userDetail.put("userName", userName);
-                                userDetail.put("profilePicUrlLow", profilePicUrl);
                                 userDetail.put("userId", userId);
-//                                Log.i("TAG", "user Name :- "+userName);
-//                                Log.i("TAG", "profile pic :- "+profilePicUrl);
-//                                Log.i("TAG", "userId :- "+userId);
                                 db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -151,10 +146,6 @@ public class SignInActivity extends AppCompatActivity {
                                         Log.i("TAG", "Error "+e.getLocalizedMessage());
                                     }
                                 });
-
-
-
-
                         } else {
                             Toast.makeText(SignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -182,10 +173,8 @@ public class SignInActivity extends AppCompatActivity {
                             FirebaseFirestore db=FirebaseFirestore.getInstance();
                             Map<String,Object> userDetail = new HashMap<>();
                             String userName=user.getDisplayName();
-                            String profilePicUrl=String.valueOf(user.getPhotoUrl());
                             final String userId=user.getUid();
                             userDetail.put("userName", userName);
-                            userDetail.put("profilePicUrlLow", profilePicUrl);
                             userDetail.put("userId", userId);
                             db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {

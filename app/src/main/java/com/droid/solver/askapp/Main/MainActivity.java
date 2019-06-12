@@ -61,17 +61,16 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity implements
-        BottomNavigationView.OnNavigationItemSelectedListener,ProfilePicSaver,ImagePollClickListener {
+        BottomNavigationView.OnNavigationItemSelectedListener,ImagePollClickListener {
 
-    public static boolean isDataLoadedFromRemoteInQuestionFragment=false;
     private static final String HOME = "home";
     private static final String QUESTION = "ic_question";
     private static final String COMMUNITY = "community";
     private static final String ACCOUNT = "ic_account";
     private static final String NO_INTERNET = "no_internet";
-    BottomNavigationView bottomNavigationView;
-    FrameLayout frameLayout;
-    Toolbar toolbar;
+    public BottomNavigationView bottomNavigationView;
+    public FrameLayout frameLayout;
+    public Toolbar toolbar;
     private FirebaseFirestore firestoreRoot;
     private FirebaseUser user;
     private String uid;
@@ -255,26 +254,6 @@ public class MainActivity extends AppCompatActivity implements
         tv.setTypeface(ResourcesCompat.getFont(this, R.font.aclonica));
     }
 
-    @Override
-    public void onResult(Bitmap bitmap, boolean lowProfilePic, boolean highProfilePic) {  //save image to file and load image from file
-
-        if (lowProfilePic) {
-
-            if (bitmap != null) {
-                String path = saveProfilePicBitmapToFile(bitmap, lowProfilePic, highProfilePic);
-                saveProfileImagePathToSharedPreferences(path, lowProfilePic, highProfilePic);
-
-            }
-        }
-        if (highProfilePic) {
-            if (bitmap != null) {
-                String path = saveProfilePicBitmapToFile(bitmap, lowProfilePic, highProfilePic);
-                saveProfileImagePathToSharedPreferences(path, lowProfilePic, highProfilePic);
-
-            }
-        }
-    }
-
     private void getProfilePicUrlFromRemoteDatabase() {//download image and return bitmap from image
         firestoreRoot.collection("user").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -294,15 +273,6 @@ public class MainActivity extends AppCompatActivity implements
                     editor.putString(Constants.userName, userName);
                     editor.putString(Constants.LOW_IMAGE_URL, lowProfilePicUrl);
                     editor.apply();
-                    Log.i("TAG", "user name :- " + userName);
-                    if (highProfilePicUrl == null)
-                        highProfilePicUrl = lowProfilePicUrl;
-                    ImageUrlToByteConvertor lowerAsyncTask = new ImageUrlToByteConvertor(
-                            MainActivity.this, true, false);
-                    lowerAsyncTask.execute(lowProfilePicUrl);
-                    ImageUrlToByteConvertor higherAsyncTask = new ImageUrlToByteConvertor(MainActivity.this,
-                            false, true);
-                    higherAsyncTask.execute(highProfilePicUrl);
                 }
             }
         });

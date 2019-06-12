@@ -1,7 +1,6 @@
 package com.droid.solver.askapp.homeAnswer;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
@@ -67,7 +66,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        toolbar.setNavigationIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back, null));
+        toolbar.setNavigationIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back_black, null));
         toolbar.setTitleMarginStart(0);
         toolbar.setNavigationOnClickListener(this);
         user= FirebaseAuth.getInstance().getCurrentUser();

@@ -1,23 +1,16 @@
 package com.droid.solver.askapp.Home;
 
-
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
-import java.security.PrivateKey;
-
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ImagePollOpenFragment extends Fragment {
@@ -49,17 +42,18 @@ public class ImagePollOpenFragment extends Fragment {
         bottomNavigation=getActivity().findViewById(R.id.bottom_navigation);
         bottomNavigation.setVisibility(View.GONE);
         toolbar.setVisibility(View.GONE);
-        Picasso.get().load(imageUrl).noFade().into(imageView,new Callback(){
-            @Override
-            public void onSuccess() {
-                getActivity().supportStartPostponedEnterTransition();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                getActivity().supportStartPostponedEnterTransition();
-            }
-        });
+        GlideApp.with(getActivity()).load(imageUrl).into(imageView);
+//        GlideApp.with(getActivity()).load(imageUrl).into(imageView,new Callback(){
+//            @Override
+//            public void onSuccess() {
+//                getActivity().supportStartPostponedEnterTransition();
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                getActivity().supportStartPostponedEnterTransition();
+//            }
+//        });
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         backImage=view.findViewById(R.id.back_image);

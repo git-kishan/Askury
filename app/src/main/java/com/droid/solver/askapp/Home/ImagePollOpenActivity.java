@@ -4,17 +4,11 @@ import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.droid.solver.askapp.R;
-import com.squareup.picasso.Picasso;
-
-import uk.co.senab.photoview.PhotoViewAttacher;
-
 public class ImagePollOpenActivity extends AppCompatActivity {
 
     private ImageView backImage;

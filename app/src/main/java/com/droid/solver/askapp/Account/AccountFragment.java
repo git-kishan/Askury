@@ -2,6 +2,7 @@ package com.droid.solver.askapp.Account;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,17 +27,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
-import com.facebook.share.model.SharePhoto;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -93,6 +91,12 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        loadProfilePicFromFile();
+        super.onResume();
+    }
+
     private void setTabLayout(View view){
         tabLayout=view.findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -134,7 +138,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         toolbarCardViewActivity.setVisibility(View.VISIBLE);
         super.onDestroy();
     }
-
     @Override
     public void onClick(final View view) {
         switch (view.getId()){
@@ -161,6 +164,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 }, 300);
                 break;
             case R.id.profile_image:
+                getActivity().startActivity(new Intent(getActivity(),ProfileImageActivity.class));
                 break;
             case (R.id.follower_text_view):
                 Toast.makeText(getActivity(), "follower text view is clicked", Toast.LENGTH_SHORT).show();
@@ -186,13 +190,17 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private void loadProfilePicFromFile(){
         SharedPreferences preferences=getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         String path=preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
-        File file=new File(path,"profile_pic_low_resolution");
+        File file=new File(path,"profile_pic_high_resolution");
         try {
             Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
             profileImage.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
+            String url=ProfileImageActivity.PROFILE_PICTURE+"/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+ProfileImageActivity.THUMBNAIL;
+            GlideApp.with(getActivity()).load(url)
+                    .into(profileImage);
             e.printStackTrace();
         }
     }
+
 
 }
