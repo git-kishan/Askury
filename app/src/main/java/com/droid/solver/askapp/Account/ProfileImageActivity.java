@@ -201,7 +201,8 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                 CropImage.activity(uri)
                         .start(this);
             } }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 cropImageUri = result.getUri();
@@ -210,11 +211,9 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                     thumbnail=decodeSelectedImageUri(cropImageUri, 400, 500);
                     imageView.setImageBitmap(thumbnail);
                     smallThumbnail=decodeSelectedImageUri(cropImageUri, 50, 50);
-                    Log.i("TAG","small thumbnail size :- "+smallThumbnail.getByteCount());
-                    Log.i("TAG","small thumbnail height :- "+smallThumbnail.getHeight());
-                    Log.i("TAG","small thumbnail width:- "+smallThumbnail.getWidth());
-
-
+//                    Log.i("TAG","small thumbnail size :- "+smallThumbnail.getByteCount());
+//                    Log.i("TAG","small thumbnail height :- "+smallThumbnail.getHeight());
+//                    Log.i("TAG","small thumbnail width:- "+smallThumbnail.getWidth());
                     ByteArrayOutputStream s1=new ByteArrayOutputStream();
                     thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, s1);
                     largeBitmapByteArray=s1.toByteArray();

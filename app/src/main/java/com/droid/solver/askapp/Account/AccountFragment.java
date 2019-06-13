@@ -53,6 +53,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private TextView followerTextView,followingTextView,pointTextView;
     private String PUBLIC_ACCOUNT_STATUS="Public";
     private String PRIVATE_ACCOUNT_STATUS="Private";
+    private CardView typeImageCard;
+    private ImageView typeImageView;
     public AccountFragment() {
     }
 
@@ -73,11 +75,24 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         followerTextView=view.findViewById(R.id.follower_text_view);
         followingTextView=view.findViewById(R.id.following_text_view);
         pointTextView=view.findViewById(R.id.points_text_view);
+        typeImageCard=view.findViewById(R.id.type_image_card);
+        typeImageView=view.findViewById(R.id.type_image);
         toolbarCardViewActivity.setVisibility(View.GONE);
         viewPager=view.findViewById(R.id.view_pager);
         SharedPreferences preferences=getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         String userName=preferences.getString(Constants.userName, "");
         String muserBio=preferences.getString(Constants.bio, "");
+        String gender=preferences.getString(Constants.GENDER, null);
+        if(gender!=null){
+            if(gender.equals(Constants.MALE)){
+                typeImageCard.setVisibility(View.VISIBLE);
+                typeImageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_masculine, null));
+            }else if(gender.equals(Constants.FEMALE)){
+                typeImageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_femenine, null));
+                typeImageCard.setVisibility(View.VISIBLE);
+
+            }
+        }
         profileName.setText(userName);
         userBio.setText(muserBio);
 

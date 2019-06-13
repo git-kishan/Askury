@@ -42,7 +42,6 @@ public class Constants {
     public static final String PORTUGUESE="Portuguese";
 
 
-    public static final String LANGUAGE_SELECTION="language_selection";
     public static final String GENDER_SELECTION="gender_selection";
     public static final String INTEREST_SELECTION="interest_selection";
 

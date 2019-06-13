@@ -30,6 +30,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.share.model.SharePhoto;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -81,21 +82,26 @@ public class SignInActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         boolean genderSelection=sharedPreferences.getBoolean(Constants.GENDER_SELECTION, false);
         boolean interestSelection=sharedPreferences.getBoolean(Constants.INTEREST_SELECTION, false);
+
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user!=null){
-//            if(!genderSelection) {
-//                startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
-//                finish();
-//            }
-//           else  if(!interestSelection){
-//                startActivity(new Intent(SignInActivity.this, InterestActivity.class));
-//                finish();
-//            }
-            startActivity(new Intent(SignInActivity.this,MainActivity.class));
-            finish();
+            if(!genderSelection) {
+                startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
+                finish();
+            }
+           else  if(!interestSelection){
+                startActivity(new Intent(SignInActivity.this, InterestActivity.class));
+                finish();
+            }
+           else {
+                startActivity(new Intent(SignInActivity.this,MainActivity.class));
+                finish();
+            }
+
         }
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -282,8 +288,21 @@ public class SignInActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     UserInfoModel userInfoModel=task.getResult().toObject(UserInfoModel.class);
-                    Log.i("TAG", "interest :- "+userInfoModel.getInterest());
-                    Log.i("TAG","language :- "+userInfoModel.getLanguage() );
+                    SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor=preferences.edit();
+                    editor.putString(Constants.userName, userInfoModel.getUserName());
+
+                    if(userInfoModel.getInterest()==null){
+                        editor.putBoolean(Constants.INTEREST_SELECTION, false);
+                        editor.putString(Constants.INTEREST,null);
+                    }
+                    if(userInfoModel.getGender()==null){
+                        editor.putBoolean(Constants.GENDER_SELECTION, false);
+                        editor.putString(Constants.GENDER,null);
+
+                    }
+                    editor.apply();
+
                     if(userInfoModel.getFirstTimeUser()==0){//set firstTimeUser to 1 ,0 means first time user,1 means not first time user
                         Map<String,Object> map = new HashMap<>();
                         map.put("firstTimeUser", 1);

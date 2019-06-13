@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Acting">अभिनय</string>
+    <string name="Books">पुस्तकें</string>
+    <string name="Cooking">खाना बनाना</string>
+    <string name="Designing">डिज़ाइन बनाना</string>
+    <string name="Fashion">फैशन</string>
+    <string name="Fitness">स्वास्थ्य</string>
+    <string name="Gaming">जुआ</string>
+    <string name="Graphicart">ग्राफक कला</string>
+    <string name="Management">प्रबंध</string>
+    <string name="Marketing">विपणन</string>
+    <string name="Medical">मेडिकल</string>
+    <string name="Movies">चलचित्र</string>
+    <string name="Music">संगीत</string>
+    <string name="Painting">चित्र</string>
+    <string name="Programming">प्रोग्रामिंग</string>
+    <string name="Shopping">खरीदारी</string>
+    <string name="Sport">खेल</string>
+    <string name="Student">छात्र</string>
+    <string name="image_poll_uploaded_successfully">छवि पोल सफलतापूर्वक अपलोड किया गया</string>
+    <string name="image_poll_uploading_failed" translatable="false">छवि अपलोड करना विफल रहा, फिर से प्रयास करें!</string>
+    <string name="optionA">विकल्प ए</string>
+    <string name="optionB">विकल्प बी</string>
+    <string name="optionC">विकल्प सी</string>
+    <string name="optionD">विकल्प डी</string>
+    <string name="optionsNum">विकल्प %1$d</string>
+    <string name="private_info">निजी जानकारी शामिल न करें</string>
+    <string name="provide_option_limit">कम से कम दो या अधिकतम चार विकल्प प्रदान करें</string>
+    <string name="question_uploading_failed">प्रश्न अपलोड करना विफल रहा, फिर से प्रयास करें!</string>
+    <string name="question_uploading_successfully">आपका प्रश्न सफलतापूर्वक अपलोड किया गया</string>
+    <string name="some_one_is_doing_a_survey">%1$s एक सर्वेक्षण कर रहा है</string>
+    <string name="someoneasked">किसी ने पूछा</string>
+    <string name="submit">जमा करें</string>
+    <string name="survey_accepted_failed">सर्वेक्षण अपलोड करना विफल रहा, फिर से प्रयास करें!</string>
+    <string name="survey_accepted_successfull">सफलतापूर्वक स्वीकार किया गया सर्वेक्षण 30 दिनों के लिए खुला रहेगा</string>
+    <string name="user_name_asked">%1$s ने पूछा</string>
+    <string name="username_created_a_poll">%1$s ने एक पोल बनाया</string>
+</resources>

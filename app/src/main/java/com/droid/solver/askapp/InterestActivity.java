@@ -1,15 +1,21 @@
 package com.droid.solver.askapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -18,7 +24,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.droid.solver.askapp.Main.Constants;
+import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.setting.SettingActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +49,7 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
     private Map<String,Integer> chipMap;//chip text and chip id
     private ImageView nextImageButton;
     private String activity;
+    private  AlertDialog alertDialog;
 
 
     @Override
@@ -131,17 +146,75 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
             }else if (chipMap.size()>5) {
                 Snackbar.make(rootLayout,"Atmost five interest", Snackbar.LENGTH_SHORT).show();
             }else {
-                ArrayList<String> interestsList=new ArrayList<>();
+                final ArrayList<String> interestsList=new ArrayList<>();
                     Set<String> keySet=chipMap.keySet();
                     interestsList.addAll(keySet);
-                if(activity.equals(SettingActivity.SETTING_ACTIVITY)){
+
+                if(activity!=null&&activity.equals(SettingActivity.SETTING_ACTIVITY)){
                     Intent intent=new Intent();
                     intent.putStringArrayListExtra("interestList", interestsList);
                     setResult(RESULT_OK,intent);
                     finish();
 
+                }else {
+                    showProgressDialog();
+                    final SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                    String gender=preferences.getString(Constants.GENDER, null);
+                    if(isNetworkAvailable()){
+                        String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        Map<String,Object> userMap=new HashMap<>();
+                        userMap.put("gender", gender);
+                        userMap.put("interest",interestsList);
+                        FirebaseFirestore.getInstance().collection("user").document(uid)
+                                .set(userMap, SetOptions.merge())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        SharedPreferences.Editor editor=preferences.edit();
+                                        StringBuilder builder=new StringBuilder();
+                                        for(int i=0;i<interestsList.size();i++){
+                                            builder.append(interestsList.get(i));
+                                            builder.append("@");
+                                        }
+                                        editor.putString(Constants.INTEREST,builder.toString());
+                                        editor.putBoolean(Constants.INTEREST_SELECTION, true);
+                                        editor.apply();
+                                        alertDialog.dismiss();
+                                        startActivity(new Intent(InterestActivity.this, MainActivity.class));
+                                        finish();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                alertDialog.dismiss();
+                                Snackbar.make(rootLayout, "Error occured, try again !", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }else {
+                        Snackbar.make(rootLayout, "No internet connection", Snackbar.LENGTH_LONG).show();
+                    }
+
                 }
             }
         }
+    }
+
+    private void showProgressDialog(){
+
+        final ViewGroup viewGroup=findViewById(R.id.root);
+        View dialogView= LayoutInflater.from(this).inflate(R.layout.interest_activity_horizontal_progress_dialog, viewGroup,false);
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        alertDialog=builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.show();
+
+    }
+
+    private boolean isNetworkAvailable(){
+        ConnectivityManager connectivityManager= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Acting">代理</string>
+    <string name="Books">图书</string>
+    <string name="Cooking">烹饪</string>
+    <string name="Designing">设计</string>
+    <string name="Fashion">时尚</string>
+    <string name="Fitness">身体素质</string>
+    <string name="Gaming">赌博</string>
+    <string name="Graphicart">图形艺术</string>
+    <string name="Management">管理</string>
+    <string name="Marketing">营销</string>
+    <string name="Medical">医</string>
+    <string name="Movies">电影</string>
+    <string name="Music">音乐</string>
+    <string name="Painting">绘画</string>
+    <string name="Programming">程序设计</string>
+    <string name="Shopping">购物</string>
+    <string name="Sport">运动</string>
+    <string name="Student">学生</string>
+    <string name="image_poll_uploaded_successfully">图像投票已成功上传</string>
+    <string name="image_poll_uploading_failed">图片上传失败，请重试！</string>
+    <string name="optionA">选项A.</string>
+    <string name="optionB">选项B.</string>
+    <string name="optionC">选项C.</string>
+    <string name="optionD">选项D.</string>
+    <string name="optionsNum">选项 %1$d</string>
+    <string name="private_info">不要包含私人信息</string>
+    <string name="provide_option_limit">提供至少两个或最多四个选项</string>
+    <string name="question_uploading_failed">问题上传失败，请重试！</string>
+    <string name="question_uploading_successfully">您的问题已成功上传</string>
+    <string name="some_one_is_doing_a_survey">%1$s 正在进行调查</string>
+    <string name="someoneasked">有人问道</string>
+    <string name="submit">提交</string>
+    <string name="survey_accepted_failed">调查上传失败，请重试！</string>
+    <string name="survey_accepted_successfull">调查接受成功调查将开放30天</string>
+    <string name="user_name_asked">%1$s 问</string>
+    <string name="username_created_a_poll">%1$s 创建了一个民意调查</string>
+</resources>

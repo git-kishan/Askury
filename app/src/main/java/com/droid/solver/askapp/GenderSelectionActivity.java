@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
         maleCardView.setOnClickListener(this);
         femaleCardView.setOnClickListener(this);
         preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public void onClick(View view){
