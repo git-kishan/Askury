@@ -229,20 +229,17 @@ public class LocalDatabase extends SQLiteOpenHelper {
             values.put(bio, model.getBio());
             values.put(point, model.getPoint());
             values.put(country, model.getCountry());
-            String[] mlanguage = model.getLanguage();
+            String mlanguage = model.getLanguage();
+            values.put(language, mlanguage);
+
+            ArrayList<String> minterest = model.getInterest();
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < mlanguage.length; i++) {
-                builder.append(mlanguage[i]);
-                builder.append("@");
-            }
-            values.put(language, builder.toString());
 
-            String[] minterest = model.getInterest();
-            builder = new StringBuilder();
-
-            for (int i = 0; i < minterest.length; i++) {
-                builder.append(minterest[i]);
-                builder.append("@");
+            if(minterest!=null) {
+                for (int i = 0; i < minterest.size(); i++) {
+                    builder.append(minterest.get(i));
+                    builder.append("@");
+                }
             }
             values.put(interest, builder.toString());
             values.put(followerCount, model.getFollowerCount());
@@ -278,12 +275,13 @@ public class LocalDatabase extends SQLiteOpenHelper {
         int mfollowerCount=cursor.getInt(cursor.getColumnIndex(followerCount));
         int mfollowingCount=cursor.getInt(cursor.getColumnIndex(followingCount));
 
-        String [] languageArr=mlanguage.split("@");
         String [] interestArr=minterest.split("@");
+        ArrayList<String> interestList=new ArrayList<>();
+        interestList=(ArrayList<String>)Arrays.asList(interestArr);
 
         UserInfoModel infoModel=new UserInfoModel(
         muserId,muserName ,mprofilePicUrlLow , mprofilePicUrlHigh, mbio,
-                mpoint,country,languageArr,interestArr,mfollowerCount,mfollowingCount);
+                mpoint,country,mlanguage,interestList,mfollowerCount,mfollowingCount);
 
         if(!cursor.isClosed())
             cursor.close();

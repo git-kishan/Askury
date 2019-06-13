@@ -20,11 +20,9 @@ import android.widget.Toast;
 
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
-import com.droid.solver.askapp.Main.LocalDatabase;
-import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
-import com.droid.solver.askapp.Survey.LanguageSelectionActivity;
+import com.droid.solver.askapp.Survey.QuestionTakerActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -91,7 +89,7 @@ public class QuestionFragment extends Fragment {
                         startActivity(new Intent(getActivity(), ImagePollActivity.class));
                         return false;
                     case R.id.fab_action2:
-                        startActivity(new Intent(getActivity(), LanguageSelectionActivity.class));
+                        startActivity(new Intent(getActivity(), QuestionTakerActivity.class));
                         return false;
                     case R.id.fab_action3:
                         startActivity(new Intent(getActivity(),QuestionActivity.class));

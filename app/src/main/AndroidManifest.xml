@@ -39,7 +39,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Survey.LanguageSelectionActivity"
+            android:name=".LanguageSelectionActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ImagePoll.ImagePollActivity"

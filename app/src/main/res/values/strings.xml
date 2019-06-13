@@ -23,8 +23,38 @@
     <string name="survey_accepted_failed">Survey uploading failed,try again !</string>
     <string name="first_percentage">%1$d</string>
     <string name="second_percentage">%1$d </string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="Painting">Painting</string>
+    <string name="Acting">Acting</string>
+    <string name="Graphicart">Graphic art</string>
+    <string name="Programming">Programming</string>
+    <string name="Cooking">Cooking</string>
+    <string name="Fitness">Fitness</string>
+    <string name="Music">Music</string>
+    <string name="Fashion">Fashion</string>
+    <string name="Sport">Sport</string>
+    <string name="Gaming">Gaming</string>
+    <string name="Shopping">Shopping</string>
+    <string name="Movies">Movies</string>
+    <string name="Student">Student</string>
+    <string name="Designing">Designing</string>
+    <string name="Books">Books</string>
+    <string name="Marketing">Marketing</string>
+    <string name="Medical">Medical</string>
+    <string name="Management">Management</string>
+
+    <string name="English">English</string>
+    <string name="Chinese">Chinese</string>
+    <string name="Hindi">Hindi</string>
+    <string name="Spanish">Spanish</string>
+    <string name="Arabic">Arabic</string>
+    <string name="Malay">Malay</string>
+    <string name="Russian">Russian</string>
+    <string name="Bengali">Bengali</string>
+    <string name="French">French</string>
+    <string name="Portuguese">Portuguese</string>
+
+
 
 </resources>

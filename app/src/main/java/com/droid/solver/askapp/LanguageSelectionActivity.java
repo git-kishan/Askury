@@ -1,4 +1,4 @@
-package com.droid.solver.askapp.Survey;
+package com.droid.solver.askapp;
 
 import android.content.Intent;
 import android.support.design.chip.Chip;
@@ -9,16 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.droid.solver.askapp.R;
+import com.droid.solver.askapp.Survey.QuestionTakerActivity;
 
 public class LanguageSelectionActivity extends AppCompatActivity implements View.OnClickListener, ChipGroup.OnCheckedChangeListener {
 
     private ChipGroup chipGroup;
-    private ImageView nextImageButton,backImageButton;
+    private ImageView nextImageButton;
     private Chip chip;
     private Chip englishChip,chineseChip,hindiChip,spanishChip,arabicChip,malayChip;
     private Chip russianChip,bengaliChip,frenchChip,portgueseChip;
@@ -33,11 +33,9 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
         setContentView(R.layout.activity_language_selection);
         chipGroup=findViewById(R.id.chip_group);
         nextImageButton=findViewById(R.id.next_image_button);
-        backImageButton=findViewById(R.id.back_image_button);
         rootView=findViewById(R.id.root_card_view);
         chipGroup.setOnCheckedChangeListener(this);
         nextImageButton.setOnClickListener(this);
-        backImageButton.setOnClickListener(this);
         englishChip=findViewById(R.id.english_chip);
         chineseChip=findViewById(R.id.chinese_chip);
         hindiChip=findViewById(R.id.hindi_chip);
@@ -48,6 +46,8 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
         bengaliChip=findViewById(R.id.bengali_chip);
         frenchChip=findViewById(R.id.french_chip);
         portgueseChip=findViewById(R.id.portuguese_chip);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                ,WindowManager.LayoutParams.FLAG_FULLSCREEN );
     }
 
     @Override
@@ -56,7 +56,7 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
         switch (view.getId()){
             case R.id.next_image_button:
                 if(chip==null){
-                    showSnackBar("Select your survey language");
+                    showSnackBar("Select your language");
                     return;
                 }
                 String data=chip.getText().toString().trim();
@@ -68,16 +68,10 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
                     }
                 }
                 if(languageIndex==-1){
-                    showSnackBar("select your survey language");
+                    showSnackBar("select your language");
                     return;
                 }
-//                Toast.makeText(this, "text selection :- "+languageString[languageIndex], Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(LanguageSelectionActivity.this,QuestionTakerActivity.class);
-                intent.putExtra("languageIndex", languageIndex);
-                startActivity(intent);
-                break;
-            case R.id.back_image_button:
-                onBackPressed();
+
                 break;
         }
     }
@@ -86,12 +80,11 @@ public class LanguageSelectionActivity extends AppCompatActivity implements View
     public void onCheckedChanged(ChipGroup chipGroup, int checkedId) {
         chip=findViewById(checkedId);
         changeAllChipTextColorToBlack();
+
         if(chip!=null){
-            nextImageButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_right_arrow_darker,null));
             chip.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.white, null));
         }else {
             changeAllChipTextColorToBlack();
-            nextImageButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_right_arrow_fader,null));
 
         }
     }

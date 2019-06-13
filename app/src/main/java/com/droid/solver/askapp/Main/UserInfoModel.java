@@ -1,5 +1,7 @@
 package com.droid.solver.askapp.Main;
 
+import java.util.ArrayList;
+
 public class UserInfoModel {
    private  String userId;
    private String userName;
@@ -8,15 +10,16 @@ public class UserInfoModel {
    private String bio;
    private int point;
    private String country;
-   private String [] language;
-   private String [] interest;
+   private String language;
+   private ArrayList<String> interest;
    private int followerCount;
    private int followingCount;
    private int firstTimeUser;
+   private String gender;
 
    public UserInfoModel (){}
    public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,
-                        String bio,int  point ,String country,String []language,String [] interest,int followerCount,
+                        String bio,int  point ,String country,String language,ArrayList<String> interest,int followerCount,
                         int followingCount){
        this.userId=userId;
        this.userName=userName;
@@ -29,9 +32,11 @@ public class UserInfoModel {
        this.interest=interest;
        this.followerCount=followerCount;
        this.followingCount=followingCount;
-   }  public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,
-                           String bio,int  point ,String country,String []language,String [] interest,int followerCount,
-                           int followingCount,int firstTimeUser){
+   }
+
+   public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,
+                           String bio,int  point ,String country,String language,ArrayList<String> interest,int followerCount,
+                           int followingCount,int firstTimeUser,String gender){
         this.userId=userId;
         this.userName=userName;
         this.profilePicUrlLow=profilePicUrlLow;
@@ -44,6 +49,7 @@ public class UserInfoModel {
         this.followerCount=followerCount;
         this.followingCount=followingCount;
         this.firstTimeUser=firstTimeUser;
+        this.gender=gender;
     }
 
     public String getUserName() {
@@ -74,11 +80,11 @@ public class UserInfoModel {
         return country;
     }
 
-    public String[] getInterest() {
+    public ArrayList<String> getInterest() {
         return interest;
     }
 
-    public String[] getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
@@ -92,5 +98,9 @@ public class UserInfoModel {
 
     public int getFirstTimeUser() {
         return firstTimeUser;
+    }
+
+    public String getGender() {
+        return gender;
     }
 }

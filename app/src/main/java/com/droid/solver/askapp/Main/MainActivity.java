@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initEmojiFont();
         setContentView(R.layout.activity_main);
         firestoreRoot = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -129,34 +128,6 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
-
-    }
-    private void initEmojiFont(){
-        FontRequest fontRequest = new FontRequest(
-                "com.google.android.gms.fonts",
-                "com.google.android.gms",
-                "Noto Color Emoji Compat",
-                R.array.com_google_android_gms_fonts_certs);
-        EmojiCompat.Config config ;
-        config=new FontRequestEmojiCompatConfig(this, fontRequest)
-                .setReplaceAll(true)
-                .setEmojiSpanIndicatorEnabled(false)
-                .registerInitCallback(new EmojiCompat.InitCallback() {
-                    @Override
-                    public void onInitialized() {
-                        Log.i("TAG", "emoji initiiazed");
-                        super.onInitialized();
-                    }
-
-                    @Override
-                    public void onFailed(@android.support.annotation.Nullable Throwable throwable) {
-                        Log.i("TAG", "emoji initilization failed");
-                        super.onFailed(throwable);
-                    }
-                });
-        EmojiCompat.init(config);
-
-
 
     }
 

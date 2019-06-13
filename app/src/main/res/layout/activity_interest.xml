@@ -13,8 +13,11 @@
         android:id="@+id/chipGroupTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView35"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="16dp">
 
     </android.support.design.chip.ChipGroup>
@@ -34,6 +37,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45999998"
         app:singleSelection="true">
 
         <android.support.design.chip.Chip
@@ -41,7 +45,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Painting"
+            android:text="@string/Painting"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -51,7 +55,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Acting"
+            android:text="@string/Acting"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -61,7 +65,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Graphic art"
+            android:text="@string/Graphicart"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -72,7 +76,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Programming"
+            android:text="@string/Programming"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -82,7 +86,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cooking"
+            android:text="@string/Cooking"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -92,7 +96,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fitness"
+            android:text="@string/Fitness"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -102,7 +106,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Music"
+            android:text="@string/Music"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -112,7 +116,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fashion"
+            android:text="@string/Fashion"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -122,7 +126,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sport"
+            android:text="@string/Sport"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -132,7 +136,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gaming"
+            android:text="@string/Gaming"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -142,7 +146,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shopping"
+            android:text="@string/Shopping"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -152,7 +156,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Movies"
+            android:text="@string/Movies"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -162,7 +166,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Student"
+            android:text="@string/Student"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -172,7 +176,7 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Designing"
+            android:text="@string/Designing"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -182,34 +186,37 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Books"
+            android:text="@string/Books"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
+
         <android.support.design.chip.Chip
             android:id="@+id/marketing"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Marketing"
+            android:text="@string/Marketing"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
+
         <android.support.design.chip.Chip
             android:id="@+id/medical"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medical"
+            android:text="@string/Medical"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
+
         <android.support.design.chip.Chip
             android:id="@+id/management"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Management"
+            android:text="@string/Management"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             app:chipBackgroundColor="@color/white" />
@@ -221,14 +228,15 @@
         android:layout_height="47dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:text="Select your interest"
+        android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/chipGroupBottom"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
 

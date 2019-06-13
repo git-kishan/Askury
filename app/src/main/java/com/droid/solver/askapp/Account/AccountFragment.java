@@ -30,7 +30,10 @@ import android.widget.Toast;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.droid.solver.askapp.setting.SettingActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -142,26 +145,27 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     public void onClick(final View view) {
         switch (view.getId()){
             case R.id.setting_image:
-                final  Animation animationRightRotate=AnimationUtils.loadAnimation(getActivity(),R.anim.setting_rotate_right);
-                final Animation animationLeftRotate=AnimationUtils.loadAnimation(getActivity(), R.anim.setting_rotate_left);
-                final Animation statusScaleIn=AnimationUtils.loadAnimation(getActivity(), R.anim.status_scale_in);
-                final Animation statusScaleOut=AnimationUtils.loadAnimation(getActivity(), R.anim.status_scale_out);
-                view.startAnimation(animationRightRotate);
-                accountStatusTextView.startAnimation(statusScaleOut);
-                Handler settingImageHandler=new Handler();
-                settingImageHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        view.startAnimation(animationLeftRotate);
-                        accountStatusTextView.startAnimation(statusScaleIn);
-                        if(accountStatusTextView.getText().equals(PUBLIC_ACCOUNT_STATUS)){
-                            accountStatusTextView.setText(PRIVATE_ACCOUNT_STATUS);
-                        }else if(accountStatusTextView.getText().equals(PRIVATE_ACCOUNT_STATUS)){
-                            accountStatusTextView.setText(PUBLIC_ACCOUNT_STATUS);
-                        }
-
-                    }
-                }, 300);
+//                final  Animation animationRightRotate=AnimationUtils.loadAnimation(getActivity(),R.anim.setting_rotate_right);
+//                final Animation animationLeftRotate=AnimationUtils.loadAnimation(getActivity(), R.anim.setting_rotate_left);
+//                final Animation statusScaleIn=AnimationUtils.loadAnimation(getActivity(), R.anim.status_scale_in);
+//                final Animation statusScaleOut=AnimationUtils.loadAnimation(getActivity(), R.anim.status_scale_out);
+//                view.startAnimation(animationRightRotate);
+//                accountStatusTextView.startAnimation(statusScaleOut);
+//                Handler settingImageHandler=new Handler();
+//                settingImageHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        view.startAnimation(animationLeftRotate);
+//                        accountStatusTextView.startAnimation(statusScaleIn);
+//                        if(accountStatusTextView.getText().equals(PUBLIC_ACCOUNT_STATUS)){
+//                            accountStatusTextView.setText(PRIVATE_ACCOUNT_STATUS);
+//                        }else if(accountStatusTextView.getText().equals(PRIVATE_ACCOUNT_STATUS)){
+//                            accountStatusTextView.setText(PUBLIC_ACCOUNT_STATUS);
+//                        }
+//
+//                    }
+//                }, 300);
+                startActivity(new Intent(getActivity(), SettingActivity.class));
                 break;
             case R.id.profile_image:
                 getActivity().startActivity(new Intent(getActivity(),ProfileImageActivity.class));
@@ -195,8 +199,12 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
             Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
             profileImage.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
-            String url=ProfileImageActivity.PROFILE_PICTURE+"/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+ProfileImageActivity.THUMBNAIL;
-            GlideApp.with(getActivity()).load(url)
+            String url=ProfileImageActivity.PROFILE_PICTURE+"/"+FirebaseAuth.getInstance().getCurrentUser()
+                    .getUid()+ProfileImageActivity.SMALL_THUMBNAIL;
+            StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+            GlideApp.with(getActivity()).load(reference)
+                    .error(R.drawable.round_account)
+                    .placeholder(R.drawable.round_account)
                     .into(profileImage);
             e.printStackTrace();
         }

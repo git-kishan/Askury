@@ -14,6 +14,7 @@ import android.support.design.button.MaterialButton;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.widget.EmojiEditText;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
@@ -80,6 +81,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_taker);
+
         Intent intent=getIntent();
         languageIndex=intent.getIntExtra("languageIndex", 0);
         questionInputLayout=findViewById(R.id.textInputLayout);

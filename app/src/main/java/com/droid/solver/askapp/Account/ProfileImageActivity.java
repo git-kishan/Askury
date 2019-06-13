@@ -67,6 +67,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
     private byte [] largeBitmapByteArray=null;
     private  byte [] smallBitmapByteArray=null;
     private Bitmap thumbnail=null,smallThumbnail=null;
+
     public static final String PROFILE_PICTURE="profilePicture";
     public static final String SMALL_THUMBNAIL="@smallThumbnail";
     public static final String THUMBNAIL="@thumbnail";
@@ -74,7 +75,8 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_image);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         imageView=findViewById(R.id.imageView);
         editImage=findViewById(R.id.image_edit);
         backImage=findViewById(R.id.back_image);
@@ -108,7 +110,11 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
             imageView.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
-            imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_placeholder, null));
+            String url= ProfileImageActivity.PROFILE_PICTURE+"/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+ProfileImageActivity.THUMBNAIL;
+            StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+            GlideApp.with(this).load(reference)
+                    .error(R.drawable.round_account)
+                    .into(imageView);
             e.printStackTrace();
         }
     }

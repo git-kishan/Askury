@@ -1,10 +1,14 @@
 package com.droid.solver.askapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.LinearGradient;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.text.emoji.EmojiCompat;
+import android.support.text.emoji.FontRequestEmojiCompatConfig;
+import android.support.v4.provider.FontRequest;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.Home.HomeFragment;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Main.UserInfoModel;
 import com.droid.solver.askapp.Question.RootQuestionModel;
@@ -65,7 +70,10 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initEmojiFont();
         setContentView(R.layout.activity_sign_in);
+
+        SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         callbackManager = CallbackManager.Factory.create();
         loginButton = findViewById(R.id.login_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -73,9 +81,19 @@ public class SignInActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        boolean genderSelection=sharedPreferences.getBoolean(Constants.GENDER_SELECTION, false);
+        boolean interestSelection=sharedPreferences.getBoolean(Constants.INTEREST_SELECTION, false);
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user!=null){
+//            if(!genderSelection) {
+//                startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
+//                finish();
+//            }
+//           else  if(!interestSelection){
+//                startActivity(new Intent(SignInActivity.this, InterestActivity.class));
+//                finish();
+//            }
             startActivity(new Intent(SignInActivity.this,MainActivity.class));
             finish();
         }
@@ -214,7 +232,7 @@ public class SignInActivity extends AppCompatActivity {
         userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
                 finish();
                 Log.i("TAG", "array list created in remote database");
             }
@@ -264,6 +282,8 @@ public class SignInActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     UserInfoModel userInfoModel=task.getResult().toObject(UserInfoModel.class);
+                    Log.i("TAG", "interest :- "+userInfoModel.getInterest());
+                    Log.i("TAG","language :- "+userInfoModel.getLanguage() );
                     if(userInfoModel.getFirstTimeUser()==0){//set firstTimeUser to 1 ,0 means first time user,1 means not first time user
                         Map<String,Object> map = new HashMap<>();
                         map.put("firstTimeUser", 1);
@@ -280,5 +300,34 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+    private void initEmojiFont(){
+        FontRequest fontRequest = new FontRequest(
+                "com.google.android.gms.fonts",
+                "com.google.android.gms",
+                "Noto Color Emoji Compat",
+                R.array.com_google_android_gms_fonts_certs);
+        EmojiCompat.Config config ;
+        config=new FontRequestEmojiCompatConfig(this, fontRequest)
+                .setReplaceAll(true)
+                .setEmojiSpanIndicatorEnabled(false)
+                .registerInitCallback(new EmojiCompat.InitCallback() {
+                    @Override
+                    public void onInitialized() {
+                        Log.i("TAG", "emoji initiiazed");
+                        super.onInitialized();
+                    }
+
+                    @Override
+                    public void onFailed(@android.support.annotation.Nullable Throwable throwable) {
+                        Log.i("TAG", "emoji initilization failed");
+                        super.onFailed(throwable);
+                    }
+                });
+        EmojiCompat.init(config);
+
+
+
+    }
+
 
 }
