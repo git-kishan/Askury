@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -62,7 +63,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private SwitchCompat notificationSwitch;
     private ImageView languageImageButton,privacyPolicyImageButton,reportErrorImageButton;
     private TextView languageText;
-    private ArrayList<String> savedInterestList;
+    private List<String> savedInterestList;
 
 
     @Override
@@ -112,14 +113,15 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         backImage.setOnClickListener(this);
         addInterest.setOnClickListener(this);
         setting.requestFocus();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         hideSoftKeyboard(setting);
         savedInterestList=new ArrayList<>();
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String interestString=preferences.getString(Constants.INTEREST, null);
         if(interestString!=null) {
+            Log.i("TAG", "interest :- "+interestString);
             String[] interestArr = interestString.split("@");
-            savedInterestList = (ArrayList<String>) Arrays.asList(interestArr);
+            savedInterestList = Arrays.asList(interestArr);
         }
         generateChipDynamically(savedInterestList);
 
@@ -186,7 +188,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         } catch (FileNotFoundException e) {
 
             String url= ProfileImageActivity.PROFILE_PICTURE+"/"+ FirebaseAuth.getInstance().getCurrentUser().
-                    getUid()+ProfileImageActivity.SMALL_THUMBNAIL;
+                    getUid()+ProfileImageActivity.THUMBNAIL;
             StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
             GlideApp.with(this).load(reference)
                     .placeholder(R.drawable.round_account)
@@ -198,7 +200,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void generateChipDynamically(ArrayList<String> list){
+    private void generateChipDynamically(List<String> list){
         if(list.size()>0){
         chipGroup.removeAllViews();
         for(int i=0;i<list.size();i++){
@@ -272,6 +274,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         makeChipTextFader();
     }
 
+    private void updateProfile(){
+
+    }
     @Override
     public void onBackPressed() {
         if(updateButton.isEnabled()){

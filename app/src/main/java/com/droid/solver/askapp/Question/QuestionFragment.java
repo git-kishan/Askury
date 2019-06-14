@@ -138,7 +138,7 @@ public class QuestionFragment extends Fragment {
 
     private void loadDataFromRemoteDatabase() {
 
-        root.collection("question").
+        root.collection("question").whereEqualTo("answerCount",0).
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

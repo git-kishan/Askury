@@ -585,7 +585,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         String imagePollId=root.collection("user").document(askerId).collection("imagePoll").document().getId();
         AskImagePollModel pollModel=new AskImagePollModel(
                 askerId, askerName, askerImageUrlLow, askerBio, question,
-                image1Url, image2Url, timeOfPolling, image1LikeNo, image2LikeNo, imagePollId);
+                image1Url, image2Url, timeOfPolling, image1LikeNo, image2LikeNo, imagePollId,false,false);
 
         DocumentReference userImagePollRef=root.collection("user").document(askerId).
                 collection("imagePoll").document(imagePollId);

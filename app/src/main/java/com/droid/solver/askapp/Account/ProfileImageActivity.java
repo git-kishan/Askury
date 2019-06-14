@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,6 +42,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -103,6 +105,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         }
     }
     private void loadProfilePicFromFile(){
+        Log.i("TAG", "load from file ");
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         String path=preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
         File file=new File(path,"profile_pic_high_resolution");
@@ -110,13 +113,19 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
             imageView.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
-            String url= ProfileImageActivity.PROFILE_PICTURE+"/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+ProfileImageActivity.THUMBNAIL;
-            StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
-            GlideApp.with(this).load(reference)
-                    .error(R.drawable.round_account)
-                    .into(imageView);
-            e.printStackTrace();
+
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                Log.i("TAG", "load from remote url");
+                String url = ProfileImageActivity.PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()
+                        +ProfileImageActivity.THUMBNAIL;
+                StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(this).load(reference)
+                        .error(R.drawable.round_account)
+                        .into(imageView);
+                e.printStackTrace();
+            }
         }
+
     }
 
     @Override
@@ -205,32 +214,42 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
+                if(result!=null)
                 cropImageUri = result.getUri();
                 if(cropImageUri!=null){
                     tickImage.setVisibility(View.VISIBLE);
-                    thumbnail=decodeSelectedImageUri(cropImageUri, 400, 500);
-                    imageView.setImageBitmap(thumbnail);
-                    smallThumbnail=decodeSelectedImageUri(cropImageUri, 50, 50);
-//                    Log.i("TAG","small thumbnail size :- "+smallThumbnail.getByteCount());
-//                    Log.i("TAG","small thumbnail height :- "+smallThumbnail.getHeight());
-//                    Log.i("TAG","small thumbnail width:- "+smallThumbnail.getWidth());
-                    ByteArrayOutputStream s1=new ByteArrayOutputStream();
-                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, s1);
-                    largeBitmapByteArray=s1.toByteArray();
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    ByteArrayOutputStream s2=new ByteArrayOutputStream();
-                    smallThumbnail.compress(Bitmap.CompressFormat.JPEG, 100,s2 );
-                    smallBitmapByteArray=s2.toByteArray();
+                            thumbnail=decodeSelectedImageUri(cropImageUri, 400, 500);
+                            smallThumbnail=decodeSelectedImageUri(cropImageUri, 50, 50);
+                            ByteArrayOutputStream s1=new ByteArrayOutputStream();
+                            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, s1);
+                            largeBitmapByteArray=s1.toByteArray();
+                            ByteArrayOutputStream s2=new ByteArrayOutputStream();
+                            smallThumbnail.compress(Bitmap.CompressFormat.JPEG, 100,s2 );
+                            smallBitmapByteArray=s2.toByteArray();
+
+                        }
+                    });
+                    imageView.setImageURI(cropImageUri);
+
+
+
 
                 }else {
                     Snackbar.make(rootView, "Error occured ,try again!", Snackbar.LENGTH_SHORT).show();
                 }
 
-
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-                Log.i("TAG", "Error in cropping image :- "+error.getMessage());
-                Toast.makeText(ProfileImageActivity.this, "Error occurs,try again !", Toast.LENGTH_SHORT).show();
+                try {
+                    Exception error = result.getError();
+                    Log.i("TAG", "Error in cropping image :- " + error.getMessage());
+                    Toast.makeText(ProfileImageActivity.this, "Error occurs,try again !", Toast.LENGTH_SHORT).show();
+                }catch (NullPointerException e){
+                    Log.i("TAG","error occured in getting error");
+                }
 
             }
         }

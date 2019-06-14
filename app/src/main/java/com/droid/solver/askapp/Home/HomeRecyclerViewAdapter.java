@@ -2,19 +2,26 @@ package com.droid.solver.askapp.Home;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.droid.solver.askapp.Account.ProfileImageActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import java.util.ArrayList;
@@ -125,10 +132,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 else {
                     askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
-                    GlideApp.with(context).load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
+                    String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getAskerId()+Constants.SMALL_THUMBNAIL;
+                    StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+                    GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
                             .into(((QuestionAnswerViewHolder) holder).askerImageView);
-//                    Picasso.get().load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
-//                            into(((QuestionAnswerViewHolder) holder).askerImageView);
 
                     askerName=askerName!=null?askerName:"Unknown";
                     ((QuestionAnswerViewHolder) holder).askerName.setText(askerName);
@@ -139,10 +146,12 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 ((QuestionAnswerViewHolder) holder).question.setText(question);
 
                 recentAnswererImageUrl=recentAnswererName!=null?recentAnswererImageUrl:"";
-                GlideApp.with(context).load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
+
+                String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
+                StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
                         .into(((QuestionAnswerViewHolder) holder).answererImageView);
-//                Picasso.get().load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
-//                        into(((QuestionAnswerViewHolder) holder).answererImageView);
+
 
                 ((QuestionAnswerViewHolder) holder).timeAgo.setText(timeAgo);
                 recentAnswererName=recentAnswererName!=null?recentAnswererName:"Unknown";
@@ -203,8 +212,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (answerImageUrl != null)
                     GlideApp.with(context).load(answerImageUrl)
                     .into(((QuestionAnswerWithImageViewHolder) holder).answerImageView);
-//                    Picasso.get().load(answerImageUrl)
-//                            .into(((QuestionAnswerWithImageViewHolder) holder).answerImageView);
+
 
                 if (anonymous) {
                     ((QuestionAnswerWithImageViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
@@ -213,7 +221,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 } else {
 
                     askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
-                    GlideApp.with(context).load(askerImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+                    String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getAskerId()+Constants.SMALL_THUMBNAIL;
+                    StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+                    GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
                             into(((QuestionAnswerWithImageViewHolder)
                             holder).askerImageView);
 
@@ -226,7 +236,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 ((QuestionAnswerWithImageViewHolder) holder).question.setText(question);
                 recentAnswererImageUrl=recentAnswererImageUrl!=null?recentAnswererImageUrl:"";
 
-                GlideApp.with(context).load(recentAnswererImageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
+
+                String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
+                StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
                         into(((QuestionAnswerWithImageViewHolder) holder).answererImageView);
 
                 ((QuestionAnswerWithImageViewHolder) holder).timeAgo.setText(timeAgo);
@@ -317,7 +330,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 if(askerQuestion.equals(""))
                     ((ImagePollViewHolder) holder).question.setVisibility(View.GONE);
 
-                GlideApp.with(context).load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder).into(((ImagePollViewHolder) holder).profileImageView);
+                String url = Constants.PROFILE_PICTURE + "/" + askerId+Constants.SMALL_THUMBNAIL;
+                StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).into(((ImagePollViewHolder) holder).profileImageView);
                 ((ImagePollViewHolder) holder).timeAgo.setText(timeAgo);
 
                 handleClickListenerOfImagePoll((ImagePollViewHolder) holder, (AskImagePollModel) list.get(i));
@@ -376,8 +391,11 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 askerBio=askerBio==null?"":askerBio;
                 question=question==null?"":question;
 
-                GlideApp.with(context).load(askerImageUrlLow).placeholder(R.drawable.ic_placeholder)
+                String url = Constants.PROFILE_PICTURE + "/" +askerId+Constants.SMALL_THUMBNAIL;
+                StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder)
                         .into(((SurveyViewHolder) holder).profileImage);
+
                 ((SurveyViewHolder) holder).question.setText(question);
                 ((SurveyViewHolder) holder).bio.setText(askerBio);
                 String someOneIsDoingASurvey=String.format(context.getString(R.string.some_one_is_doing_a_survey), askerName);

@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,12 +133,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadProfilePicFromFile();
         followingCount.setText(String.valueOf(0));
         followerCount.setText(String.valueOf(0));
         pointCount.setText(String.valueOf(0));
-
-
 
     }
     private void setViewPager(){
@@ -214,14 +212,16 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
             Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
             profileImage.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
-            String url=ProfileImageActivity.PROFILE_PICTURE+"/"+FirebaseAuth.getInstance().getCurrentUser()
-                    .getUid()+ProfileImageActivity.SMALL_THUMBNAIL;
-            StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
-            GlideApp.with(getActivity()).load(reference)
-                    .error(R.drawable.round_account)
-                    .placeholder(R.drawable.round_account)
-                    .into(profileImage);
-            e.printStackTrace();
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                String url = ProfileImageActivity.PROFILE_PICTURE +"/"+FirebaseAuth.getInstance().getCurrentUser().getUid()
+                        + ProfileImageActivity.THUMBNAIL;
+                StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(getActivity()).load(reference)
+                        .error(R.drawable.round_account)
+                        .placeholder(R.drawable.round_account)
+                        .into(profileImage);
+                e.printStackTrace();
+            }
         }
     }
 

@@ -7,8 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.droid.solver.askapp.Account.ProfileImageActivity;
 import com.droid.solver.askapp.GlideApp;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -42,7 +49,12 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                 profileNameAsked=context.getString(R.string.someoneasked);
             }else {
                 profileNameAsked=String.format(context.getString(R.string.user_name_asked), questionModelArrayList.get(i).getAskerName());
-                GlideApp.with(context).load(questionModelArrayList.get(i).getAskerImageUrlLow()).placeholder(R.drawable.ic_placeholder).
+
+                String url= Constants.PROFILE_PICTURE+"/"+questionModelArrayList.get(i).getAskerId()+ProfileImageActivity.SMALL_THUMBNAIL;
+                StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+
+                GlideApp.with(context).load(reference)
+                        .placeholder(R.drawable.ic_placeholder).
                         into(((AskQuestionViewHolderWithoutImage) holder).profilePicture);
             }
 

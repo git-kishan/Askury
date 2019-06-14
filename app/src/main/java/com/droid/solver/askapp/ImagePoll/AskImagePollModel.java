@@ -13,6 +13,9 @@ public class AskImagePollModel {
     private int image1LikeNo;
     private int image2LikeNo;
     private String imagePollId;
+    private boolean reported;
+    private boolean containVioloanceOrAdult;
+
 
     public AskImagePollModel(){
 
@@ -41,6 +44,36 @@ public class AskImagePollModel {
         this.image1LikeNo=image1LikeNo;
         this.image2LikeNo=image2LikeNo;
         this.imagePollId=imagePollId;
+
+    }
+    public AskImagePollModel(String askerId,
+                             String askerName,
+                             String askerImageUrlLow,
+                             String askerBio,
+                             String question,
+                             String image1Url,
+                             String image2Url,
+                             long timeOfPolling,
+                             int image1LikeNo,
+                             int image2LikeNo,
+                             String imagePollId,
+                             boolean containVioloanceOrAdult,
+                             boolean reported
+    ){
+        this.askerId=askerId;
+        this.askerName=askerName;
+        this.askerImageUrlLow=askerImageUrlLow;
+        this.askerBio=askerBio;
+        this.image2Url=image2Url;
+        this.question=question;
+        this.image1Url =image1Url;
+        this.image1Url=image1Url;
+        this.timeOfPolling=timeOfPolling;
+        this.image1LikeNo=image1LikeNo;
+        this.image2LikeNo=image2LikeNo;
+        this.imagePollId=imagePollId;
+        this.containVioloanceOrAdult=containVioloanceOrAdult;
+        this.reported=reported;
 
     }
 
@@ -86,6 +119,14 @@ public class AskImagePollModel {
 
     public String getImagePollId() {
         return imagePollId;
+    }
+
+    public boolean isContainVioloanceOrAdult() {
+        return containVioloanceOrAdult;
+    }
+
+    public boolean isReported() {
+        return reported;
     }
 }
 

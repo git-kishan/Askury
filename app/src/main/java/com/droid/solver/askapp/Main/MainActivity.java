@@ -8,7 +8,9 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.text.emoji.EmojiCompat;
@@ -29,8 +31,11 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.droid.solver.askapp.Account.AccountFragment;
 import com.droid.solver.askapp.Community.CommunityFragment;
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.HomeFragment;
 import com.droid.solver.askapp.Home.ImagePollOpenFragment;
 import com.droid.solver.askapp.Question.AnswerLike;
@@ -123,6 +128,15 @@ public class MainActivity extends AppCompatActivity implements
                     editor.clear();
                     editor.apply();
                     clearDatabase();
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Glide.get(MainActivity.this)
+                                    .clearDiskCache();
+                        }
+                    });
+                    signInAgain();
+
                     return true;
                 }
                 return false;
@@ -305,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements
         fetchSurveyParticipatedDocuments();
         fetchImagePollLikeDocuments();
         fetchAnswerLikeDocuments();
-        Log.i("TAG","Fetch like documents from remote database called");
     }
 
     private void fetchAnswerLikeDocuments(){
@@ -354,11 +367,9 @@ public class MainActivity extends AppCompatActivity implements
                         tempList.addAll(imagePollLike.getImagePollMapList());
                     }
                     for(int i=0;i<tempList.size();i++){
-//                        Log.i("TAG", "key :object :- "+tempList.get(i));
                         imagePollLikeMap.putAll(tempList.get(i));
                     }
                     tempList.clear();
-//                    Log.i("TAG", "new hash map :- "+imagePollLikeMap);
                     LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
                     localDatabase.clearImagePollLikeModel();
                     localDatabase.insertImagePollLikeModel(imagePollLikeMap);
@@ -389,8 +400,6 @@ public class MainActivity extends AppCompatActivity implements
                     LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
                     localDatabase.clearSurveyParticipatedModel();
                     localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
-                    Log.i("TAG", "survey participated map :- "+surveyParticipatedMap);
-                    Log.i("TAG", "survey participated map size :- "+tempList.size());
                 }else {
                     Log.i("TAG", "task is not successful in fetching survey participated documents");
                 }
@@ -401,7 +410,6 @@ public class MainActivity extends AppCompatActivity implements
     private void clearDatabase(){
         LocalDatabase database=new LocalDatabase(getApplicationContext());
         database.clearAllTable();
-        signInAgain();
     }
 
     private void signInAgain(){

@@ -39,6 +39,7 @@
         android:elevation="5dp"
         android:layout_marginTop="?android:actionBarSize"
         android:layout_width="match_parent"
+        android:src="@drawable/round_account"
         android:layout_height="match_parent" />
 
     <ImageView
@@ -67,7 +68,7 @@
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back_white" />
+        android:src="@drawable/ic_back_white" />
 
 
 

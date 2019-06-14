@@ -295,10 +295,28 @@ public class SignInActivity extends AppCompatActivity {
                     if(userInfoModel.getInterest()==null){
                         editor.putBoolean(Constants.INTEREST_SELECTION, false);
                         editor.putString(Constants.INTEREST,null);
+                    }else {
+                        ArrayList<String> interestList=userInfoModel.getInterest();
+                        StringBuilder builder = new StringBuilder();
+                        if(interestList!=null) {
+                            for (int i = 0; i < interestList.size(); i++) {
+                                builder.append(interestList.get(i));
+                                builder.append("@");
+                            }
+                            editor.putString(Constants.INTEREST, builder.toString());
+                            editor.putBoolean(Constants.INTEREST_SELECTION, true);
+
+
+                        }
+
                     }
                     if(userInfoModel.getGender()==null){
                         editor.putBoolean(Constants.GENDER_SELECTION, false);
                         editor.putString(Constants.GENDER,null);
+
+                    }else {
+                        editor.putString(Constants.GENDER, userInfoModel.getGender());
+                        editor.putBoolean(Constants.GENDER_SELECTION, true);
 
                     }
                     editor.apply();
