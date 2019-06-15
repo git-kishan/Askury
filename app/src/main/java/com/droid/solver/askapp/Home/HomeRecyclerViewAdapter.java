@@ -79,6 +79,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 view=inflater.inflate(R.layout.home_image_poll, viewGroup,false);
                 viewHolder= new ImagePollViewHolder(view);
                 break;
+            case LOADING:
+                view=inflater.inflate(R.layout.loading, viewGroup,false);
+                viewHolder=new LoadingViewHolderVertically(view);
             default:
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
                 viewHolder=new LoadingViewHolderVertically(view);
@@ -436,6 +439,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             return IMAGE_POLL;
         }else if(list.get(position) instanceof AskSurveyModel){
             return SURVEY;
+        } else if(list.get(position) == null){
+            return LOADING;
         }
         return -1;
     }

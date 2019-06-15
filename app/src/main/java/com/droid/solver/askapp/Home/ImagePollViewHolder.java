@@ -323,6 +323,8 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
             final int totalLikeOfBothImages = image1LikeNo + image2LikeNo;//till now in addition to current user
             leftWhiteHeart.setVisibility(View.GONE);
             rightWhiteHeart.setVisibility(View.GONE);
+            image1.setLongClickable(false);
+            image2.setLongClickable(false);
             constraintLayout.setVisibility(View.VISIBLE);
             constraintLayout.animate().translationY(0f).setDuration(50).start();
             Handler handler2 = new Handler();

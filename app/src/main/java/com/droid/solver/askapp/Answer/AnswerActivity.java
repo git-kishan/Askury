@@ -603,6 +603,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             map.put("recentAnswerImageUrl", answerImageUrl);
             map.put("answerCount", FieldValue.increment(1));
             map.put("recentAnswerLikeCount", 0);
+            map.put("timeOfAnswering",System.currentTimeMillis());
             map.put("fontUsed", fontSelected);
 
             userAnswerRef=firestoreRef.collection("user").

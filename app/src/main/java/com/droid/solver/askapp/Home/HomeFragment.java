@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -54,6 +55,9 @@ public class HomeFragment extends Fragment  {
     private DocumentSnapshot lastQuestionSnapshot;
     private DocumentSnapshot lastImagePollSnapshot;
     private DocumentSnapshot lastSurveySnapshot;
+    private DocumentSnapshot firstQuestionSnapshot;
+    private DocumentSnapshot firstImagePollSnapshot;
+    private DocumentSnapshot firstSurveySnapshot;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private FirebaseAuth auth;
@@ -61,6 +65,7 @@ public class HomeFragment extends Fragment  {
     private FirebaseFirestore rootRef;
     ArrayList<Object> list;
     private HomeRecyclerViewAdapter adapter;
+    private boolean isLoading=false;
 
     public HomeFragment() {
     }
@@ -88,12 +93,11 @@ public class HomeFragment extends Fragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter=new HomeRecyclerViewAdapter(getActivity(), list);
-        recyclerView.setAdapter(adapter);
+        initRecyclerView();
         loadDataFromRemoteDatabase();
 
     }
+
     private void loadDataFromRemoteDatabase(){
         loadImagePollFromRemoteDatabase();
         loadSurveyFromRemoteDatabase();
@@ -104,8 +108,9 @@ public class HomeFragment extends Fragment  {
         rootRef=FirebaseFirestore.getInstance();
         CollectionReference imagePollRef=rootRef.collection("imagePoll");
 
-        Query query=imagePollRef.orderBy("timeOfPolling", Query.Direction.DESCENDING)
-                .whereEqualTo("containVioloanceOrAdult", false).limit(MAXIMUM_NO_OF_IMAGEMPOLL_LOADED_AT_A_TIME);
+        Query query=imagePollRef.whereEqualTo("containVioloanceOrAdult", false)
+                .orderBy("timeOfPolling", Query.Direction.DESCENDING)
+                .limit(MAXIMUM_NO_OF_IMAGEMPOLL_LOADED_AT_A_TIME);
 
         query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -114,11 +119,12 @@ public class HomeFragment extends Fragment  {
                 if(task.isSuccessful()){
                     if(task.getResult()!=null)
                     for(QueryDocumentSnapshot snapshot :task.getResult()){
-                        Log.i("TAG", "image poll retrive document size :- "+task.getResult().getDocuments().size());
                         AskImagePollModel askImagePollModel=snapshot.toObject(AskImagePollModel.class);
                         imagePollModelStack.add(askImagePollModel);
+
                     }
                     if(task.getResult()!=null&&task.getResult().getDocuments().size()>0) {
+                        firstImagePollSnapshot=task.getResult().getDocuments().get(0);
                         lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
                     }
                     Log.i("TAG", "last image poll snapshot :- "+lastImagePollSnapshot.getId());
@@ -127,7 +133,9 @@ public class HomeFragment extends Fragment  {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.i("TAG", "query failed in retriving data from remotedatabase");
+                Log.i("TAG", "query failed in retriving image poll from remotedatabase");
+                Log.i("TAG", "query exception :- "+e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -144,11 +152,11 @@ public class HomeFragment extends Fragment  {
                 if(task.isSuccessful()){
                     if(task.getResult()!=null)
                     for(QueryDocumentSnapshot snapshot :task.getResult()){
-                        Log.i("TAG", "survey poll retrive document size :- "+task.getResult().getDocuments().size());
                         AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
                         surveyModelStack.add(askSurveyModel);
                     }
                     if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                        firstSurveySnapshot=task.getResult().getDocuments().get(0);
                         lastSurveySnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
                         Log.i("TAG", "last survey documents :- "+lastSurveySnapshot.getId());
                     }
@@ -158,6 +166,8 @@ public class HomeFragment extends Fragment  {
             @Override
             public void onFailure(@NonNull Exception e) {
 
+                Log.i("TAG", "query failed in retriving survey poll from remotedatabase");
+
             }
         });
     }
@@ -166,23 +176,27 @@ public class HomeFragment extends Fragment  {
 
         rootRef=FirebaseFirestore.getInstance();
         CollectionReference questionRef=rootRef.collection("question");
-        Query query=questionRef.whereGreaterThanOrEqualTo("answerCount", 1)
+        Query query=questionRef
+                .whereGreaterThanOrEqualTo("answerCount", 1)
+                .orderBy("answerCount", Query.Direction.DESCENDING)
+                .orderBy("timeOfAnswering", Query.Direction.DESCENDING)
                 .limit(MAXIMUM_NO_OF_QUESTION_LOADED_AT_A_TIME);
 
         query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
+                    if(task.getResult()!=null)
                     for(QueryDocumentSnapshot snapshot:task.getResult()){
                         RootQuestionModel questionModel=snapshot.toObject(RootQuestionModel.class);
                         questionModelStack.add(questionModel);
                     }
                     handleOrderingOfList(QUESTION_ORDER);
                     if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                        firstQuestionSnapshot=task.getResult().getDocuments().get(0);
                         lastQuestionSnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
-                        Log.i("TAG", "last question snapshot :- "+lastQuestionSnapshot.getId());
                     }
-
+                    Log.i("TAG", "last question snapshot :- "+lastQuestionSnapshot.getId());
 
                 }else {
 
@@ -193,6 +207,8 @@ public class HomeFragment extends Fragment  {
             @Override
             public void onFailure(@NonNull Exception e) {
 
+                Log.i("TAG", "exception in loading question from remote database :- "+e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -212,125 +228,182 @@ public class HomeFragment extends Fragment  {
         int s2Size=s2.size();
         int s3Size=s3.size();
 
-        for(int i=0;i<s1Size;i++){
-            if(!s1.isEmpty()){
-                tempList.add(s1.pop());
-
-            }
+        s1Size=s1Size==0?1:s1Size;
+        while (!s1.isEmpty()){
+            tempList.add(s1.pop());
         }
+        Log.i("TAG", "s1Size :- "+s1Size);
+        Log.i("TAG", "s2Size :- "+s2Size);
+        Log.i("TAG", "s3Size :- "+s3Size);
 
         for(int i=0;i<(s2Size+s3Size);i++){
             int randomNumber=generateRandomNumber(s1Size++);
-            if(!s1.isEmpty()){
-                tempList.add(randomNumber,s1.pop());
-            }else if(!s2.isEmpty()){
+            if(!s2.isEmpty()){
                 tempList.add(randomNumber,s2.pop());
+            }else if(!s3.isEmpty()){
+                tempList.add(randomNumber,s3.pop());
             }
         }
-        s1.empty();
-        s2.empty();
-        s3.empty();
-        Log.i("TAG", "temp list size :- "+tempList.size());
+        if(s1.isEmpty()) s1.clear();
+        if(s2.isEmpty()) s2.clear();
+        if(s3.isEmpty()) s3.clear();
         return tempList;
     }
 
-
-    private int generateRandomNumber(int lastRange){
+    private int generateRandomNumber(int highRange){
         Random random=new Random();
-        return random.nextInt(lastRange);
+        return random.nextInt(highRange);
 
     }
 
-//    private void onLoadingLoadImagePollFromRemoteDatabase(){
-//        rootRef=FirebaseFirestore.getInstance();
-//        CollectionReference imagePollRef=rootRef.collection("imagePoll");
-//
-//        Query query=imagePollRef.orderBy("timeOfPolling", Query.Direction.DESCENDING)
-//                .whereEqualTo("containVioloanceOrAdult", false).limit(MAXIMUM_NO_OF_IMAGEMPOLL_LOADED_AT_A_TIME);
-//
-//        query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//
-//                if(task.isSuccessful()){
-//                    for(QueryDocumentSnapshot snapshot :task.getResult()){
-//                        AskImagePollModel askImagePollModel=snapshot.toObject(AskImagePollModel.class);
-//                        imagePollModelStack.add(askImagePollModel);
-//                        list=handleOrderingOfList(IMAGEPOLL_ORDER);
-//                        if(list!=null&&list.size()>0){
-//                            adapter.notifyDataSetChanged();
-//                        }
-//                    }
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.i("TAG", "query failed in retriving data from remotedatabase");
-//            }
-//        });
-//    }
-//
-//    private void onLoadingLoadSurveyFromRemoteDatabase(){
-//        rootRef=FirebaseFirestore.getInstance();
-//        CollectionReference surveyRef=rootRef.collection("survey");
-//
-//        Query query=surveyRef.orderBy("timeOfSurvey", Query.Direction.DESCENDING).limit(MAXIMUM_NO_OF_SURVEY_LOADED_AT_A_TIME);
-//
-//        query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    for(QueryDocumentSnapshot snapshot :task.getResult()){
-//                        AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
-//                        surveyModelStack.add(askSurveyModel);
-//                        handleOrderingOfList(SURVEY_ORDER);
-//                        if(list!=null&&list.size()>0){
-//                            adapter.notifyDataSetChanged();
-//                        }
-//                    }
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//            }
-//        });
-//    }
-//
-//    private void onLoadingLoadQuestionFromRemoteDatabase(){
-//
-//        rootRef=FirebaseFirestore.getInstance();
-//        CollectionReference questionRef=rootRef.collection("question");
-//        Query query=questionRef.whereGreaterThanOrEqualTo("answerCount", 1)
-//                .limit(MAXIMUM_NO_OF_QUESTION_LOADED_AT_A_TIME);
-//
-//        query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//
-//                    for(QueryDocumentSnapshot snapshot:task.getResult()){
-//                        RootQuestionModel questionModel=snapshot.toObject(RootQuestionModel.class);
-//                        questionModelStack.add(questionModel);
-//                        list= handleOrderingOfList(QUESTION_ORDER);
-//                        if(list!=null&&list.size()>0){
-//                            adapter.notifyDataSetChanged();
-//                        }
-//
-//                    }
-//
-//                }else {
-//
-//                    Toast.makeText(getActivity(), "Error in getting documents", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }) .addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//            }
-//        });
-//    }
+    private void initRecyclerView(){
+        recyclerView.setLayoutManager(layoutManager);
+        adapter=new HomeRecyclerViewAdapter(getActivity(), list);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager manager= (LinearLayoutManager) recyclerView.getLayoutManager();
+                if(manager!=null)
+                Log.i("TAG", "position :- "+manager.findLastVisibleItemPosition());
+                if(!isLoading){
+                    if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
+                        list.add(list.size(),null);
+                        Log.i("TAG", "find completely last position");
+                        adapter.notifyItemInserted(list.size());
+                        isLoading=true;
+                        loadMoreItemFromRemoteDatabase();
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void loadMoreItemFromRemoteDatabase(){
+        onLoadingLoadImagePollFromRemoteDatabase();
+        onLoadingLoadSurveyFromRemoteDatabase();
+        onLoadingLoadQuestionFromRemoteDatabase();
+
+    }
+
+    private void onLoadingLoadImagePollFromRemoteDatabase(){
+        rootRef=FirebaseFirestore.getInstance();
+        CollectionReference imagePollRef=rootRef.collection("imagePoll");
+
+        Query query=imagePollRef.orderBy("timeOfPolling", Query.Direction.DESCENDING)
+                .whereEqualTo("containVioloanceOrAdult", false)
+                .startAfter(lastImagePollSnapshot)
+                .limit(MAXIMUM_NO_OF_IMAGEMPOLL_LOADED_AT_A_TIME);
+
+        query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshot :task.getResult()){
+                        AskImagePollModel askImagePollModel=snapshot.toObject(AskImagePollModel.class);
+                        imagePollModelStack.add(askImagePollModel);
+                    }
+                    if(task.getResult()!=null&&task.getResult().getDocuments().size()>0) {
+                        lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                    }else if(task.getResult()!=null&&task.getResult().getDocuments().size()==0){
+                        lastImagePollSnapshot=firstImagePollSnapshot;
+                    }
+//                    Log.i("TAG", "last image poll snapshot :- "+lastImagePollSnapshot.getId());
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("TAG", "query failed in retriving data from remotedatabase");
+            }
+        });
+    }
+
+    private void onLoadingLoadSurveyFromRemoteDatabase(){
+        rootRef=FirebaseFirestore.getInstance();
+        CollectionReference surveyRef=rootRef.collection("survey");
+
+        Query query=surveyRef.orderBy("timeOfSurvey", Query.Direction.DESCENDING)
+                .startAfter(lastSurveySnapshot)
+                .limit(MAXIMUM_NO_OF_SURVEY_LOADED_AT_A_TIME);
+
+        query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshot :task.getResult()){
+                        AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
+                        surveyModelStack.add(askSurveyModel);
+                    }
+                    if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                        lastSurveySnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
+//                        Log.i("TAG", "last survey documents :- "+lastSurveySnapshot.getId());
+                    }else if(task.getResult()!=null&&task.getResult().getDocuments().size()==0){
+                        lastSurveySnapshot=firstSurveySnapshot;
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void onLoadingLoadQuestionFromRemoteDatabase(){
+
+        rootRef=FirebaseFirestore.getInstance();
+        CollectionReference questionRef=rootRef.collection("question");
+        Query query=questionRef
+                .whereGreaterThanOrEqualTo("answerCount", 1)
+                .orderBy("answerCount", Query.Direction.DESCENDING)
+                .orderBy("timeOfAnswering", Query.Direction.DESCENDING)
+                .startAfter(lastQuestionSnapshot)
+                .limit(MAXIMUM_NO_OF_QUESTION_LOADED_AT_A_TIME);
+
+        query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult()!=null)
+                    for(QueryDocumentSnapshot snapshot:task.getResult()){
+                        RootQuestionModel questionModel=snapshot.toObject(RootQuestionModel.class);
+                        questionModelStack.add(questionModel);
+                    }
+                    if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                        lastQuestionSnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
+                    }else if(task.getResult()!=null&&task.getResult().getDocuments().size()==0){
+                        lastQuestionSnapshot=firstQuestionSnapshot;
+                    }
+//                    Log.i("TAG", "last question snapshot :- "+lastQuestionSnapshot.getId());
+
+                    int scrollPosition=list.size()-1;
+                    list.remove(scrollPosition);
+                    adapter.notifyItemRemoved(scrollPosition);
+                    isLoading=false;
+                    handleOrderingOfList(QUESTION_ORDER);
+
+
+                }else {
+
+                    Toast.makeText(getActivity(), "Error in getting documents", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }) .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
 }

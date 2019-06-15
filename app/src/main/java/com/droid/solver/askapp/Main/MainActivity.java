@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements
         progressFrameLayout.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment(), HOME);
+
         changeToolbarFont(toolbar, this);
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String lowProfilePicPath = preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);

@@ -13,6 +13,7 @@ public class RootQuestionModel {
     private String question;
     private List <String>questionType;
     private long timeOfAsking;
+    private long timeOfAnswering;
     private String recentAnswererId;
     private String recentAnswererImageUrlLow;
     private String recentAnswererName;
@@ -83,6 +84,7 @@ public class RootQuestionModel {
             String question,
             List<String> questionType,
             long timeOfAsking,
+            long timeOfAnswering,
             String recentAnswererId,
             String recentAnswererImageUrlLow,
             String recentAnswererName,
@@ -104,6 +106,7 @@ public class RootQuestionModel {
         this.question=question;
         this.questionType=questionType;
         this.timeOfAsking=timeOfAsking;
+        this.timeOfAnswering=timeOfAnswering;
         this.recentAnswererId=recentAnswererId;
         this.recentAnswererImageUrlLow=recentAnswererImageUrlLow;
         this.recentAnswererName=recentAnswererName;
@@ -153,6 +156,10 @@ public class RootQuestionModel {
 
     public long getTimeOfAsking() {
         return timeOfAsking;
+    }
+
+    public long getTimeOfAnswering() {
+        return timeOfAnswering;
     }
 
     public String getRecentAnswererId() {
