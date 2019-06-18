@@ -1,6 +1,5 @@
 package com.droid.solver.askapp.Home;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -27,7 +26,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.like.LikeButton;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,15 +65,7 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         numberOfAnswerImageView=itemView.findViewById(R.id.imageView2);
         wantToAnswerImageView=itemView.findViewById(R.id.imageView3);
     }
-    public void onThreeDotClicked(Context context){
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog, null, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
-        alertDialog.show();
-    }
+
     public void onWantToAnswer(Context context, RootQuestionModel model){
 
         Intent intent=new Intent(context,AnswerActivity.class);
@@ -92,9 +82,6 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void onAnswersClicked(Context context,RootQuestionModel model){
-
-
-
 
     }
     public void onLiked(final Context context, final RootQuestionModel model){
@@ -155,6 +142,7 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         database.insertSingleAnswerLikeModel(model.getRecentAnswerId());
     }
+
     public void onDisliked(final Context context, final RootQuestionModel model){
         Log.i("TAG", "disliked triggered");
         String likerId=user.getUid();
@@ -202,7 +190,6 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         database.removeAnswerLikeModel(model.getRecentAnswerId());
     }
 
-
     public void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
 
         Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
@@ -217,5 +204,70 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         context.startActivity(intent);
     }
 
+    void onAskerImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
 
+        Intent intent=new Intent(context, OtherAccountActivity.class);
+        intent.putExtra("profile_image", rootQuestionModel.getAskerImageUrlLow());
+        intent.putExtra("uid", rootQuestionModel.getAskerId());
+        intent.putExtra("user_name", rootQuestionModel.getAskerName());
+        intent.putExtra("bio", rootQuestionModel.getAskerBio());
+        context.startActivity(intent);
+
+    }
+
+    void onAnswererImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
+        Intent intent=new Intent(context, OtherAccountActivity.class);
+        intent.putExtra("profile_image", rootQuestionModel.getRecentAnswererImageUrlLow());
+        intent.putExtra("uid", rootQuestionModel.getRecentAnswererId());
+        intent.putExtra("user_name", rootQuestionModel.getRecentAnswererName());
+        intent.putExtra("bio", rootQuestionModel.getAskerBio());
+        context.startActivity(intent);
+    }
+
+    public void onThreeDotClicked(Context context){
+
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog, null, false);
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final android.support.v7.app.AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();
+        handleDialogItemClicked(dialogView, alertDialog);
+
+    }
+
+    private void handleDialogItemClicked(final View view,final android.support.v7.app.AlertDialog dialog){
+
+        TextView reportTextView=view.findViewById(R.id.report_text_view);
+        TextView followTextView=view.findViewById(R.id.follow_text_view);
+        TextView inAppropriateTextView=view.findViewById(R.id.inappropriate_question);
+        TextView deleteTextView=view.findViewById(R.id.delete_question_textview);
+
+        reportTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        followTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        }) ;
+
+        inAppropriateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        deleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
 }

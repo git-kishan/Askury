@@ -6,6 +6,7 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".setting.SettingActivity">
@@ -31,7 +32,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="8dp"
-            android:text="Sahil Sekhawat"
+            tools:text="Sahil Sekhawat"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -47,7 +48,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:alpha="0.6"
-            android:text="Author | Writer | Dancer | Actor"
+            tools:text="Author | Writer | Dancer | Actor"
             android:textColor="@android:color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -249,54 +250,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp">
 
-                <LinearLayout
-                    android:id="@+id/linearLayout7"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:orientation="horizontal"
-                    android:visibility="visible"
-                    android:weightSum="10"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center|left"
-                        android:padding="8dp"
-                        android:text="Language"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/language_text"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="5"
-                        android:gravity="center|end"
-                        android:text="Chinese"
-                        android:textSize="12sp" />
-
-                    <ImageView
-                        android:id="@+id/language_image"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/ripple_background"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="8dp"
-                        android:rotation="180"
-                        app:srcCompat="@drawable/ic_back_black" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linearLayout8"

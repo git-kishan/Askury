@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
@@ -14,8 +15,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
@@ -174,14 +177,6 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    void onThreeDotClicked(Context context){
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog, null, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
-        alertDialog.show();    }
 
         public void makeContainerUnClickable(){
           container1.setClickable(false);
@@ -419,5 +414,52 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
          changeBackGroundOfLinearLayout();
         }
 
+        void onProfileImageClicked(final Context context,final AskSurveyModel surveyModel){
+            Intent intent=new Intent(context, OtherAccountActivity.class);
+            intent.putExtra("profile_image", surveyModel.getAskerName());
+            intent.putExtra("uid", surveyModel.getAskerId());
+            intent.putExtra("user_name", surveyModel.getAskerName());
+            intent.putExtra("bio", surveyModel.getAskerBio());
+            context.startActivity(intent);
 
+        }
+
+    void onThreeDotClicked(Context context){
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        alertDialog.show();
+        handleDialogItemClicked(dialogView,alertDialog );
+
+    }
+    private void handleDialogItemClicked(final View view,final AlertDialog dialog){
+        TextView reportTextView=view.findViewById(R.id.report_text_view);
+        TextView followTextView=view.findViewById(R.id.follow_text_view);
+        final TextView deleteSurveyView=view.findViewById(R.id.delete_survey_textview);
+        reportTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(context, "report clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        followTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "follow clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        deleteSurveyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "delete  clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+    }
 }

@@ -17,6 +17,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.ImagePollClickListener;
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -45,8 +48,10 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
     private FirebaseUser user;
     private FirebaseFirestore firestoreRootRef;
     private ImagePollClickListener listener;
-    public ImagePollViewHolder(@NonNull View itemView) {
+    private Context context;
+    public ImagePollViewHolder(@NonNull View itemView,final Context context) {
         super(itemView);
+        this.context = context;
         user = FirebaseAuth.getInstance().getCurrentUser();
         firestoreRootRef = FirebaseFirestore.getInstance();
         profileImageView = itemView.findViewById(R.id.profile_image);
@@ -305,18 +310,6 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    void onThreeDotClicked(Context context) {
-
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog, null, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
-        alertDialog.show();
-    }
-
-
     void showLike(final Context context, final int image1LikeNo, int image2LikeNo, final int choice) {
 
         if(choice!=0) {
@@ -368,5 +361,59 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
 
 
     }
+
+    void onProfileImageClicked(final Context context,final AskImagePollModel imagePollModel){
+        Intent intent=new Intent(context, OtherAccountActivity.class);
+        intent.putExtra("profile_image", imagePollModel.getAskerImageUrlLow());
+        intent.putExtra("uid", imagePollModel.getAskerId());
+        intent.putExtra("user_name", imagePollModel.getAskerName());
+        intent.putExtra("bio", imagePollModel.getAskerBio());
+        context.startActivity(intent);
+    }
+
+    void onThreeDotClicked(Context context) {
+
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        alertDialog.show();
+        handleDialogItemClicked(dialogView,alertDialog);
+    }
+
+    private void handleDialogItemClicked(View view,final AlertDialog dialog){
+        TextView reportTextView=view.findViewById(R.id.report_text_view);
+        TextView followTextView =view.findViewById(R.id.follow_text_view);
+        final TextView deleteTextView =view.findViewById(R.id.delete_poll_text_view);
+
+        reportTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "report clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        followTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "follow clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+
+            }
+        });
+        deleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "delete clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+
+            }
+        });
+
+    }
+
+
 
 }

@@ -1,5 +1,7 @@
 package com.droid.solver.askapp.Home;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ImagePollOpenFragment extends Fragment {
@@ -42,18 +53,21 @@ public class ImagePollOpenFragment extends Fragment {
         bottomNavigation=getActivity().findViewById(R.id.bottom_navigation);
         bottomNavigation.setVisibility(View.GONE);
         toolbar.setVisibility(View.GONE);
-        GlideApp.with(getActivity()).load(imageUrl).into(imageView);
-//        GlideApp.with(getActivity()).load(imageUrl).into(imageView,new Callback(){
-//            @Override
-//            public void onSuccess() {
-//                getActivity().supportStartPostponedEnterTransition();
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                getActivity().supportStartPostponedEnterTransition();
-//            }
-//        });
+        getActivity().supportStartPostponedEnterTransition();
+        Picasso.get().load(imageUrl)
+                .noFade()
+                .into(imageView,new Callback(){
+                    @Override
+                    public void onSuccess() {
+                        getActivity().supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        getActivity().supportStartPostponedEnterTransition();
+                    }
+                });
+
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         backImage=view.findViewById(R.id.back_image);

@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
@@ -32,7 +37,13 @@ import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.InterestActivity;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.droid.solver.askapp.SignInActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -49,29 +60,30 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    public static int INTEREST_REQUEST_CODE=965;
-    public static String SETTING_ACTIVITY="SettingActivity";
+    public static int INTEREST_REQUEST_CODE = 965;
+    public static String SETTING_ACTIVITY = "SettingActivity";
+    private ConstraintLayout rootLayout;
     private CircleImageView profileImage;
     private ImageView backImage;
-    private TextView profileName,about,setting,addInterest;
+    private TextView profileName, about, setting, addInterest;
     private TextView interestTextView;
-    private TextInputLayout userNameInputLayout,aboutInputLayout;
-    private TextInputEditText userNameInputEditText,aboutInputEditText;
-    private MaterialButton editButton,updateButton;
+    private TextInputLayout userNameInputLayout, aboutInputLayout;
+    private TextInputEditText userNameInputEditText, aboutInputEditText;
+    private MaterialButton editButton, updateButton;
     private ChipGroup chipGroup;
-    private LinearLayout languageLayout,notificationLayout,privacyPolicyLayout,reportErrorLayout;
+    private LinearLayout languageLayout, notificationLayout, privacyPolicyLayout, reportErrorLayout;
     private SwitchCompat notificationSwitch;
-    private ImageView languageImageButton,privacyPolicyImageButton,reportErrorImageButton;
-    private TextView languageText;
-    private List<String> savedInterestList;
+    private ImageView privacyPolicyImageButton, reportErrorImageButton;
+    private List<String> savedInterestList, newInterestList;
+    private String savedUserName, newUserName, newAbout, savedAbout;
 
-
-    @Override
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         profileImage=findViewById(R.id.circleImageView4);
         backImage=findViewById(R.id.back_image);
+        rootLayout=findViewById(R.id.root_layout);
         userNameInputLayout=findViewById(R.id.user_name_input_layout);
         userNameInputEditText=findViewById(R.id.user_name_input_edit_text);
         aboutInputLayout=findViewById(R.id.about_input_layout);
@@ -90,19 +102,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         privacyPolicyLayout=findViewById(R.id.linearLayout9);
         reportErrorLayout=findViewById(R.id.linearLayout10);
         notificationSwitch=findViewById(R.id.notification_switch);
-        languageImageButton=findViewById(R.id.language_image);
         privacyPolicyImageButton=findViewById(R.id.privacy_policy_image);
         reportErrorImageButton=findViewById(R.id.report_error_image);
-        languageText=findViewById(R.id.language_text);
-        userNameInputEditText.setText("Sahil sekhawat");
-        aboutInputEditText.setText("Author | Writer | Dancer | Actor");
         updateButton.setVisibility(View.GONE);
         userNameInputLayout.setEnabled(false);
         aboutInputLayout.setEnabled(false);
         chipGroup.setEnabled(false);
         addInterest.setVisibility(View.GONE);
 
-        languageLayout.setOnClickListener(this);languageImageButton.setOnClickListener(this);
         notificationLayout.setOnClickListener(this);notificationSwitch.setOnCheckedChangeListener(this);
         privacyPolicyLayout.setOnClickListener(this);privacyPolicyImageButton.setOnClickListener(this);
         reportErrorLayout.setOnClickListener(this);reportErrorImageButton.setOnClickListener(this);
@@ -118,11 +125,19 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         savedInterestList=new ArrayList<>();
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String interestString=preferences.getString(Constants.INTEREST, null);
+        savedUserName=preferences.getString(Constants.userName, null);
+        savedAbout=preferences.getString(Constants.bio, null);
+        savedUserName=savedUserName==null?"Someone":savedUserName;
+        savedAbout=savedAbout==null?"Nothing about yourself is mentioned":savedAbout;
+        profileName.setText(savedUserName);
+        about.setText(savedAbout);
         if(interestString!=null) {
-            Log.i("TAG", "interest :- "+interestString);
+//            Log.i("TAG", "interest :- "+interestString);
             String[] interestArr = interestString.split("@");
             savedInterestList = Arrays.asList(interestArr);
         }
+        userNameInputEditText.setText(savedUserName);
+        aboutInputEditText.setText(savedAbout);
         generateChipDynamically(savedInterestList);
 
     }
@@ -153,7 +168,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 notificationSwitch.performClick();
                 break;
             case R.id.linearLayout9:
-                Toast.makeText(this, "privacy policy", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SettingActivity.this,PrivacyPolicyActivity.class));
                 break;
             case R.id.linearLayout10:
                 Toast.makeText(this, "report Error", Toast.LENGTH_SHORT).show();
@@ -187,14 +202,18 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             profileImage.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
 
-            String url= ProfileImageActivity.PROFILE_PICTURE+"/"+ FirebaseAuth.getInstance().getCurrentUser().
-                    getUid()+ProfileImageActivity.THUMBNAIL;
-            StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
-            GlideApp.with(this).load(reference)
-                    .placeholder(R.drawable.round_account)
-                    .error(R.drawable.round_account)
-                    .into(profileImage);
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                String url = ProfileImageActivity.PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().
+                        getUid() + ProfileImageActivity.THUMBNAIL;
+                StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(this).load(reference)
+                        .placeholder(R.drawable.round_account)
+                        .error(R.drawable.round_account)
+                        .into(profileImage);
+            }
             e.printStackTrace();
+
+
         }catch (NullPointerException e){
             //handle sign in again
         }
@@ -262,6 +281,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void onUpdateButtonClicked(){
+
+    if(validateProfileUpdation()){
         editButton.setAlpha(1.0f);
         userNameInputLayout.setEnabled(false);
         aboutInputLayout.setEnabled(false);
@@ -270,19 +291,89 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         updateButton.setEnabled(false);
         updateButton.setVisibility(View.GONE);
         addInterest.setVisibility(View.GONE);
-        chipGroup.removeAllViews();
         makeChipTextFader();
+        updateProfile();
+    }
+
     }
 
     private void updateProfile(){
 
+    final List<String> tempList=new ArrayList<>();
+        for(int i=0;i<chipGroup.getChildCount();i++){
+            final Chip chip=(Chip)chipGroup.getChildAt(i);
+            if(chip!=null) {
+                tempList.add(chip.getText().toString());
+//                Log.i("TAG", "text :- "+chip.getText().toString());
+            }
+        }
+
+            if(isNetworkAvailable()){
+
+                final Map<String,Object> userMap=new HashMap<>();
+                userMap.put("userName",userNameInputEditText.getText().toString());
+                userMap.put("bio", aboutInputEditText.getText().toString());
+                userMap.put("interest", tempList);
+                if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+                    String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    FirebaseFirestore.getInstance().collection("user")
+                            .document(uid)
+                            .set(userMap, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Snackbar.make(rootLayout, "Profile updated ", Snackbar.LENGTH_LONG).show();
+                            StringBuilder builder=new StringBuilder();
+                            for(int i=0;i<tempList.size();i++){
+                                builder.append(tempList.get(i));
+                                builder.append("@");
+                            }
+                            SharedPreferences.Editor  editor=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE).edit();
+                            editor.putString(Constants.userName, userNameInputEditText.getText().toString());
+                            editor.putString(Constants.bio, aboutInputEditText.getText().toString());
+                            editor.putString(Constants.INTEREST,builder.toString() );
+                            editor.apply();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Snackbar.make(rootLayout, "Profile updated,try again later", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                }else {
+                    Snackbar.make(rootLayout, "Please sign in again ", Snackbar.LENGTH_SHORT).show();
+                    Handler handler=new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(new Intent(SettingActivity.this, SignInActivity.class));
+                            finish();
+                        }
+                    }, 300);
+                }
+
+            }else {
+                Snackbar.make(rootLayout, "No internet connection available", Snackbar.LENGTH_SHORT).show();
+            }
+
+
+
+    }
+    private boolean  validateProfileUpdation(){
+
+         if(userNameInputEditText.getText().toString().length()==0){
+             Snackbar.make(rootLayout, "User name can't be empty", Snackbar.LENGTH_LONG).show();
+             return false;
+         }
+
+         else if(chipGroup.getChildCount()<=1) {
+             Snackbar.make(rootLayout, "At least two interest must selected", Snackbar.LENGTH_LONG).show();
+            return false;
+         }
+         return true;
     }
     @Override
     public void onBackPressed() {
-        if(updateButton.isEnabled()){
-            updateButton.performClick();
-            return;
-        }
+
         super.onBackPressed();
     }
 
@@ -308,15 +399,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if(requestCode==INTEREST_REQUEST_CODE){
             if(resultCode==RESULT_OK){
                 if(data!=null) {
-                    ArrayList<String> interestList = data.getStringArrayListExtra("interestList");
-                    generateChipDynamically(interestList);
+                    newInterestList = data.getStringArrayListExtra("interestList");
+                    generateChipDynamically(newInterestList);
                     makeChipTextBlack();
-                    Log.i("TAG", "interest list :- "+interestList.size());
+                    Log.i("TAG", "interest list :- "+newInterestList.size());
                 }
             }else if(resultCode==RESULT_CANCELED){
                 Toast.makeText(this, "Not selected ", Toast.LENGTH_SHORT).show();
             }
 
         }
+    }
+
+    private boolean isNetworkAvailable(){
+        ConnectivityManager manager= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo=manager.getActiveNetworkInfo();
+        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
     }
 }

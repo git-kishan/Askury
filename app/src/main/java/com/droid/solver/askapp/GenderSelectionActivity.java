@@ -2,6 +2,8 @@ package com.droid.solver.askapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -23,6 +25,8 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
     private int selection=0;
     private SharedPreferences preferences;
     private ImageView nextButton;
+    private String heading;
+    private TextView hiUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +37,19 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
         maleText=findViewById(R.id.male_text_view);
         femaleText=findViewById(R.id.female_text_view);
         nextButton=findViewById(R.id.next_button);
+        hiUser=findViewById(R.id.textView29);
+        preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        String userName=preferences.getString(Constants.userName, null);
+        if(userName!=null){
+            heading=String.format(getString(R.string.hi_user), userName);
+            hiUser.setText(heading);
+        }else {
+            heading=String.format(getString(R.string.hi_user),"");
+            hiUser.setText(heading);
+        }
         nextButton.setOnClickListener(this);
         maleCardView.setOnClickListener(this);
         femaleCardView.setOnClickListener(this);
-        preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 

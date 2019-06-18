@@ -127,7 +127,6 @@ public class HomeFragment extends Fragment  {
                         firstImagePollSnapshot=task.getResult().getDocuments().get(0);
                         lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
                     }
-                    Log.i("TAG", "last image poll snapshot :- "+lastImagePollSnapshot.getId());
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -158,7 +157,6 @@ public class HomeFragment extends Fragment  {
                     if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
                         firstSurveySnapshot=task.getResult().getDocuments().get(0);
                         lastSurveySnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
-                        Log.i("TAG", "last survey documents :- "+lastSurveySnapshot.getId());
                     }
                 }
             }
@@ -196,11 +194,8 @@ public class HomeFragment extends Fragment  {
                         firstQuestionSnapshot=task.getResult().getDocuments().get(0);
                         lastQuestionSnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
                     }
-                    Log.i("TAG", "last question snapshot :- "+lastQuestionSnapshot.getId());
-
                 }else {
-
-                    Toast.makeText(getActivity(), "Error in getting documents", Toast.LENGTH_SHORT).show();
+                    Log.i("TAG", "error occured in getting question documents from remote database");
                 }
             }
         }) .addOnFailureListener(new OnFailureListener() {
@@ -269,12 +264,9 @@ public class HomeFragment extends Fragment  {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 LinearLayoutManager manager= (LinearLayoutManager) recyclerView.getLayoutManager();
-                if(manager!=null)
-                Log.i("TAG", "position :- "+manager.findLastVisibleItemPosition());
                 if(!isLoading){
                     if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
                         list.add(list.size(),null);
-                        Log.i("TAG", "find completely last position");
                         adapter.notifyItemInserted(list.size());
                         isLoading=true;
                         loadMoreItemFromRemoteDatabase();

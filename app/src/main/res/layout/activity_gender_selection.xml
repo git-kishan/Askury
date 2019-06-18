@@ -62,7 +62,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="104dp"
         android:gravity="center"
-        android:text="Hi Sahil, "
+        android:alpha="1"
         android:textColor="@android:color/white"
         android:textSize="32sp"
         android:textStyle="bold"

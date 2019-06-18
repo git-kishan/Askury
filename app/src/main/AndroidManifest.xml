@@ -24,7 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Account.ProfileImageActivity"></activity>
+        <activity android:name=".setting.PrivacyPolicyActivity"></activity>
+        <activity android:name=".setting.TextViewToBitmap" />
+        <activity android:name=".Account.OtherAccountActivity" />
+        <activity android:name=".Account.ProfileImageActivity" />
         <activity android:name=".GenderSelectionActivity" />
         <activity android:name=".InterestActivity" />
         <activity android:name=".setting.SettingActivity" />
@@ -76,8 +79,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

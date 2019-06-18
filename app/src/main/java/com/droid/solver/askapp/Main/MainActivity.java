@@ -44,6 +44,7 @@ import com.droid.solver.askapp.Question.QuestionFragment;
 import com.droid.solver.askapp.Question.SurveyParticipated;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements
                                     .clearDiskCache();
                         }
                     });
+                    LoginManager.getInstance().logOut();
                     signInAgain();
 
                     return true;

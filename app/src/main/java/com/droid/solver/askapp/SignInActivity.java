@@ -4,8 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.LinearGradient;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
+import android.support.design.widget.Snackbar;
 import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.FontRequestEmojiCompatConfig;
 import android.support.v4.provider.FontRequest;
@@ -13,13 +19,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.Home.HomeFragment;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Main.UserInfoModel;
 import com.droid.solver.askapp.Question.RootQuestionModel;
+import com.droid.solver.askapp.setting.TextViewToBitmap;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -60,7 +70,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
 
     CallbackManager callbackManager;
     LoginButton loginButton;
@@ -68,12 +78,19 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseUser user;
     GoogleSignInClient mGoogleSignInClient;
     public static final int RC_SIGN_IN=313;
+    private MaterialButton googleButton,facebookButton;
+    private ConstraintLayout rootLayout;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initEmojiFont();
         setContentView(R.layout.activity_sign_in);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        googleButton=findViewById(R.id.google_button);
+        facebookButton=findViewById(R.id.facebook_button);
+        rootLayout=findViewById(R.id.root_layout);
+        progressBar=findViewById(R.id.progress_bar);
         SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         callbackManager = CallbackManager.Factory.create();
         loginButton = findViewById(R.id.login_button);
@@ -82,7 +99,6 @@ public class SignInActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
         boolean genderSelection=sharedPreferences.getBoolean(Constants.GENDER_SELECTION, false);
         boolean interestSelection=sharedPreferences.getBoolean(Constants.INTEREST_SELECTION, false);
 
@@ -98,34 +114,39 @@ public class SignInActivity extends AppCompatActivity {
                 finish();
             }
            else {
-                startActivity(new Intent(SignInActivity.this,MainActivity.class));
+                startActivity(new Intent(SignInActivity.this, MainActivity.class));
                 finish();
             }
 
         }
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-            }
-        });
-
-        findViewById(R.id.google_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signInWithGoogle();
-            }
-        });
+        callbackRegistration();
+        facebookButton.setOnClickListener(this);
+        googleButton.setOnClickListener(this);
     }
 
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+            case R.id.google_button:
+                if(isNetworkAvailable()){
+                    signInWithGoogle();
+                    progressBar.setVisibility(View.VISIBLE);
+                }else {
+                    Snackbar.make(rootLayout, "No network available ", Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.facebook_button:
+                if(isNetworkAvailable()){
+                    loginButton.performClick();
+                    progressBar.setVisibility(View.VISIBLE);
+                }else {
+                    Snackbar.make(rootLayout, "No network available", Snackbar.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -135,7 +156,8 @@ public class SignInActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                Toast.makeText(SignInActivity.this,"Exception in on activity result  "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar.make(rootLayout, "Error occured in sign in,try again", Snackbar.LENGTH_LONG).show();
+                Log.i("TAG","Api exception occurs in sign in page" );
             }
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -160,23 +182,49 @@ public class SignInActivity extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
+                                                progressBar.setVisibility(View.GONE);
+                                                Log.i("TAG", "Sign in successfully through facebook");
+                                                Snackbar.make(rootLayout, "Please wait ...", Snackbar.LENGTH_LONG).show();
                                                 checkFirstTimeUser(userId);
 
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(SignInActivity.this,"error occured in firestore" ,Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(rootLayout, "Error occured in sign in", Snackbar.LENGTH_SHORT).show();
                                         Log.i("TAG", "Error "+e.getLocalizedMessage());
                                     }
                                 });
                         } else {
-                            Toast.makeText(SignInActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            Snackbar.make(rootLayout, "Sign in failed,try anoter methood", Toast.LENGTH_SHORT).show();
                         }
 
                     }
                 });
+    }
+
+    private void callbackRegistration(){
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                progressBar.setVisibility(View.GONE);
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                progressBar.setVisibility(View.GONE);
+                Snackbar.make(rootLayout, "Sign in failed through facebook", Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                progressBar.setVisibility(View.GONE);
+                Snackbar.make(rootLayout, "Sign in failed through facebook", Snackbar.LENGTH_LONG).show();
+                Log.i("TAG", "Error occured in facebook sign in :- "+error.toString());
+            }
+        });
     }
 
     private void signInWithGoogle(){
@@ -205,21 +253,20 @@ public class SignInActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             checkFirstTimeUser(userId);
+                                            progressBar.setVisibility(View.GONE);
+                                            Snackbar.make(rootLayout,"Please wait ...",Snackbar.LENGTH_LONG).show();
 
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(SignInActivity.this,"error occured in firestore" ,Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(rootLayout, "Error occured in sign in", Snackbar.LENGTH_SHORT).show();
                                     Log.i("TAG", "Error "+e.getLocalizedMessage());
                                 }
                             });
 
-
-                            Toast.makeText(SignInActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(SignInActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Snackbar.make(rootLayout, "Sign in failed,try another method",Snackbar.LENGTH_SHORT).show();
 
                         }
                     }
@@ -238,6 +285,7 @@ public class SignInActivity extends AppCompatActivity {
         userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                progressBar.setVisibility(View.GONE);
                 startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
                 finish();
                 Log.i("TAG", "array list created in remote database");
@@ -364,6 +412,11 @@ public class SignInActivity extends AppCompatActivity {
 
 
 
+    }
+    private boolean isNetworkAvailable(){
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=manager.getActiveNetworkInfo();
+        return networkInfo!=null&&networkInfo.isConnected();
     }
 
 

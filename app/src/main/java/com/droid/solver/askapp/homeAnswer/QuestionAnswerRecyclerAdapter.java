@@ -1,14 +1,20 @@
 package com.droid.solver.askapp.homeAnswer;
 
 import android.content.Context;
+import android.print.PrintAttributes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 
 public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
@@ -19,9 +25,12 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
     private final int QUESTION=1;
     private final int ANSWER=2;
     private final int LOADING=0;
+    private StorageReference reference;
+    public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
     QuestionAnswerRecyclerAdapter(Context context, ArrayList<Object> list){
         this.context=context;
         this.list=list;
+        reference=FirebaseStorage.getInstance().getReference();
         if(context!=null)
             inflater=LayoutInflater.from(context);
     }
@@ -38,6 +47,10 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             case ANSWER:
                 view=inflater.inflate(R.layout.home_answer_answer_item, viewGroup,false);
                 viewHolder=new AnswerViewHolder(view,context);
+                break;
+            case LOADING:
+                view=inflater.inflate(R.layout.loading, viewGroup,false);
+                viewHolder=new LoadingViewHolderVertically(view);
                 break;
                 default:
                     view=inflater.inflate(R.layout.loading, viewGroup,false);
@@ -60,7 +73,6 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
            boolean anonymous=model.isAnonymous();
            String questionId=model.getQuestionId();
            long timeOfAsking=model.getTimeOfAsking();
-
            profileImageUrl=profileImageUrl==null?"":profileImageUrl;
            askerName=askerName==null?"Someone":askerName;
            bio=bio==null?"":bio;
@@ -78,12 +90,18 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
            }else {
                ((QuestionViewHolder) holder).askerName.setText(askerName);
                ((QuestionViewHolder) holder).askerBio.setText(bio);
-               GlideApp.with(context).load(profileImageUrl).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
+
+               String url= Constants.PROFILE_PICTURE+"/"+((QuestionModel) list.get(i)).getAskerId()+Constants.SMALL_THUMBNAIL;
+
+               GlideApp.with(context).load(reference.child(url)).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
                        .into(((QuestionViewHolder) holder).profileImage);
            }
 
             ((QuestionViewHolder) holder).timeAgo.setText(timeAgoText);
             ((QuestionViewHolder) holder).question.setText(question);
+            questionClickListener(context, (QuestionViewHolder) holder, model);
+
+
 
         }
         else if(holder.getItemViewType()==ANSWER&&holder instanceof AnswerViewHolder){
@@ -96,7 +114,10 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             int likeCount=model.getAnswerLikeCount();
             long timeAgo=model.getTimeOfAnswering();
             String answerImageUrl=model.getImageAttachedUrl();
+            int fontUsed=model.getFontUsed();
 
+
+            fontUsed=fontUsed<=fontId.length?fontUsed:0;
             profileImageUrl=profileImageUrl==null?"":profileImageUrl;
             answererName=answererName==null?"Someone":answererName;
             answererBio=answererBio==null?"":answererBio;
@@ -110,14 +131,16 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
                 GlideApp.with(context).load(answerImageUrl).into(((AnswerViewHolder) holder).answerImage);
             }
             String timeAgoText=getTime(timeAgo, System.currentTimeMillis());
-            GlideApp.with(context).load(profileImageUrl).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
+            String url=Constants.PROFILE_PICTURE+"/"+((AnswerModel) list.get(i)).getAnswererId()+Constants.SMALL_THUMBNAIL;
+            GlideApp.with(context).load(reference.child(url)).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
                     .into(((AnswerViewHolder) holder).profileImage);
+
             ((AnswerViewHolder) holder).answererName.setText(answererName);
             ((AnswerViewHolder) holder).answererBio.setText(answererBio);
             ((AnswerViewHolder) holder).answer.setText(answer);
+            ((AnswerViewHolder) holder).answer.setTypeface(ResourcesCompat.getFont(context, fontId[fontUsed]));
             ((AnswerViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
             ((AnswerViewHolder) holder).timeAgo.setText(timeAgoText);
-
 
         }
     }
@@ -134,8 +157,9 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
         }else if(list.get(position) instanceof QuestionModel){
             return QUESTION;
         }
-        else
+        else if(list.get(position) ==null)
              return LOADING;
+        return LOADING;
     }
     private String getTimeDifferenceInWords(long diff){
         long yearInMillis=365*24*60*60*1000L;
@@ -173,4 +197,15 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
         }
         return getTimeDifferenceInWords(diff);
     }
+
+    private void questionClickListener(final Context context, final QuestionViewHolder holder, final QuestionModel  model){
+
+        holder.wantToAnswerImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onWantToAnswerClicked(context,model);
+            }
+        });
+    }
+
 }

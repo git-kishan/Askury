@@ -24,6 +24,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -77,7 +79,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 break;
             case IMAGE_POLL:
                 view=inflater.inflate(R.layout.home_image_poll, viewGroup,false);
-                viewHolder= new ImagePollViewHolder(view);
+                viewHolder= new ImagePollViewHolder(view,context);
                 break;
             case LOADING:
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
@@ -322,9 +324,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 timeOfPolling=timeOfPolling==0?System.currentTimeMillis():timeOfPolling;
                 String timeAgo=getTime(timeOfPolling, System.currentTimeMillis());
 
-                GlideApp.with(context).load(image1Url).
+                Picasso.get().load(image1Url).
                         into(((ImagePollViewHolder) holder).image1);
-                GlideApp.with(context).load(image2Url).
+                Picasso.get().load(image2Url).
                         into(((ImagePollViewHolder) holder).image2);
                 String userNameCreatedPoll=String.format(context.getString(R.string.username_created_a_poll), askerName);
                 ((ImagePollViewHolder) holder).profileName.setText(userNameCreatedPoll);
@@ -517,6 +519,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 holder.onThreeDotClicked(context);
             }
         });
+        holder.profileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onProfileImageClicked(context, imagePollModel);
+
+            }
+        });
+
 
     }
 
@@ -552,6 +562,13 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 holder.onThreeDotClicked(context);
             }
         });
+        holder.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onProfileImageClicked(context, surveyModel);
+
+            }
+        });
     }
 
     private void handleClickListenerOfQuestionAnswer(final QuestionAnswerViewHolder holder,
@@ -585,12 +602,27 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 holder.onDisliked(context, rootQuestionModel);
             }
         });
+
         holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.onNumberOfAnswerClicked(context, rootQuestionModel);
             }
         });
+        holder.askerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAskerImageViewClicked(context, rootQuestionModel);
+            }
+        });
+        holder.answererImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswererImageViewClicked(context, rootQuestionModel);
+            }
+        });
+
+
     }
 
     private void handleClickListenerOfQuestionAnswerWithImage(final QuestionAnswerWithImageViewHolder holder,
@@ -629,6 +661,18 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 holder.onNumberOfAnswerClicked(context, rootQuestionModel);
+            }
+        });
+        holder.askerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAskerImageViewClicked(context, rootQuestionModel);
+            }
+        });
+        holder.answererImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswererImageViewClicked(context, rootQuestionModel);
             }
         });
 

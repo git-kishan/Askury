@@ -23,6 +23,7 @@
         android:id="@+id/image_view"
         android:layout_marginTop="?android:actionBarSize"
         android:layout_width="match_parent"
+        android:foregroundGravity="center"
         android:layout_height="match_parent"/>
     <ImageView
         android:contentDescription="back"
