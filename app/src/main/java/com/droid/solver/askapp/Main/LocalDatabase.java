@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 
+import com.droid.solver.askapp.Account.ProfileImageActivity;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Question.AnswerLike;
 import com.droid.solver.askapp.Question.Community;
@@ -30,7 +31,7 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=4;
+    private static final int DATABASE_VERSION=5;
 
     private static final String USER_INFO_TABLE="user_info_table";
     private static final String USER_QUESTION_MODEL="question_asked_table";
@@ -43,6 +44,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private static final String FOLLOWER_TABLE="follower_table";
     private static final String FOLLOWING_TABLE="following_table";
     private static final String COMMUNITY_TABLE="community_table";
+    private static final String IMAGE_POLL_REPORT="image_poll_report";
+    private static final String SURVEY_REPORT="survey_report";
+    private static final String QUESTION_REPORT="question_report";
+
 
     //user main document
     private  static final String userId="userId";
@@ -176,6 +181,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_COMMUNITY_TABLE="CREATE TABLE "+COMMUNITY_TABLE+"("+communityId+"TEXT PRIMARY KEY, "+communityName+" TEXT ,"+
             communityImageUrl+" TEXT ,"+communityMemberCount+" INTEGER "+")";
 
+    private static final String CREATE_TABLE_IMAGE_POLL_REPORT_TABLE="CREATE TABLE "+IMAGE_POLL_REPORT+"("+imagePollId+" TEXT PRIMARY KEY "+")";
+    private static final String CREATE_TABLE_SURVEY_REPORT_TABLE="CREATE TABLE "+SURVEY_REPORT+"("+surveyId+" TEXT PRIMARY KEY "+")";
+    private static final String CREATE_TABLE_QUESTION_REPORT_TABLE="CREATE TABLE "+QUESTION_REPORT+"("+questionId+" TEXT PRIMARY KEY"+")";
+
 
     public LocalDatabase(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -194,6 +203,9 @@ public class LocalDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWER_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWING_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_COMMUNITY_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_REPORT_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_REPORT_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_REPORT_TABLE);
         Log.i("TAG", "table created :");
 
     }
@@ -212,6 +224,9 @@ public class LocalDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+FOLLOWER_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+FOLLOWING_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+COMMUNITY_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+IMAGE_POLL_REPORT);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+SURVEY_REPORT);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+QUESTION_REPORT);
         Log.i("TAG", "table upgrade ");
         onCreate(sqLiteDatabase);
 
@@ -859,10 +874,28 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
         return null;
     }
+    public ArrayList<String> getFollowerIdList(){
+        ArrayList<String> list;
+        SQLiteDatabase database=this.getWritableDatabase();
+        String query="SELECT * FROM "+FOLLOWER_TABLE;
+        Cursor cursor=database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            list=new ArrayList<>();
+            do {
+                String mfollowerId=cursor.getString(cursor.getColumnIndex(followerId));
+                list.add(mfollowerId);
+            }while (cursor.moveToNext());
+            if(database.isOpen())
+                database.close();
+            if(!cursor.isClosed())
+                cursor.close();
+            return list;
+        }
+        return null;
+    }
     public void removeFollowerModel(String mfollowerId){
         SQLiteDatabase database = this.getWritableDatabase();
         database.delete(FOLLOWER_TABLE, followerId+"=?", new String[]{mfollowerId});
-//        database.execSQL("DELETE FROM "+FOLLOWER_TABLE+" WHERE "+followerId+"=="+mfollowerId);
         if(database.isOpen())
             database.close();
     }
@@ -916,10 +949,28 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
         return null;
     }
+    public ArrayList<String> getFollowingIdList(){
+        ArrayList<String> list;
+        SQLiteDatabase database=this.getWritableDatabase();
+        String query="SELECT * FROM "+FOLLOWING_TABLE;
+        Cursor cursor=database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            list=new ArrayList<>();
+            do {
+                String mfollowingId=cursor.getString(cursor.getColumnIndex(followingId));
+                list.add(mfollowingId);
+            }while (cursor.moveToNext());
+            if(database.isOpen())
+                database.close();
+            if(!cursor.isClosed())
+                cursor.close();
+            return list;
+        }
+        return null;
+    }
     public void removeFollowingModel(String mfollowingId){
         SQLiteDatabase database=this.getWritableDatabase();
         database.delete(FOLLOWING_TABLE, followingId+"=?", new String[]{mfollowingId});
-//        database.execSQL("DELETE FROM "+FOLLOWING_TABLE+" WHERE "+followingId+"=="+mfollowingId);
         if(database.isOpen())
             database.close();
     }
@@ -979,6 +1030,120 @@ public class LocalDatabase extends SQLiteOpenHelper {
         database.execSQL("DELETE FROM "+COMMUNITY_TABLE+" WHERE "+communityId+"=="+mcommunityId);
         if(database.isOpen())
             database.close();
+    }
+
+    public void insertReportedImagePoll(String mimagePollId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(imagePollId, mimagePollId);
+        if(database.isOpen()){
+            database.insert(IMAGE_POLL_REPORT, null, values);
+            values.clear();
+            database.close();
+        }
+    }
+    public void clearReportedImagePoll(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(IMAGE_POLL_REPORT, null, null);
+        if(database.isOpen())
+            database.close();
+    }
+    public ArrayList<String> getImagePollReport(){
+        ArrayList<String> reportedImagePollList;
+        SQLiteDatabase database=this.getWritableDatabase();
+        String query="SELECT * FROM "+IMAGE_POLL_REPORT;
+        Cursor cursor=database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            reportedImagePollList=new ArrayList<>();
+            do{
+                String mimagePollId=cursor.getString(cursor.getColumnIndex(imagePollId));
+                reportedImagePollList.add(mimagePollId);
+            }while (cursor.moveToNext());
+
+            if(!cursor.isClosed()){
+                cursor.close();
+            }
+            if(database.isOpen())
+                database.close();
+            return reportedImagePollList;
+        }
+        return null;
+    }
+
+    public void insertReportedSurvey(String msurveyid){
+    SQLiteDatabase database=this.getWritableDatabase();
+    ContentValues values=new ContentValues();
+    values.put(surveyId, msurveyid);
+    if(database.isOpen()){
+        database.insert(SURVEY_REPORT, null, values);
+        values.clear();
+        database.close();
+    }
+}
+    public void clearReportedSurvey(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(SURVEY_REPORT, null, null);
+        if(database.isOpen())
+            database.close();
+    }
+    public ArrayList<String> getReportedSurvey(){
+        ArrayList<String> reportedSurveyList;
+        SQLiteDatabase database=this.getWritableDatabase();
+        String query="SELECT * FROM "+SURVEY_REPORT;
+        Cursor cursor=database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            reportedSurveyList=new ArrayList<>();
+            do{
+                String mimagePollId=cursor.getString(cursor.getColumnIndex(surveyId));
+                reportedSurveyList.add(mimagePollId);
+            }while (cursor.moveToNext());
+
+            if(!cursor.isClosed()){
+                cursor.close();
+            }
+            if(database.isOpen())
+                database.close();
+            return reportedSurveyList;
+        }
+        return null;
+    }
+
+    public void insertReportedQuestion(String mquestionId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(questionId, mquestionId);
+        if(database.isOpen()){
+            database.insert(QUESTION_REPORT, null, values);
+            values.clear();
+            database.close();
+        }
+    }
+    public void clearReportedQuestion(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(QUESTION_REPORT, null, null);
+        if(database.isOpen())
+            database.close();
+    }
+    public ArrayList<String> getReportedQuestion(){
+        ArrayList<String> reportedQuestionList;
+        SQLiteDatabase database=this.getWritableDatabase();
+        String query="SELECT * FROM "+QUESTION_REPORT;
+        Cursor cursor=database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            reportedQuestionList=new ArrayList<>();
+            do{
+                String mimagePollId=cursor.getString(cursor.getColumnIndex(questionId));
+                reportedQuestionList.add(mimagePollId);
+            }while (cursor.moveToNext());
+
+            if(!cursor.isClosed()){
+                cursor.close();
+            }
+            if(database.isOpen())
+                database.close();
+            return reportedQuestionList;
+        }
+        return null;
     }
 
     public void clearAllTable(){

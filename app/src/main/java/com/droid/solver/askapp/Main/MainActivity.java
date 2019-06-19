@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.FontRequestEmojiCompatConfig;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,7 @@ import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements
         toolbar.inflateMenu(R.menu.toolbar_menu_main);
         frameLayout = findViewById(R.id.fragment_container);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+
         progressBar=findViewById(R.id.progress_bar);
         progressFrameLayout=findViewById(R.id.progress_frame);
         progressFrameLayout.setVisibility(View.GONE);
@@ -352,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements
                     LocalDatabase database = new LocalDatabase(getApplicationContext());
                     database.clearAnswerLikeModel();
                     database.insertAnswerLikeModel(answerLikeList);
+
                 }
             }
         });

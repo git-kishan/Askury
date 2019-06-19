@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Home;
 
+import android.animation.TimeAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,8 +48,10 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     ImageView numberOfAnswerImageView,wantToAnswerImageView;
     private FirebaseUser user;
     private FirebaseFirestore firestoreRootRef;
-    public QuestionAnswerViewHolder(@NonNull View itemView) {
+    private Context context;
+    public QuestionAnswerViewHolder(@NonNull View itemView,final Context context) {
         super(itemView);
+        this.context=context;
         user=FirebaseAuth.getInstance().getCurrentUser();
         firestoreRootRef=FirebaseFirestore.getInstance();
         askerImageView=itemView.findViewById(R.id.profile_image);
@@ -226,14 +229,27 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         context.startActivity(intent);
     }
 
-    public void onThreeDotClicked(Context context){
+    public void onThreeDotClicked(final Context context,final RootQuestionModel rootQuestionModel){
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
+
         alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+
+
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
+                !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())){
+                  View view= dialogView.findViewById(R.id.delete_question_textview);
+                  view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
+                FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())){
+            View view=dialogView.findViewById(R.id.report_text_view);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
         alertDialog.show();
         handleDialogItemClicked(dialogView, alertDialog);
 
@@ -249,26 +265,74 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         reportTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                dialog.dismiss();
+                onReportClicked();
             }
         });
         followTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                dialog.dismiss();
             }
         }) ;
 
         inAppropriateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                dialog.dismiss();
             }
         });
         deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+    }
+    private void onReportClicked(){
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.question_report_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_bounce;
+        alertDialog.show();
+        onReportItemClicked(dialogView,alertDialog);
 
+    }
+    private void onReportItemClicked(View view, final AlertDialog dialog){
+        TextView spamTextView=view.findViewById(R.id.spam);
+        TextView selfPromotionView=view.findViewById(R.id.self_promotion);
+        TextView violentView=view.findViewById(R.id.violent);
+        TextView dontLikeQuestion=view.findViewById(R.id.dontlike);
+
+
+        spamTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Spam view clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        selfPromotionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "self promotion clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        violentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "violent clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        dontLikeQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Dont like the question clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
     }

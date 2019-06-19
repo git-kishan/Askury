@@ -3,6 +3,7 @@ package com.droid.solver.askapp.Home;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
@@ -424,15 +425,24 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
 
         }
 
-    void onThreeDotClicked(Context context){
+    void onThreeDotClicked(final Context context,final AskSurveyModel surveyModel){
         View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+
+        if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
+            View view=dialogView.findViewById(R.id.delete_survey_textview);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
+            View view=dialogView.findViewById(R.id.report_text_view);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
         alertDialog.show();
-        handleDialogItemClicked(dialogView,alertDialog );
+        handleDialogItemClicked(dialogView,alertDialog);
 
     }
     private void handleDialogItemClicked(final View view,final AlertDialog dialog){
@@ -445,6 +455,7 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
 
                 Toast.makeText(context, "report clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                onReportClicked();
             }
         });
         followTextView.setOnClickListener(new View.OnClickListener() {
@@ -462,4 +473,49 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
+    private void onReportClicked(){
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_report_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_bounce;
+        alertDialog.show();
+        onReportItemClicked(dialogView,alertDialog);
+    }
+
+   private void onReportItemClicked(View view, final AlertDialog dialog){
+        TextView spamTextView=view.findViewById(R.id.spam);
+        TextView selfPromotionTextView=view.findViewById(R.id.self_promotion);
+        TextView violentTextView=view.findViewById(R.id.violent);
+        TextView dontLikeTextView=view.findViewById(R.id.dontlike);
+
+        spamTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        selfPromotionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        violentTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+             dialog.dismiss();
+            }
+        });
+        dontLikeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+   }
 }

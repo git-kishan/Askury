@@ -36,4 +36,11 @@
     <string name="survey_accepted_successfull">सफलतापूर्वक स्वीकार किया गया सर्वेक्षण 30 दिनों के लिए खुला रहेगा</string>
     <string name="user_name_asked">%1$s ने पूछा</string>
     <string name="username_created_a_poll">%1$s ने एक पोल बनाया</string>
+    <string name="inappropriate_question">अनुचित प्रश्न</string>
+    <string name="follow">अनुसरण करें</string>
+    <string name="report">रिपोर्ट</string>
+    <string name="unfollow">अनुसरण न करें</string>
+    <string name="delete_question">删除问题</string>
+    <string name="delete_survey">删除调查</string>
+    <string name="delete_poll">删除投票</string>
 </resources>

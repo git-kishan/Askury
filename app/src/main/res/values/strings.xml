@@ -56,6 +56,13 @@
     <string name="Portuguese" translatable="false">Portuguese</string>
     <string name="Student">student</string>
 
+    <string name="report">Report</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="inappropriate_question">Inappropriate question</string>
+    <string name="delete_question">Delete question</string>
+    <string name="delete_survey">Delete survey</string>
+    <string name="delete_poll">Delete poll</string>
 
     <string name="privacy_policy" translatable="false">
     <html>

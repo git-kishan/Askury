@@ -16,6 +16,7 @@ import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
+import com.droid.solver.askapp.Question.Follower;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
@@ -26,6 +27,8 @@ import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
+import java.security.Principal;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,23 +41,27 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private static final int SURVEY=2;
     private static final int IMAGE_POLL=3;
     private static final int LOADING=4;
+    public static final String FOLLOW="Follow";
+    public static final String UNFOLLOW="Unfollow";
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private HashMap<String,Integer> imagePollLikeMapFromLocalDatabase;
     private HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase;
-    private  LocalDatabase localDatabase ;
+    private ArrayList<String> followingIdListFromLocalDatabase;
     public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
 
 
-    HomeRecyclerViewAdapter(Context context, ArrayList<Object> list){
+    HomeRecyclerViewAdapter(){}
+    HomeRecyclerViewAdapter(Context context, ArrayList<Object> list,ArrayList<String> answerLikeListFromLocalDatabase,
+                            HashMap<String,Integer> imagePollLikeMapFromLocalDatabase,HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase,
+                            ArrayList<String> followingId){
         this.context=context;
         this.list=list;
         if(context!=null) {
             inflater = LayoutInflater.from(context);
-            localDatabase = new LocalDatabase(context.getApplicationContext());
-            localDatabase=new LocalDatabase(context.getApplicationContext());
-            answerLikeListFromLocalDatabase=localDatabase.getAnswerLikeModel();
-            imagePollLikeMapFromLocalDatabase=localDatabase.getImagePollLikeModel();
-            surveyParticipatedMapFromLocalDatabase=localDatabase.getSurveyParticipatedModel();
+            this.answerLikeListFromLocalDatabase=answerLikeListFromLocalDatabase;
+            this.imagePollLikeMapFromLocalDatabase=imagePollLikeMapFromLocalDatabase;
+            this.surveyParticipatedMapFromLocalDatabase=surveyParticipatedMapFromLocalDatabase;
+            this.followingIdListFromLocalDatabase=followingId;
         }
     }
 
@@ -66,12 +73,12 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         switch (viewType){
             case QUESTION_ANSWER:
                 view=inflater.inflate(R.layout.home_question_answer_item,viewGroup,false);
-                viewHolder= new QuestionAnswerViewHolder(view);
+                viewHolder= new QuestionAnswerViewHolder(view,context);
                 break;
 
             case QUESTION_ANSWER_WITH_IMAGE:
                 view=inflater.inflate(R.layout.home_question_answer_image_item, viewGroup,false);
-                viewHolder= new QuestionAnswerWithImageViewHolder(view);
+                viewHolder= new QuestionAnswerWithImageViewHolder(view,context);
                 break;
             case SURVEY:
                 view=inflater.inflate(R.layout.home_survey, viewGroup,false);
@@ -516,7 +523,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onThreeDotClicked(context);
+
+                    if(followingIdListFromLocalDatabase.contains(imagePollModel.getAskerId())){
+                        holder.onThreeDotClicked(context, imagePollModel,list,HomeRecyclerViewAdapter.this,UNFOLLOW,
+                                followingIdListFromLocalDatabase);
+                    }else
+                        holder.onThreeDotClicked(context, imagePollModel,list,HomeRecyclerViewAdapter.this,FOLLOW,
+                                followingIdListFromLocalDatabase);
+
             }
         });
         holder.profileImageView.setOnClickListener(new View.OnClickListener() {
@@ -559,7 +573,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onThreeDotClicked(context);
+                holder.onThreeDotClicked(context,surveyModel);
             }
         });
         holder.profileImage.setOnClickListener(new View.OnClickListener() {
@@ -576,7 +590,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onThreeDotClicked(context);
+                holder.onThreeDotClicked(context,rootQuestionModel);
             }
         });
         holder.wantToAnswerImageView.setOnClickListener(new View.OnClickListener() {
@@ -631,7 +645,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onThreeDotClicked(context);
+                holder.onThreeDotClicked(context,rootQuestionModel);
             }
         });
         holder.wantToAnswerImageView.setOnClickListener(new View.OnClickListener() {
@@ -677,6 +691,5 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         });
 
     }
-
 
 }

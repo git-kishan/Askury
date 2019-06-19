@@ -16,6 +16,8 @@ public class UserInfoModel {
    private int followingCount;
    private int firstTimeUser;
    private String gender;
+    //following list means list of object followed by user
+    //follower list means list of object who is following to user
 
    public UserInfoModel (){}
    public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,

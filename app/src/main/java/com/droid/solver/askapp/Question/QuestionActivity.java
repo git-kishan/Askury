@@ -34,6 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
@@ -253,6 +254,15 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             Bitmap bitmap=BitmapFactory.decodeStream(new FileInputStream(file));
             circularImageView.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                String url = Constants.PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + Constants.SMALL_THUMBNAIL;
+                StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
+                GlideApp.with(this)
+                        .load(reference)
+                        .placeholder(R.drawable.ic_placeholder)
+                        .error(R.drawable.ic_placeholder)
+                        .into(circularImageView);
+            }
             e.printStackTrace();
         }
     }

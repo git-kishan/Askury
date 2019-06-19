@@ -36,4 +36,11 @@
     <string name="survey_accepted_successfull">调查接受成功调查将开放30天</string>
     <string name="user_name_asked">%1$s 问</string>
     <string name="username_created_a_poll">%1$s 创建了一个民意调查</string>
+    <string name="unfollow">取消关注</string>
+    <string name="report">报告</string>
+    <string name="inappropriate_question">不恰当的问题</string>
+    <string name="follow">跟随</string>
+    <string name="delete_question">प्रश्न हटाएं</string>
+    <string name="delete_survey">सर्वेक्षण हटाएं</string>
+    <string name="delete_poll">पोल हटाओ</string>
 </resources>

@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.text.emoji.widget.EmojiTextView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.annotation.GlideModule;
 import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.Main.Constants;
@@ -44,8 +48,10 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     FirebaseUser user;
     FirebaseFirestore firestoreRootRef;
     ImageView numberOfAnswerImageView,wantToAnswerImageView;
-    public QuestionAnswerWithImageViewHolder(@NonNull View itemView) {
+    private Context context;
+    public QuestionAnswerWithImageViewHolder(@NonNull View itemView,final Context context) {
         super(itemView);
+        this.context=context;
         firestoreRootRef=FirebaseFirestore.getInstance();
         user=FirebaseAuth.getInstance().getCurrentUser();
         askerImageView=itemView.findViewById(R.id.profile_image);
@@ -224,20 +230,32 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         context.startActivity(intent);
     }
 
-    public void onThreeDotClicked(Context context){
+    public void onThreeDotClicked(final Context context,final RootQuestionModel rootQuestionModel){
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog, null, false);
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
         builder.setView(dialogView);
-        final android.support.v7.app.AlertDialog alertDialog = builder.create();
+        final AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
+                !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())){
+            View view= dialogView.findViewById(R.id.delete_question_textview);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
+                FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())){
+            View view=dialogView.findViewById(R.id.report_text_view);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
+
         alertDialog.show();
         handleDialogItemClicked(dialogView, alertDialog);
 
     }
 
-    private void handleDialogItemClicked(final View view,final android.support.v7.app.AlertDialog dialog){
+    private void handleDialogItemClicked(final View view,final AlertDialog dialog){
 
         TextView reportTextView=view.findViewById(R.id.report_text_view);
         TextView followTextView=view.findViewById(R.id.follow_text_view);
@@ -247,26 +265,74 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         reportTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                dialog.dismiss();
+                onReportClicked();
             }
         });
         followTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                dialog.dismiss();
             }
         }) ;
 
         inAppropriateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                dialog.dismiss();
             }
         });
         deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+    }
+    private void onReportClicked(){
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.question_report_dialog, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_bounce;
+        alertDialog.show();
+        onReportItemClicked(dialogView,alertDialog);
 
+    }
+    private void onReportItemClicked(View view, final AlertDialog dialog){
+        TextView spamTextView=view.findViewById(R.id.spam);
+        TextView selfPromotionView=view.findViewById(R.id.self_promotion);
+        TextView violentView=view.findViewById(R.id.violent);
+        TextView dontLikeQuestion=view.findViewById(R.id.dontlike);
+
+
+        spamTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Spam view clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        selfPromotionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "self promotion clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        violentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "violent clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        dontLikeQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Dont like the question clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
     }

@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import io.grpc.ConnectivityStateInfo;
+
 
 public class InterestActivity extends AppCompatActivity implements ChipGroup.OnCheckedChangeListener, View.OnClickListener {
 
@@ -172,12 +174,17 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                                     public void onComplete(@NonNull Task<Void> task) {
                                         SharedPreferences.Editor editor=preferences.edit();
                                         StringBuilder builder=new StringBuilder();
+                                        StringBuilder bioBuilder=new StringBuilder();
                                         for(int i=0;i<interestsList.size();i++){
                                             builder.append(interestsList.get(i));
                                             builder.append("@");
+                                            bioBuilder.append(interestsList.get(i));
+                                            if(i!=interestsList.size())
+                                            bioBuilder.append(" |");
                                         }
                                         editor.putString(Constants.INTEREST,builder.toString());
                                         editor.putBoolean(Constants.INTEREST_SELECTION, true);
+                                        editor.putString(Constants.bio, bioBuilder.toString());
                                         editor.apply();
                                         alertDialog.dismiss();
                                         startActivity(new Intent(InterestActivity.this, MainActivity.class));

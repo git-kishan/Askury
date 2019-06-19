@@ -35,13 +35,18 @@
     </style>
 <style name="customAnimations" />
     <style name="customAnimations.successfull" parent="@android:style/Animation.Dialog">
-        <item name="android:windowEnterAnimation">@anim/dialog_scale_out</item>
-        <item name="android:windowExitAnimation">@anim/dialog_scale_in</item>
+        <item name="android:windowEnterAnimation">@anim/dialog_scale_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
 
     </style>
     <style name="customAnimations.error" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/error_dialog_scale_out</item>
-        <item name="android:windowExitAnimation">@anim/dialog_scale_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
+
+    </style>
+    <style name="customAnimations.bounce" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/bouncing_dialog</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
 
     </style>
 

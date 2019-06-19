@@ -1,7 +1,11 @@
 package com.droid.solver.askapp.Home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -21,9 +25,12 @@ import android.widget.Toast;
 
 import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.ImagePollClickListener;
 import com.droid.solver.askapp.Main.LocalDatabase;
+import com.droid.solver.askapp.Question.Following;
 import com.droid.solver.askapp.R;
+import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +40,11 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
+
+import org.w3c.dom.Document;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +61,9 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
     private FirebaseFirestore firestoreRootRef;
     private ImagePollClickListener listener;
     private Context context;
+    private final int FOLLOW=1;
+    private final int UNFOLLOW=2;
+
     public ImagePollViewHolder(@NonNull View itemView,final Context context) {
         super(itemView);
         this.context = context;
@@ -371,7 +386,9 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         context.startActivity(intent);
     }
 
-    void onThreeDotClicked(Context context) {
+    void onThreeDotClicked(final Context context, final AskImagePollModel imagePollModel,
+                           final ArrayList<Object> list, HomeRecyclerViewAdapter adapter,String status,
+                           final ArrayList<String> followingListFromLocalDatabase) {
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -379,11 +396,32 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         final AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        TextView statusView=dialogView.findViewById(R.id.follow_text_view);
+
+        if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
+            statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+        }else {
+            statusView.setText(HomeRecyclerViewAdapter.FOLLOW); }
+
+
+        if(!imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+            View view = dialogView.findViewById(R.id.delete_poll_text_view);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
+        if(imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+            View view=dialogView.findViewById(R.id.report_text_view);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }
+        if(imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+            statusView.setEnabled(false);statusView.setClickable(false);statusView.setAlpha(0.3f);
+        }
         alertDialog.show();
-        handleDialogItemClicked(dialogView,alertDialog);
+        handleDialogItemClicked(dialogView,alertDialog,imagePollModel,list,adapter,followingListFromLocalDatabase);
     }
 
-    private void handleDialogItemClicked(View view,final AlertDialog dialog){
+    private void handleDialogItemClicked(View view, final AlertDialog dialog, final AskImagePollModel imagePollModel,
+                                         final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter,
+                                         final ArrayList<String> followingListFromLocalDatabase){
         TextView reportTextView=view.findViewById(R.id.report_text_view);
         TextView followTextView =view.findViewById(R.id.follow_text_view);
         final TextView deleteTextView =view.findViewById(R.id.delete_poll_text_view);
@@ -391,29 +429,281 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         reportTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "report clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                onReportClicked(imagePollModel.getImagePollId(),list,adapter);
             }
         });
         followTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "follow clicked", Toast.LENGTH_SHORT).show();
+                TextView textView= (TextView) view;
+                String textViewText=textView.getText().toString();
+                int  status;
+                if(textViewText.equals(HomeRecyclerViewAdapter.FOLLOW)){
+                    status=FOLLOW;
+                    textView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+                }else if(textViewText.equals(HomeRecyclerViewAdapter.UNFOLLOW)){
+                    status=UNFOLLOW;
+                    textView.setText(HomeRecyclerViewAdapter.FOLLOW);
+                }else
+                    status=0;
+
+                onFollowClicked(imagePollModel, list,status,followingListFromLocalDatabase);
                 dialog.dismiss();
 
             }
         });
+
         deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "delete clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
+                builder.setView(rootview);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+                alertDialog.show();
 
+                View cancelButton=rootview.findViewById(R.id.cancel_button);
+                View deleteButton=rootview.findViewById(R.id.delete_button);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        alertDialog.dismiss();
+                    }
+                });
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+                        DocumentReference rootReference=FirebaseFirestore.getInstance().collection("imagePoll").
+                                document(imagePollModel.getImagePollId());
+                        DocumentReference uploaderReference=FirebaseFirestore.getInstance().collection("user")
+                                .document(imagePollModel.getAskerId()).collection("imagePoll")
+                                .document(imagePollModel.getImagePollId());
+                        WriteBatch batch=FirebaseFirestore.getInstance().batch();
+                        batch.delete(rootReference);
+                        batch.delete(uploaderReference);
+
+                        if(isNetworkAvailable()){
+
+                            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d("TAG","image poll successfully deleted");
+                                }
+                            });
+                            list.remove(getAdapterPosition());
+                            adapter.notifyItemRemoved(getAdapterPosition());
+
+                        }else {
+                            Toast.makeText(context, "No internet connection available", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         });
 
     }
 
+    private void onReportClicked(String imagePollId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
+        View dialogView=LayoutInflater.from(context).inflate(R.layout.image_poll_report_dialog, null,false);
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setView(dialogView);
+        final AlertDialog dialog=builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        dialog.show();
+        onReportItemClicked(dialogView,dialog,imagePollId,list,adapter);
+    }
 
+    private void onReportItemClicked(final View view, final AlertDialog dialog,
+                                     final String imagePollId,final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter){
+
+        TextView spamTextView=view.findViewById(R.id.spam);
+        TextView selfPromotionTextView=view.findViewById(R.id.self_promotion);
+        TextView pornoGraphyTextView=view.findViewById(R.id.pornography);
+        TextView dontLikeTextView=view.findViewById(R.id.dontlike);
+
+        spamTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedImagePoll(imagePollId);
+                list.remove(getAdapterPosition());
+                dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+
+
+            }
+        });
+        selfPromotionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedImagePoll(imagePollId);
+                list.remove(getAdapterPosition());
+                dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+
+            }
+        });
+        pornoGraphyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedImagePoll(imagePollId);
+                list.remove(getAdapterPosition());
+                dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+
+            }
+        });
+        dontLikeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedImagePoll(imagePollId);
+                list.remove(getAdapterPosition());
+                dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+
+            }
+        });
+    }
+
+    private boolean isNetworkAvailable(){
+        ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info=manager.getActiveNetworkInfo();
+        return info!=null&&info.isConnected();
+    }
+
+
+    private void onFollowClicked(final AskImagePollModel imagePollModel, final ArrayList<Object> list, int status,
+                                 final ArrayList<String> followingListFromLocalDatabase){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+            if(status==FOLLOW){
+
+                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE);
+                String selfName=preferences.getString(Constants.userName, null);
+                String selfImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
+                String selfBio=preferences.getString(Constants.bio, null);
+
+                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid).collection("following")
+                        .document(imagePollModel.getAskerId());
+                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(imagePollModel.getAskerId()).collection("follower")
+                        .document(selfUid);
+                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid);
+                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(imagePollModel.getAskerId());
+
+                Map<String,Object> selfFollowingMap=new HashMap<>();
+                Map<String,Object> askerFollowerMap=new HashMap<>();
+                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
+                Map<String,Object> askerFollowerCountMap=new HashMap<>();
+
+                selfFollowingMap.put("followingId", imagePollModel.getAskerId());
+                selfFollowingMap.put("followingName",imagePollModel.getAskerName());
+                selfFollowingMap.put("followingImageUrl", imagePollModel.getAskerImageUrlLow());
+                selfFollowingMap.put("followingBio",imagePollModel.getAskerBio());
+
+                askerFollowerMap.put("followerId", selfUid);
+                askerFollowerMap.put("followerName", selfName);
+                askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                askerFollowerMap.put("followerBio",selfBio);
+
+                selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+                askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+
+                WriteBatch batch=FirebaseFirestore.getInstance().batch();
+                batch.set(selfFollowingRef, selfFollowingMap,SetOptions.merge());
+                batch.set(askerFollowerRef, askerFollowerMap,SetOptions.merge());
+                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
+                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+
+
+
+                if(isNetworkAvailable()){
+                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                           Log.i("TAG", "follower add successfully");
+                           followingListFromLocalDatabase.add(imagePollModel.getAskerId());
+                           LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                           String followingId=imagePollModel.getAskerId();
+                           String followingName=imagePollModel.getAskerName();
+                           String followingImageUrl=imagePollModel.getAskerImageUrlLow();
+                           String followingBio=imagePollModel.getAskerBio();
+                            Following following=new Following(followingId, followingName, followingImageUrl
+                            , followingBio);
+                            ArrayList<Following> followingsList=new ArrayList<>();
+                            followingsList.add(following);
+                           database.insertFollowingModel(followingsList);
+
+
+                        }
+                    });
+                }else {
+                    Toast.makeText(context, "No internet connection available", Toast.LENGTH_LONG).show();
+
+                }
+            }
+            else if (status == UNFOLLOW) {
+
+                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid).collection("following")
+                        .document(imagePollModel.getAskerId());
+                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(imagePollModel.getAskerId()).collection("follower")
+                        .document(selfUid);
+                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid);
+                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(imagePollModel.getAskerId());
+
+                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
+                Map<String,Object> askerFollowerCountMap=new HashMap<>();
+
+                selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
+                askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
+
+                WriteBatch batch=FirebaseFirestore.getInstance().batch();
+                batch.delete(selfFollowingRef);
+                batch.delete(askerFollowerRef);
+                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
+                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+
+
+                if(isNetworkAvailable()){
+                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.i("TAG","unfollow successfully");
+                            LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
+                            database.removeFollowingModel(imagePollModel.getAskerId());
+                            followingListFromLocalDatabase.remove(imagePollModel.getAskerId());
+
+                        }
+                    });
+
+                }else {
+                    Toast.makeText(context, "No internet connection available", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        }
+        else {
+            //sign in again
+        }
+    }
 
 }
+

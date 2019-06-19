@@ -1,5 +1,7 @@
 package com.droid.solver.askapp.ImagePoll;
 
+import java.security.PublicKey;
+
 public class AskImagePollModel {
 
     private String askerId;
@@ -15,6 +17,11 @@ public class AskImagePollModel {
     private String imagePollId;
     private boolean reported;
     private boolean containVioloanceOrAdult;
+
+    public static final int SPAM=0;
+    public static final int SELF_PROMOTION=1;
+    public static final int PROMOTE_NUDITY_OR_PORNOGRAPHY=2;
+    public static final int NOT_LIKE_IMAGEPOLL=3;
 
 
     public AskImagePollModel(){

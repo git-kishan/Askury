@@ -2,9 +2,13 @@ package com.droid.solver.askapp.Home;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +23,8 @@ import android.widget.Toast;
 
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.ImagePollClickListener;
+import com.droid.solver.askapp.Main.LocalDatabase;
+import com.droid.solver.askapp.Question.Follower;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
@@ -37,6 +43,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Stack;
 
@@ -66,6 +73,7 @@ public class HomeFragment extends Fragment  {
     ArrayList<Object> list;
     private HomeRecyclerViewAdapter adapter;
     private boolean isLoading=false;
+    private CoordinatorLayout rootLayout;
 
     public HomeFragment() {
     }
@@ -76,7 +84,9 @@ public class HomeFragment extends Fragment  {
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView=view.findViewById(R.id.recycler_view);
+
         layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        recyclerView.setLayoutManager(layoutManager);
         auth=FirebaseAuth.getInstance();
         list=new ArrayList<>();
         user=auth.getCurrentUser();
@@ -93,8 +103,8 @@ public class HomeFragment extends Fragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initRecyclerView();
         loadDataFromRemoteDatabase();
+        initRecyclerView();
 
     }
 
@@ -252,9 +262,20 @@ public class HomeFragment extends Fragment  {
     }
 
     private void initRecyclerView(){
-        recyclerView.setLayoutManager(layoutManager);
-        adapter=new HomeRecyclerViewAdapter(getActivity(), list);
-        recyclerView.setAdapter(adapter);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String> answerLikeListFromLocalDatabase=new ArrayList<>();
+                HashMap<String,Integer> imagePollLikeMapFromLocalDatabase=new HashMap<>();
+                HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase=new HashMap<>();
+                ArrayList<String> followingIdListFromLocalDatabase=new ArrayList<>();
+                adapter=new HomeRecyclerViewAdapter(getActivity(), list,answerLikeListFromLocalDatabase,imagePollLikeMapFromLocalDatabase,
+                        surveyParticipatedMapFromLocalDatabase,followingIdListFromLocalDatabase);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -275,6 +296,7 @@ public class HomeFragment extends Fragment  {
 
             }
         });
+
     }
 
     private void loadMoreItemFromRemoteDatabase(){
