@@ -31,7 +31,7 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=5;
+    private static final int DATABASE_VERSION=7;
 
     private static final String USER_INFO_TABLE="user_info_table";
     private static final String USER_QUESTION_MODEL="question_asked_table";
@@ -47,7 +47,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private static final String IMAGE_POLL_REPORT="image_poll_report";
     private static final String SURVEY_REPORT="survey_report";
     private static final String QUESTION_REPORT="question_report";
-
 
     //user main document
     private  static final String userId="userId";
@@ -907,10 +906,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
             for(int i=0;i<list.size();i++){
                 Following model=list.get(i);
                 values.put(followingId, model.getFollowingId());
-                values.put(followerName, model.getFollowingName());
-                values.put(followerImageUrl, model.getFollowingImageUrl());
-                values.put(followerBio, model.getFollowingBio());
-                database.insert(FOLLOWER_TABLE, null, values);
+                values.put(followingName, model.getFollowingName());
+                values.put(followingImageUrl, model.getFollowingImageUrl());
+                values.put(followingBio, model.getFollowingBio());
+                database.insert(FOLLOWING_TABLE, null, values);
                 values.clear();
 
             }
@@ -920,7 +919,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
     public void clearFollowingModel(){
         SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(FOLLOWER_TABLE, null, null);
+        database.delete(FOLLOWING_TABLE, null, null);
         if(database.isOpen())
             database.close();
 

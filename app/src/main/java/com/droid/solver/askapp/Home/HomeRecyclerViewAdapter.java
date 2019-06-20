@@ -573,8 +573,13 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onThreeDotClicked(context,surveyModel);
-            }
+
+                if(followingIdListFromLocalDatabase.contains(surveyModel.getAskerId())){
+                    holder.onThreeDotClicked(context, surveyModel,list,HomeRecyclerViewAdapter.this,UNFOLLOW,
+                            followingIdListFromLocalDatabase);
+                }else
+                    holder.onThreeDotClicked(context, surveyModel,list,HomeRecyclerViewAdapter.this,FOLLOW,
+                            followingIdListFromLocalDatabase);            }
         });
         holder.profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -590,9 +595,18 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onThreeDotClicked(context,rootQuestionModel);
+
+
+                if(followingIdListFromLocalDatabase.contains(rootQuestionModel.getAskerId())){
+
+                    holder.onThreeDotClicked(context, rootQuestionModel,list,HomeRecyclerViewAdapter.this,UNFOLLOW,
+                            followingIdListFromLocalDatabase);
+                }else
+                    holder.onThreeDotClicked(context, rootQuestionModel,list,HomeRecyclerViewAdapter.this,FOLLOW,
+                            followingIdListFromLocalDatabase);
             }
         });
+
         holder.wantToAnswerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -645,7 +659,16 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.threeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onThreeDotClicked(context,rootQuestionModel);
+
+
+                if(followingIdListFromLocalDatabase.contains(rootQuestionModel.getAskerId())){
+
+                    holder.onThreeDotClicked(context, rootQuestionModel,list,HomeRecyclerViewAdapter.this,UNFOLLOW,
+                            followingIdListFromLocalDatabase);
+                }else
+                    holder.onThreeDotClicked(context, rootQuestionModel,list,HomeRecyclerViewAdapter.this,FOLLOW,
+                            followingIdListFromLocalDatabase);
+
             }
         });
         holder.wantToAnswerImageView.setOnClickListener(new View.OnClickListener() {

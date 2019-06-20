@@ -2,11 +2,12 @@ package com.droid.solver.askapp.Home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,10 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.Account.OtherAccountActivity;
+import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
+import com.droid.solver.askapp.Question.Following;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
-import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,8 +36,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.protobuf.StringValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,9 +55,13 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
     Animation animation;
     private FirebaseUser user;
     private FirebaseFirestore firestoreRootRef;
+    private final int FOLLOW=1;
+    private final int UNFOLLOW=2;
+    private HomeMessageListener homeMessageListener;
     public SurveyViewHolder(@NonNull View itemView,Context context) {
         super(itemView);
         this.context=context;
+        homeMessageListener= (HomeMessageListener) context;
         user=FirebaseAuth.getInstance().getCurrentUser();
         firestoreRootRef=FirebaseFirestore.getInstance();
         profileName=itemView.findViewById(R.id.asker_name);
@@ -425,13 +432,21 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
 
         }
 
-    void onThreeDotClicked(final Context context,final AskSurveyModel surveyModel){
+    void onThreeDotClicked(final Context context, final AskSurveyModel surveyModel, ArrayList<Object> list,
+                           HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
+
         View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+
+        TextView statusView=dialogView.findViewById(R.id.follow_text_view);
+        if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
+            statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+        }else {
+            statusView.setText(HomeRecyclerViewAdapter.FOLLOW); }
 
         if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
             View view=dialogView.findViewById(R.id.delete_survey_textview);
@@ -440,51 +455,71 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
             View view=dialogView.findViewById(R.id.report_text_view);
             view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+        }if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
+            statusView.setEnabled(false);statusView.setClickable(false);statusView.setAlpha(0.3f);
         }
+
         alertDialog.show();
-        handleDialogItemClicked(dialogView,alertDialog);
+        handleDialogItemClicked(dialogView,alertDialog,surveyModel,list,adapter,followingIdListFromLocalDatabase);
 
     }
-    private void handleDialogItemClicked(final View view,final AlertDialog dialog){
+    private void handleDialogItemClicked(final View view,final AlertDialog dialog,final AskSurveyModel surveyModel,
+                                         final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter,
+                                         final ArrayList<String> followingIdListFromLocalDatabase){
+
         TextView reportTextView=view.findViewById(R.id.report_text_view);
         TextView followTextView=view.findViewById(R.id.follow_text_view);
         final TextView deleteSurveyView=view.findViewById(R.id.delete_survey_textview);
+
         reportTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Toast.makeText(context, "report clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
-                onReportClicked();
+                onReportClicked(surveyModel.getSurveyId(),list,adapter);
             }
         });
         followTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "follow clicked", Toast.LENGTH_SHORT).show();
+
+                TextView textView= (TextView) view;
+                String textViewText=textView.getText().toString();
+                int  status;
+                if(textViewText.equals(HomeRecyclerViewAdapter.FOLLOW)){
+                    status=FOLLOW;
+                    textView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+                }else if(textViewText.equals(HomeRecyclerViewAdapter.UNFOLLOW)){
+                    status=UNFOLLOW;
+                    textView.setText(HomeRecyclerViewAdapter.FOLLOW);
+                }else
+                    status=0;
+
+                onFollowClicked(surveyModel, list,status,followingIdListFromLocalDatabase);
                 dialog.dismiss();
             }
         });
         deleteSurveyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "delete  clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                onDeleteClicked(surveyModel, list, adapter);
             }
         });
     }
-    private void onReportClicked(){
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_report_dialog, null, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    private void onReportClicked(String surveyId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
+        View dialogView=LayoutInflater.from(context).inflate(R.layout.survey_report_dialog, null,false);
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_bounce;
-        alertDialog.show();
-        onReportItemClicked(dialogView,alertDialog);
+        final AlertDialog dialog=builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        dialog.show();
+        onReportItemClicked(dialogView,dialog,surveyId,list,adapter);
     }
 
-   private void onReportItemClicked(View view, final AlertDialog dialog){
+    private void onReportItemClicked(final View view, final AlertDialog dialog,
+                                     final String surveyId,final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter){
+
         TextView spamTextView=view.findViewById(R.id.spam);
         TextView selfPromotionTextView=view.findViewById(R.id.self_promotion);
         TextView violentTextView=view.findViewById(R.id.violent);
@@ -493,29 +528,237 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         spamTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedSurvey(surveyId);
+                list.remove(getAdapterPosition());
                 dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+                homeMessageListener.onSomeMessage("We'll try to not show such survey");
+
+
+
             }
         });
         selfPromotionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedSurvey(surveyId);
+                list.remove(getAdapterPosition());
                 dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+                homeMessageListener.onSomeMessage("We'll try to not show such survey");
+
+
             }
         });
         violentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedSurvey(surveyId);
+                list.remove(getAdapterPosition());
+                dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+                homeMessageListener.onSomeMessage("We'll try to not show such survey");
 
-             dialog.dismiss();
+
             }
         });
         dontLikeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                database.insertReportedSurvey(surveyId);
+                list.remove(getAdapterPosition());
                 dialog.dismiss();
+                adapter.notifyItemRemoved(getAdapterPosition());
+                homeMessageListener.onSomeMessage("We'll try to not show such survey");
+
+
             }
         });
+    }
+
+    private void onDeleteClicked(final AskSurveyModel surveyModel,final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
+        builder.setView(rootview);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        alertDialog.show();
+
+        View cancelButton=rootview.findViewById(R.id.cancel_button);
+        View deleteButton=rootview.findViewById(R.id.delete_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                DocumentReference rootReference=FirebaseFirestore.getInstance().collection("survey").
+                        document(surveyModel.getSurveyId());
+                DocumentReference uploaderReference=FirebaseFirestore.getInstance().collection("user")
+                        .document(surveyModel.getAskerId()).collection("survey")
+                        .document(surveyModel.getSurveyId());
+                WriteBatch batch=FirebaseFirestore.getInstance().batch();
+                batch.delete(rootReference);
+                batch.delete(uploaderReference);
+
+                if(isNetworkAvailable()){
+
+                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            homeMessageListener.onSomeMessage("Survey deleted");
+                            Log.d("TAG","survey  successfully deleted");
+                        }
+                    });
+                    list.remove(getAdapterPosition());
+                    adapter.notifyItemRemoved(getAdapterPosition());
+
+                }else {
+                    homeMessageListener.onSomeMessage("No internet connection");
+                }
+            }
+        });
+    }
+
+    private boolean isNetworkAvailable(){
+        ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(manager!=null){
+        NetworkInfo info=manager.getActiveNetworkInfo();
+        return info!=null&&info.isConnected();
+        }
+        return false;
+
+    }
 
 
-   }
+    private void onFollowClicked(final AskSurveyModel surveyModel, final ArrayList<Object> list, int status,
+                                 final ArrayList<String> followingListFromLocalDatabase){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+            if(status==FOLLOW){
+
+                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE);
+                String selfName=preferences.getString(Constants.userName, null);
+                String selfImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
+                String selfBio=preferences.getString(Constants.bio, null);
+
+                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid).collection("following")
+                        .document(surveyModel.getAskerId());
+                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(surveyModel.getAskerId()).collection("follower")
+                        .document(selfUid);
+                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid);
+                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(surveyModel.getAskerId());
+
+                Map<String,Object> selfFollowingMap=new HashMap<>();
+                Map<String,Object> askerFollowerMap=new HashMap<>();
+                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
+                Map<String,Object> askerFollowerCountMap=new HashMap<>();
+
+                selfFollowingMap.put("followingId", surveyModel.getAskerId());
+                selfFollowingMap.put("followingName",surveyModel.getAskerName());
+                selfFollowingMap.put("followingImageUrl", surveyModel.getAskerImageUrlLow());
+                selfFollowingMap.put("followingBio",surveyModel.getAskerBio());
+
+                askerFollowerMap.put("followerId", selfUid);
+                askerFollowerMap.put("followerName", selfName);
+                askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                askerFollowerMap.put("followerBio",selfBio);
+
+                selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+                askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+
+                WriteBatch batch=FirebaseFirestore.getInstance().batch();
+                batch.set(selfFollowingRef, selfFollowingMap,SetOptions.merge());
+                batch.set(askerFollowerRef, askerFollowerMap,SetOptions.merge());
+                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
+                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+
+
+
+                if(isNetworkAvailable()){
+                    followingListFromLocalDatabase.add(surveyModel.getAskerId());
+                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.i("TAG", "follower add successfully");
+                            LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                            String followingId=surveyModel.getAskerId();
+                            String followingName=surveyModel.getAskerName();
+                            String followingImageUrl=surveyModel.getAskerImageUrlLow();
+                            String followingBio=surveyModel.getAskerBio();
+                            Following following=new Following(followingId, followingName, followingImageUrl
+                                    , followingBio);
+                            ArrayList<Following> followingsList=new ArrayList<>();
+                            followingsList.add(following);
+                            database.insertFollowingModel(followingsList);
+
+
+                        }
+                    });
+                }else {
+                    homeMessageListener.onSomeMessage("No internet connection");
+
+                }
+            }//end of follow
+            else if (status == UNFOLLOW) {
+
+                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid).collection("following")
+                        .document(surveyModel.getAskerId());
+                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(surveyModel.getAskerId()).collection("follower")
+                        .document(selfUid);
+                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(selfUid);
+                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
+                        .document(surveyModel.getAskerId());
+
+                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
+                Map<String,Object> askerFollowerCountMap=new HashMap<>();
+
+                selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
+                askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
+
+                WriteBatch batch=FirebaseFirestore.getInstance().batch();
+                batch.delete(selfFollowingRef);
+                batch.delete(askerFollowerRef);
+                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
+                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+
+
+                if(isNetworkAvailable()){
+                    followingListFromLocalDatabase.remove(surveyModel.getAskerId());
+                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.i("TAG","unfollow successfully");
+                            LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
+                            database.removeFollowingModel(surveyModel.getAskerId());
+
+                        }
+                    });
+
+                }else {
+                    homeMessageListener.onSomeMessage("No internet connection");
+                }
+            }
+        }
+        else {
+            //sign in again
+        }
+    }
 }

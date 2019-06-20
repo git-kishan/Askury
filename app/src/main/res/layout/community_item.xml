@@ -43,7 +43,6 @@
             android:textSize="14sp"
             android:background="#90000000"
             />
-
     </FrameLayout>
 
     <TextView

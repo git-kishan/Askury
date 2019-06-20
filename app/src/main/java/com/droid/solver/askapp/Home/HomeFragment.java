@@ -263,18 +263,27 @@ public class HomeFragment extends Fragment  {
 
     private void initRecyclerView(){
 
-        AsyncTask.execute(new Runnable() {
+        Handler handler=new Handler();
+        handler.post(new Runnable() {
             @Override
             public void run() {
-                ArrayList<String> answerLikeListFromLocalDatabase=new ArrayList<>();
-                HashMap<String,Integer> imagePollLikeMapFromLocalDatabase=new HashMap<>();
-                HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase=new HashMap<>();
-                ArrayList<String> followingIdListFromLocalDatabase=new ArrayList<>();
-                adapter=new HomeRecyclerViewAdapter(getActivity(), list,answerLikeListFromLocalDatabase,imagePollLikeMapFromLocalDatabase,
-                        surveyParticipatedMapFromLocalDatabase,followingIdListFromLocalDatabase);
+                ArrayList<String> answerLikeListFromLocalDatabase = new ArrayList<>();
+                HashMap<String, Integer> imagePollLikeMapFromLocalDatabase = new HashMap<>();
+                HashMap<String, Integer> surveyParticipatedMapFromLocalDatabase = new HashMap<>();
+                ArrayList<String> followingIdListFromLocalDatabase = new ArrayList<>();
+                adapter = new HomeRecyclerViewAdapter(getActivity(), list, answerLikeListFromLocalDatabase, imagePollLikeMapFromLocalDatabase,
+                        surveyParticipatedMapFromLocalDatabase, followingIdListFromLocalDatabase);
                 recyclerView.setAdapter(adapter);
             }
         });
+//    AsyncTask.execute(new Runnable() {
+//        @Override
+//        public void run() {
+//
+//
+//        }
+//    });
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

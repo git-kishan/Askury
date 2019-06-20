@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import com.droid.solver.askapp.Account.AccountFragment;
 import com.droid.solver.askapp.Community.CommunityFragment;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.HomeFragment;
+import com.droid.solver.askapp.Home.HomeMessageListener;
 import com.droid.solver.askapp.Home.ImagePollOpenFragment;
 import com.droid.solver.askapp.Question.AnswerLike;
 import com.droid.solver.askapp.Question.ImagePollLike;
@@ -70,7 +72,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity implements
-        BottomNavigationView.OnNavigationItemSelectedListener,ImagePollClickListener {
+        BottomNavigationView.OnNavigationItemSelectedListener,ImagePollClickListener , HomeMessageListener {
 
     private static final String HOME = "home";
     private static final String QUESTION = "ic_question";
@@ -78,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final String ACCOUNT = "ic_account";
     private static final String NO_INTERNET = "no_internet";
     public BottomNavigationView bottomNavigationView;
+    private FrameLayout messageFrameLayout;
     public FrameLayout frameLayout;
+    private TextView messageText;
     public Toolbar toolbar;
     private FirebaseFirestore firestoreRoot;
     private FirebaseUser user;
@@ -108,10 +112,12 @@ public class MainActivity extends AppCompatActivity implements
         toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.toolbar_menu_main);
         frameLayout = findViewById(R.id.fragment_container);
+        messageText=findViewById(R.id.message_text);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
+        messageFrameLayout=findViewById(R.id.message_frame_layout);
         progressBar=findViewById(R.id.progress_bar);
         progressFrameLayout=findViewById(R.id.progress_frame);
+
         progressFrameLayout.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment(), HOME);
@@ -149,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
+
 
     }
 
@@ -452,4 +459,26 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void onSomeMessage(final String message) {
+        messageFrameLayout.animate().alpha(0.0f).setDuration(0).start();
+        final Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                messageText.setText(message);
+                messageFrameLayout.animate().alpha(1.0f).setDuration(500).start();
+                messageFrameLayout.setVisibility(View.VISIBLE);
+                Handler handler1=new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        messageFrameLayout.animate().alpha(0.0f).setDuration(500).start();
+                    }
+                }, 2500);
+            }
+        }, 100);
+
+
+    }
 }
