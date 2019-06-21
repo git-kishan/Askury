@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -13,15 +12,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.FontRequestEmojiCompatConfig;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.provider.FontRequest;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -29,10 +22,8 @@ import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +41,7 @@ import com.droid.solver.askapp.Question.SurveyParticipated;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.facebook.login.LoginManager;
+import com.facebook.share.model.SharePhoto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -102,12 +94,12 @@ public class MainActivity extends AppCompatActivity implements
         if (user == null) {
             progressFrameLayout.setVisibility(View.VISIBLE);
             clearDatabase();
-
         }
         answerLikeList=new ArrayList<>();
         imagePollLikeMap=new HashMap<>();
         surveyParticipatedMap=new HashMap<>();
         uid = user.getUid();
+        fetchUserInfo();
         fetchLikeDocumentsFromRemoteDatabase();
         toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.toolbar_menu_main);
@@ -458,7 +450,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     @Override
     public void onSomeMessage(final String message) {
         messageFrameLayout.animate().alpha(0.0f).setDuration(0).start();
@@ -480,5 +471,63 @@ public class MainActivity extends AppCompatActivity implements
         }, 100);
 
 
+    }
+
+    private void fetchUserInfo(){
+        FirebaseFirestore.getInstance().collection("user")
+                .document(uid)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult()!=null) {
+                        UserInfoModel infoModel = task.getResult().toObject(UserInfoModel.class);
+                        if(infoModel!=null){
+                            String userName=infoModel.getUserName();
+                            String profilePicUrlLow=infoModel.getProfilePicUrlLow();
+                            String profilePicUrlHigh=infoModel.getProfilePicUrlHigh();
+                            String bio=infoModel.getBio();
+                            int point=infoModel.getPoint();
+                            int followerCount=infoModel.getFollowerCount();
+                            int followingCount=infoModel.getFollowingCount();
+                            String gender=infoModel.getGender();
+                            ArrayList<String> interest=infoModel.getInterest();
+
+                            StringBuilder builder=new StringBuilder();
+                            StringBuilder bioBuilder=new StringBuilder();
+                            if(interest!=null) {
+                                for (int i = 0; i < interest.size(); i++) {
+                                    builder.append(interest.get(i));
+                                    builder.append("@");
+                                }
+                                if(bio==null){
+                                    for(int i=0;i<interest.size();i++){
+                                        bioBuilder.append(interest.get(i));
+                                        if(i!=interest.size())
+                                            bioBuilder.append(" |");
+
+                                    }
+                                }
+                            }
+                            SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE );
+                            SharedPreferences.Editor editor=preferences.edit();
+                            editor.putString(Constants.userName, userName);
+                            editor.putString(Constants.profilePicLowUrl, profilePicUrlLow);
+                            editor.putString(Constants.profilePicHighUrl, profilePicUrlHigh);
+                            editor.putInt(Constants.point, point);
+                            editor.putInt(Constants.followerCount, followerCount);
+                            editor.putInt(Constants.followingCount, followingCount);
+                            editor.putString(Constants.GENDER, gender);
+                            editor.putString(Constants.bio, bioBuilder.toString());
+                            editor.putString(Constants.INTEREST, builder.toString());
+                            editor.apply();
+
+
+                        }
+
+                    }
+                }
+            }
+        });
     }
 }

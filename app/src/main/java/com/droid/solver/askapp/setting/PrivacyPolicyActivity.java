@@ -21,9 +21,6 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_privacy_policy);
         privacyPolicyView=findViewById(R.id.policy);
 
-        privacyPolicyView.loadDataWithBaseURL(null, getString(R.string.privacy_policy), "text/html",
-                    "utf-8", null);
-
         backImageButton=findViewById(R.id.imageView21);
         backImageButton.setOnClickListener(new View.OnClickListener() {
             @Override

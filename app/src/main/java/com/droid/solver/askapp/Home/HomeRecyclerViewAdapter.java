@@ -1,8 +1,8 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
@@ -10,28 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.droid.solver.askapp.Account.ProfileImageActivity;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.Constants;
-import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
-import com.droid.solver.askapp.Question.Follower;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
-import java.security.Principal;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private Context context;
     private ArrayList<Object> list;
@@ -41,16 +37,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private static final int SURVEY=2;
     private static final int IMAGE_POLL=3;
     private static final int LOADING=4;
-    public static final String FOLLOW="Follow";
-    public static final String UNFOLLOW="Unfollow";
+    static final String FOLLOW="Follow";
+    static final String UNFOLLOW="Unfollow";
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private HashMap<String,Integer> imagePollLikeMapFromLocalDatabase;
     private HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase;
     private ArrayList<String> followingIdListFromLocalDatabase;
     public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
 
-
-    HomeRecyclerViewAdapter(){}
     HomeRecyclerViewAdapter(Context context, ArrayList<Object> list,ArrayList<String> answerLikeListFromLocalDatabase,
                             HashMap<String,Integer> imagePollLikeMapFromLocalDatabase,HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase,
                             ArrayList<String> followingId){
@@ -107,8 +101,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String question=((RootQuestionModel) list.get(i)).getQuestion();
                 boolean anonymous=((RootQuestionModel) list.get(i)).isAnonymous();
                 String answer=((RootQuestionModel) list.get(i)).getRecentAnswer();
-                String askerImageUrl=((RootQuestionModel) list.get(i)).getAskerImageUrlLow();
-                String recentAnswererImageUrl=((RootQuestionModel) list.get(i)).getRecentAnswererImageUrlLow();
                 String askerBio=((RootQuestionModel) list.get(i)).getAskerBio();
                 String askerName=((RootQuestionModel) list.get(i)).getAskerName();
                 String recentAnswererName=((RootQuestionModel) list.get(i)).getRecentAnswererName();
@@ -143,7 +135,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
 
                 else {
-                    askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
                     String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getAskerId()+Constants.SMALL_THUMBNAIL;
                     StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
                     GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
@@ -157,7 +148,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
                 ((QuestionAnswerViewHolder) holder).question.setText(question);
 
-                recentAnswererImageUrl=recentAnswererName!=null?recentAnswererImageUrl:"";
 
                 String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
                 StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
@@ -192,8 +182,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 boolean anonymous = ((RootQuestionModel) list.get(i)).isAnonymous();
                 String answer = ((RootQuestionModel) list.get(i)).getRecentAnswer();
                 String answerImageUrl = ((RootQuestionModel) list.get(i)).getRecentAnswerImageUrl();
-                String askerImageUrl = ((RootQuestionModel) list.get(i)).getAskerImageUrlLow();
-                String recentAnswererImageUrl = ((RootQuestionModel) list.get(i)).getRecentAnswererImageUrlLow();
                 String askerBio = ((RootQuestionModel) list.get(i)).getAskerBio();
                 String askerName = ((RootQuestionModel) list.get(i)).getAskerName();
                 String recentAnswerId=((RootQuestionModel) list.get(i)).getRecentAnswerId();
@@ -205,7 +193,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
                 String timeAgo = getTime(timeOfAsking, System.currentTimeMillis());
-
 
                 if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
                     if(MainActivity.answerLikeList.contains(recentAnswerId)){
@@ -232,7 +219,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText("");
                 } else {
 
-                    askerImageUrl=askerImageUrl!=null?askerImageUrl:"";
                     String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getAskerId()+Constants.SMALL_THUMBNAIL;
                     StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
                     GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
@@ -246,7 +232,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
 
                 ((QuestionAnswerWithImageViewHolder) holder).question.setText(question);
-                recentAnswererImageUrl=recentAnswererImageUrl!=null?recentAnswererImageUrl:"";
 
 
                 String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
@@ -282,7 +267,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 String askerId=((AskImagePollModel) list.get(i)).getAskerId();
                 String askerName=((AskImagePollModel) list.get(i)).getAskerName();
-                String askerImageUrlLow=((AskImagePollModel) list.get(i)).getAskerImageUrlLow();
                 String askerBio=((AskImagePollModel) list.get(i)).getAskerBio();
                 String askerQuestion=((AskImagePollModel) list.get(i)).getQuestion();
                 String image1Url=((AskImagePollModel) list.get(i)).getImage1Url();
@@ -293,11 +277,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String imagePollId=((AskImagePollModel) list.get(i)).getImagePollId();
                 ((ImagePollViewHolder) holder).image1.setTransitionName("image1"+i);
                 ((ImagePollViewHolder) holder).image2.setTransitionName("image2"+i);
-
-                if(imagePollId==null){
-                    list.remove(i);
-                    return;
-                }
 
                     if(MainActivity.imagePollLikeMap!=null&&MainActivity.imagePollLikeMap.size()>0)
                     {
@@ -335,6 +314,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                         into(((ImagePollViewHolder) holder).image1);
                 Picasso.get().load(image2Url).
                         into(((ImagePollViewHolder) holder).image2);
+
                 String userNameCreatedPoll=String.format(context.getString(R.string.username_created_a_poll), askerName);
                 ((ImagePollViewHolder) holder).profileName.setText(userNameCreatedPoll);
                 ((ImagePollViewHolder) holder).bio.setText(askerBio);
@@ -358,10 +338,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 String askerId=((AskSurveyModel) list.get(i)).getAskerId();
                 String askerName=((AskSurveyModel) list.get(i)).getAskerName();
-                String askerImageUrlLow=((AskSurveyModel) list.get(i)).getAskerImageUrlLow();
                 String askerBio=((AskSurveyModel) list.get(i)).getAskerBio();
                 String question=((AskSurveyModel) list.get(i)).getQuestion();
-                long timeOfSurvey=((AskSurveyModel) list.get(i)).getTimeOfSurvey();
                 boolean option1=((AskSurveyModel) list.get(i)).isOption1();
                 boolean option2=((AskSurveyModel) list.get(i)).isOption2();
                 boolean option3=((AskSurveyModel) list.get(i)).isOption3();
@@ -370,11 +348,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String option2Value=((AskSurveyModel) list.get(i)).getOption2Value();
                 String option3Value=((AskSurveyModel) list.get(i)).getOption3Value();
                 String option4Value=((AskSurveyModel) list.get(i)).getOption4Value();
-                int option1Count=((AskSurveyModel) list.get(i)).getOption1Count();
-                int option2Count=((AskSurveyModel) list.get(i)).getOption2Count();
-                int option3Count=((AskSurveyModel) list.get(i)).getOption3Count();
-                int optin4Count=((AskSurveyModel) list.get(i)).getOption4Count();
-                int languageSelectedIndex=((AskSurveyModel) list.get(i)).getLanguageSelectedIndex();
                 String surveyId=((AskSurveyModel) list.get(i)).getSurveyId();
 
                 if(MainActivity.surveyParticipatedMap!=null&&MainActivity.surveyParticipatedMap.size()>0){
@@ -399,7 +372,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }else
 
                 askerName=askerName==null?"Someone":askerName;
-                askerImageUrlLow=askerImageUrlLow==null?"":askerImageUrlLow;
                 askerBio=askerBio==null?"":askerBio;
                 question=question==null?"":question;
 

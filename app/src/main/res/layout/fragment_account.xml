@@ -71,20 +71,6 @@
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/account_relative_round_corner_top_sheet">
 
-                <TextView
-                    android:id="@+id/public_private_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="Public" />
-
                 <ImageView
                     android:id="@+id/setting_image"
                     android:layout_width="wrap_content"
@@ -131,7 +117,7 @@
                 android:id="@+id/about_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="0dp"
                 tools:text="software engineer | data scientiest | programmer"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"

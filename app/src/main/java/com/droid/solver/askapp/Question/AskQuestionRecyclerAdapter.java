@@ -40,7 +40,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
     }
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final  int i) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder,final  int i) {
 
 
             boolean isAnonymous=questionModelArrayList.get(i).isAnonymous();

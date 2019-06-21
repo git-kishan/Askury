@@ -17,6 +17,9 @@ public class Constants {
     public static final String profilePicLowByte="profilePicLowByte";
     public static final String profilePicLowUrl="profilePicLowUrl";
     public static final String bio="bio";
+    public static final String followerCount="followerCount";
+    public static final String followingCount="followingCount";
+    public static final String point="point";
 
     public static final String PROFILE_PICTURE="profilePicture";
     public static final String SMALL_THUMBNAIL="@smallThumbnail";

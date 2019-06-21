@@ -14,8 +14,10 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.R;
@@ -39,6 +41,8 @@ public class ImagePollOpenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_image_poll_open, container, false);
+        if(getActivity()!=null)
+        getActivity().supportStartPostponedEnterTransition();
         Bundle bundle=getArguments();
         imageUrl=bundle.getString("imageUrl");
         String transitionName=bundle.getString("imageTransitionName");
@@ -59,14 +63,17 @@ public class ImagePollOpenFragment extends Fragment {
                 .into(imageView,new Callback(){
                     @Override
                     public void onSuccess() {
+                        if(getActivity()!=null)
                         getActivity().supportStartPostponedEnterTransition();
                     }
 
                     @Override
                     public void onError(Exception e) {
+                        if(getActivity()!=null)
                         getActivity().supportStartPostponedEnterTransition();
                     }
                 });
+
 
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

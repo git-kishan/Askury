@@ -65,7 +65,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
     private final int UNFOLLOW=2;
     private HomeMessageListener homeMessageListener;
 
-    public ImagePollViewHolder(@NonNull View itemView,final Context context) {
+     ImagePollViewHolder(@NonNull View itemView,final Context context) {
         super(itemView);
         this.context = context;
         homeMessageListener= (HomeMessageListener) context;
@@ -145,9 +145,9 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-
-        Log.i("TAG", "image 1 like no :- "+imagePollModel.getImage1LikeNo());
-        Log.i("TAG", "image 2 like no - "+imagePollModel.getImage2LikeNo());
+//
+//        Log.i("TAG", "image 1 like no :- "+imagePollModel.getImage1LikeNo());
+//        Log.i("TAG", "image 2 like no - "+imagePollModel.getImage2LikeNo());
         constraintLayout.setVisibility(View.GONE);
         leftRedHeart.setVisibility(View.GONE);
         rightRedHeart.setVisibility(View.GONE);
