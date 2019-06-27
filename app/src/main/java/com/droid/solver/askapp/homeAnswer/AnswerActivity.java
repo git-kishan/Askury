@@ -49,6 +49,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer2);
         Intent intent=getIntent();
+
         askerImageUrl=intent.getStringExtra("askerImageUrl");
         timeOfAsking=intent.getLongExtra("timeOfAsking",0);
         askerName=intent.getStringExtra("askerName");
@@ -57,13 +58,6 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         question=intent.getStringExtra("question");
         askerId=intent.getStringExtra("askerId");
         anonymous=intent.getBooleanExtra("anonymous", false);
-//        Log.i("TAG", "askerImageUrl :- "+askerImageUrl);
-//        Log.i("TAG","timeOfAsking :- "+timeOfAsking );
-//        Log.i("TAG", "askerName :- "+askerName);
-//        Log.i("TAG", "askerBio :- "+askerBio);
-//        Log.i("TAG", "questionId : - "+questionId);
-//        Log.i("TAG", "question :- "+question);
-//        Log.i("TAG", "asker Id :- "+askerId);
         toolbar=findViewById(R.id.toolbar);
         changeToolbarFont(toolbar, this);
         recyclerView=findViewById(R.id.recycler_view);
@@ -103,7 +97,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public  void applyFont(TextView textView, Activity context) {
-        textView.setTypeface(ResourcesCompat.getFont(AnswerActivity.this, R.font.aclonica));
+        textView.setTypeface(ResourcesCompat.getFont(context, R.font.aclonica));
     }
 
     @Override
@@ -189,14 +183,16 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         AnswerModel model=snapshot.toObject(AnswerModel.class);
                         objectArrayList.add(model);
                     }
+                    adapter.notifyDataSetChanged();
+
                     if(task.getResult()!=null) {
                         if (task.getResult().getDocuments().size()>0)
                             lastSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-//                        if(task.getResult().getDocuments().size()==0){
-//                            recyclerView.removeOnScrollListener(scrollListener);
-//                        }
+                        if(task.getResult().getDocuments().size()==0){
+                            recyclerView.removeOnScrollListener(scrollListener);
+                        }
                     }
-                    adapter.notifyDataSetChanged();
+
                 }else {
                     Log.i("TAG", "fetching answer documents fail");
                 }

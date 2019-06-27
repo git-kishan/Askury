@@ -15,6 +15,8 @@ public class UserQuestionModel {
     private boolean anonymous;
     private boolean userNotified;
 
+    public UserQuestionModel(){}
+
     public UserQuestionModel(String userId,String userName,String userImageUrlLow,String userBio,long timeOfAsking,String questionId,String question,
                       List<String> questionType,int answerCount,boolean anonymous,boolean userNotified){
 

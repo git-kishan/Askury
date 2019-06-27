@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/root_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="5dp"
+        android:clickable="true"
+        android:elevation="5dp"
+        android:focusable="true"
+        android:foreground="?android:selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.text.emoji.widget.EmojiTextView
+            android:id="@+id/question_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:alpha="0.7"
+            android:ellipsize="end"
+            android:padding="8dp"
+            android:maxLines="3"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="any scroll y scroll
+            y scroll the firefox scrollbar s there any possible way to scroll the fire
+             y scroll the firefox scrollbar s there any possible way to scroll the firey scroll the firefox scrollbar s there any possible way to scroll the fire
+            the firefox scrollbar s there any possible way to scroll the fire
+            the firefox scrollbar s there any possible way to scroll the firefox scrollbar scroll the firefox scrollbar " />
+
+        <TextView
+            android:id="@+id/time_ago_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/question_textview"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="5 min ago" />
+
+        <TextView
+            android:id="@+id/answer_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/question_textview"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="4 answer" />
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.v7.widget.CardView>

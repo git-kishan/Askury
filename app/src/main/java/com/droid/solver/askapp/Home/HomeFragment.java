@@ -72,7 +72,7 @@ public class HomeFragment extends Fragment  {
 
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView=view.findViewById(R.id.recycler_view);
@@ -84,6 +84,7 @@ public class HomeFragment extends Fragment  {
         user=auth.getCurrentUser();
         if(user==null){
             startActivity(new Intent(getActivity(), SignInActivity.class));
+            if(getActivity()!=null)
             getActivity().finish();
         }
         questionModelStack=new Stack<>();
@@ -237,7 +238,7 @@ public class HomeFragment extends Fragment  {
         });
     }
 
-    private void handleOrderingOfList(final int order){
+    private void handleOrderingOfList( final int order){
         if(order==QUESTION_ORDER){
             list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
             adapter.notifyDataSetChanged();
@@ -294,9 +295,18 @@ public class HomeFragment extends Fragment  {
                         surveyParticipatedMapFromLocalDatabase, followingIdListFromLocalDatabase);
                 recyclerView.setAdapter(adapter);
                 LocalDatabase localDatabase=new LocalDatabase(getActivity().getApplicationContext());
-                imagePollLikeMapFromLocalDatabase.putAll(localDatabase.getImagePollLikeModel());
-                surveyParticipatedMapFromLocalDatabase.putAll(localDatabase.getSurveyParticipatedModel());
-                followingIdListFromLocalDatabase.addAll(localDatabase.getFollowingIdList());
+                HashMap<String,Integer> imagePollLikeTempMap=localDatabase.getImagePollLikeModel();
+                if(imagePollLikeTempMap!=null) {
+                    imagePollLikeMapFromLocalDatabase.putAll(imagePollLikeTempMap);
+                }
+                HashMap<String,Integer> surveyPollLikeTempMap=localDatabase.getSurveyParticipatedModel();
+                if(surveyPollLikeTempMap!=null) {
+                    surveyParticipatedMapFromLocalDatabase.putAll(surveyPollLikeTempMap);
+                }
+                ArrayList<String> followingTempList=localDatabase.getFollowingIdList();
+                if(followingTempList!=null) {
+                    followingIdListFromLocalDatabase.addAll(followingTempList);
+                }
                 adapter.notifyDataSetChanged();
             }
         });

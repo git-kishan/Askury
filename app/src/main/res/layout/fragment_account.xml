@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v4.widget.NestedScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:scrollbars="none"
@@ -60,6 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="3dp"
+                        android:contentDescription="gender"
                         android:visibility="visible"
                         android:src="@drawable/ic_femenine" />
                 </android.support.v7.widget.CardView>
@@ -253,4 +255,4 @@
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

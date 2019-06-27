@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -31,8 +30,6 @@ import com.droid.solver.askapp.setting.SettingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.protobuf.StringValue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -110,7 +107,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         tabLayout.setupWithViewPager(viewPager);
         TabLayout.Tab tab1=tabLayout.newTab();
         TabLayout.Tab tab2=tabLayout.newTab();
-        TabLayout.Tab tab3=tabLayout.newTab();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if(getActivity()!=null) {
                 Window window = getActivity().getWindow();
@@ -213,6 +209,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
         }
     }
+
+
 
 
 }
