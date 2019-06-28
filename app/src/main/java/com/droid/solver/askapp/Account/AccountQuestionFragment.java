@@ -14,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,7 +44,8 @@ public class AccountQuestionFragment extends Fragment {
     private DocumentSnapshot lastVisibleQuestionItem;
     private static final int QUESTION_LIMIT=8;
     private boolean isLoading=false;
-
+    private String uid=null;
+    private UidPasserListener uidPasserListener;
     public AccountQuestionFragment() {
     }
 
@@ -51,17 +54,21 @@ public class AccountQuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_account_question, container, false);
+        uidPasserListener= (UidPasserListener) getActivity();
+        if(uidPasserListener!=null)
+            uid=uidPasserListener.passUid();
         recyclerView=view.findViewById(R.id.recycler_view);
         recyclerView.setNestedScrollingEnabled(true);
+        if(uid==null){
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+                uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
         initRecyclerView();
         return view;
     }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
     }
     private void initRecyclerView(){
         layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
@@ -78,7 +85,6 @@ public class AccountQuestionFragment extends Fragment {
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
         }
-
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
@@ -96,29 +102,29 @@ public class AccountQuestionFragment extends Fragment {
         }
     };
     private void loadQuestionFromRemoteDatabase(){
-        FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null) {
-            String uid = user.getUid();
-            Query query=rootRef.collection("user").document(uid)
+
+        if(uid!=null) {
+
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            Query query = rootRef.collection("user").document(uid)
                     .collection("question")
                     .orderBy("timeOfAsking")
                     .limit(QUESTION_LIMIT);
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()){
-                        if(task.getResult()!=null)
-                        for(QueryDocumentSnapshot snapshot:task.getResult()){
-                            UserQuestionModel model = snapshot.toObject(UserQuestionModel.class);
-                            list.add(model);
-                        }
+                    if (task.isSuccessful()) {
+                        if (task.getResult() != null)
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                UserQuestionModel model = snapshot.toObject(UserQuestionModel.class);
+                                list.add(model);
+                            }
                         adapter.notifyDataSetChanged();
 
-                        if(task.getResult()!=null&&task.getResult().getDocuments().size()>0)
-                        lastVisibleQuestionItem=task.getResult().getDocuments().get(task.getResult().size()-1);
+                        if (task.getResult() != null && task.getResult().getDocuments().size() > 0)
+                            lastVisibleQuestionItem = task.getResult().getDocuments().get(task.getResult().size() - 1);
 
-                        if(task.getResult()!=null&&task.getResult().getDocuments().size()==0){
+                        if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
                             recyclerView.removeOnScrollListener(scrollListener);
                         }
                     }
@@ -130,17 +136,19 @@ public class AccountQuestionFragment extends Fragment {
                     //error occurs ..
                 }
             });
-
+        }else {
+            //uid null
         }
+
+
 
 
     }
     private void loadMoreQuestionFromRemoteDatabase(){
 
         FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null&&lastVisibleQuestionItem!=null) {
-            String uid = user.getUid();
+        if(uid !=null&&lastVisibleQuestionItem!=null) {
+
             Query query=rootRef.collection("user").document(uid)
                     .collection("question")
                     .orderBy("timeOfAsking")

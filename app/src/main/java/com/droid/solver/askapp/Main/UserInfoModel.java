@@ -1,5 +1,7 @@
 package com.droid.solver.askapp.Main;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class UserInfoModel {

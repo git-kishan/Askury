@@ -154,6 +154,20 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
             }
         });
+
+        holder.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onProfileImageClicked(context, model);
+            }
+        });
+        holder.askerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAskerNameClicked(context,model);
+            }
+        });
+
     }
 
 }

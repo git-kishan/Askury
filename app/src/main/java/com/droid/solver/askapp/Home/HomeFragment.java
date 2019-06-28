@@ -78,13 +78,6 @@ public class HomeFragment extends Fragment  {
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home, container, false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(getActivity()!=null) {
-                Window window = getActivity().getWindow();
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                window.setStatusBarColor(Color.WHITE);
-            }
-        }
         recyclerView=view.findViewById(R.id.recycler_view);
         layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);

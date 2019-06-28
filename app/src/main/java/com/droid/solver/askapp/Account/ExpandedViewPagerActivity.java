@@ -11,9 +11,10 @@ import android.view.View;
 import android.widget.TextView;
 
 
+import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.R;
 
-public class ExpandedViewPagerActivity extends AppCompatActivity implements View.OnClickListener {
+public class ExpandedViewPagerActivity extends AppCompatActivity implements View.OnClickListener, UidPasserListener {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -70,5 +71,10 @@ public class ExpandedViewPagerActivity extends AppCompatActivity implements View
     @Override
     public void onClick(View view) {
         onBackPressed();
+    }
+
+    @Override
+    public String passUid() {
+        return null;
     }
 }

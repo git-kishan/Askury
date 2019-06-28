@@ -66,7 +66,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity implements
-        BottomNavigationView.OnNavigationItemSelectedListener,ImagePollClickListener , HomeMessageListener {
+        BottomNavigationView.OnNavigationItemSelectedListener,ImagePollClickListener , HomeMessageListener,UidPasserListener{
 
     private static final String HOME = "home";
     private static final String QUESTION = "ic_question";
@@ -531,5 +531,10 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
+    }
+
+    @Override
+    public String passUid() {
+        return null;
     }
 }

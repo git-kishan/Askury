@@ -2,6 +2,8 @@ package com.droid.solver.askapp.Account;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +11,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.Answer.UserAnswerModel;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.homeAnswer.AnswerActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.like.LikeButton;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,10 +38,21 @@ public class AccountQuestionAnswerRecyclerViewHolder extends RecyclerView.ViewHo
 
     }
      void onAskerImageClicked(final Context context, final UserAnswerModel model){
-        onClicked("Asker Image", context);
+        Intent intent=new Intent(context,OtherAccountActivity.class);
+        intent.putExtra("profile_image", model.getAskerImageUrl());
+        intent.putExtra("uid", model.getAskerId());
+        intent.putExtra("user_name", model.getAskerName());
+        intent.putExtra("bio", model.getAskerBio());
+        context.startActivity(intent);
     }
      void onAnswererImageClicked(final Context context,final UserAnswerModel model){
-        onClicked("Answerer Image ", context);
+         SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+         Intent intent=new Intent(context,OtherAccountActivity.class);
+         intent.putExtra("profile_image", model.getAnswerId());
+         intent.putExtra("uid", preferences.getString(Constants.userId, FirebaseAuth.getInstance().getCurrentUser().getUid()));
+         intent.putExtra("user_name", preferences.getString(Constants.userName, "Someone"));
+         intent.putExtra("bio", preferences.getString(Constants.bio, ""));
+         context.startActivity(intent);
     }
      void onQuestionClicked(final Context context,final UserAnswerModel model){
         goToHomeAnswerActivity(context, model);
@@ -46,7 +61,12 @@ public class AccountQuestionAnswerRecyclerViewHolder extends RecyclerView.ViewHo
         goToHomeAnswerActivity(context, model);
     }
      void onAskerNameClicked(final Context context ,final UserAnswerModel model){
-        onClicked("Asker Name ", context);
+         Intent intent=new Intent(context,OtherAccountActivity.class);
+         intent.putExtra("profile_image", model.getAskerImageUrl());
+         intent.putExtra("uid", model.getAskerId());
+         intent.putExtra("user_name", model.getAskerName());
+         intent.putExtra("bio", model.getAskerBio());
+         context.startActivity(intent);
     }
     void onLikedClicked(final Context context,final UserAnswerModel model){
         onClicked("Like", context);

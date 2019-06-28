@@ -24,15 +24,17 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
     private Context context;
     private ArrayList<Object> list;
     private LayoutInflater inflater;
+    private String answererId;
     private static final int LOADING=1;
     private static final int ANSWER=2;
 
-    public AccountQuestionAnswerRecyclerAdapter(final Context context, ArrayList<Object> list){
+    public AccountQuestionAnswerRecyclerAdapter(final Context context, ArrayList<Object> list,String answererId){
 
         if(context!=null){
             this.context=context;
             this.list=list;
             inflater=LayoutInflater.from(context);
+            this.answererId=answererId;
         }
     }
     @NonNull
@@ -73,10 +75,6 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             question=question==null?"Question not available":question;
             answer=answer==null?"Answer not available":answer;
 
-            String answererId=null;
-            if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
-                answererId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            }
             String askerUrl= Constants.PROFILE_PICTURE+"/"+askserId+Constants.SMALL_THUMBNAIL;
             String answererUrl=Constants.PROFILE_PICTURE+"/"+answererId+Constants.SMALL_THUMBNAIL;
             StorageReference reference= FirebaseStorage.getInstance().getReference();

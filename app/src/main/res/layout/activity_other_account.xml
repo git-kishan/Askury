@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
+    android:id="@+id/root_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
@@ -24,7 +25,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/circleImageView4"
                         android:layout_width="60dp"
@@ -33,8 +33,6 @@
                         android:layout_marginTop="64dp"
                         android:background="@drawable/ripple_background"
                         android:src="@drawable/round_account"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,7 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
-                        android:text="555"
+                        tools:text="555"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/about"
                         app:layout_constraintTop_toBottomOf="@+id/about" />
@@ -105,7 +103,7 @@
                         android:id="@+id/following_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="25"
+                        tools:text="25"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/textView41"
                         app:layout_constraintEnd_toEndOf="@+id/textView41"
@@ -125,7 +123,7 @@
                         android:id="@+id/point_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="25"
+                        tools:text="25"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/textView44"
                         app:layout_constraintEnd_toEndOf="@+id/textView44"
@@ -146,11 +144,13 @@
                         />
 
                     <ImageView
+                        android:id="@+id/back_button"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:clickable="true"
+                        android:contentDescription="back"
                         android:focusable="true"
                         android:background="@drawable/ripple_background"
                         android:padding="5dp"

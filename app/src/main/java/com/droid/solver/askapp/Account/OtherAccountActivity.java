@@ -1,12 +1,17 @@
 package com.droid.solver.askapp.Account;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.text.emoji.widget.EmojiTextView;
@@ -27,24 +32,32 @@ import android.widget.Toast;
 
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
+import com.droid.solver.askapp.Main.UidPasserListener;
+import com.droid.solver.askapp.Main.UserInfoModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class OtherAccountActivity extends AppCompatActivity implements View.OnClickListener {
+public class OtherAccountActivity extends AppCompatActivity implements View.OnClickListener, UidPasserListener {
 
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private CardView rootLayout;
+    private CoordinatorLayout coordinatorLayout;
+    private ImageView backImageButton;
     private CircleImageView profileImage;
     private EmojiTextView profileName,about;
-    private TextView followCount,followingCount,pointCount;
+    private TextView followNum,followingNum,pointNum;
     private String imageUrl,uid,userName,bio;
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -57,14 +70,15 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         uid=intent.getStringExtra("uid");
         userName=intent.getStringExtra("user_name");
         bio=intent.getStringExtra("bio");
-        rootLayout=findViewById(R.id.root_layout);
+        coordinatorLayout=findViewById(R.id.root_layout);
         profileImage=findViewById(R.id.circleImageView4);
         profileName=findViewById(R.id.profile_name);
         about=findViewById(R.id.about);
-        followCount=findViewById(R.id.follow_count);
-        followingCount=findViewById(R.id.following_count);
-        pointCount=findViewById(R.id.point_count);
+        followNum=findViewById(R.id.follow_count);
+        followingNum=findViewById(R.id.following_count);
+        pointNum=findViewById(R.id.point_count);
         viewPager=findViewById(R.id.view_pager);
+        backImageButton=findViewById(R.id.back_button);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window=getWindow();
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -77,7 +91,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         init();
         profileImage.setOnClickListener(this);
         if(user==null){
-            Snackbar.make(rootLayout, "Sign in again ...",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(coordinatorLayout, "Sign in again ...",Snackbar.LENGTH_SHORT).show();
            Handler handler=new Handler();
            handler.postDelayed(new Runnable() {
                @Override
@@ -87,11 +101,26 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
                }
            }, 300);
         }
-
-
-
+        backImageButton.setOnClickListener(this);
+        checkConnection();
     }
 
+    private void checkConnection(){
+        if(isNetworkAvailable()){
+            loadDataFromRemoteDatabase();
+        }else {
+            Snackbar.make(coordinatorLayout, "No internet available", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Reload", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            checkConnection();
+                        }
+                    }).setActionTextColor(ResourcesCompat.getColor(getResources(),android.R.color.holo_red_light, null))
+                    .show();
+
+        }
+
+    }
     private void setTabLayout(){
         tabLayout=findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -106,6 +135,8 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     }
     private void setViewPager(){
         AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getSupportFragmentManager());
+        AccountQuestionFragment accountQuestionFragment=new AccountQuestionFragment();
+        AccountQuestionAnswerFragment accountQuestionAnswerFragment=new AccountQuestionAnswerFragment();
         pagerAdapter.addFragment(new AccountQuestionFragment());
         pagerAdapter.addFragment(new AccountQuestionAnswerFragment());
         viewPager.setAdapter(pagerAdapter);
@@ -115,6 +146,9 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
 
         switch (view.getId()){
             case R.id.circleImageView4:
+                break;
+            case R.id.back_button:
+                onBackPressed();
                 break;
         }
     }
@@ -135,5 +169,60 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         profileName.setText(userName);
         about.setText(bio);
 
+    }
+
+    private void loadDataFromRemoteDatabase(){
+        if(uid!=null){
+            FirebaseFirestore.getInstance().collection("user")
+                    .document(uid).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()){
+                                if(task.getResult()!=null){
+                                    UserInfoModel model = task.getResult().toObject(UserInfoModel.class);
+                                    if(model!=null) {
+                                        String userName = model.getUserName();
+                                        String bio = model.getBio();
+                                        int followerCount=model.getFollowerCount();
+                                        int followingCount=model.getFollowingCount();
+                                        int point=model.getPoint();
+                                        followingCount=followingCount<0?0:followingCount;
+                                        followerCount=followerCount<0?0:followerCount;
+                                        point =point<0?0:point;
+                                        followingNum.setText(String.valueOf(followingCount));
+                                        followNum.setText(String.valueOf(followerCount));
+                                        pointNum.setText(String.valueOf(point));
+                                        profileName.setText(userName);
+                                        about.setText(bio);
+
+                                    }
+                                }
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Snackbar.make(coordinatorLayout, "Error occured ,try after some time", Snackbar.LENGTH_INDEFINITE).show();
+                }
+            });
+        }else {
+            Snackbar.make(coordinatorLayout, "User information not available", Snackbar.LENGTH_INDEFINITE).show();
+
+        }
+    }
+
+    private boolean isNetworkAvailable(){
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        if(manager!=null){
+            NetworkInfo info=manager.getActiveNetworkInfo();
+            return info!=null&&info.isConnected();
+        }
+        return false;
+    }
+    @NonNull
+    @Override
+    public String passUid() {
+        return uid;
     }
 }

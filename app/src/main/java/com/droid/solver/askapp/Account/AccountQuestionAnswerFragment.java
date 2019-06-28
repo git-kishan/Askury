@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.droid.solver.askapp.Answer.UserAnswerModel;
+import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,6 +43,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
     private boolean isLoading=false;
     private DocumentSnapshot lastVisibleSnapshot=null;
     private String uid=null;
+    private UidPasserListener uidPasserListener;
 
     public AccountQuestionAnswerFragment() {
     }
@@ -49,13 +53,17 @@ public class AccountQuestionAnswerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_account_question_answer, container, false);
+        uidPasserListener= (UidPasserListener) getActivity();
+        if(uidPasserListener!=null)
+            uid=uidPasserListener.passUid();
         recyclerView=view.findViewById(R.id.recycler_view);
         linearLayoutManager=new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         frameLayout=view.findViewById(R.id.frameLayout);
         frameLayout.setVisibility(View.GONE);
         list=new ArrayList<>();
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+        if(uid==null){
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null)
             uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
         return view;
@@ -65,7 +73,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if(isNetworkAvailable()&&uid!=null){
-            adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list);
+            adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list,uid);
             recyclerView.setAdapter(adapter);
             loadAnswerFromRemoteDatabase();
             recyclerView.addOnScrollListener(scrollListener);
@@ -128,6 +136,9 @@ public class AccountQuestionAnswerFragment extends Fragment {
                     Log.d("TAG", "failed to fetch answer in account fragment ");
                 }
             });
+        }else
+        {
+            //uid null
         }
 
     }
