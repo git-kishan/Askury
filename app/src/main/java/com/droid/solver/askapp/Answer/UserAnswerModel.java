@@ -20,6 +20,7 @@ public class UserAnswerModel {
     private String imageAttachedUrl;
     private int fontUsed;
     private int answerLikeCount;
+    private boolean anonymous;
 
     public UserAnswerModel(
             String askerId,
@@ -36,7 +37,8 @@ public class UserAnswerModel {
             String answer,
             boolean imageAttached,
             String imageAttachedUrl,
-            int fontUsed, int answerLikeCount) {
+            int fontUsed, int answerLikeCount,
+            boolean anonymous) {
         this.askerId = askerId;
         this.askerName = askerName;
         this.askerImageUrl = askerImageUrl;
@@ -53,6 +55,7 @@ public class UserAnswerModel {
         this.imageAttachedUrl = imageAttachedUrl;
         this.fontUsed = fontUsed;
         this.answerLikeCount = answerLikeCount;
+        this.anonymous=anonymous;
     }
 
 
@@ -123,7 +126,7 @@ public class UserAnswerModel {
         return answerLikeCount;
     }
 
-
-
-
+    public boolean isAnonymous() {
+        return anonymous;
+    }
 }

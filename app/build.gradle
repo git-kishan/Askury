@@ -19,7 +19,7 @@ android {
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
 
-    lintOptions{
+    lintOptions {
         checkReleaseBuilds false
         abortOnError false
 

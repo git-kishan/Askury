@@ -24,7 +24,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".setting.PrivacyPolicyActivity"></activity>
+        <activity android:name=".Account.ExpandedViewPagerActivity"></activity>
+        <activity android:name=".setting.PrivacyPolicyActivity" />
         <activity android:name=".setting.TextViewToBitmap" />
         <activity android:name=".Account.OtherAccountActivity" />
         <activity android:name=".Account.ProfileImageActivity" />

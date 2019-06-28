@@ -3,15 +3,15 @@
     android:id="@+id/root_card_view"
     android:clickable="true"
     android:focusable="true"
-    android:elevation="10dp"
+    android:elevation="16dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="5dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +34,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.like.LikeButton
+            android:id="@+id/likeButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/ripple_background"
+            app:anim_scale_factor="2"
+            app:circle_end_color="@color/like_button_red"
+            app:circle_start_color="@color/like_button_red"
+            app:dots_primary_color="@color/like_button_red"
+            app:dots_secondary_color="@color/like_button_red"
+            app:icon_size="16dp"
+            app:icon_type="heart"
+            app:is_enabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:like_drawable="@drawable/ic_heart_red"
+            app:liked="false"
+            app:unlike_drawable="@drawable/ic_heart_black">
+
+        </com.like.LikeButton>
+
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/asker_name"
             android:layout_width="wrap_content"
@@ -41,6 +64,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:alpha="0.8"
+            android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             android:gravity="start"
@@ -59,8 +83,8 @@
             android:textSize="11sp"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
-            tools:text="Freenlancer|writer"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"
+            tools:text="Freenlancer|writer" />
 
         <android.support.text.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
@@ -68,13 +92,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:selectableItemBackground"
             android:layout_marginEnd="16dp"
-            android:maxLines="3"
             android:autoLink="all"
             android:ellipsize="end"
-            android:textSize="16sp"
             android:maxHeight="60dp"
+            android:maxLines="3"
             android:textColor="@android:color/black"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/about_textview"
@@ -102,8 +129,8 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="16dp"
-                    android:background="@drawable/ripple_background"
                     android:layout_marginTop="3dp"
+                    android:background="@drawable/ripple_background"
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/ic_placeholder"
@@ -117,12 +144,15 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:alpha="0.8"
-                    android:maxLines="3"
-                    android:ellipsize="end"
+                    android:paddingBottom="8sp"
                     android:autoLink="all"
                     android:background="?android:selectableItemBackground"
+                    android:ellipsize="end"
                     android:maxHeight="100dp"
+                    android:maxLines="3"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -133,6 +163,17 @@
             </android.support.constraint.ConstraintLayout>
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="254"
+            android:textSize="8sp"
+            app:layout_constraintEnd_toEndOf="@+id/likeButton"
+            app:layout_constraintStart_toStartOf="@+id/likeButton"
+            app:layout_constraintTop_toBottomOf="@+id/likeButton"
+            tools:ignore="SmallSp" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

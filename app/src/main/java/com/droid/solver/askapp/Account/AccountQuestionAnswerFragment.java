@@ -64,7 +64,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(isNetworkAvailable()){
+        if(isNetworkAvailable()&&uid!=null){
             adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list);
             recyclerView.setAdapter(adapter);
             loadAnswerFromRemoteDatabase();
@@ -87,7 +87,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
             LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
             if(!isLoading){
                 if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
-                    isLoading=false;
+                    isLoading=true;
                     list.add(list.size(),null);
                     adapter.notifyItemInserted(list.size());
                     loadMoreAnswerFromRemoteDatabase();
@@ -108,12 +108,6 @@ public class AccountQuestionAnswerFragment extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()){
-
-                        int scrollPosition=list.size()-1;
-                        list.remove(scrollPosition);
-                        adapter.notifyItemRemoved(scrollPosition);
-                        isLoading=false;
-
                         if(task.getResult()!=null)
                         for(QueryDocumentSnapshot snapshot:task.getResult()){
                             UserAnswerModel model = snapshot.toObject(UserAnswerModel.class);
@@ -121,6 +115,9 @@ public class AccountQuestionAnswerFragment extends Fragment {
                         }
                         if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
                             lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                        }
+                        if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                            recyclerView.removeOnScrollListener(scrollListener);
                         }
                         adapter.notifyDataSetChanged();
                     }
@@ -147,6 +144,12 @@ public class AccountQuestionAnswerFragment extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()){
+
+                        int scrollPosition=list.size()-1;
+                        list.remove(scrollPosition);
+                        adapter.notifyItemRemoved(scrollPosition);
+                        isLoading=false;
+
                         if(task.getResult()!=null)
                             for(QueryDocumentSnapshot snapshot:task.getResult()){
                                 UserAnswerModel model = snapshot.toObject(UserAnswerModel.class);

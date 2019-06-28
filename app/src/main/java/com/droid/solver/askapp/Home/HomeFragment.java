@@ -1,6 +1,8 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -75,8 +78,14 @@ public class HomeFragment extends Fragment  {
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home, container, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(getActivity()!=null) {
+                Window window = getActivity().getWindow();
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                window.setStatusBarColor(Color.WHITE);
+            }
+        }
         recyclerView=view.findViewById(R.id.recycler_view);
-
         layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         auth=FirebaseAuth.getInstance();

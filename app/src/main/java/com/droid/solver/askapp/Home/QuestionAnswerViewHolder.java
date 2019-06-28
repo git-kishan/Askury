@@ -90,7 +90,9 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         intent.putExtra("askerName", model.getAskerName());
         intent.putExtra("askerImageUrl", model.getAskerImageUrlLow());
         intent.putExtra("askerBio", model.getAskerBio());
+        intent.putExtra("anonymous", model.isAnonymous());
         intent.putStringArrayListExtra("questionType", (ArrayList<String>)model.getQuestionType());
+
         context.startActivity(intent);
     }
 

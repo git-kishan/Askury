@@ -164,40 +164,42 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     }
     private void fetchMoreAnswerFromRemoteDatabase(){
 
-        Query query=firestoreRootRef.collection("user").document(askerId).collection("question")
-                .document(questionId).collection("answer");
-        query.orderBy("timeOfAnswering", Query.Direction.DESCENDING)
-                .startAfter(lastSnapshot)
-                .limit(5)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        if(lastSnapshot!=null) {
+            Query query = firestoreRootRef.collection("user").document(askerId).collection("question")
+                    .document(questionId).collection("answer");
+            query.orderBy("timeOfAnswering", Query.Direction.DESCENDING)
+                    .startAfter(lastSnapshot)
+                    .limit(5)
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                objectArrayList.remove(objectArrayList.size()-1);
-                adapter.notifyItemRemoved(objectArrayList.size()-1);
-                isLoading=false;
+                    objectArrayList.remove(objectArrayList.size() - 1);
+                    adapter.notifyItemRemoved(objectArrayList.size() - 1);
+                    isLoading = false;
 
-                if(task.isSuccessful()){
-                    if(task.getResult()!=null)
-                    for(QueryDocumentSnapshot snapshot:task.getResult()){
-                        AnswerModel model=snapshot.toObject(AnswerModel.class);
-                        objectArrayList.add(model);
-                    }
-                    adapter.notifyDataSetChanged();
+                    if (task.isSuccessful()) {
+                        if (task.getResult() != null)
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                AnswerModel model = snapshot.toObject(AnswerModel.class);
+                                objectArrayList.add(model);
+                            }
+                        adapter.notifyDataSetChanged();
 
-                    if(task.getResult()!=null) {
-                        if (task.getResult().getDocuments().size()>0)
-                            lastSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                        if(task.getResult().getDocuments().size()==0){
-                            recyclerView.removeOnScrollListener(scrollListener);
+                        if (task.getResult() != null) {
+                            if (task.getResult().getDocuments().size() > 0)
+                                lastSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                            if (task.getResult().getDocuments().size() == 0) {
+                                recyclerView.removeOnScrollListener(scrollListener);
+                            }
                         }
+
+                    } else {
+                        Log.i("TAG", "fetching answer documents fail");
                     }
-
-                }else {
-                    Log.i("TAG", "fetching answer documents fail");
                 }
-            }
-        })  ;
+            });
 
+        }
     }
 }

@@ -119,6 +119,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     private String askerUid,questionId,question,askerName,askerImageUrl,askerBio;
     private long timeOfAsking;
     private ArrayList<String> questionType;
+    private boolean anonymous;
 
 
     @Override
@@ -133,6 +134,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         askerName=intent.getStringExtra("askerName");
         askerImageUrl=intent.getStringExtra("askerImageUrl");
         askerBio=intent.getStringExtra("askerBio");
+        anonymous=intent.getBooleanExtra("anonymous", false);
         questionType=intent.getStringArrayListExtra("questionType");
 //
 //        Log.i("TAG", "asker Uid :-"+askerUid);
@@ -575,7 +577,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         DocumentReference rootQuestionRef=null;
         DocumentReference userQuestionRef=null;
 
-        if(previousAnswerId==null){
+        if(previousAnswerId==null&&uid!=null){
 
             String answerId=firestoreRef.collection("user").document(uid).collection("answer").document().getId();
 
@@ -583,7 +585,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
                     System.currentTimeMillis(), answerId, false, answer,
-                    imageAttached, answerImageUrl, fontSelected, 0);
+                    imageAttached, answerImageUrl, fontSelected, 0,anonymous);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
                     askerUid, askerName, askerBio, askerImageUrl, questionType,
@@ -655,7 +657,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
                     System.currentTimeMillis(), previousAnswerId, false, answer,
-                    imageAttached, answerImageUrl, fontSelected, 0);
+                    imageAttached, answerImageUrl, fontSelected, 0,anonymous);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
                     askerUid, askerName, askerBio, askerImageUrl, questionType,

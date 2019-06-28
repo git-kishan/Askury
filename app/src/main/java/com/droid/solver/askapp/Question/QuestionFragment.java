@@ -2,6 +2,8 @@ package com.droid.solver.askapp.Question;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
@@ -54,6 +57,13 @@ public class QuestionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(getActivity()!=null) {
+                Window window = getActivity().getWindow();
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                window.setStatusBarColor(Color.WHITE);
+            }
+        }
         speedDialView=view.findViewById(R.id.speedDial);
         scaleInAnimation= AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_in);
         speedDialView.startAnimation(scaleInAnimation);

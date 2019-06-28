@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,6 +44,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private CardView toolbarCardViewActivity;
     private TextView followerCount,followingCount,pointCount;
     private TextView followerTextView,followingTextView,pointTextView;
+    private ImageView expandedImageView;
     public AccountFragment() {
     }
 
@@ -70,6 +72,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         String userName=preferences.getString(Constants.userName, "");
         String muserBio=preferences.getString(Constants.bio, "");
         String gender=preferences.getString(Constants.GENDER, null);
+        expandedImageView=view.findViewById(R.id.expanded);
         loadDataFromLocalDatabase();
         if(gender!=null){
             if(gender.equals(Constants.MALE)){
@@ -93,6 +96,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         followerCount.setOnClickListener(this);
         followingCount.setOnClickListener(this);
         pointCount.setOnClickListener(this);
+        expandedImageView.setOnClickListener(this);
         return view;
     }
 
@@ -110,7 +114,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if(getActivity()!=null) {
                 Window window = getActivity().getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
                 window.setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
             }
         }
@@ -121,6 +125,12 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
         }
     }
+    private void setViewPager(){
+        AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getChildFragmentManager());
+        pagerAdapter.addFragment(new AccountQuestionFragment());
+        pagerAdapter.addFragment(new AccountQuestionAnswerFragment());
+        viewPager.setAdapter(pagerAdapter);
+    }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -129,12 +139,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         pointCount.setText(String.valueOf(0));
 
     }
-    private void setViewPager(){
-        AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getChildFragmentManager());
-        pagerAdapter.addFragment(new AccountQuestionFragment());
-        pagerAdapter.addFragment(new AccountQuestionAnswerFragment());
-        viewPager.setAdapter(pagerAdapter);
-    }
+
     @Override
     public void onDestroy() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -152,7 +157,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 startActivity(new Intent(getActivity(), SettingActivity.class));
                 break;
             case R.id.profile_image:
-                getActivity().startActivity(new Intent(getActivity(),ProfileImageActivity.class));
+
+                startActivity(new Intent(getActivity(),ProfileImageActivity.class));
                 break;
             case (R.id.follower_text_view):
                 Toast.makeText(getActivity(), "follower text view is clicked", Toast.LENGTH_SHORT).show();
@@ -171,6 +177,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.point_count_number:
                 Toast.makeText(getActivity(), "point text view  is clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.expanded:
+                startActivity(new Intent(getActivity(), ExpandedViewPagerActivity.class));
                 break;
         }
     }

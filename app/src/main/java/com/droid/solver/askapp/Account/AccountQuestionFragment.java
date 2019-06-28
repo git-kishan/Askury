@@ -52,6 +52,7 @@ public class AccountQuestionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_account_question, container, false);
         recyclerView=view.findViewById(R.id.recycler_view);
+        recyclerView.setNestedScrollingEnabled(true);
         initRecyclerView();
         return view;
     }

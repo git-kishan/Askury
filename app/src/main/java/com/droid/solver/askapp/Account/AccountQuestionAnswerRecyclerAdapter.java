@@ -14,6 +14,9 @@ import com.droid.solver.askapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
+
 import java.util.ArrayList;
 
 public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
@@ -46,10 +49,10 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
                 view=inflater.inflate(R.layout.loading,viewGroup,false);
                 viewHolder=new LoadingViewHolderVertically(view);
                 break;
-            default:
-                view=inflater.inflate(R.layout.loading,viewGroup,false);
-                viewHolder=new LoadingViewHolderVertically(view);
-                break;
+                 default:
+                      view=inflater.inflate(R.layout.loading,viewGroup,false);
+                      viewHolder=new LoadingViewHolderVertically(view);
+                      break;
         }
         return viewHolder;
     }
@@ -92,6 +95,7 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             ((AccountQuestionAnswerRecyclerViewHolder) holder).questionTextView.setText(question);
             ((AccountQuestionAnswerRecyclerViewHolder) holder).answerTextView.setText(answer);
 
+            handleClickListener(context, (AccountQuestionAnswerRecyclerViewHolder) holder, model);
         }
     }
 
@@ -107,6 +111,51 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
         }else if(list.get(position) ==null){
             return LOADING;
         }
-        else return LOADING;
+        return LOADING;
     }
+    private void handleClickListener(final Context context, final AccountQuestionAnswerRecyclerViewHolder holder,final UserAnswerModel model){
+        holder.questionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onQuestionClicked(context,model);
+            }
+        });
+        holder.answerTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswerClicked(context,model);
+            }
+        });
+        holder.askerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAskerImageClicked(context,model);
+            }
+        });
+        holder.answererImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswererImageClicked(context,model);
+            }
+        });
+        holder.askerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAskerNameClicked(context,model);
+            }
+        });
+        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                holder.onLikedClicked(context, model);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                holder.onDislikedClicked(context, model);
+            }
+        });
+
+    }
+
 }

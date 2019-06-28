@@ -1,14 +1,21 @@
 package com.droid.solver.askapp.Account;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
+import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 
 public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
@@ -55,6 +62,23 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
         if(list.get(i) instanceof UserQuestionModel && holder instanceof AccountQuestionRecyclerViewHolder){
             UserQuestionModel model= (UserQuestionModel) list.get(i);
             String question=model.getQuestion();
+            String userName=model.getUserName();
+            String userBio=model.getUserBio();
+            String uid=model.getUserId();
+            String profileUrl= Constants.PROFILE_PICTURE+"/"+uid+Constants.SMALL_THUMBNAIL;
+            StorageReference reference= FirebaseStorage.getInstance().getReference().child(profileUrl);
+            GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder).into(((AccountQuestionRecyclerViewHolder) holder).profileImage);
+
+            userName=userName==null?"Someone":userName;
+            userBio=userBio==null?"":userBio;
+
+
+            ((AccountQuestionRecyclerViewHolder) holder).askerName.setText(userName);
+            ((AccountQuestionRecyclerViewHolder) holder).askerBio.setText(userBio);
+
+
+
             long time=model.getTimeOfAsking();
             int answerCount=model.getAnswerCount();
             String timeAgo=getTime(time, System.currentTimeMillis());
@@ -123,7 +147,13 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     private void onQuestionClicked(final AccountQuestionRecyclerViewHolder holder,final UserQuestionModel model){
-        holder.onCardClicked(model);
+        holder.rootCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onCardClicked(model);
+
+            }
+        });
     }
 
 }
