@@ -8,20 +8,20 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.widget.EmojiEditText;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.button.MaterialButton;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.widget.EmojiEditText;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.CardView;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -428,7 +428,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                 timeOfSurvey, option1, option2, option3,
                 option4, option1Value, option2Value, option3Value,
                 option4Value, option1Count, option2Count, option3Count, option4Count,
-                languageSelectedIndex,surveyId);
+                languageSelectedIndex,surveyId,timeOfSurvey);
         WriteBatch writeBatch=root.batch();
         DocumentReference rootSurveyRef=root.collection("survey").document(surveyId);
         writeBatch.set(rootSurveyRef, surveyModel);
@@ -480,11 +480,11 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     private void showCustomSuccessfullDialog() {
         final ViewGroup viewGroup = findViewById(R.id.root);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setView(dialogView);
         TextView textView=dialogView.findViewById(R.id.message_text_view);
         textView.setText(getString(R.string.survey_accepted_successfull));
-        final android.support.v7.app.AlertDialog alertDialog = builder.create();
+        final androidx.appcompat.app.AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
         alertDialog.show();
@@ -512,9 +512,9 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         TextView textView=dialogView.findViewById(R.id.message_text_view);
         textView.setText(getString(R.string.survey_accepted_failed));
         MaterialButton retryButton=dialogView.findViewById(R.id.retry_button);
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setView(dialogView);
-        final android.support.v7.app.AlertDialog alertDialog = builder.create();
+        final androidx.appcompat.app.AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
         alertDialog.show();

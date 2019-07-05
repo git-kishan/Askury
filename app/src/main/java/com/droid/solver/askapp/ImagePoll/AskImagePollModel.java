@@ -17,6 +17,7 @@ public class AskImagePollModel {
     private String imagePollId;
     private boolean reported;
     private boolean containVioloanceOrAdult;
+    private long lastTimeNotified;
 
     public static final int SPAM=0;
     public static final int SELF_PROMOTION=1;
@@ -65,7 +66,8 @@ public class AskImagePollModel {
                              int image2LikeNo,
                              String imagePollId,
                              boolean containVioloanceOrAdult,
-                             boolean reported
+                             boolean reported,
+                             long lastTimeNotified
     ){
         this.askerId=askerId;
         this.askerName=askerName;
@@ -81,6 +83,7 @@ public class AskImagePollModel {
         this.imagePollId=imagePollId;
         this.containVioloanceOrAdult=containVioloanceOrAdult;
         this.reported=reported;
+        this.lastTimeNotified=lastTimeNotified;
 
     }
 
@@ -134,6 +137,10 @@ public class AskImagePollModel {
 
     public boolean isReported() {
         return reported;
+    }
+
+    public long getLastTimeNotified() {
+        return lastTimeNotified;
     }
 }
 

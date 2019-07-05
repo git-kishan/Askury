@@ -1,38 +1,32 @@
 package com.droid.solver.askapp.Main;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.transition.TransitionInflater;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.droid.solver.askapp.Account.AccountFragment;
-import com.droid.solver.askapp.Community.CommunityFragment;
-import com.droid.solver.askapp.GlideApp;
+import com.droid.solver.askapp.Notification.NotificationFragment;
 import com.droid.solver.askapp.Home.HomeFragment;
 import com.droid.solver.askapp.Home.HomeMessageListener;
 import com.droid.solver.askapp.Home.ImagePollOpenFragment;
@@ -43,7 +37,6 @@ import com.droid.solver.askapp.Question.SurveyParticipated;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.facebook.login.LoginManager;
-import com.facebook.share.model.SharePhoto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,10 +48,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -70,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String HOME = "home";
     private static final String QUESTION = "ic_question";
-    private static final String COMMUNITY = "community";
+    private static final String NOTIFICATION = "notification";
     private static final String ACCOUNT = "ic_account";
     private static final String NO_INTERNET = "no_internet";
     public BottomNavigationView bottomNavigationView;
@@ -81,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseFirestore firestoreRoot;
     private FirebaseUser user;
     private String uid;
-    private ProgressBar progressBar;
     private FrameLayout progressFrameLayout;
     public static ArrayList<String> answerLikeList;
     public static HashMap<String,Integer> imagePollLikeMap;
@@ -109,14 +97,13 @@ public class MainActivity extends AppCompatActivity implements
         messageText=findViewById(R.id.message_text);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         messageFrameLayout=findViewById(R.id.message_frame_layout);
-        progressBar=findViewById(R.id.progress_bar);
         progressFrameLayout=findViewById(R.id.progress_frame);
 
         progressFrameLayout.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment(), HOME);
 
-        changeToolbarFont(toolbar, this);
+        changeToolbarFont(toolbar);
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String lowProfilePicPath = preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
         String highProfilePath = preferences.getString(Constants.HIGH_PROFILE_PIC_PATH, null);
@@ -149,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
-
+        checkNotification();
 
     }
 
@@ -174,13 +161,13 @@ public class MainActivity extends AppCompatActivity implements
                 fragment = new QuestionFragment();
                 loadFragment(fragment, QUESTION);
                 return true;
-            case R.id.community:
-                tempFragment = getSupportFragmentManager().findFragmentByTag(COMMUNITY);
+            case R.id.notification:
+                tempFragment = getSupportFragmentManager().findFragmentByTag(NOTIFICATION);
                 if (tempFragment != null && tempFragment.isVisible()) {
                     break;
                 }
-                fragment = new CommunityFragment();
-                loadFragment(fragment, COMMUNITY);
+                fragment = new NotificationFragment();
+                loadFragment(fragment, NOTIFICATION);
                 return true;
             case R.id.account:
                 tempFragment = getSupportFragmentManager().findFragmentByTag(ACCOUNT);
@@ -229,21 +216,27 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    private void checkNotification(){
+        BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) menuView.getChildAt(2);
+        View notificationBadge= LayoutInflater.from(this).inflate(R.layout.notification_badge_view,menuView,false);
+        itemView.addView(notificationBadge);
 
-    public  void changeToolbarFont(Toolbar toolbar, Activity context) {
+    }
+    public  void changeToolbarFont(Toolbar toolbar) {
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
             if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 if (tv.getText().equals(toolbar.getTitle())) {
-                    applyFont(tv, context);
+                    applyFont(tv);
                     break;
                 }
             }
         }
     }
 
-    public  void applyFont(TextView tv, Activity context) {
+    public  void applyFont(TextView tv) {
         tv.setTypeface(ResourcesCompat.getFont(this, R.font.aclonica));
     }
 
@@ -259,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     String lowProfilePicUrl = documentSnapshot.getString("profilePicUrlLow");
-                    String highProfilePicUrl = documentSnapshot.getString("profilePicUrlHigh");
+//                    String highProfilePicUrl = documentSnapshot.getString("profilePicUrlHigh");
                     String userName = documentSnapshot.getString("userName");
                     SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
@@ -271,56 +264,62 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private String saveProfilePicBitmapToFile(Bitmap bitmap, boolean lowProfilePic, boolean highProfilePic) {
-        //save profile pic to file and return image path
-        File directory = getDir("image", Context.MODE_PRIVATE);
-        File path = null;
-        if (lowProfilePic) {
-            path = new File(directory, "profile_pic_low_resolution");
-        } else if (highProfilePic) {
-            path = new File(directory, "profile_pic_high_resolution");
-        }
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(path);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this, "Error occured", Toast.LENGTH_SHORT).show();
-        }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-        try {
-            fileOutputStream.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            try {
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-        }
-        return directory.getAbsolutePath();
-    }
-
-    private void saveProfileImagePathToSharedPreferences(String path, boolean lowProfilePic, boolean highProfilePic) {
-
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (lowProfilePic)
-            editor.putString(Constants.LOW_PROFILE_PIC_PATH, path);
-        else if (highProfilePic)
-            editor.putString(Constants.HIGH_PROFILE_PIC_PATH, path);
-        editor.apply();
-    }
+//    private String saveProfilePicBitmapToFile(Bitmap bitmap, boolean lowProfilePic, boolean highProfilePic) {
+//        //save profile pic to file and return image path
+//        File directory = getDir("image", Context.MODE_PRIVATE);
+//        File path = null;
+//        if (lowProfilePic) {
+//            path = new File(directory, "profile_pic_low_resolution");
+//        } else if (highProfilePic) {
+//            path = new File(directory, "profile_pic_high_resolution");
+//        }
+//        FileOutputStream fileOutputStream = null;
+//        try {
+//            if(path!=null)
+//            fileOutputStream = new FileOutputStream(path);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            Toast.makeText(MainActivity.this, "Error occured", Toast.LENGTH_SHORT).show();
+//        }
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+//        try {
+//            if(fileOutputStream!=null)
+//            fileOutputStream.flush();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        } finally {
+//            try {
+//                if(fileOutputStream!=null)
+//                fileOutputStream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                return null;
+//            }
+//
+//        }
+//        return directory.getAbsolutePath();
+//    }
+//
+//    private void saveProfileImagePathToSharedPreferences(String path, boolean lowProfilePic, boolean highProfilePic) {
+//
+//        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        if (lowProfilePic)
+//            editor.putString(Constants.LOW_PROFILE_PIC_PATH, path);
+//        else if (highProfilePic)
+//            editor.putString(Constants.HIGH_PROFILE_PIC_PATH, path);
+//        editor.apply();
+//    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager cmm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = cmm.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        if(cmm!=null) {
+            NetworkInfo activeNetworkInfo = cmm.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
     }
 
     private void fetchLikeDocumentsFromRemoteDatabase(){
@@ -338,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
+                    if(task.getResult()!=null)
                     for (QueryDocumentSnapshot snapshots : task.getResult()) {
 
                         AnswerLike answerLike = snapshots.toObject(AnswerLike.class);
@@ -371,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
+                    if(task.getResult()!=null)
                     for(QueryDocumentSnapshot snapshot:task.getResult()){
                         ImagePollLike imagePollLike=snapshot.toObject(ImagePollLike.class);
                         tempList.addAll(imagePollLike.getImagePollMapList());
@@ -398,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
+                    if(task.getResult()!=null)
                     for(QueryDocumentSnapshot snapshots:task.getResult()){
                         SurveyParticipated surveyParticipated=snapshots.toObject(SurveyParticipated.class);
                         tempList.addAll(surveyParticipated.getSurveyMapList());
@@ -523,8 +525,6 @@ public class MainActivity extends AppCompatActivity implements
                             editor.putString(Constants.bio, bioBuilder.toString());
                             editor.putString(Constants.INTEREST, builder.toString());
                             editor.apply();
-
-
                         }
 
                     }

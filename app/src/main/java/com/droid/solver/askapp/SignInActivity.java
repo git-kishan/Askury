@@ -2,20 +2,17 @@ package com.droid.solver.askapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.LinearGradient;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.Snackbar;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.FontRequestEmojiCompatConfig;
-import android.support.v4.provider.FontRequest;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.text.FontRequestEmojiCompatConfig;
+import androidx.core.provider.FontRequest;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,24 +20,15 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.droid.solver.askapp.Account.OtherAccountActivity;
-import com.droid.solver.askapp.Home.HomeFragment;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Main.UserInfoModel;
-import com.droid.solver.askapp.Question.RootQuestionModel;
-import com.droid.solver.askapp.setting.TextViewToBitmap;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.facebook.share.model.SharePhoto;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -60,13 +48,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firestore.v1.FirestoreGrpc;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -403,7 +386,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     }
 
                     @Override
-                    public void onFailed(@android.support.annotation.Nullable Throwable throwable) {
+                    public void onFailed(@androidx.annotation.Nullable Throwable throwable) {
                         Log.i("TAG", "emoji initilization failed");
                         super.onFailed(throwable);
                     }

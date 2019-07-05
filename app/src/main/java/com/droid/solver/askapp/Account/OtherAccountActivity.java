@@ -1,37 +1,34 @@
 package com.droid.solver.askapp.Account;
 
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.material.button.MaterialButton;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
+import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Main.UserInfoModel;
 import com.droid.solver.askapp.R;
@@ -46,9 +43,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class OtherAccountActivity extends AppCompatActivity implements View.OnClickListener, UidPasserListener {
+public class OtherAccountActivity extends AppCompatActivity implements View.OnClickListener,
+        UidPasserListener {
 
 
     private ViewPager viewPager;
@@ -56,6 +56,10 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     private CoordinatorLayout coordinatorLayout;
     private ImageView backImageButton;
     private CircleImageView profileImage;
+    private MaterialButton followButton;
+    private static final String FOLLOW ="Follow";
+    private static final String UNFOLLOW="Unfollow";
+    private String STATUS=null;
     private EmojiTextView profileName,about;
     private TextView followNum,followingNum,pointNum;
     private String imageUrl,uid,userName,bio;
@@ -70,6 +74,9 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         uid=intent.getStringExtra("uid");
         userName=intent.getStringExtra("user_name");
         bio=intent.getStringExtra("bio");
+
+        followButton=findViewById(R.id.follow_button);
+        followButton.setVisibility(View.GONE);//starting state of follow button
         coordinatorLayout=findViewById(R.id.root_layout);
         profileImage=findViewById(R.id.circleImageView4);
         profileName=findViewById(R.id.profile_name);
@@ -86,28 +93,16 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         }
         setViewPager();
         setTabLayout();
-        auth=FirebaseAuth.getInstance();
-        user=auth.getCurrentUser();
-        init();
         profileImage.setOnClickListener(this);
-        if(user==null){
-            Snackbar.make(coordinatorLayout, "Sign in again ...",Snackbar.LENGTH_SHORT).show();
-           Handler handler=new Handler();
-           handler.postDelayed(new Runnable() {
-               @Override
-               public void run() {
-                   startActivity(new Intent(OtherAccountActivity.this, SignInActivity.class)) ;
-                   finish();
-               }
-           }, 300);
-        }
         backImageButton.setOnClickListener(this);
+        followButton.setOnClickListener(this);
+        checkUserAuth();
         checkConnection();
     }
-
     private void checkConnection(){
         if(isNetworkAvailable()){
             loadDataFromRemoteDatabase();
+            checkFollowerList();
         }else {
             Snackbar.make(coordinatorLayout, "No internet available", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Reload", new View.OnClickListener() {
@@ -121,6 +116,30 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         }
 
     }
+
+    private void checkFollowerList(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null&&uid!=null){
+            String selfUid=user.getUid();
+            if(selfUid.equals(uid)){
+                followButton.setVisibility(View.GONE);
+                return;
+            }
+            LocalDatabase database=new LocalDatabase(getApplicationContext());
+            ArrayList<String> followingList=database.getFollowingIdList();
+            if(followingList!=null&&followingList.contains(uid)){
+                STATUS=FOLLOW;
+                followButton.setText(UNFOLLOW);
+                followButton.setVisibility(View.VISIBLE);
+            }else {
+                STATUS=UNFOLLOW;
+                followButton.setText(FOLLOW);
+                followButton.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+
     private void setTabLayout(){
         tabLayout=findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -141,16 +160,40 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         pagerAdapter.addFragment(new AccountQuestionAnswerFragment());
         viewPager.setAdapter(pagerAdapter);
     }
+    private void checkUserAuth(){
+        auth=FirebaseAuth.getInstance();
+        user=auth.getCurrentUser();
+        init();
+        if(user==null){
+            Snackbar.make(coordinatorLayout, "Sign in again ...",Snackbar.LENGTH_SHORT).show();
+            Handler handler=new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(OtherAccountActivity.this, SignInActivity.class)) ;
+                    finish();
+                }
+            }, 300);
+        }
+    }
     @Override
     public void onClick(View view) {
 
         switch (view.getId()){
             case R.id.circleImageView4:
+                Toast.makeText(OtherAccountActivity.this, "Profile image clicked",Toast.LENGTH_SHORT ).show();
                 break;
             case R.id.back_button:
                 onBackPressed();
                 break;
+            case R.id.follow_button:
+                onFollowButtonClicked(STATUS);
+                break;
+
         }
+    }
+    private void onFollowButtonClicked(String status){
+
     }
 
     private void init(){
@@ -158,16 +201,19 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         uid=uid==null?"":uid;
         userName=userName==null?"":userName;
         bio=bio==null?"":bio;
-        String url = Constants.PROFILE_PICTURE +"/"+uid + ProfileImageActivity.THUMBNAIL;
+        String url = Constants.PROFILE_PICTURE +"/"+uid + Constants.THUMBNAIL;
         StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
+            GlideApp.with(this)
+                    .load(reference)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .placeholder(ResourcesCompat.getDrawable(getResources(), R.drawable.round_account, null))
+                    .error(ResourcesCompat.getDrawable(getResources(), R.drawable.round_account, null))
+                    .into(profileImage);
+            profileName.setText(userName);
+            about.setText(bio);
 
-        GlideApp.with(this)
-                .load(reference)
-                .placeholder(ResourcesCompat.getDrawable(getResources(), R.drawable.round_account, null))
-                .error(ResourcesCompat.getDrawable(getResources(), R.drawable.round_account, null))
-                .into(profileImage);
-        profileName.setText(userName);
-        about.setText(bio);
+
 
     }
 
@@ -183,18 +229,19 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
                                     UserInfoModel model = task.getResult().toObject(UserInfoModel.class);
                                     if(model!=null) {
                                         String userName = model.getUserName();
-                                        String bio = model.getBio();
+                                        String mbio = model.getBio();
                                         int followerCount=model.getFollowerCount();
                                         int followingCount=model.getFollowingCount();
                                         int point=model.getPoint();
                                         followingCount=followingCount<0?0:followingCount;
                                         followerCount=followerCount<0?0:followerCount;
                                         point =point<0?0:point;
+                                        mbio=mbio==null?bio:mbio;
                                         followingNum.setText(String.valueOf(followingCount));
                                         followNum.setText(String.valueOf(followerCount));
                                         pointNum.setText(String.valueOf(point));
                                         profileName.setText(userName);
-                                        about.setText(bio);
+                                        about.setText(mbio);
 
                                     }
                                 }

@@ -5,18 +5,16 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.droid.solver.askapp.Answer.UserAnswerModel;
 import com.droid.solver.askapp.Main.UidPasserListener;
@@ -83,6 +81,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
 
 
     }
+
     RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -142,6 +141,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
         }
 
     }
+
     private void loadMoreAnswerFromRemoteDatabase(){
 
         if(uid!=null&&lastVisibleSnapshot!=null) {
@@ -182,6 +182,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
             });
         }
     }
+
     private boolean isNetworkAvailable(){
         if(getActivity()!=null) {
             ConnectivityManager cmm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);

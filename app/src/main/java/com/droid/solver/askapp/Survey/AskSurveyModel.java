@@ -12,6 +12,97 @@ public class AskSurveyModel {
     private int option1Count,option2Count,option3Count,option4Count;
     private int languageSelectedIndex;
     private String surveyId;
+    private long lastTimeNotified;
+
+
+    public AskSurveyModel(){}
+    public AskSurveyModel(String askerId,
+                          String askerName,
+                          String askerImageUrlLow,
+                          String askerBio,
+                          String question,
+                          long timeOfSurvey,
+                          boolean option1,
+                          boolean option2,
+                          boolean option3,
+                          boolean option4,
+                          String option1Value,
+                          String option2Value,
+                          String option3Value,
+                          String option4Value,
+                          int option1Count,
+                          int option2Count,
+                          int option3Count,
+                          int option4Count,
+                          int languageSelectedIndex,
+                          String surveyId){
+
+        this.askerId=askerId;
+        this.askerName=askerName;
+        this.askerImageUrlLow=askerImageUrlLow;
+        this.askerBio=askerBio;
+        this.question=question;
+        this.timeOfSurvey=timeOfSurvey;
+        this.option1=option1;
+        this.option2=option2;
+        this.option3=option3;
+        this.option4=option4;
+        this.option1Value=option1Value;
+        this.option2Value=option2Value;
+        this.option3Value=option3Value;
+        this.option4Value=option4Value;
+        this.option1Count=option1Count;
+        this.option2Count=option2Count;
+        this.option3Count=option3Count;
+        this.option4Count=option4Count;
+        this.languageSelectedIndex=languageSelectedIndex;
+        this.surveyId=surveyId;
+    }
+    public AskSurveyModel(String askerId,
+                          String askerName,
+                          String askerImageUrlLow,
+                          String askerBio,
+                          String question,
+                          long timeOfSurvey,
+                          boolean option1,
+                          boolean option2,
+                          boolean option3,
+                          boolean option4,
+                          String option1Value,
+                          String option2Value,
+                          String option3Value,
+                          String option4Value,
+                          int option1Count,
+                          int option2Count,
+                          int option3Count,
+                          int option4Count,
+                          int languageSelectedIndex,
+                          String surveyId,
+                          long lastTimeNotified){
+
+        this.askerId=askerId;
+        this.askerName=askerName;
+        this.askerImageUrlLow=askerImageUrlLow;
+        this.askerBio=askerBio;
+        this.question=question;
+        this.timeOfSurvey=timeOfSurvey;
+        this.option1=option1;
+        this.option2=option2;
+        this.option3=option3;
+        this.option4=option4;
+        this.option1Value=option1Value;
+        this.option2Value=option2Value;
+        this.option3Value=option3Value;
+        this.option4Value=option4Value;
+        this.option1Count=option1Count;
+        this.option2Count=option2Count;
+        this.option3Count=option3Count;
+        this.option4Count=option4Count;
+        this.languageSelectedIndex=languageSelectedIndex;
+        this.surveyId=surveyId;
+        this.lastTimeNotified=lastTimeNotified;
+    }
+
 
 
     public void setAskerId(String askerId) {
@@ -87,56 +178,10 @@ public class AskSurveyModel {
     }
 
     public void setLanguageSelectedIndex(int languageSelectedIndex) {
-        this.languageSelectedIndex = languageSelectedIndex;
-    }
+        this.languageSelectedIndex = languageSelectedIndex; }
 
     public void setSurveyId(String surveyId) {
         this.surveyId = surveyId;
-    }
-
-
-    public AskSurveyModel(){}
-    public AskSurveyModel(String askerId,
-                          String askerName,
-                          String askerImageUrlLow,
-                          String askerBio,
-                          String question,
-                          long timeOfSurvey,
-                          boolean option1,
-                          boolean option2,
-                          boolean option3,
-                          boolean option4,
-                          String option1Value,
-                          String option2Value,
-                          String option3Value,
-                          String option4Value,
-                          int option1Count,
-                          int option2Count,
-                          int option3Count,
-                          int option4Count,
-                          int languageSelectedIndex,
-                          String surveyId){
-
-        this.askerId=askerId;
-        this.askerName=askerName;
-        this.askerImageUrlLow=askerImageUrlLow;
-        this.askerBio=askerBio;
-        this.question=question;
-        this.timeOfSurvey=timeOfSurvey;
-        this.option1=option1;
-        this.option2=option2;
-        this.option3=option3;
-        this.option4=option4;
-        this.option1Value=option1Value;
-        this.option2Value=option2Value;
-        this.option3Value=option3Value;
-        this.option4Value=option4Value;
-        this.option1Count=option1Count;
-        this.option2Count=option2Count;
-        this.option3Count=option3Count;
-        this.option4Count=option4Count;
-        this.languageSelectedIndex=languageSelectedIndex;
-        this.surveyId=surveyId;
     }
 
     public String getAskerId() {
@@ -154,7 +199,6 @@ public class AskSurveyModel {
     public String getQuestion() {
         return question;
     }
-
 
     public long getTimeOfSurvey() {
         return timeOfSurvey;
@@ -218,6 +262,10 @@ public class AskSurveyModel {
 
     public String getSurveyId() {
         return surveyId;
+    }
+
+    public long getLastTimeNotified() {
+        return lastTimeNotified;
     }
 }
 

@@ -14,6 +14,7 @@ public class UserAnswerModel {
     private long timeOfAsking;
     private long timeOfAnswering;
     private String answerId;
+    private String answererId;
     private boolean helpful;
     private String answer;
     private boolean imageAttached;
@@ -33,6 +34,7 @@ public class UserAnswerModel {
             long timeOfAsking,
             long timeOfAnswering,
             String answerId,
+            String answererId,
             boolean helpful,
             String answer,
             boolean imageAttached,
@@ -49,6 +51,7 @@ public class UserAnswerModel {
         this.timeOfAsking = timeOfAsking;
         this.timeOfAnswering = timeOfAnswering;
         this.answerId = answerId;
+        this.answererId=answererId;
         this.helpful = helpful;
         this.answer = answer;
         this.imageAttached = imageAttached;
@@ -100,6 +103,10 @@ public class UserAnswerModel {
 
     public String getAnswerId() {
         return answerId;
+    }
+
+    public String getAnswererId() {
+        return answererId;
     }
 
     public boolean isHelpful() {

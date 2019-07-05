@@ -1,9 +1,5 @@
 package com.droid.solver.askapp.Main;
 
-import android.support.v4.content.res.ResourcesCompat;
-
-import com.droid.solver.askapp.R;
-
 public class Constants {
     public static final String PREFERENCE_NAME="user_preferences";
     public static final String PROFILE_PIC="profile_pic";

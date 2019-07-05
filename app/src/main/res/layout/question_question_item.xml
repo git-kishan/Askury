@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
+    android:layout_marginStart="5dp"
     android:clickable="true"
-    android:layout_marginTop="5dp"
+    android:layout_marginTop="8dp"
     android:id="@+id/root_card_view"
-    android:elevation="20dp"
+    android:elevation="8dp"
     android:focusable="true"
     android:foreground="?android:selectableItemBackground"
-    android:layout_marginEnd="8dp"
+    android:layout_marginEnd="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -18,13 +18,13 @@
     app:layout_constraintTop_toTopOf="parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/asker_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
@@ -36,31 +36,35 @@
             android:maxLines="1"
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/profile_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Sheena Rose" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/about_textview"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:maxLines="1"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
             tools:text="Freenlancer|writer" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
+            android:paddingBottom="8dp"
             android:alpha="0.7"
-            android:maxLines="7"
+            android:maxLines="5"
+            android:ellipsize="end"
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -71,8 +75,7 @@
              y scroll the firefox scrollbar s there any possible way to scroll the firey scroll the firefox scrollbar s there any possible way to scroll the fire
             the firefox scrollbar s there any possible way to scroll the fire
             the firefox scrollbar s there any possible way to scroll the firefox scrollbar scroll the firefox scrollbar " />
-
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/time_ago_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -97,18 +100,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/tap_to_more_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="2dp"
             android:alpha="0.7"
+            android:visibility="gone"
             android:text="Tap to answer"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/question_textview" />
+            app:layout_constraintTop_toBottomOf="@+id/question_textview"
+            tools:ignore="SmallSp"
+            />
 
         <View
             android:id="@+id/view9"
@@ -121,5 +127,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-    </android.support.constraint.ConstraintLayout>
-</android.support.v7.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:elevation="5dp"
     android:layout_height="wrap_content">
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             app:layout_constraintVertical_bias="0.19999999"
             tools:text="Sahil Sekhawat" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView15"
             tools:text="Computer science graduate from nit patna" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView19"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -110,6 +110,6 @@
             app:layout_constraintTop_toBottomOf="@+id/circleImageView2"
             tools:ignore="smallSp"
             />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

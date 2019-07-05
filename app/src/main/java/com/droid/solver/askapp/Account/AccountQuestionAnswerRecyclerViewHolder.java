@@ -3,10 +3,10 @@ package com.droid.solver.askapp.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.emoji.widget.EmojiTextView;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,7 +14,6 @@ import com.droid.solver.askapp.Answer.UserAnswerModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.homeAnswer.AnswerActivity;
-import com.google.firebase.auth.FirebaseAuth;
 import com.like.LikeButton;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -25,6 +24,7 @@ public class AccountQuestionAnswerRecyclerViewHolder extends RecyclerView.ViewHo
     EmojiTextView askerName,askerBio,questionTextView,answerTextView;
     CardView rootCardView;
     LikeButton likeButton;
+
     public AccountQuestionAnswerRecyclerViewHolder(View itemView){
         super(itemView);
         askerImageView=itemView.findViewById(R.id.profile_image);
@@ -49,7 +49,7 @@ public class AccountQuestionAnswerRecyclerViewHolder extends RecyclerView.ViewHo
          SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
          Intent intent=new Intent(context,OtherAccountActivity.class);
          intent.putExtra("profile_image", model.getAnswerId());
-         intent.putExtra("uid", preferences.getString(Constants.userId, FirebaseAuth.getInstance().getCurrentUser().getUid()));
+         intent.putExtra("uid", model.getAnswererId());
          intent.putExtra("user_name", preferences.getString(Constants.userName, "Someone"));
          intent.putExtra("bio", preferences.getString(Constants.bio, ""));
          context.startActivity(intent);

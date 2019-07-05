@@ -1,20 +1,16 @@
 package com.droid.solver.askapp.Account;
 
 
-import android.graphics.Path;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Question.UserQuestionModel;
@@ -23,8 +19,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -32,7 +26,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AccountQuestionFragment extends Fragment {
 
@@ -66,9 +59,14 @@ public class AccountQuestionFragment extends Fragment {
         initRecyclerView();
         return view;
     }
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    private void checkFollowerList(){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&uid!=null) {
+            String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            if(selfUid.equals(uid)){
+
+            }
+
+        }
     }
     private void initRecyclerView(){
         layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);

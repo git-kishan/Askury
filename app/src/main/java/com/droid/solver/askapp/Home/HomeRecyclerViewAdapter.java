@@ -2,9 +2,9 @@ package com.droid.solver.askapp.Home;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,9 +80,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             case LOADING:
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
                 viewHolder=new LoadingViewHolderVertically(view);
-            default:
-                view=inflater.inflate(R.layout.loading, viewGroup,false);
-                viewHolder=new LoadingViewHolderVertically(view);
+                    default:
+                        view=inflater.inflate(R.layout.loading, viewGroup,false);
+                        viewHolder=new LoadingViewHolderVertically(view);
                 break;
         }
         return viewHolder;
@@ -580,21 +580,27 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 holder.onWantToAnswer(context,rootQuestionModel);
             }
         });
-        holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {
+        holder.answer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onAnswersClicked(context, rootQuestionModel);
+                holder.onAnswerClicked(context, rootQuestionModel);
+            }
+        });
+        holder.question.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswerClicked(context, rootQuestionModel);
             }
         });
         holder.likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                holder.onLiked(context, rootQuestionModel);
+                holder.onLiked(context, rootQuestionModel,answerLikeListFromLocalDatabase);
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                holder.onDisliked(context, rootQuestionModel);
+                holder.onDisliked(context, rootQuestionModel,answerLikeListFromLocalDatabase);
             }
         });
 
@@ -644,21 +650,28 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 holder.onWantToAnswer(context, rootQuestionModel);
             }
         });
-        holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {
+        holder.answer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onAnswersClicked(context, rootQuestionModel);
+                holder.onAnswerClicked(context, rootQuestionModel);
+            }
+        });
+        holder.question.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onAnswerClicked(context, rootQuestionModel);
             }
         });
         holder.likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                holder.onLiked(context, rootQuestionModel);
+                holder.onLiked(context, rootQuestionModel,
+                        answerLikeListFromLocalDatabase);
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                holder.onDisliked(context, rootQuestionModel);
+                holder.onDisliked(context, rootQuestionModel,answerLikeListFromLocalDatabase);
             }
         });
         holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {

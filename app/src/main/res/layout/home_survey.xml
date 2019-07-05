@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:elevation="12dp"
-    android:layout_marginTop="24dp"
-    android:layout_marginBottom="24dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
+    android:elevation="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
     android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -17,7 +16,7 @@
     app:layout_constraintTop_toTopOf="parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -46,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/option1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -54,7 +53,7 @@
                     android:gravity="center"
                     tools:text="Republic of india" />
 
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/percent1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -69,7 +68,7 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/asker_name"
             android:layout_width="wrap_content"
             android:layout_height="18dp"
@@ -89,7 +88,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Sheena Rose is doing a survey" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/about_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,7 +106,7 @@
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
             tools:text="Freenlancer|writer" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -177,7 +176,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/option2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -186,7 +185,7 @@
                     android:layout_marginTop="0dp"
                     android:gravity="center"
                     tools:text="United states of America" />
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/percent2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -224,7 +223,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/option3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -233,7 +232,7 @@
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     tools:text="Undemocrate China" />
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:layout_width="wrap_content"
                     android:id="@+id/percent3"
                     android:layout_height="match_parent"
@@ -274,7 +273,7 @@
                     android:id="@+id/view4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/option4"
                     android:layout_width="wrap_content"
                     android:gravity="center"
@@ -282,7 +281,7 @@
                     android:layout_height="match_parent"
                     tools:text="Soviet union Russia"
                     />
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/percent4"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -305,5 +304,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
-    </android.support.constraint.ConstraintLayout>
-</android.support.v7.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

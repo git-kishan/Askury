@@ -3,10 +3,10 @@ package com.droid.solver.askapp.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -15,6 +15,7 @@ import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.homeAnswer.AnswerActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -36,7 +37,6 @@ public class AccountQuestionRecyclerViewHolder extends RecyclerView.ViewHolder {
         answerCount = itemView.findViewById(R.id.answer_count);
         profileImage=itemView.findViewById(R.id.profile_image);
     }
-
     void onCardClicked(final UserQuestionModel model) {
         Log.i("TAG","Card clicked in account");
         Intent intent = new Intent(context, AnswerActivity.class);
@@ -54,6 +54,7 @@ public class AccountQuestionRecyclerViewHolder extends RecyclerView.ViewHolder {
         context.startActivity(intent);
     }
     void onProfileImageClicked(final Context context, final UserQuestionModel model){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Intent intent=new Intent(context,OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getUserImageUrlLow());
         intent.putExtra("uid",model.getUserId());

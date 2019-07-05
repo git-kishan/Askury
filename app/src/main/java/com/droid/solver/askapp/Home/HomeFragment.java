@@ -1,21 +1,18 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Toast;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -101,8 +98,11 @@ public class HomeFragment extends Fragment  {
             public void run() {
                 if(getActivity()!=null) {
                     LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
+                    if(localDatabase.getImagePollReport()!=null)
                     reportedImageListFromLocalDatabase.addAll(localDatabase.getImagePollReport());
+                    if(localDatabase.getReportedSurvey()!=null)
                     reportedSurveyListFromLocalDatabase.addAll(localDatabase.getReportedSurvey());
+                    if(localDatabase.getReportedQuestion()!=null)
                     reportedQuestionFromLocalDatabase.addAll(localDatabase.getReportedQuestion());
                 }
             }
@@ -296,44 +296,48 @@ public class HomeFragment extends Fragment  {
                 adapter = new HomeRecyclerViewAdapter(getActivity(), list, answerLikeListFromLocalDatabase, imagePollLikeMapFromLocalDatabase,
                         surveyParticipatedMapFromLocalDatabase, followingIdListFromLocalDatabase);
                 recyclerView.setAdapter(adapter);
-                LocalDatabase localDatabase=new LocalDatabase(getActivity().getApplicationContext());
-                HashMap<String,Integer> imagePollLikeTempMap=localDatabase.getImagePollLikeModel();
-                if(imagePollLikeTempMap!=null) {
-                    imagePollLikeMapFromLocalDatabase.putAll(imagePollLikeTempMap);
-                }
-                HashMap<String,Integer> surveyPollLikeTempMap=localDatabase.getSurveyParticipatedModel();
-                if(surveyPollLikeTempMap!=null) {
-                    surveyParticipatedMapFromLocalDatabase.putAll(surveyPollLikeTempMap);
-                }
-                ArrayList<String> followingTempList=localDatabase.getFollowingIdList();
-                if(followingTempList!=null) {
-                    followingIdListFromLocalDatabase.addAll(followingTempList);
+                if(getActivity()!=null) {
+                    LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
+                    HashMap<String, Integer> imagePollLikeTempMap = localDatabase.getImagePollLikeModel();
+
+                    if (imagePollLikeTempMap != null) {
+                        imagePollLikeMapFromLocalDatabase.putAll(imagePollLikeTempMap);
+                    }
+                    HashMap<String, Integer> surveyPollLikeTempMap = localDatabase.getSurveyParticipatedModel();
+                    if (surveyPollLikeTempMap != null) {
+                        surveyParticipatedMapFromLocalDatabase.putAll(surveyPollLikeTempMap);
+                    }
+                    ArrayList<String> followingTempList = localDatabase.getFollowingIdList();
+                    if (followingTempList != null) {
+                        followingIdListFromLocalDatabase.addAll(followingTempList);
+                    }
                 }
                 adapter.notifyDataSetChanged();
             }
         });
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager manager= (LinearLayoutManager) recyclerView.getLayoutManager();
-                if(!isLoading){
-                    if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
-                        list.add(list.size(),null);
-                        adapter.notifyItemInserted(list.size());
-                        isLoading=true;
-                        loadMoreItemFromRemoteDatabase();
-                    }
-                }
-
-            }
-        });
+        recyclerView.addOnScrollListener(onScrollListener);
     }
+    RecyclerView.OnScrollListener onScrollListener=new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LinearLayoutManager manager= (LinearLayoutManager) recyclerView.getLayoutManager();
+            if(!isLoading){
+                if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
+                    list.add(list.size(),null);
+                    adapter.notifyItemInserted(list.size());
+                    isLoading=true;
+                    loadMoreItemFromRemoteDatabase();
+                }
+            }
+
+        }
+    };
 
     private void loadMoreItemFromRemoteDatabase(){
         onLoadingLoadImagePollFromRemoteDatabase();
@@ -420,7 +424,6 @@ public class HomeFragment extends Fragment  {
                 });
         }
     }
-
     private void onLoadingLoadQuestionFromRemoteDatabase(){
 
         rootRef=FirebaseFirestore.getInstance();
@@ -451,7 +454,7 @@ public class HomeFragment extends Fragment  {
                             if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                                 lastQuestionSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
                             } else if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
-                                lastQuestionSnapshot = firstQuestionSnapshot;
+                                recyclerView.removeOnScrollListener(onScrollListener);
                             }
                             int scrollPosition = list.size() - 1;
                             list.remove(scrollPosition);

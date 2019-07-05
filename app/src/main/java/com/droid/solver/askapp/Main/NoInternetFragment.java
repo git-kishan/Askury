@@ -1,23 +1,19 @@
 package com.droid.solver.askapp.Main;
 
-import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.net.ConnectivityManagerCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.Nullable;
+import com.google.android.material.button.MaterialButton;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.droid.solver.askapp.R;
-import com.squareup.okhttp.ConnectionPool;
 
 
 public class NoInternetFragment extends Fragment implements View.OnClickListener {

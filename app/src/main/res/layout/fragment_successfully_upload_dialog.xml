@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/image_successfull_uploaded_bottom_sheet_dialog_fragment"
     tools:context=".ImagePoll.ImageSelectionFragment">
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RelativeLayout
@@ -32,7 +32,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
         </RelativeLayout>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

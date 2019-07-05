@@ -1,9 +1,9 @@
 package com.droid.solver.askapp.Question;
 
 import android.content.Context;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 

@@ -1,15 +1,12 @@
 package com.droid.solver.askapp.Answer;
 
 import android.Manifest;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,31 +15,24 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.FontRequestEmojiCompatConfig;
-import android.support.text.emoji.widget.EmojiEditText;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.provider.FontRequest;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.text.FontRequestEmojiCompatConfig;
+import androidx.emoji.widget.EmojiEditText;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,8 +41,6 @@ import android.widget.Toast;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
-import com.facebook.share.model.SharePhoto;
-import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -70,24 +58,17 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.firestore.v1.Document;
-import com.google.firestore.v1.DocumentMask;
-import com.google.firestore.v1.FirestoreGrpc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectStreamException;
-import java.lang.reflect.Field;
-import java.security.Permission;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import steelkiwi.com.library.DotsLoaderView;
 
@@ -584,7 +565,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             UserAnswerModel userAnswerModel=new UserAnswerModel(
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
-                    System.currentTimeMillis(), answerId, false, answer,
+                    System.currentTimeMillis(), answerId, uid,false, answer,
                     imageAttached, answerImageUrl, fontSelected, 0,anonymous);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
@@ -656,7 +637,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             UserAnswerModel userAnswerModel=new UserAnswerModel(
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
-                    System.currentTimeMillis(), previousAnswerId, false, answer,
+                    System.currentTimeMillis(), previousAnswerId, uid,false, answer,
                     imageAttached, answerImageUrl, fontSelected, 0,anonymous);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(

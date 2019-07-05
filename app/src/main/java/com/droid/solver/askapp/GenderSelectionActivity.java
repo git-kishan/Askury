@@ -2,11 +2,10 @@ package com.droid.solver.askapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.droid.solver.askapp.Main.Constants;
-import com.facebook.share.model.SharePhoto;
 
 public class GenderSelectionActivity extends AppCompatActivity implements View .OnClickListener{
 
@@ -54,7 +52,6 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
     }
 
     public void onClick(View view){
-
         switch (view.getId()){
             case R.id.male_card_view:
                 maleCardView.setAlpha(1);

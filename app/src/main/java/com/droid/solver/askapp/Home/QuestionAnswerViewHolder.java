@@ -5,26 +5,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.NonNull;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.AnswerActivity;
-import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
-import com.droid.solver.askapp.Question.AskQuestionViewHolderWithoutImage;
+import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Question.Following;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
+import com.droid.solver.askapp.homeAnswer.DetailAnswerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,11 +34,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 import com.like.LikeButton;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
@@ -81,7 +78,7 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-    public void onWantToAnswer(Context context, RootQuestionModel model){
+     void onWantToAnswer(Context context, RootQuestionModel model){
         Intent intent=new Intent(context,AnswerActivity.class);
         intent.putExtra("askerUid", model.getAskerId());
         intent.putExtra("questionId", model.getQuestionId());
@@ -96,19 +93,38 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         context.startActivity(intent);
     }
 
-    public void onAnswersClicked(Context context,RootQuestionModel model){
+     void onAnswerClicked(Context context,RootQuestionModel model){
+
+        Intent intent=new Intent(context, DetailAnswerActivity.class);
+        intent.putExtra("askerId", model.getAskerId());
+        intent.putExtra("answererId",model.getRecentAnswererId());
+        intent.putExtra("askerName",model.getAskerName());
+        intent.putExtra("askerBio",model.getAskerBio());
+        intent.putExtra("answererName", model.getRecentAnswererName());
+        intent.putExtra("answererBio", model.getRecentAnswererBio());
+        intent.putExtra("timeOfAsking", model.getTimeOfAsking());
+        intent.putExtra("timeOfAnswering", model.getTimeOfAnswering());
+        intent.putExtra("question",model.getQuestion());
+        intent.putExtra("answer",model.getRecentAnswer());
+        intent.putExtra("anonymous", model.isAnonymous());
+        intent.putExtra("fontUsed",model.getFontUsed());
+        intent.putExtra("isLikedByMe", likeButton.isLiked());
+        intent.putExtra("likeCount", model.getRecentAnswerLikeCount());
+        context.startActivity(intent);
 
     }
 
-    public void onLiked(final Context context, final RootQuestionModel model){
+     void onLiked(final Context context, final RootQuestionModel model,ArrayList<String> answerLikeListFromLocalDatabase){
 
         SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         final String likerId=user.getUid();
         String likerName=preferences.getString(Constants.userName, null);
         String likerImageUrl=preferences.getString(Constants.profilePicLowUrl, null);
         String likerBio=preferences.getString(Constants.bio, null);
+        String questionId=model.getQuestionId();
+        String askerId=model.getAskerId();
 
-        AnswerLikeModel answerLikeModel=new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio);
+        AnswerLikeModel answerLikeModel=new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio,questionId,askerId);
 
         Map<String ,Object> likeMap=new HashMap<>();
         likeMap.put("answerLikeCount", FieldValue.increment(1));
@@ -155,11 +171,20 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
         int count=Integer.parseInt(likeCount.getText().toString())+1;
         likeCount.setText(String.valueOf(count));
+
         LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         database.insertSingleAnswerLikeModel(model.getRecentAnswerId());
-    }
 
-    public void onDisliked(final Context context, final RootQuestionModel model){
+        if(answerLikeListFromLocalDatabase!=null) {
+            answerLikeListFromLocalDatabase.add(model.getRecentAnswerId());
+        }
+        if(MainActivity.answerLikeList!=null) {
+            MainActivity.answerLikeList.add(model.getRecentAnswerId());
+        }
+        model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount()+1);
+
+    }
+     void onDisliked(final Context context, final RootQuestionModel model,ArrayList<String> answerLikeListFromLocalDatabase){
         Log.i("TAG", "disliked triggered");
         String likerId=user.getUid();
         Map<String ,Object> likeMap=new HashMap<>();
@@ -202,11 +227,21 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
         int count=Integer.parseInt(likeCount.getText().toString())-1;
         likeCount.setText(String.valueOf(count));
+
         LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         database.removeAnswerLikeModel(model.getRecentAnswerId());
+
+        if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
+                MainActivity.answerLikeList.remove(model.getRecentAnswerId());
+
+        }if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0){
+            answerLikeListFromLocalDatabase.remove(model.getRecentAnswerId());
+         }
+
+            model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount()-1);
     }
 
-    public void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
+     void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
         Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
         intent.putExtra("askerImageUrl", rootQuestionModel.getAskerImageUrlLow());
         intent.putExtra("timeOfAsking", rootQuestionModel.getTimeOfAsking());
@@ -222,25 +257,34 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     void onAskerImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
 
-        Intent intent=new Intent(context, OtherAccountActivity.class);
-        intent.putExtra("profile_image", rootQuestionModel.getAskerImageUrlLow());
-        intent.putExtra("uid", rootQuestionModel.getAskerId());
-        intent.putExtra("user_name", rootQuestionModel.getAskerName());
-        intent.putExtra("bio", rootQuestionModel.getAskerBio());
-        context.startActivity(intent);
+        if(rootQuestionModel.isAnonymous()){
+            homeMessageListener.onSomeMessage("Anonymous user");
+        }else {
+            Intent intent=new Intent(context, OtherAccountActivity.class);
+            intent.putExtra("profile_image", rootQuestionModel.getAskerImageUrlLow());
+            intent.putExtra("uid", rootQuestionModel.getAskerId());
+            intent.putExtra("user_name", rootQuestionModel.getAskerName());
+            intent.putExtra("bio", rootQuestionModel.getAskerBio());
+            context.startActivity(intent);
+        }
+
 
     }
 
     void onAnswererImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
-        Intent intent=new Intent(context, OtherAccountActivity.class);
-        intent.putExtra("profile_image", rootQuestionModel.getRecentAnswererImageUrlLow());
-        intent.putExtra("uid", rootQuestionModel.getRecentAnswererId());
-        intent.putExtra("user_name", rootQuestionModel.getRecentAnswererName());
-        intent.putExtra("bio", rootQuestionModel.getAskerBio());
-        context.startActivity(intent);
+        if(rootQuestionModel.isAnonymous()){
+            homeMessageListener.onSomeMessage("Anonymous user");
+        }else {
+            Intent intent=new Intent(context, OtherAccountActivity.class);
+            intent.putExtra("profile_image", rootQuestionModel.getRecentAnswererImageUrlLow());
+            intent.putExtra("uid", rootQuestionModel.getRecentAnswererId());
+            intent.putExtra("user_name", rootQuestionModel.getRecentAnswererName());
+            intent.putExtra("bio", rootQuestionModel.getAskerBio());
+            context.startActivity(intent);
+        }
     }
 
-    public void onThreeDotClicked(final Context context, final RootQuestionModel rootQuestionModel, ArrayList<Object> list,
+     void onThreeDotClicked(final Context context, final RootQuestionModel rootQuestionModel, ArrayList<Object> list,
                                   HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog, null, false);
@@ -462,8 +506,12 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     private boolean isNetworkAvailable(){
         ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info=manager.getActiveNetworkInfo();
-        return info!=null&&info.isConnected();
+        if(manager!=null){
+            NetworkInfo info=manager.getActiveNetworkInfo();
+            return info!=null&&info.isConnected();
+        }
+        return false;
+
     }
 
 

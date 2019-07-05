@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,7 +10,7 @@
     android:elevation="5dp"
     android:layout_margin="8dp"
     android:layout_height="wrap_content">
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -25,13 +25,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
-            android:text="Sahil Sekhawat"
+            tools:text="Sahil Sekhawat"
             android:textColor="@android:color/black"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/circleImageView2"
@@ -41,7 +41,7 @@
             app:layout_constraintTop_toTopOf="@+id/circleImageView2"
             app:layout_constraintVertical_bias="0.19999999" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,9 +52,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textView15"
             app:layout_constraintTop_toBottomOf="@+id/textView15"
-            android:text="Computer science graduate from nit patna " />
+            tools:text="Computer science graduate from nit patna " />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView19"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -74,14 +74,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16"
-            android:text="Why it is better to choose computer science technology branch in
-            hy it is better to choose computer science technology branch in national inst
-            hy it is better to choose computer science technology branch in national inst
-            hy it is better to choose computer science technology branch in national inst
-            hy it is better to choose computer science technology branch in national inst
-            hy it is better to choose computer science technology branch in national inst
-            hy it is better to choose computer science technology branch in national instnational institure of technology patna" />
+            app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
         <com.like.LikeButton
             android:id="@+id/likeButton"
@@ -92,10 +85,10 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/ripple_background"
             app:anim_scale_factor="2"
-            app:circle_end_color="@color/like_button_red"
-            app:circle_start_color="@color/like_button_red"
-            app:dots_primary_color="@color/like_button_red"
-            app:dots_secondary_color="@color/like_button_red"
+            app:circle_end_color="@color/heart_color"
+            app:circle_start_color="@color/heart_color"
+            app:dots_primary_color="@color/heart_color"
+            app:dots_secondary_color="@color/heart_color"
             app:icon_size="16dp"
             app:icon_type="heart"
             app:is_enabled="true"
@@ -111,11 +104,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginBottom="3dp"
-            android:text="3 mon ago"
+            tools:text="3 mon ago"
             android:textSize="8sp"
             app:layout_constraintBottom_toTopOf="@+id/textView19"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/circleImageView2" />
+            app:layout_constraintTop_toBottomOf="@+id/circleImageView2"
+            tools:ignore="SmallSp"
+            />
 
         <ImageView
             android:id="@+id/imageView19"
@@ -139,13 +134,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-4dp"
-            android:text="135k"
+            tools:text="135k"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="@+id/likeButton"
             app:layout_constraintStart_toStartOf="@+id/likeButton"
-            app:layout_constraintTop_toBottomOf="@+id/likeButton" />
+            app:layout_constraintTop_toBottomOf="@+id/likeButton"
+            tools:ignore="SmallSp"
+            />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/tap_to_more_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -153,12 +150,14 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="2dp"
             android:alpha="0.7"
-            android:text="Tap to more"
+            tools:text="Tap to more"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView19"
-            app:layout_constraintVertical_bias="0.0" />
-    </android.support.constraint.ConstraintLayout>
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="SmallSp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

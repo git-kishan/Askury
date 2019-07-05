@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="10dp"
+    android:elevation="8dp"
     android:layout_marginStart="5dp"
     android:layout_marginEnd="5dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -31,7 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/asker_name"
             android:layout_width="wrap_content"
             android:layout_height="18dp"
@@ -48,7 +48,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Sheena Rose" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/about_textview"
             android:layout_width="154dp"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
             tools:text="Freenlancer|writer" />
 
-        <android.support.text.emoji.widget.EmojiTextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,6 +68,7 @@
             android:alpha="0.7"
             android:maxLines="3"
             android:autoLink="all"
+            android:background="?android:selectableItemBackground"
             android:ellipsize="end"
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +86,7 @@
             app:layout_constraintTop_toBottomOf="@+id/profile_image"
             tools:text="5 sec ago" />
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,7 +101,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/question_textview">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -115,7 +116,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/answerer_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,7 +129,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Jennifer lawrence" />
 
-                <android.support.text.emoji.widget.EmojiTextView
+                <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/answer_text_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -166,9 +167,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/answer_text_view" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <View
             android:id="@+id/view2"
@@ -190,10 +191,10 @@
             android:layout_marginBottom="8dp"
             app:anim_scale_factor="2"
             android:background="@drawable/ripple_background"
-            app:circle_end_color="@color/like_button_red"
-            app:circle_start_color="@color/like_button_red"
-            app:dots_primary_color="@color/like_button_red"
-            app:dots_secondary_color="@color/like_button_red"
+            app:circle_end_color="@color/heart_color"
+            app:circle_start_color="@color/heart_color"
+            app:dots_primary_color="@color/heart_color"
+            app:dots_secondary_color="@color/heart_color"
             app:icon_size="20dp"
             app:icon_type="heart"
             app:is_enabled="true"
@@ -289,7 +290,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_three_button" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -298,6 +299,6 @@
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         />
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>
 
 

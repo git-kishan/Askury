@@ -2,21 +2,18 @@ package com.droid.solver.askapp.Question;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
@@ -31,7 +28,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
@@ -50,10 +49,13 @@ public class QuestionFragment extends Fragment {
     private FirebaseUser user;
     private FirebaseFirestore root;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ArrayList<RootQuestionModel> questionListFetchFromRemoteDatabase,questionListFetchFromLocalDatabase;
+    private ArrayList<Object> list;
     private LinearLayoutManager layoutManager;
     private AskQuestionRecyclerAdapter adapter;
     private Context context;
+    private static final int QUESTION_LIMIT=8;
+    private boolean isLoading=false;
+    private DocumentSnapshot lastVisibleSnapshot=null;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
@@ -65,23 +67,29 @@ public class QuestionFragment extends Fragment {
         shimmerFrameLayout.startShimmer();
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView=view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user==null){
             startActivity(new Intent(getActivity(), SignInActivity.class));
+            if(getActivity()!=null)
             getActivity().finish();
         }
         root=FirebaseFirestore.getInstance();
         addFabItem();
-        questionListFetchFromLocalDatabase=new ArrayList<>();
-        questionListFetchFromRemoteDatabase=new ArrayList<>();
-        loadDataFromRemoteDatabase();
-        swipeRefreshLayout.setEnabled(true);
+        initScrollListener();
         return view;
     }
 
+    private void initScrollListener(){
+        list=new ArrayList<>();
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(scrollListener);
+        adapter =new AskQuestionRecyclerAdapter(getActivity(), list);
+        recyclerView.setAdapter(adapter);
+        loadDataFromRemoteDatabase();
+        swipeRefreshLayout.setEnabled(true);
+    }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -135,31 +143,56 @@ public class QuestionFragment extends Fragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
+    RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            if(!isLoading){
+                if(manager!=null&&list!=null&&
+                        manager.findLastVisibleItemPosition()==list.size()-1){
+                    isLoading=true;
+                    list.add(list.size(), null);
+                    adapter.notifyItemInserted(list.size());
+                    loadMoreDataFromRemoteDatabase();
+                }
+            }
+
+        }
+    };
 
     private void loadDataFromRemoteDatabase() {
 
-        root.collection("question").whereEqualTo("answerCount",0).
+        root.collection("question")
+                .whereEqualTo("answerCount",0).
+                orderBy("timeOfAsking", Query.Direction.DESCENDING).
+                limit(QUESTION_LIMIT).
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                         if (task.isSuccessful()) {
+                            if(task.getResult()!=null)
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
-                                questionListFetchFromRemoteDatabase.add(model);
+                                if(model.getAskerId()!=null&&model.getQuestionId()!=null){
+                                    list.add(model);
+                                }
                             }
-                            adapter =new AskQuestionRecyclerAdapter(getActivity(), questionListFetchFromRemoteDatabase);
-                            recyclerView.setAdapter(adapter);
+                            if(task.getResult()!=null&&task.getResult().size()>0){
+                                lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                            }
                             adapter.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                             swipeRefreshLayout.setEnabled(false);
                             shimmerFrameLayout.setVisibility(View.GONE);
                         }
                         else {
+                            Log.i("TAG", "task exception :- "+task.getException());
                             swipeRefreshLayout.setRefreshing(false);
                             swipeRefreshLayout.setEnabled(false);
                             Log.i("TAG", "exception occurs in getting documents :- " + task.getException());
@@ -170,6 +203,52 @@ public class QuestionFragment extends Fragment {
                     }
 
                 });
+    }
+
+    private void loadMoreDataFromRemoteDatabase() {
+
+        if(lastVisibleSnapshot!=null) {
+            root.collection("question").
+                    whereEqualTo("answerCount", 0).
+                    orderBy("timeOfAsking", Query.Direction.DESCENDING).
+                    startAfter(lastVisibleSnapshot)
+                    .limit(QUESTION_LIMIT).
+                    get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        int scrollPosition=list.size()-1;
+                        list.remove(scrollPosition);
+                        adapter.notifyItemRemoved(list.size());
+                        isLoading=false;
+                        if (task.getResult() != null)
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
+                                if (model.getAskerId() != null && model.getQuestionId() != null) {
+                                    list.add(model);
+                                }
+                            }
+                        if(task.getResult()!=null&&task.getResult().size()>0){
+                            lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                        }else if(task.getResult()!=null&&task.getResult().size()==0){
+                            recyclerView.removeOnScrollListener(scrollListener);
+                        }
+                        adapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
+                        swipeRefreshLayout.setEnabled(false);
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                    } else {
+                        swipeRefreshLayout.setRefreshing(false);
+                        swipeRefreshLayout.setEnabled(false);
+                        Log.i("TAG", "exception occurs in getting documents :- " + task.getException());
+                        shimmerFrameLayout.setVisibility(View.GONE);
+
+                        Toast.makeText(getActivity(), "Network response is not good", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+            });
+        }
     }
 
     @Override

@@ -10,9 +10,9 @@
         android:title="Question"
         android:icon="@drawable/ic_question"/>
     <item
-        android:id="@+id/community"
-        android:title="Community"
-        android:icon="@drawable/ic_community"/>
+        android:id="@+id/notification"
+        android:title="Notifications"
+        android:icon="@drawable/ic_notifications"/>
     <item
         android:id="@+id/account"
         android:title="Account"

@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/round_bottomsheetdialogfragment"
     tools:context=".ImagePoll.ImageSelectionFragment">
-   <android.support.constraint.ConstraintLayout
+   <androidx.constraintlayout.widget.ConstraintLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        >
@@ -86,7 +86,7 @@
            app:layout_constraintTop_toBottomOf="@+id/cameraLayout" />
 
 
-   </android.support.constraint.ConstraintLayout>
+   </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

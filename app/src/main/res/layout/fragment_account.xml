@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:scrollbars="none"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingEnd="0dp"
@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
@@ -44,7 +44,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/type_image_card"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
@@ -64,10 +64,10 @@
                         android:contentDescription="gender"
                         android:visibility="visible"
                         android:src="@drawable/ic_femenine" />
-                </android.support.v7.widget.CardView>
-            </android.support.constraint.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="30dp"
@@ -87,10 +87,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
 
-            <android.support.text.emoji.widget.EmojiTextView
+            <androidx.emoji.widget.EmojiTextView
                 android:id="@+id/user_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
@@ -115,7 +115,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <android.support.text.emoji.widget.EmojiTextView
+            <androidx.emoji.widget.EmojiTextView
                 android:id="@+id/about_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -225,9 +225,9 @@
                 app:layout_constraintStart_toStartOf="@+id/points_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/about_user"
                 app:layout_constraintVertical_bias="1.0" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="288dp"
             android:layout_marginTop="8dp"
@@ -235,7 +235,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:visibility="visible"
                 android:layout_width="match_parent"
@@ -258,7 +258,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:visibility="visible"
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
@@ -268,7 +268,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tabLayout"/>
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -5,12 +5,22 @@ public class AnswerLikeModel {
     private String likerName;
     private String likerImageUrl;
     private String likerBio;
+    private String questionId;
+    private String askerId;
 
     public AnswerLikeModel(String likerId,String likerName,String likerImageUrl,String likeBio){
         this.likerId=likerId;
         this.likerName=likerName;
         this.likerImageUrl=likerImageUrl;
         this.likerBio=likeBio;
+    }
+    public AnswerLikeModel(String likerId,String likerName,String likerImageUrl,String likeBio,String questionId,String askerId){
+        this.likerId=likerId;
+        this.likerName=likerName;
+        this.likerImageUrl=likerImageUrl;
+        this.likerBio=likeBio;
+        this.questionId=questionId;
+        this.askerId = askerId;
     }
 
     public String getLikerImageUrl() {
@@ -29,4 +39,11 @@ public class AnswerLikeModel {
         return likerName;
     }
 
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public String getAskerId() {
+        return askerId;
+    }
 }

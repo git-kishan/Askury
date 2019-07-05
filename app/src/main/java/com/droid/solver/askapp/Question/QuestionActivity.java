@@ -9,26 +9,27 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.text.emoji.widget.EmojiEditText;
-import android.support.text.emoji.widget.EmojiTextView;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.emoji.widget.EmojiEditText;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -431,7 +432,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     }
     private void showCustomSuccessfullDialog() {
         final ViewGroup viewGroup = findViewById(R.id.root);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
+        final View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
         TextView textView=dialogView.findViewById(R.id.message_text_view);
@@ -444,6 +445,10 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
+                InputMethodManager imm= (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if(imm!=null){
+                    imm.hideSoftInputFromWindow(dialogView.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                }
                 Handler handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override

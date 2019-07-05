@@ -205,6 +205,11 @@ public class RootQuestionModel {
     public int getFontUsed() {
         return fontUsed;
     }
+
+    public void setRecentAnswerLikeCount(int recentAnswerLikeCount) {
+        this.recentAnswerLikeCount = recentAnswerLikeCount;
+    }
+
     public int getPoint() {
         return point;
     }
