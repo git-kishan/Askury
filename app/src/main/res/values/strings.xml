@@ -26,6 +26,9 @@
     <string name="second_percentage" translatable="false">%1$d </string>
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="count_answer" translatable="false">%1$d answer</string>
+    <string name="a_percent" translatable="false">A :- %1$d</string>
+    <string name="b_percent" translatable="false">B :- %1$d</string>
+    <string name="someone_likes_your_answer" translatable="false">%1$s likes your answer</string>
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>

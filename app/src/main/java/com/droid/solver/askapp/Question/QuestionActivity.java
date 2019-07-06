@@ -421,7 +421,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         Snackbar snackbar=Snackbar.make(rootView,  message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
         View view=snackbar.getView();
-        TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+        TextView tv =view.findViewById(R.id.snackbar_text);
         tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
         view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
         snackbar.show();

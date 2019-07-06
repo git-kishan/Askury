@@ -3,11 +3,11 @@ package com.droid.solver.askapp.Notification;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.R;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ImagePollViewHolder extends RecyclerView.ViewHolder {
@@ -24,5 +24,25 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         percent1=itemView.findViewById(R.id.textViewa);
         percent2=itemView.findViewById(R.id.textViewb);
         dot=itemView.findViewById(R.id.dot);
+    }
+
+
+    void onCardClicked(Context context, ImagePollModel model){
+        Intent intent=new Intent(context,NotificationImagePollActivity.class);
+        intent.putExtra("imagePollId", model.getImagePollId());
+        intent.putExtra("question",model.getQuestion());
+        intent.putExtra("askerId",model.getAskerId());
+        intent.putExtra("askerName", model.getAskerName());
+        intent.putExtra("askerBio",model.getAskerBio());
+        intent.putExtra("askerImageUrlLow", model.getAskerImageUrlLow());
+        intent.putExtra("image1Url", model.getImage1Url());
+        intent.putExtra("image2Url", model.getImage2Url());
+        intent.putExtra("image1LikeNo", model.getImage1LikeNo());
+        intent.putExtra("image2LikeNo", model.getImage2LikeNo());
+        intent.putExtra("containVioloanceOrAdult", model.isContainVioloanceOrAdult());
+        intent.putExtra("reported",model.isReported());
+        intent.putExtra("type", model.getType());
+        intent.putExtra("notifiedTime",model.getNotifiedTime());
+        context.startActivity(intent);
     }
 }

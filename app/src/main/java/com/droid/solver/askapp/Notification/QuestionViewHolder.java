@@ -3,11 +3,11 @@ package com.droid.solver.askapp.Notification;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.R;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class QuestionViewHolder extends RecyclerView.ViewHolder {
@@ -23,5 +23,19 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder {
         statusTextView=itemView.findViewById(R.id.text_view1);
         likes=itemView.findViewById(R.id.text_view2);
         dot=itemView.findViewById(R.id.dot);
+    }
+
+     void onCardClicked(Context context, QuestionModel model){
+
+         Intent intent=new Intent(context,NotificationQuestionActivity.class);
+         intent.putExtra("likerId", model.getLikerId());
+         intent.putExtra("likerName", model.getLikerName());
+         intent.putExtra("likerImageUrl", model.getLikerImageUrl());
+         intent.putExtra("likerBio", model.getLikerBio());
+         intent.putExtra("askerId", model.getAskerId());
+         intent.putExtra("questionId", model.getQuestionId());
+         intent.putExtra("type", model.getType());
+         intent.putExtra("notifiedTime", model.getNotifiedTime());
+         context.startActivity(intent);
     }
 }

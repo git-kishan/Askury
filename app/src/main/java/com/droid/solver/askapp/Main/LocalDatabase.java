@@ -30,7 +30,7 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=8;
+    private static final int DATABASE_VERSION=9;
 
     private final String USER_INFO_TABLE="user_info_table";
     private final String USER_QUESTION_MODEL="question_asked_table";

@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     android:id="@+id/root_card"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    app:cardCornerRadius="8dp"
+    android:clickable="true"
+    android:foreground="?android:selectableItemBackground"
+    android:focusable="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/liker_image"
-            android:layout_width="52dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/ripple_background"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_marginBottom="8dp"
             android:src="@drawable/ic_survey"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,19 +36,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
             android:ellipsize="end"
             android:gravity="center|start"
             android:maxLines="2"
             android:textColor="@android:color/black"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/dot"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/liker_image"
             app:layout_constraintTop_toBottomOf="@+id/time_ago"
+            app:layout_goneMarginEnd="16dp"
             tools:text="Survey question here" />
 
         <TextView
@@ -50,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
-            android:text="7 minutes ago"
+            tools:text="7 minutes ago"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/liker_image"
             app:layout_constraintTop_toTopOf="parent"

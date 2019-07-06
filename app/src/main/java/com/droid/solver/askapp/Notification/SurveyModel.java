@@ -24,6 +24,8 @@ public class SurveyModel {
     private String type;
     private long notifiedTime;
 
+    public SurveyModel(){}
+
     public SurveyModel(String askerBio,
                        String askerId,
                        String askerImageUrlLow,

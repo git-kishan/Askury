@@ -184,22 +184,24 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadProfilePicFromFile(){
-        SharedPreferences preferences=getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        String path=preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
-        File file=new File(path,"profile_pic_high_resolution");
-        try {
-            Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
-            profileImage.setImageBitmap(bitmap);
-        } catch (FileNotFoundException e) {
-            if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
-                String url = ProfileImageActivity.PROFILE_PICTURE +"/"+FirebaseAuth.getInstance().getCurrentUser().getUid()
-                        + ProfileImageActivity.THUMBNAIL;
-                StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
-                GlideApp.with(getActivity()).load(reference)
-                        .error(R.drawable.round_account)
-                        .placeholder(R.drawable.round_account)
-                        .into(profileImage);
-                e.printStackTrace();
+        if(getActivity()!=null) {
+            SharedPreferences preferences = getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+            String path = preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
+            File file = new File(path, "profile_pic_high_resolution");
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+                profileImage.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    String url = ProfileImageActivity.PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()
+                            + ProfileImageActivity.THUMBNAIL;
+                    StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
+                    GlideApp.with(getActivity()).load(reference)
+                            .error(R.drawable.round_account)
+                            .placeholder(R.drawable.round_account)
+                            .into(profileImage);
+                    e.printStackTrace();
+                }
             }
         }
     }

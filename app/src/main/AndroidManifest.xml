@@ -24,7 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".homeAnswer.DetailAnswerActivity"></activity>
+        <activity android:name=".Notification.NotificationQuestionActivity"></activity>
+        <activity android:name=".Notification.NotificationSurveyActivity" />
+        <activity android:name=".Notification.NotificationImagePollActivity" />
+        <activity android:name=".homeAnswer.DetailAnswerActivity" />
         <activity android:name=".Account.ExpandedViewPagerActivity" />
         <activity android:name=".setting.PrivacyPolicyActivity" />
         <activity android:name=".setting.TextViewToBitmap" />

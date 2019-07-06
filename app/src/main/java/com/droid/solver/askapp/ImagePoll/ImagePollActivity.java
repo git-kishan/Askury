@@ -54,7 +54,6 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -317,7 +316,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                             });
                     snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
                     View view=snackbar.getView();
-                    TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView tv =view.findViewById(R.id.snackbar_text);
                     tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
                     view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
                     snackbar.show();
@@ -340,7 +339,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                             });
                     snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
                     View view=snackbar.getView();
-                    TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView tv =view.findViewById(R.id.snackbar_text);
                     tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
                     view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
                     snackbar.show();
@@ -489,7 +488,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         Snackbar snackbar=Snackbar.make(rootView,  message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
         View view=snackbar.getView();
-        TextView tv =view.findViewById(android.support.design.R.id.snackbar_text);
+        TextView tv =view.findViewById(R.id.snackbar_text);
         tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
         view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
         snackbar.show();
