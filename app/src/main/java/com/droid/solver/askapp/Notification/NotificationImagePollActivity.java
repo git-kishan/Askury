@@ -2,6 +2,7 @@ package com.droid.solver.askapp.Notification;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.emoji.widget.EmojiTextView;
 
@@ -9,8 +10,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +33,7 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
     private EmojiTextView profileName,profileBio,question;
     private TextView timeAgo;
     private ImageView image1,image2;
+    private ConstraintLayout constraintLayout;
     private RelativeLayout relativeView1,relativeView2;
     private TextView percentView1,percentView2;
     private ImageView leftWhiteHeart,rightWhiteHeart,leftRedHeart,rightRedHeart;
@@ -59,7 +63,6 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         notifiedTime=intent.getLongExtra("notifiedTime",System.currentTimeMillis());
         initView();
         setData();
-
 
     }
     private void changeToolbarTitleFont(Toolbar toolbar){
@@ -92,6 +95,7 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         leftRedHeart=findViewById(R.id.imageView12);
         rightRedHeart=findViewById(R.id.imageView11);
         changeToolbarTitleFont(toolbar);
+        constraintLayout=findViewById(R.id.constraintLayout8);
         toolbar.setNavigationOnClickListener(this);
     }
 
@@ -127,12 +131,46 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         question.setText(imagePollQuestion);
         String mTimeAgo=getTime(notifiedTime,System.currentTimeMillis() );
         timeAgo.setText(mTimeAgo);
+        setPercentage();
 
     }
     private void setPercentage(){
-        if(image1LikeNo>0){
-
+        image1LikeNo=image1LikeNo<0?0:image1LikeNo;
+        image2LikeNo=image2LikeNo<0?0:image2LikeNo;
+        int total=image1LikeNo+image2LikeNo;
+        int perA=0,perB=0;
+        if(total!=0){
+            if(image1LikeNo==0&&image2LikeNo!=0){
+                perB=(image2LikeNo*100/total);
+                perA=100-perB;
+            }else if(image2LikeNo==0&&image1LikeNo!=0){
+                perA=(image1LikeNo*100/total);
+                perB=100-perA;
+            }else {
+                perA=(image1LikeNo*100/total);
+                perB=100-perA;
+            }
         }
+        View leftView=findViewById(R.id.left_view);
+        View rightView=findViewById(R.id.right_view);
+        LinearLayout.LayoutParams leftViewParams=new LinearLayout.LayoutParams(
+               0 , LinearLayout.LayoutParams.MATCH_PARENT,perA
+        );
+        LinearLayout.LayoutParams rightViewParams=new LinearLayout.LayoutParams(
+                0,LinearLayout.LayoutParams.MATCH_PARENT,perB
+        );
+        leftView.setLayoutParams(leftViewParams);
+        rightView.setLayoutParams(rightViewParams);
+
+        String firstLikes=String.format(getString(R.string.percentage_likes), perA)+"%"+getString(R.string.likes);
+        String secondLikes=String.format(getString(R.string.percentage_likes), perB)+"%"+getString(R.string.likes);
+
+        TextView leftTextView=findViewById(R.id.left_text_view);
+        TextView rightTextView=findViewById(R.id.right_text_view);
+        leftTextView.setText(firstLikes);
+        rightTextView.setText(secondLikes);
+
+
     }
 
     private String getTimeDifferenceInWords(long diff){

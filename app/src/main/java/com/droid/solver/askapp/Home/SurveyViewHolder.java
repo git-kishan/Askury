@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -437,8 +438,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
 
         TextView statusView=dialogView.findViewById(R.id.follow_text_view);
         if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
@@ -446,7 +449,8 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         }else {
             statusView.setText(HomeRecyclerViewAdapter.FOLLOW); }
 
-        if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
+                !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
             View view=dialogView.findViewById(R.id.delete_survey_textview);
             view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
         }
@@ -509,8 +513,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog dialog=builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        if(dialog.getWindow()!=null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        }
         dialog.show();
         onReportItemClicked(dialogView,dialog,surveyId,list,adapter);
     }
@@ -583,8 +589,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
         builder.setView(rootview);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        }
         alertDialog.show();
 
         View cancelButton=rootview.findViewById(R.id.cancel_button);

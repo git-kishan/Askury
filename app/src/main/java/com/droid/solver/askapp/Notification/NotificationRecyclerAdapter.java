@@ -3,6 +3,8 @@ package com.droid.solver.askapp.Notification;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,6 +101,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             String image2Url=model.getImage2Url();
             int image1LikeNo=model.getImage1LikeNo();
             int image2LikeNo=model.getImage2LikeNo();
+
             long notifiedTime=model.getNotifiedTime();
 
             String timeAgo=getTime(notifiedTime, System.currentTimeMillis());
@@ -108,33 +111,31 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             image1LikeNo=image1LikeNo<0?0:image1LikeNo;
             image2LikeNo=image2LikeNo<0?0:image2LikeNo;
             int total=image1LikeNo+image2LikeNo;
-
             if(total==0){
                 String percentA=String.format(context.getString(R.string.a_percent), 0)+"%";
                 String percentB=String.format(context.getString(R.string.b_percent),0)+"%";
                 ((ImagePollViewHolder) holder).percent1.setText(percentA);
                 ((ImagePollViewHolder) holder).percent2.setText(percentB);
             }else {
-                if(image1LikeNo==0){
+                if(image1LikeNo==0 && image2LikeNo!=0){
                     String percentA=String.format(context.getString(R.string.a_percent), 0)+"%";
                     String percentB=String.format(context.getString(R.string.b_percent),100)+"%";
                     ((ImagePollViewHolder) holder).percent1.setText(percentA);
                     ((ImagePollViewHolder) holder).percent2.setText(percentB);
-                }else if(image2LikeNo==0){
+                }else if(image2LikeNo==0 && image1LikeNo!=0){
                     String percentA=String.format(context.getString(R.string.a_percent), 100)+"%";
                     String percentB=String.format(context.getString(R.string.b_percent),0)+"%";
                     ((ImagePollViewHolder) holder).percent1.setText(percentA);
                     ((ImagePollViewHolder) holder).percent2.setText(percentB);
                 }else {
                     int perA=0,perB=0;
-                    perA=(image1LikeNo)/total;
+                    perA=image1LikeNo*100/(total);
                     perB=100-perA;
                     String percentA=String.format(context.getString(R.string.a_percent), perA)+"%";
                     String percentB=String.format(context.getString(R.string.b_percent),perB)+"%";
                     ((ImagePollViewHolder) holder).percent1.setText(percentA);
                     ((ImagePollViewHolder) holder).percent2.setText(percentB);
                 }
-
             }
             ((ImagePollViewHolder) holder).statusTextView.setText(question);
             ((ImagePollViewHolder) holder).timeAgo.setText(timeAgo);
