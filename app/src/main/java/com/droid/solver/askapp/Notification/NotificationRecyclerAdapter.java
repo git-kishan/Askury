@@ -34,9 +34,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             inflater=LayoutInflater.from(context);
             this.list=list;
         }
-
     }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -66,7 +64,6 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
         }
         return holder;
     }
-
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
 
@@ -90,6 +87,9 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             String likes=String.format(context.getString(R.string.someone_likes_your_answer), likerName);
             ((QuestionViewHolder) holder).statusTextView.setText(likes);
             ((QuestionViewHolder) holder).timeAgo.setText(timeAgo);
+
+            if(model.isStoredLocally())
+                ((QuestionViewHolder) holder).dot.setVisibility(View.GONE);
 
             handleClickListenerOfQuestion((QuestionViewHolder) holder, model);
 
@@ -152,6 +152,9 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
                     .error(android.R.color.holo_blue_dark)
                     .into(((ImagePollViewHolder) holder).image2);
 
+            if(model.isStoredLocally())
+                ((ImagePollViewHolder) holder).dot.setVisibility(View.GONE);
+
             handleClickListenerOfImagePoll((ImagePollViewHolder) holder, model);
 
         }else if(holder instanceof SurveyViewHolder && list.get(i) instanceof  SurveyModel){
@@ -164,6 +167,9 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             question=question==null?"Survey result":question;
             ((SurveyViewHolder) holder).timeAgo.setText(timeAgo);
             ((SurveyViewHolder) holder).statusTextView.setText(question);
+
+            if(model.isStoredLocally())
+                ((SurveyViewHolder) holder).dot.setVisibility(View.GONE);
 
             handleClickListenerOfSurvey((SurveyViewHolder) holder, model);
 

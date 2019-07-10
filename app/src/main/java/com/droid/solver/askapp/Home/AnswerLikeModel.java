@@ -7,6 +7,11 @@ public class AnswerLikeModel {
     private String likerBio;
     private String questionId;
     private String askerId;
+    private String answerId;
+    private String answererId;
+    private String type;
+    private long notifiedTime;
+
 
     public AnswerLikeModel(String likerId,String likerName,String likerImageUrl,String likeBio){
         this.likerId=likerId;
@@ -14,13 +19,29 @@ public class AnswerLikeModel {
         this.likerImageUrl=likerImageUrl;
         this.likerBio=likeBio;
     }
-    public AnswerLikeModel(String likerId,String likerName,String likerImageUrl,String likeBio,String questionId,String askerId){
+    public AnswerLikeModel(String likerId,String likerName,String likerImageUrl,String likeBio,String questionId,String askerId
+    ,String answerId,String answererId){
         this.likerId=likerId;
         this.likerName=likerName;
         this.likerImageUrl=likerImageUrl;
         this.likerBio=likeBio;
         this.questionId=questionId;
         this.askerId = askerId;
+        this.answerId=answerId;
+        this.answererId=answererId;
+    }
+    public AnswerLikeModel(String likerId,String likerName,String likerImageUrl,String likeBio,String questionId,String askerId
+            ,String answerId,String answererId,String type,long notifiedTime){
+        this.likerId=likerId;
+        this.likerName=likerName;
+        this.likerImageUrl=likerImageUrl;
+        this.likerBio=likeBio;
+        this.questionId=questionId;
+        this.askerId = askerId;
+        this.answerId=answerId;
+        this.answererId=answererId;
+        this.type=type;
+        this.notifiedTime=notifiedTime;
     }
 
     public String getLikerImageUrl() {
@@ -45,5 +66,21 @@ public class AnswerLikeModel {
 
     public String getAskerId() {
         return askerId;
+    }
+
+    public String getAnswerId() {
+        return answerId;
+    }
+
+    public String getAnswererId() {
+        return answererId;
+    }
+
+    public long getNotifiedTime() {
+        return notifiedTime;
+    }
+
+    public String getType() {
+        return type;
     }
 }

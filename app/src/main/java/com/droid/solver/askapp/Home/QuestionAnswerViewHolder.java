@@ -123,8 +123,10 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         String likerBio=preferences.getString(Constants.bio, null);
         String questionId=model.getQuestionId();
         String askerId=model.getAskerId();
+        String answerId=model.getRecentAnswerId();
+        String answererId=model.getRecentAnswererId();
 
-        AnswerLikeModel answerLikeModel=new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio,questionId,askerId);
+        AnswerLikeModel answerLikeModel=new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio,questionId,askerId,answerId,answererId);
 
         Map<String ,Object> likeMap=new HashMap<>();
         likeMap.put("answerLikeCount", FieldValue.increment(1));
@@ -291,9 +293,10 @@ public class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
-
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
 
         TextView statusView=dialogView.findViewById(R.id.follow_text_view);
         TextView inAppropriateQuestionView=dialogView.findViewById(R.id.inappropriate_question);

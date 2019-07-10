@@ -23,6 +23,7 @@ public class SurveyModel {
     private boolean option4;
     private String type;
     private long notifiedTime;
+    private boolean isStoredLocally;
 
     public SurveyModel(){}
 
@@ -46,7 +47,8 @@ public class SurveyModel {
                        boolean option3,
                        boolean option4,
                        String type,
-                       long notifiedTime) {
+                       long notifiedTime,
+                       boolean isStoredLocally) {
         this.askerBio = askerBio;
         this.askerId = askerId;
         this.askerImageUrlLow = askerImageUrlLow;
@@ -68,6 +70,7 @@ public class SurveyModel {
         this.option4 = option4;
         this.type = type;
         this.notifiedTime = notifiedTime;
+        this.isStoredLocally=isStoredLocally;
     }
 
     public String getAskerName() {
@@ -154,4 +157,11 @@ public class SurveyModel {
         return surveyId;
     }
 
+    public boolean isStoredLocally() {
+        return isStoredLocally;
+    }
+
+    public void setStoredLocally(boolean storedLocally) {
+        isStoredLocally = storedLocally;
+    }
 }

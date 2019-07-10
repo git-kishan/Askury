@@ -5,9 +5,12 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -29,6 +32,9 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
 
 
     void onCardClicked(Context context, ImagePollModel model){
+        model.setStoredLocally(true);
+        dot.setVisibility(View.GONE);
+        saveNotificationToLocalDatabase(model.getImagePollId(), model.getType(), model, context);
         Intent intent=new Intent(context,NotificationImagePollActivity.class);
         intent.putExtra("imagePollId", model.getImagePollId());
         intent.putExtra("question",model.getQuestion());
@@ -45,5 +51,17 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         intent.putExtra("type", model.getType());
         intent.putExtra("notifiedTime",model.getNotifiedTime());
         context.startActivity(intent);
+    }
+    private void saveNotificationToLocalDatabase(final String notificationId,final String type,final ImagePollModel model,final Context context){
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                LocalDatabase db=new LocalDatabase(context.getApplicationContext());
+                db.insertNotification(notificationId, type);
+                db.insertNotificationImagePoll(model);
+            }
+        });
+
     }
 }

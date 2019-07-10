@@ -25,6 +25,7 @@ public class QuestionAnswerModel {
     private int fontUsed;
     private boolean notifiedToAsker;
     private int answerLikeCount;
+    private boolean anonymous;
 
 
     QuestionAnswerModel(){}
@@ -51,7 +52,8 @@ public class QuestionAnswerModel {
             boolean stringAttached,
             int fontUsed,
             boolean notifiedToAsker,
-            int answerLikeCount) {
+            int answerLikeCount,
+            boolean anonymous) {
         this.askerId = askerId;
         this.askerName = askerName;
         this.askerBio = askerBio;
@@ -74,6 +76,7 @@ public class QuestionAnswerModel {
         this.fontUsed = fontUsed;
         this.notifiedToAsker = notifiedToAsker;
         this.answerLikeCount = answerLikeCount;
+        this.anonymous=anonymous;
     }
 
 
@@ -166,10 +169,12 @@ public class QuestionAnswerModel {
         return answerLikeCount;
     }
 
+    public boolean isAnonymous() {
+        return anonymous;
+    }
 
-
-
-
-
+    public boolean isNotifiedToAsker() {
+        return notifiedToAsker;
+    }
 
 }

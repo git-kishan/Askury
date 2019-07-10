@@ -16,6 +16,7 @@ public class ImagePollModel {
     private boolean reported;
     private String type;
     private long notifiedTime;
+    private boolean isStoredLocally;
 
     public ImagePollModel(){}
 
@@ -32,7 +33,8 @@ public class ImagePollModel {
                           boolean containVioloanceOrAdult,
                           boolean reported,
                           String type,
-                          long notifiedTime) {
+                          long notifiedTime,
+                          boolean isStoredLocally) {
         this.imagePollId = imagePollId;
         this.question = question;
         this.askerId = askerId;
@@ -47,6 +49,7 @@ public class ImagePollModel {
         this.reported = reported;
         this.type = type;
         this.notifiedTime = notifiedTime;
+        this.isStoredLocally = isStoredLocally;
     }
 
     public String getType() {
@@ -105,4 +108,11 @@ public class ImagePollModel {
         return containVioloanceOrAdult;
     }
 
+    public boolean isStoredLocally() {
+        return isStoredLocally;
+    }
+
+    public void setStoredLocally(boolean storedLocally) {
+        isStoredLocally = storedLocally;
+    }
 }

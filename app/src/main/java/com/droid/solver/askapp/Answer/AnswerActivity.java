@@ -573,7 +573,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     questionId, question, timeOfAsking, System.currentTimeMillis(),
                     uid, answererName, answererImageUrl, answererBio,
                     false, answerId, answer, imageAttached, answerImageUrl,
-                    true, fontSelected, false, 0);
+                    true, fontSelected, false, 0,anonymous);
 
             Map<String, Object> map = new HashMap<>();
             map.put("recentAnswererId", uid);
@@ -646,7 +646,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     uid, answererName, answererImageUrl, answererBio,
                     false, previousAnswerId, answer, imageAttached,answerImageUrl ,
                     true,
-                    fontSelected, false, 0);
+                    fontSelected, false, 0,anonymous);
 
             Map<String, Object> map = new HashMap<>();
             map.put("recentAnswererId", uid);

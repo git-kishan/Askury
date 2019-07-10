@@ -496,8 +496,10 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
     private boolean isInternetAvailable(){
         ConnectivityManager connectivityManager= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        if(connectivityManager!=null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }return false;
     }
 
     private void uploadFirstImageToStorage(final MenuItem menuItem){
@@ -636,8 +638,10 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         TextView textView=dialogView.findViewById(R.id.message_text_view);
         textView.setText(getString(R.string.image_poll_uploaded_successfully));
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
         alertDialog.show();
 
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -665,8 +669,10 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_error;
+        }
         alertDialog.show();
 
         retryButton.setOnClickListener(new View.OnClickListener() {

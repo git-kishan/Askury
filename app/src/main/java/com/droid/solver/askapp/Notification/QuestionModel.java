@@ -8,8 +8,12 @@ public class QuestionModel {
     private String likerName;
     private String likerImageUrl;
     private String likerBio;
+    private String answerId;
+    private String answererId;
     private String type;
     private long notifiedTime;
+    private boolean isStoredLocally;
+
 
     public QuestionModel(){}
 
@@ -18,17 +22,23 @@ public class QuestionModel {
                          String likerImageUrl,
                          String likerBio,
                          String askerId,
+                         String answerId,
+                         String answererId,
                          String questionId,
                          String type,
-                         long notifiedTime) {
+                         long notifiedTime,
+                         boolean isStoredLocally) {
         this.likerId = likerId;
         this.likerName = likerName;
         this.likerImageUrl = likerImageUrl;
         this.likerBio = likerBio;
         this.askerId = askerId;
+        this.answerId=answerId;
+        this.answererId=answererId;
         this.questionId = questionId;
         this.type = type;
         this.notifiedTime=notifiedTime;
+        this.isStoredLocally=isStoredLocally;
     }
 
     public String getAskerId() {
@@ -61,5 +71,21 @@ public class QuestionModel {
 
     public long getNotifiedTime() {
         return notifiedTime;
+    }
+
+    public String getAnswererId() {
+        return answererId;
+    }
+
+    public String getAnswerId() {
+        return answerId;
+    }
+
+    public boolean isStoredLocally() {
+        return isStoredLocally;
+    }
+
+    public void setStoredLocally(boolean storedLocally) {
+        isStoredLocally = storedLocally;
     }
 }

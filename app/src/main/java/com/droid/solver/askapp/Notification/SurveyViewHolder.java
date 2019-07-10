@@ -5,8 +5,11 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.TextView;
+
+import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -24,6 +27,9 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
      void onCardClicked(Context context, SurveyModel model){
+         model.setStoredLocally(true);
+         dot.setVisibility(View.GONE);
+         saveNotificationToLocalDatabase(model.getSurveyId(), model.getType(), model, context);
          Intent intent=new Intent(context,NotificationSurveyActivity.class);
          intent.putExtra("surveyId", model.getSurveyId());
          intent.putExtra("askerId", model.getAskerId());
@@ -47,5 +53,18 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
          intent.putExtra("type", model.getType());
          intent.putExtra("notifiedTime", model.getNotifiedTime());
          context.startActivity(intent);
+    }
+    private void saveNotificationToLocalDatabase(final String notificationId,final String type,final SurveyModel model,final Context context){
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                LocalDatabase db=new LocalDatabase(context.getApplicationContext());
+                db.insertNotification(notificationId, type);
+                db.insertNotificationSurvey(model);
+            }
+        });
+
     }
 }

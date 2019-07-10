@@ -5,11 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import androidx.annotation.Nullable;
-
 import android.util.Log;
-
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Notification.ImagePollModel;
 import com.droid.solver.askapp.Notification.QuestionModel;
@@ -20,7 +17,6 @@ import com.droid.solver.askapp.Question.Following;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +26,7 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=9;
+    private static final int DATABASE_VERSION=14;
 
     private final String USER_INFO_TABLE="user_info_table";
     private final String USER_QUESTION_MODEL="question_asked_table";
@@ -157,71 +153,11 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String TYPE_SURVEY="survey";
     private final String notificationId="notificationId";
     private final String notificationType="notificationType";
+    private final String answererId="answererId";
+    private final String isStoredLocally="isStoredLocally";
 
     //create table string
-    private  final String CREATE_TABLE_USER_INFO_TABLE="CREATE TABLE "+USER_INFO_TABLE+"("+userId+" TEXT PRIMARY KEY ,"+
-    userName+" TEXT ,"+profilePicUrlLow+" TEXT ,"+profilePicUrlHigh+" TEXT ,"+bio+" TEXT ,"+point +" INTEGER ,"+country+" TEXT ,"+
-            language+" TEXT ,"+interest+" TEXT ,"+followerCount+" INTEGER ,"+followingCount+" INTEGER "+")";
 
-    private  final String CREATE_TABLE_USER_QUESTION_MODEL="CREATE TABLE "+USER_QUESTION_MODEL+"("+questionId+" TEXT PRIMARY KEY,"+
-            question+" TEXT ,"+questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+userId+" TEXT ,"+userName+" TEXT ,"+userImageUrlLow+" TEXT ,"+
-            userBio+" TEXT ,"+answerCount+" INTEGER ,"+anonymous+" INTEGER ,"+userNotified+" INTEGER "+")";
-
-    private  final String CREATE_TABLE_ROOT_QUESTION_MODEL="CREATE TABLE "+ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
-            askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT ,"+question+" TEXT ,"+
-            questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+recentAnswererId+" TEXT ,"+recentAnswererImageUrlLow+" TEXT ,"+recentAnswererName+" TEXT ,"
-            +recentAnswererBio+" TEXT ,"+recentAnsweId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
-            " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +"INTEGER"+")";
-
-    private  final String CREATE_TABLE_SURVEY_ASKED_TABLE="CREATE TABLE "+SURVEY_ASKED_TABLE+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
-            askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+timeOfSurvey+" INTEGER ,"+option1+" INTEGER ,"+option2+" INTEGER ,"+
-            option3+" INTEGER ,"+option4+" INTEGER ,"+option1Value+" TEXT ,"+option2Value+" TEXT ,"+option3Value+" TEXT ,"+option4Value+" TEXT ,"+
-            option1Count+" INTEGER ,"+option2Count+" INTEGER ,"+option3Count+" INTEGER ,"+option4Count+" INTEGER ,"+languageSelectedIndex+" INTEGER ,"+
-            surveyId+" TEXT "+")";
-
-    private  final String CREATE_TABLE_IMAGE_POLL_TABLE="CREATE TABLE "+IMAGE_POLL_TABLE+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
-            askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+image1Url+" TEXT ,"+image2Url+" TEXT ,"+timeOfPolling+" INTEGER ,"+
-            image1LikeNo+" INTEGER ,"+image2LikeNo+" INTEGER ,"+imagePollId+" TEXT PRIMARY KEY"+")";
-
-    private  final String CREATE_TABLE_ANSWER_LIKE_TABLE="CREATE TABLE "+ANSWER_LIKE_TABLE+"("+answerId+" TEXT PRIMARY KEY"+")";
-
-    private  final String CREATE_TABLE_SURVEY_PARTICIPATED_TABLE="CREATE TABLE "+SURVEY_PARTICIPATED_TABLE+"("+surveyParticipatedId+
-            " TEXT PRIMARY KEY,"+optionSelected+" INTEGER "+")";
-
-    private  final String CREATE_TABLE_IMAGE_POLL_LIKE_TABLE="CREATE TABLE "+IMAGE_POLL_LIKE_TABLE+"("+imagePollId+" TEXT PRIMARY KEY,"+
-            optionSelected +" INTEGER "+")";
-
-    private final String CREATE_TABLE_FOLLOWER_TABLE="CREATE TABLE "+FOLLOWER_TABLE+"("+followerId+" TEXT PRIMARY KEY ,"+
-            followerName+" TEXT ,"+followerImageUrl+" TEXT ,"+followerBio+" TEXT "+")";
-
-    private final String CREATE_TABLE_FOLLOWING_TABLE="CREATE TABLE "+FOLLOWING_TABLE+"("+followingId+" TEXT PRIMARY KEY,"+
-            followingName+" TEXT ,"+followingImageUrl+" TEXT ,"+followingBio+" TEXT "+")";
-
-    private final String CREATE_TABLE_COMMUNITY_TABLE="CREATE TABLE "+COMMUNITY_TABLE+"("+communityId+"TEXT PRIMARY KEY, "+communityName+" TEXT ,"+
-            communityImageUrl+" TEXT ,"+communityMemberCount+" INTEGER "+")";
-
-    private  final String CREATE_TABLE_IMAGE_POLL_REPORT_TABLE="CREATE TABLE "+IMAGE_POLL_REPORT+"("+imagePollId+" TEXT PRIMARY KEY "+")";
-
-    private  final String CREATE_TABLE_SURVEY_REPORT_TABLE="CREATE TABLE "+SURVEY_REPORT+"("+surveyId+" TEXT PRIMARY KEY "+")";
-
-    private  final String CREATE_TABLE_QUESTION_REPORT_TABLE="CREATE TABLE "+QUESTION_REPORT+"("+questionId+" TEXT PRIMARY KEY"+")";
-
-    private final String CREATE_TABLE_NOTIFICATION_QUESTION="CREATE TABLE "+NOTIFICATION_QUESTION+"("+questionId+" TEXT PRIMARY KEY ,"+
-            askerId+" TEXT,"+likerId+" TEXT ,"+likerName+" TEXT ,"+likerImageUrl+" TEXT ,"+likerBio+" TEXT ,"+type +"TEXT "+")";
-
-    private final String CREATE_TABLE_NOTIFICATION_IMAGE_POLL="CREATE TABLE "+NOTIFICATION_IMAGE_POLL+"("+imagePollId+" TEXT PRIMARY KEY,"+
-            question+" TEXT ,"+askerId+" TEXT ,"+askerName+" TEXT ,"+askerBio+" TEXT ,"+askerImageUrlLow+" TEXT ,"+image1Url+" TEXT ,"+
-            image2Url+" TEXT ,"+image1LikeNo+" INTEGER ,"+image2LikeNo+" INTEGER ,"+ containVioloanceOrAdult+" INTEGER ,"+reported+" INTEGER ,"+
-            type +" TEXT ,"+notifiedTime+" INTEGER "+")";
-
-    private final String CREATE_TABLE_NOTIFICATION_SURVEY="CREATE TABLE "+NOTIFICATION_SURVEY+"("+surveyId+" TEXT PRIMARY KEY ,"+
-            askerId+" TEXT ,"+askerName+" TEXT ,"+askerBio+" TEXT ,"+askerImageUrlLow+" TEXT ,"+question+" TEXT ,"+timeOfSurvey+" INTEGER ,"+
-            option1Value+" TEXT ,"+option2Value+" TEXT ,"+option3Value+" TEXT ,"+option4Value+" TEXT ,"+option1Count+" INTEGER ,"+
-            option2Count+" INTEGER ,"+option3Count+" INTEGER ,"+option4Count+" INTEGER ,"+option1+" INTEGER ,"+option2+" INTEGER ,"+
-            option3+" INTEGER ,"+option4+" INTEGER ,"+type+" TEXT ,"+notifiedTime+" INTEGER "+")";
-
-    private final String CREATE_TABLE_NOTIFICATION="CREATE TABLE "+NOTIFICATION+"("+"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-            +notificationId+" TEXT,"+ notificationType+" TEXT "+")";
 
 
 
@@ -231,6 +167,72 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+          final String CREATE_TABLE_USER_INFO_TABLE="CREATE TABLE "+USER_INFO_TABLE+"("+userId+" TEXT PRIMARY KEY ,"+
+                userName+" TEXT ,"+profilePicUrlLow+" TEXT ,"+profilePicUrlHigh+" TEXT ,"+bio+" TEXT ,"+point +" INTEGER ,"+country+" TEXT ,"+
+                language+" TEXT ,"+interest+" TEXT ,"+followerCount+" INTEGER ,"+followingCount+" INTEGER "+")";
+
+          final String CREATE_TABLE_USER_QUESTION_MODEL="CREATE TABLE "+USER_QUESTION_MODEL+"("+questionId+" TEXT PRIMARY KEY,"+
+                question+" TEXT ,"+questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+userId+" TEXT ,"+userName+" TEXT ,"+userImageUrlLow+" TEXT ,"+
+                userBio+" TEXT ,"+answerCount+" INTEGER ,"+anonymous+" INTEGER ,"+userNotified+" INTEGER "+")";
+
+          final String CREATE_TABLE_ROOT_QUESTION_MODEL="CREATE TABLE "+ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
+                askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT ,"+question+" TEXT ,"+
+                questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+recentAnswererId+" TEXT ,"+recentAnswererImageUrlLow+" TEXT ,"+recentAnswererName+" TEXT ,"
+                +recentAnswererBio+" TEXT ,"+recentAnsweId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
+                " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +"INTEGER"+")";
+
+          final String CREATE_TABLE_SURVEY_ASKED_TABLE="CREATE TABLE "+SURVEY_ASKED_TABLE+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
+                askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+timeOfSurvey+" INTEGER ,"+option1+" INTEGER ,"+option2+" INTEGER ,"+
+                option3+" INTEGER ,"+option4+" INTEGER ,"+option1Value+" TEXT ,"+option2Value+" TEXT ,"+option3Value+" TEXT ,"+option4Value+" TEXT ,"+
+                option1Count+" INTEGER ,"+option2Count+" INTEGER ,"+option3Count+" INTEGER ,"+option4Count+" INTEGER ,"+languageSelectedIndex+" INTEGER ,"+
+                surveyId+" TEXT "+")";
+
+          final String CREATE_TABLE_IMAGE_POLL_TABLE="CREATE TABLE "+IMAGE_POLL_TABLE+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
+                askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+image1Url+" TEXT ,"+image2Url+" TEXT ,"+timeOfPolling+" INTEGER ,"+
+                image1LikeNo+" INTEGER ,"+image2LikeNo+" INTEGER ,"+imagePollId+" TEXT PRIMARY KEY"+")";
+
+          final String CREATE_TABLE_ANSWER_LIKE_TABLE="CREATE TABLE "+ANSWER_LIKE_TABLE+"("+answerId+" TEXT PRIMARY KEY"+")";
+
+          final String CREATE_TABLE_SURVEY_PARTICIPATED_TABLE="CREATE TABLE "+SURVEY_PARTICIPATED_TABLE+"("+surveyParticipatedId+
+                " TEXT PRIMARY KEY,"+optionSelected+" INTEGER "+")";
+
+          final String CREATE_TABLE_IMAGE_POLL_LIKE_TABLE="CREATE TABLE "+IMAGE_POLL_LIKE_TABLE+"("+imagePollId+" TEXT PRIMARY KEY,"+
+                optionSelected +" INTEGER "+")";
+
+          final String CREATE_TABLE_FOLLOWER_TABLE="CREATE TABLE "+FOLLOWER_TABLE+"("+followerId+" TEXT PRIMARY KEY ,"+
+                followerName+" TEXT ,"+followerImageUrl+" TEXT ,"+followerBio+" TEXT "+")";
+
+          final String CREATE_TABLE_FOLLOWING_TABLE="CREATE TABLE "+FOLLOWING_TABLE+"("+followingId+" TEXT PRIMARY KEY,"+
+                followingName+" TEXT ,"+followingImageUrl+" TEXT ,"+followingBio+" TEXT "+")";
+
+          final String CREATE_TABLE_COMMUNITY_TABLE="CREATE TABLE "+COMMUNITY_TABLE+"("+communityId+"TEXT PRIMARY KEY, "+communityName+" TEXT ,"+
+                communityImageUrl+" TEXT ,"+communityMemberCount+" INTEGER "+")";
+
+          final String CREATE_TABLE_IMAGE_POLL_REPORT_TABLE="CREATE TABLE "+IMAGE_POLL_REPORT+"("+imagePollId+" TEXT PRIMARY KEY "+")";
+
+          final String CREATE_TABLE_SURVEY_REPORT_TABLE="CREATE TABLE "+SURVEY_REPORT+"("+surveyId+" TEXT PRIMARY KEY "+")";
+
+          final String CREATE_TABLE_QUESTION_REPORT_TABLE="CREATE TABLE "+QUESTION_REPORT+"("+questionId+" TEXT PRIMARY KEY"+")";
+
+          final String CREATE_TABLE_NOTIFICATION_QUESTION="CREATE TABLE "+NOTIFICATION_QUESTION+"("+questionId+" TEXT PRIMARY KEY ,"+
+                askerId+" TEXT,"+likerId+" TEXT ,"+likerName+" TEXT ,"+likerImageUrl+" TEXT ,"+likerBio+" TEXT ,"+type +" TEXT ,"+
+                answerId+" TEXT ,"+answererId+" TEXT ,"+notifiedTime+" INTEGER ,"+ isStoredLocally+" INTEGER "+")";
+
+          final String CREATE_TABLE_NOTIFICATION_IMAGE_POLL="CREATE TABLE "+NOTIFICATION_IMAGE_POLL+"("+imagePollId+" TEXT PRIMARY KEY,"+
+                question+" TEXT ,"+askerId+" TEXT ,"+askerName+" TEXT ,"+askerBio+" TEXT ,"+askerImageUrlLow+" TEXT ,"+image1Url+" TEXT ,"+
+                image2Url+" TEXT ,"+image1LikeNo+" INTEGER ,"+image2LikeNo+" INTEGER ,"+ containVioloanceOrAdult+" INTEGER ,"+reported+" INTEGER ,"+
+                type +" TEXT ,"+notifiedTime+" INTEGER ,"+isStoredLocally+" INTEGER "+")";
+
+         final String CREATE_TABLE_NOTIFICATION_SURVEY="CREATE TABLE "+NOTIFICATION_SURVEY+"("+surveyId+" TEXT PRIMARY KEY ,"+
+                askerId+" TEXT ,"+askerName+" TEXT ,"+askerBio+" TEXT ,"+askerImageUrlLow+" TEXT ,"+question+" TEXT ,"+timeOfSurvey+" INTEGER ,"+
+                option1Value+" TEXT ,"+option2Value+" TEXT ,"+option3Value+" TEXT ,"+option4Value+" TEXT ,"+option1Count+" INTEGER ,"+
+                option2Count+" INTEGER ,"+option3Count+" INTEGER ,"+option4Count+" INTEGER ,"+option1+" INTEGER ,"+option2+" INTEGER ,"+
+                option3+" INTEGER ,"+option4+" INTEGER ,"+type+" TEXT ,"+notifiedTime+" INTEGER ,"+isStoredLocally+" INTEGER "+")";
+
+         final String CREATE_TABLE_NOTIFICATION="CREATE TABLE "+NOTIFICATION+"("+"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +notificationId+" TEXT,"+ notificationType+" TEXT "+")";
+
         sqLiteDatabase.execSQL(CREATE_TABLE_USER_INFO_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_USER_QUESTION_MODEL);
         sqLiteDatabase.execSQL(CREATE_TABLE_ROOT_QUESTION_MODEL);
@@ -323,32 +325,34 @@ public class LocalDatabase extends SQLiteOpenHelper {
         SQLiteDatabase database=this.getWritableDatabase();
         String query="SELECT * FROM "+USER_INFO_TABLE+" ORDER BY "+userId+" DESC  LIMIT 1";
         Cursor cursor=database.rawQuery(query, null);
-        if(cursor!=null)
+        if(cursor!=null) {
             cursor.moveToFirst();
 
-        String muserId=cursor.getString(cursor.getColumnIndex(userId));
-        String muserName=cursor.getString(cursor.getColumnIndex(userName));
-        String mprofilePicUrlLow=cursor.getString(cursor.getColumnIndex(profilePicUrlLow));
-        String mprofilePicUrlHigh=cursor.getString(cursor.getColumnIndex(profilePicUrlHigh));
-        String mbio=cursor.getString(cursor.getColumnIndex(bio));
-        int mpoint=cursor.getInt(cursor.getColumnIndex(point));
-        String mlanguage=cursor.getString(cursor.getColumnIndex(language));
-        String minterest=cursor.getString(cursor.getColumnIndex(interest));
-        int mfollowerCount=cursor.getInt(cursor.getColumnIndex(followerCount));
-        int mfollowingCount=cursor.getInt(cursor.getColumnIndex(followingCount));
+            String muserId = cursor.getString(cursor.getColumnIndex(userId));
+            String muserName = cursor.getString(cursor.getColumnIndex(userName));
+            String mprofilePicUrlLow = cursor.getString(cursor.getColumnIndex(profilePicUrlLow));
+            String mprofilePicUrlHigh = cursor.getString(cursor.getColumnIndex(profilePicUrlHigh));
+            String mbio = cursor.getString(cursor.getColumnIndex(bio));
+            int mpoint = cursor.getInt(cursor.getColumnIndex(point));
+            String mlanguage = cursor.getString(cursor.getColumnIndex(language));
+            String minterest = cursor.getString(cursor.getColumnIndex(interest));
+            int mfollowerCount = cursor.getInt(cursor.getColumnIndex(followerCount));
+            int mfollowingCount = cursor.getInt(cursor.getColumnIndex(followingCount));
 
-        String [] interestArr=minterest.split("@");
-        ArrayList<String> interestList=new ArrayList<>();
-        interestList=(ArrayList<String>)Arrays.asList(interestArr);
+            String[] interestArr = minterest.split("@");
+            ArrayList<String> interestList = new ArrayList<>();
+            interestList = (ArrayList<String>) Arrays.asList(interestArr);
 
-        UserInfoModel infoModel=new UserInfoModel(
-        muserId,muserName ,mprofilePicUrlLow , mprofilePicUrlHigh, mbio,
-                mpoint,country,mlanguage,interestList,mfollowerCount,mfollowingCount);
+            UserInfoModel infoModel = new UserInfoModel(
+                    muserId, muserName, mprofilePicUrlLow, mprofilePicUrlHigh, mbio,
+                    mpoint, country, mlanguage, interestList, mfollowerCount, mfollowingCount);
 
-        if(!cursor.isClosed())
-            cursor.close();
-        database.close();
-        return infoModel;
+            if (!cursor.isClosed())
+                cursor.close();
+            database.close();
+            return infoModel;
+        }
+        return null;
 
     }
 
@@ -1171,6 +1175,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         if(database.isOpen())
             database.close();
     }
+
     public ArrayList<String> getReportedQuestion(){
         ArrayList<String> reportedQuestionList;
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1203,7 +1208,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
         values.put(likerImageUrl, model.getLikerImageUrl());
         values.put(likerBio, model.getLikerBio());
         values.put(type, model.getType());
+        values.put(answerId, model.getAnswerId());
+        values.put(answererId,model.getAnswererId());
         values.put(notifiedTime, model.getNotifiedTime());
+        values.put(isStoredLocally, model.isStoredLocally()?1:0);
         if(database.isOpen()){
             database.insert(NOTIFICATION_QUESTION, null, values);
             values.clear();
@@ -1211,10 +1219,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
 
     }
-    public QuestionModel getNotificationQuestion(String questionId){
+    public QuestionModel getNotificationQuestion(String answerId){
         SQLiteDatabase database=this.getWritableDatabase();
         Cursor cursor=database.query(NOTIFICATION_QUESTION, null,
-                this.questionId+"=?", new String[]{questionId},null,null,null,"1");
+                this.answerId+"=?", new String[]{answerId},null,null,null,"1");
         if(cursor.moveToNext()){
             do {
                 String mquestionId=cursor.getString(cursor.getColumnIndex(this.questionId));
@@ -1225,12 +1233,16 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 String mlikerBio=cursor.getString(cursor.getColumnIndex(this.likerBio));
                 String mtype=cursor.getString(cursor.getColumnIndex(this.type));
                 long mnotifiedTime=cursor.getLong(cursor.getColumnIndex(this.notifiedTime));
+                String manswerId=cursor.getString(cursor.getColumnIndex(this.answerId));
+                String manswererId=cursor.getString(cursor.getColumnIndex(this.answererId));
+                boolean  misStoredLocally=cursor.getInt(cursor.getColumnIndex(isStoredLocally))==1;
                 if(!cursor.isClosed()){
                     cursor.close();
                 }
                 if(database.isOpen())
                     database.close();
-                return new QuestionModel(mlikerId, mlikerName,mlikerImageUrl,mlikerBio, maskerId, mquestionId, mtype,mnotifiedTime);
+                return new QuestionModel(mlikerId, mlikerName,mlikerImageUrl,mlikerBio, maskerId,manswerId,manswererId,
+                        mquestionId, mtype,mnotifiedTime,misStoredLocally);
             }while (cursor.moveToNext());
         }
         if(database.isOpen()){
@@ -1259,6 +1271,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         values.put(reported, (model.isReported()?1:0));
         values.put(type, model.getType());
         values.put(notifiedTime, model.getNotifiedTime());
+        values.put(isStoredLocally, model.isStoredLocally()?1:0);
 
         if(database.isOpen()){
             database.insert(NOTIFICATION_IMAGE_POLL, null, values);
@@ -1286,6 +1299,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 boolean mreported=cursor.getInt(cursor.getColumnIndex(this.reported))==1;
                 String mtype=cursor.getString(cursor.getColumnIndex(this.type));
                 long mnotifiedTime=cursor.getLong(cursor.getColumnIndex(this.notifiedTime));
+                boolean misStoredLocally=cursor.getInt(cursor.getColumnIndex(this.isStoredLocally))==1;
 
                 if(!cursor.isClosed()){
                     cursor.close();
@@ -1296,7 +1310,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 return new ImagePollModel(mimagePollId, mquestion, maskerId, maskerName,
                         maskerBio, maskerImageUrlLow, mimage1Url, mimage2Url,
                         mimage1LikeNo, mimage2LikeNo, mcontainViolanceOrAdult,
-                        mreported,mtype, mnotifiedTime);
+                        mreported,mtype, mnotifiedTime,misStoredLocally);
             }
             while (cursor.moveToNext());
         }
@@ -1333,6 +1347,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         values.put(option4, (model.isOption4()?1:0));
         values.put(type, model.getType());
         values.put(notifiedTime, model.getNotifiedTime());
+        values.put(isStoredLocally, model.isStoredLocally()?1:0);
         if (database.isOpen()) {
             database.insert(NOTIFICATION_SURVEY, null, values);
             values.clear();
@@ -1366,6 +1381,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 boolean moption4=cursor.getInt(cursor.getColumnIndex(this.option4))==1;
                 String mtype=cursor.getString(cursor.getColumnIndex(this.type));
                 long mnotifiedTime=cursor.getLong(cursor.getColumnIndex(this.notifiedTime));
+                boolean misStoredLocally=cursor.getInt(cursor.getColumnIndex(this.isStoredLocally))==1;
                 if(!cursor.isClosed()){
                     cursor.close();
                 }
@@ -1376,7 +1392,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                         maskerName,mquestion, msurveyId, mtimeOfSurvey,
                         moption1Value, moption2Value, moption3Value, moption4Value,
                         moption1Count, moption2Count, moption3Count, moption4Count,
-                        moption1, moption2, moption3, moption4, mtype, mnotifiedTime);
+                        moption1, moption2, moption3, moption4, mtype, mnotifiedTime,misStoredLocally);
             }
             while (cursor.moveToNext());
         }
@@ -1431,6 +1447,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
             do{
                 String mnotificationId=cursor.getString(cursor.getColumnIndex(notificationId));
                 String mnotificationType=cursor.getString(cursor.getColumnIndex(notificationType));
+                Log.i("TAG", "notificationID :- "+mnotificationId);
 
                 if(mnotificationType.equals(TYPE_QUESTION)){
                     Object o=getNotificationQuestion(mnotificationId);

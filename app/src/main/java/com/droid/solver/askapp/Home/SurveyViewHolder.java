@@ -269,6 +269,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         boolean isOption2=surveyModel.isOption2();
         boolean isOption3=surveyModel.isOption3();
         boolean isOption4=surveyModel.isOption4();
+        percent1.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
+        percent2.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
+        percent3.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
+        percent4.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
 
         if(isOption1&&isOption2&&isOption3&&isOption4) {
             int option1Count=surveyModel.getOption1Count();
@@ -280,10 +284,14 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int secondPercentage=(option2Count*100)/total;
             int thirdPercentage=(option3Count*100)/total;
             int fourthPercentage=100-(firstPercentage+secondPercentage+thirdPercentage);
-            percent1.setText(String.valueOf(firstPercentage));
-            percent2.setText(String.valueOf(secondPercentage));
-            percent3.setText(String.valueOf(thirdPercentage));
-            percent4.setText(String.valueOf(fourthPercentage));
+            String a=firstPercentage+"%";
+            String b=secondPercentage+"%";
+            String c=thirdPercentage+"%";
+            String d=fourthPercentage+"%";
+            percent1.setText(a);
+            percent2.setText(b);
+            percent3.setText(c);
+            percent4.setText(d);
 
         }
         else if(isOption1&&isOption2&&isOption3){
@@ -294,9 +302,12 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int firstPercentage=(option1Count*100)/total;
             int secondPercentage=(option2Count*100)/total;
             int thirdPercentage=100-(firstPercentage+secondPercentage);
-            percent1.setText(String.valueOf(firstPercentage));
-            percent2.setText(String.valueOf(secondPercentage));
-            percent3.setText(String.valueOf(thirdPercentage));
+            String a=firstPercentage+"%";
+            String b=secondPercentage+"%";
+            String c=thirdPercentage+"%";
+            percent1.setText(a);
+            percent2.setText(b);
+            percent3.setText(c);
         }
         else if(isOption2&&isOption3&&isOption4){
             int option2Count=surveyModel.getOption2Count();
@@ -306,9 +317,12 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int secondPercentage=(option2Count*100)/total;
             int thirdPercentage=(option3Count*100)/total;
             int fourthPercentage=100-(secondPercentage+thirdPercentage);
-            percent2.setText(String.valueOf(secondPercentage));
-            percent3.setText(String.valueOf(thirdPercentage));
-            percent4.setText(String.valueOf(fourthPercentage));
+            String b=secondPercentage+"%";
+            String c=thirdPercentage+"%";
+            String d=fourthPercentage+"%";
+            percent2.setText(b);
+            percent3.setText(c);
+            percent4.setText(d);
         }
         else if(isOption3&&isOption4&&isOption1){
             int option1Count=surveyModel.getOption1Count();
@@ -318,9 +332,12 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int firstPercentage=(option1Count*100)/total;
             int thirdPercentage=(option3Count*100)/total;
             int fourthPercentage=100-(firstPercentage+thirdPercentage);
-            percent1.setText(String.valueOf(firstPercentage));
-            percent3.setText(String.valueOf(thirdPercentage));
-            percent4.setText(String.valueOf(fourthPercentage));
+            String a=firstPercentage+"%";
+            String c=thirdPercentage+"%";
+            String d=fourthPercentage+"%";
+            percent1.setText(a);
+            percent3.setText(c);
+            percent4.setText(d);
         }
         else if(isOption4&&isOption1&&isOption2){
             int option1Count=surveyModel.getOption1Count();
@@ -330,9 +347,12 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int firstPercentage=(option1Count*100)/total;
             int secondPercentage=(option2Count*100)/total;
             int fourthPercentage=100-(firstPercentage+secondPercentage);
-            percent1.setText(String.valueOf(firstPercentage));
-            percent2.setText(String.valueOf(secondPercentage));
-            percent4.setText(String.valueOf(fourthPercentage));
+            String a=firstPercentage+"%";
+            String b=secondPercentage+"%";
+            String d=fourthPercentage+"%";
+            percent1.setText(a);
+            percent2.setText(b);
+            percent4.setText(d);
         }
         else if(isOption1&&isOption2){
             int option1Count=surveyModel.getOption1Count();
@@ -340,8 +360,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int total=option1Count+option2Count;
             int firstPercentage=(option1Count*100)/total;
             int secondPercentage=100-(firstPercentage);
-            percent1.setText((String.valueOf(firstPercentage)));
-            percent2.setText((String.valueOf(secondPercentage)));
+            String a=firstPercentage+"%";
+            String b=secondPercentage+"%";
+            percent1.setText(a);
+            percent2.setText(b);
         }
         else if(isOption1&&isOption3){
             int option1Count=surveyModel.getOption1Count();
@@ -349,8 +371,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int total=option1Count+option3Count;
             int firstPercentage=(option1Count*100)/total;
             int thirdPercentage=100-(firstPercentage);
-            percent1.setText(String.valueOf(firstPercentage));
-            percent3.setText(String.valueOf(thirdPercentage));
+            String a=firstPercentage+"%";
+            String c=thirdPercentage+"%";
+            percent1.setText(a);
+            percent3.setText(c);
         }
         else if(isOption1&&isOption4){
             int option1Count=surveyModel.getOption1Count();
@@ -358,8 +382,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int total=option1Count+option4Count;
             int firstPercentage=(option1Count*100)/total;
             int fourthPercentage=100-(firstPercentage);
-            percent1.setText(String.valueOf(firstPercentage));
-            percent4.setText(String.valueOf(fourthPercentage));
+            String a=firstPercentage+"%";
+            String d=fourthPercentage+"%";
+            percent1.setText(a);
+            percent4.setText(d);
         }
         else if(isOption2&&isOption3){
             int option2Count=surveyModel.getOption2Count();
@@ -367,8 +393,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int total=option2Count+option3Count;
             int thirdPercentage=(option3Count*100)/total;
             int secondPercentage=100-(thirdPercentage);
-            percent3.setText(String.valueOf(thirdPercentage));
-            percent2.setText(String.valueOf(secondPercentage));
+            String b=secondPercentage+"%";
+            String c=thirdPercentage+"%";
+            percent3.setText(c);
+            percent2.setText(b);
         }
         else if(isOption2&&isOption4){
             int option4Count=surveyModel.getOption4Count();
@@ -376,8 +404,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int total=option4Count+option2Count;
             int fourthPercentage=(option4Count*100)/total;
             int secondPercentage=100-(fourthPercentage);
-            percent4.setText(String.valueOf(fourthPercentage));
-            percent2.setText(String.valueOf(secondPercentage));
+            String b=secondPercentage+"%";
+            String d=fourthPercentage+"%";
+            percent4.setText(d);
+            percent2.setText(b);
         }
         else if(isOption3&&isOption4){
             int option3Count=surveyModel.getOption3Count();
@@ -385,8 +415,10 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             int total=option3Count+option4Count;
             int thirdPercentage=(option3Count*100)/total;
             int fourthPercentage=100-(thirdPercentage);
-            percent3.setText(String.valueOf(thirdPercentage));
-            percent4.setText(String.valueOf(fourthPercentage));
+            String c=thirdPercentage+"%";
+            String d=fourthPercentage+"%";
+            percent3.setText(c);
+            percent4.setText(d);
         }
 
         }

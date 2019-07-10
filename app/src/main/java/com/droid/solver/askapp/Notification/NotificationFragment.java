@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Notification;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,11 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.DeadSystemException;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -24,6 +27,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +38,8 @@ public class NotificationFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private NotificationRecyclerAdapter adapter;
     private List<Object> list;
+    private Query query;
+    private Handler handler;
     
     public NotificationFragment() {
     }
@@ -49,20 +55,45 @@ public class NotificationFragment extends Fragment {
         adapter =new NotificationRecyclerAdapter(getActivity(), list);
         recyclerView.setAdapter(adapter);
         checkNotification();
+        loadNotificationFromLocalDatabase();
+        handler=new Handler();
         return view;
+    }
+    private void loadNotificationFromLocalDatabase(){
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                if(getActivity()!=null) {
+                    LocalDatabase db = new LocalDatabase(getActivity().getApplicationContext());
+                    list.addAll((Collection<?>) db.getNotification());
+                    Log.i("TAG", "local list :- "+list);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+
+                }
+
+            }
+        });
     }
     private void checkNotification(){
         DatabaseReference db= FirebaseDatabase.getInstance().getReference();
         if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             Log.i("TAG","uid :- "+uid);
-            Query query=db.child("user").child(uid).child("notification")
+            query=db.child("user").child(uid).child("notification")
                     .orderByChild("notifiedTime")
                     .limitToFirst(20);
             query.addValueEventListener(listener);
 
+
         }
     }
+
     private ValueEventListener  listener=new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -86,6 +117,8 @@ public class NotificationFragment extends Fragment {
             }
             Collections.reverse(list);
             adapter.notifyDataSetChanged();
+            query.removeEventListener(listener);
+            query.addChildEventListener(childEventListener);
         }
 
         @Override
@@ -93,10 +126,12 @@ public class NotificationFragment extends Fragment {
             Log.i("TAG", "database error :- "+databaseError);
         }
     };
+
    private  ChildEventListener childEventListener=new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+            Log.i("TAG", "Datasnapshot :- "+dataSnapshot);
         }
 
         @Override

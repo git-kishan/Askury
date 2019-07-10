@@ -120,8 +120,12 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         String likerName=preferences.getString(Constants.userName, null);
         String likerImageUrl=preferences.getString(Constants.profilePicLowUrl, null);
         String likerBio=preferences.getString(Constants.bio, null);
+        String questionId=model.getQuestionId();
+        String askerId=model.getAskerId();
+        String answerId=model.getRecentAnswerId();
+        String answererId=model.getRecentAnswererId();
 
-        AnswerLikeModel answerLikeModel=new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio);
+        AnswerLikeModel answerLikeModel=new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio,questionId,askerId,answerId,answererId);
 
         Map<String ,Object> likeMap=new HashMap<>();
         likeMap.put("answerLikeCount", FieldValue.increment(1));
