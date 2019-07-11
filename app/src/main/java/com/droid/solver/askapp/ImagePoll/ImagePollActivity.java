@@ -373,6 +373,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             }
         }
     }
+
     private  Bitmap decodeSelectedImageUri(Uri uri,int requiredWidth,int requiredHeight){
         try {
             final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -389,6 +390,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         }
         return null;
     }
+
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
@@ -443,13 +445,16 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         options.inSampleSize = scaleFactor;
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
         if(bitmap!=null) {
-            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 250, 300, false);
+//            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 250, 300, false);
+
             ByteArrayOutputStream uploaderStream=new ByteArrayOutputStream();
-            uploaderBitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
             byte [] uploderByteArray=uploaderStream.toByteArray();
+            Log.i("TAG", "bitmap size :- "+bitmap.getByteCount());
+            Log.i("TAG", "bitmap :- width :- "+bitmap.getWidth()+", bitmap height :- "+bitmap.getHeight());
 
             if (isImage1Clicked) {
-                image1.setImageBitmap(uploaderBitmap);
+                image1.setImageBitmap(bitmap);
                 image1CardView.setVisibility(View.GONE);
                 option1.setVisibility(View.GONE);
                 image1ByteArray=uploderByteArray;
@@ -457,7 +462,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
 
             } else if (isImage2Clicked) {
-                image2.setImageBitmap(uploaderBitmap);
+                image2.setImageBitmap(bitmap);
                 image2CardView.setVisibility(View.GONE);
                 option2.setVisibility(View.GONE);
                 image2ByteArray=uploderByteArray;

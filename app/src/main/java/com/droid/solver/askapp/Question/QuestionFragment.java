@@ -2,6 +2,7 @@ package com.droid.solver.askapp.Question;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,9 +18,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
+import com.droid.solver.askapp.Main.LocalDatabase;
+import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.droid.solver.askapp.Survey.QuestionTakerActivity;
@@ -40,7 +42,6 @@ import java.util.ArrayList;
 
 public class QuestionFragment extends Fragment {
 
-
     private Animation scaleInAnimation;
     SpeedDialView speedDialView;
     private RecyclerView recyclerView;
@@ -59,7 +60,6 @@ public class QuestionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
-
         speedDialView=view.findViewById(R.id.speedDial);
         scaleInAnimation= AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_in);
         speedDialView.startAnimation(scaleInAnimation);
@@ -87,9 +87,25 @@ public class QuestionFragment extends Fragment {
         recyclerView.addOnScrollListener(scrollListener);
         adapter =new AskQuestionRecyclerAdapter(getActivity(), list);
         recyclerView.setAdapter(adapter);
-        loadDataFromRemoteDatabase();
-        swipeRefreshLayout.setEnabled(true);
+        if(MainActivity.isFirstTimeQuestionLoaded){
+            loadDataFromRemoteDatabase();
+            swipeRefreshLayout.setEnabled(true);
+            swipeRefreshLayout.setRefreshing(true);
+
+        }else{
+            swipeRefreshLayout.setEnabled(true);
+            swipeRefreshLayout.setRefreshing(true);
+
+            if(MainActivity.questionLastDocumentSnapshot!=null){
+                lastVisibleSnapshot=MainActivity.questionLastDocumentSnapshot;
+                loadDataFromLocalDatabase();
+            }else {
+                loadDataFromRemoteDatabase();
+            }
+
+        }
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -185,11 +201,24 @@ public class QuestionFragment extends Fragment {
                             }
                             if(task.getResult()!=null&&task.getResult().size()>0){
                                 lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                                MainActivity.questionLastDocumentSnapshot=lastVisibleSnapshot;
                             }
                             adapter.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                             swipeRefreshLayout.setEnabled(false);
                             shimmerFrameLayout.setVisibility(View.GONE);
+                            MainActivity.isFirstTimeQuestionLoaded=false;
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(getActivity()!=null) {
+                                        LocalDatabase db = new LocalDatabase(getActivity().getApplicationContext());
+                                        db.clearQuestionRootQuestionModel();
+                                        db.insertQuestionRootQuestionModel(list);
+
+                                    }
+                                }
+                            });
                         }
                         else {
                             Log.i("TAG", "task exception :- "+task.getException());
@@ -251,11 +280,24 @@ public class QuestionFragment extends Fragment {
         }
     }
 
+    private void loadDataFromLocalDatabase(){
+        if(getActivity()!=null){
+            LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
+            list.addAll(database.getQuestionRootQuestionModelList());
+            adapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setEnabled(false);
+            shimmerFrameLayout.setVisibility(View.GONE);
+
+        }
+    }
+
     @Override
     public void onAttach(Context context) {
         this.context=context;
         super.onAttach(context);
     }
+
     private void goToAnswerActivity(){
         startActivity(new Intent(context,AnswerActivity.class));
 

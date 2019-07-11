@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.Constants;
@@ -37,7 +38,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -139,16 +139,14 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-//
-//        Log.i("TAG", "image 1 like no :- "+imagePollModel.getImage1LikeNo());
-//        Log.i("TAG", "image 2 like no - "+imagePollModel.getImage2LikeNo());
+
         constraintLayout.setVisibility(View.GONE);
         leftRedHeart.setVisibility(View.GONE);
         rightRedHeart.setVisibility(View.GONE);
         leftWhiteHeart.setVisibility(View.GONE);
         rightWhiteHeart.setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
-        Animation animation2 = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scaleout);
+//        Animation animation2 = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scaleout);
         final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
         leftWhiteHeart.startAnimation(animation);
         constraintLayout.animate().translationY(40f).setDuration(0).start();
@@ -181,10 +179,21 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                                     Log.i("TAG", "first percentage match parent");
                                 }
                                 view1.setLayoutParams(layoutParams);
-                                ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
                                         view2.getHeight());
-                                ((RelativeLayout.LayoutParams) params).setMarginStart((int) view1Width);
+                                (params).setMarginStart((int) view1Width);
                                 text2.setLayoutParams(params);
+                                if(firstPercentage>secondPercentage){
+                                    view1.setBackground(context.getDrawable(R.drawable.view1_background));
+                                    view2.setBackground(context.getDrawable(R.drawable.view2_background));
+                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                }else {
+                                    view1.setBackground(context.getDrawable(R.drawable.view2_background));
+                                    view2.setBackground(context.getDrawable(R.drawable.view1_background));
+                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                }
                                 String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
                                 String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
 
@@ -193,8 +202,8 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                                 if (secondPercentage < 20)
                                     text2.setVisibility(View.GONE);
 
-                                text1.setText(mfirstPercentage + "%");
-                                text2.setText(msecondPercentage + "%");
+                                text1.setText(String.format("%s%%", mfirstPercentage));
+                                text2.setText(String.format("%s%%", msecondPercentage));
                                 Animation redHeartFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.red_heart_fade_in);
                                 leftRedHeart.setVisibility(View.VISIBLE);
                                 leftRedHeart.startAnimation(redHeartFadeInAnimation);
@@ -258,7 +267,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         leftWhiteHeart.setVisibility(View.GONE);
         rightWhiteHeart.setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
-        Animation animation2 = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scaleout);
+//        Animation animation2 = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scaleout);
         final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
         rightWhiteHeart.startAnimation(animation);
         constraintLayout.animate().translationY(40f).setDuration(0).start();
@@ -282,10 +291,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                             public void run() {
                                 int firstPercentage = ((imagePollModel.getImage1LikeNo()*100)/totalLikeOfBothImages);//white view1
                                 int secondPercentage = 100 - firstPercentage;//black white
-//                                Log.i("TAG", "first percentage :- " + firstPercentage);
-//                                Log.i("TAG", "second percentage :- " + secondPercentage);
                                 double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
-//                                Log.i("TAG", "constraint layout width :- " + view1Width);
                                 ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
                                 layoutParams.width = (int) view1Width;
                                 if(firstPercentage==100) {
@@ -293,18 +299,29 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                                     Log.i("TAG", "first percentage match parent");
                                 }
                                 view1.setLayoutParams(layoutParams);
-                                ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
                                         view2.getHeight());
-                                ((RelativeLayout.LayoutParams) params).setMarginStart((int) view1Width);
+                                (params).setMarginStart((int) view1Width);
                                 text2.setLayoutParams(params);
+                                if(firstPercentage>secondPercentage){
+                                    view1.setBackground(context.getDrawable(R.drawable.view1_background));
+                                    view2.setBackground(context.getDrawable(R.drawable.view2_background));
+                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                }else {
+                                    view1.setBackground(context.getDrawable(R.drawable.view2_background));
+                                    view2.setBackground(context.getDrawable(R.drawable.view1_background));
+                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                }
                                 if (firstPercentage < 20)
                                     text1.setVisibility(View.GONE);
                                 if (secondPercentage < 20)
                                     text2.setVisibility(View.GONE);
                                 String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
                                 String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
-                                text1.setText(mfirstPercentage + "%");
-                                text2.setText(msecondPercentage + "%");
+                                text1.setText(String.format("%s%%", mfirstPercentage));
+                                text2.setText(String.format("%s%%", msecondPercentage));
                                 Animation redHeartFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.red_heart_fade_in);
                                 rightRedHeart.setVisibility(View.VISIBLE);
                                 rightRedHeart.startAnimation(redHeartFadeInAnimation);
@@ -345,18 +362,29 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                         Log.i("TAG", "first percentage match parent");
                     }
                     view1.setLayoutParams(layoutParams);
-                    ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
                             view2.getHeight());
-                    ((RelativeLayout.LayoutParams) params).setMarginStart((int) view1Width);
+                    (params).setMarginStart((int) view1Width);
                     text2.setLayoutParams(params);
+                    if(firstPercentage>secondPercentage){
+                        view1.setBackground(context.getDrawable(R.drawable.view1_background));
+                        view2.setBackground(context.getDrawable(R.drawable.view2_background));
+                        text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                        text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                    }else {
+                        view1.setBackground(context.getDrawable(R.drawable.view2_background));
+                        view2.setBackground(context.getDrawable(R.drawable.view1_background));
+                        text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                        text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                    }
                     if (firstPercentage < 20)
                         text1.setVisibility(View.GONE);
                     if (secondPercentage < 20)
                         text2.setVisibility(View.GONE);
                     String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
                     String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
-                    text1.setText(mfirstPercentage + "%");
-                    text2.setText(msecondPercentage + "%");
+                    text1.setText(String.format("%s%%", mfirstPercentage));
+                    text2.setText(String.format("%s%%", msecondPercentage));
                     if (choice == 1) {
                         leftRedHeart.setVisibility(View.VISIBLE);
 
@@ -386,12 +414,14 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                            final ArrayList<Object> list, HomeRecyclerViewAdapter adapter,String status,
                            final ArrayList<String> followingListFromLocalDatabase) {
 
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog, null, false);
+       View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
 
         TextView statusView=dialogView.findViewById(R.id.follow_text_view);
         if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
@@ -400,7 +430,8 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
             statusView.setText(HomeRecyclerViewAdapter.FOLLOW); }
 
 
-        if(!imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
+                !imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             View view = dialogView.findViewById(R.id.delete_poll_text_view);
             view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
         }
@@ -467,8 +498,10 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog dialog=builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        if(dialog.getWindow()!=null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        }
         dialog.show();
         onReportItemClicked(dialogView,dialog,imagePollId,list,adapter);
     }
@@ -536,13 +569,16 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private void onDeleteClicked(final AskImagePollModel imagePollModel,final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
+    private void onDeleteClicked(final AskImagePollModel imagePollModel,final ArrayList<Object> list,
+                                 final HomeRecyclerViewAdapter adapter){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
         builder.setView(rootview);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        }
         alertDialog.show();
 
         View cancelButton=rootview.findViewById(R.id.cancel_button);
@@ -585,10 +621,13 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
+
     private boolean isNetworkAvailable(){
         ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info=manager.getActiveNetworkInfo();
-        return info!=null&&info.isConnected();
+        if(manager!=null) {
+            NetworkInfo info = manager.getActiveNetworkInfo();
+            return info != null && info.isConnected();
+        }return false;
     }
 
 

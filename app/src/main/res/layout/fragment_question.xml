@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView
@@ -20,11 +20,13 @@
 
     <com.leinardi.android.speeddial.SpeedDialOverlayLayout
         android:id="@+id/overlay"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <com.leinardi.android.speeddial.SpeedDialView
         android:id="@+id/speedDial"
         android:layout_width="wrap_content"
+        android:visibility="visible"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -47,11 +49,8 @@
                 android:orientation="vertical">
                 <include layout="@layout/shimmer_question"/>
                 <include layout="@layout/shimmer_question"/>
-
                 <include layout="@layout/shimmer_question"/>
-
                 <include layout="@layout/shimmer_question"/>
-
                 <include layout="@layout/shimmer_question"/>
                 <include layout="@layout/shimmer_question"/>
 
@@ -61,5 +60,6 @@
 
 
     </com.facebook.shimmer.ShimmerFrameLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

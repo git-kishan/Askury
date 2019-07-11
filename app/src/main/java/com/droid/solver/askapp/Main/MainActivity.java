@@ -41,6 +41,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,6 +63,9 @@ import javax.annotation.Nullable;
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener,ImagePollClickListener , HomeMessageListener,UidPasserListener{
 
+    public static boolean isFirstTimeQuestionLoaded=true;
+    public static boolean isFirstTimeHomeLoaded=true;
+    public static DocumentSnapshot questionLastDocumentSnapshot=null;
     private static final String HOME = "home";
     private static final String QUESTION = "ic_question";
     private static final String NOTIFICATION = "notification";
@@ -217,12 +226,41 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void checkNotification(){
+
+        DatabaseReference db= FirebaseDatabase.getInstance().getReference();
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            Log.i("TAG","uid :- "+uid);
+             db.child("user").child(uid).child("notification")
+                    .orderByChild("notifiedTime").addValueEventListener(new ValueEventListener() {
+                 @Override
+                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   Log.i("TAG", "children count :- "+dataSnapshot.getChildrenCount());
+                 }
+
+                 @Override
+                 public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                 }
+             });
+
+
+        }
+
+    }
+    private void showNotificationBadge(boolean show){
+
         BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
         BottomNavigationItemView itemView = (BottomNavigationItemView) menuView.getChildAt(2);
         View notificationBadge= LayoutInflater.from(this).inflate(R.layout.notification_badge_view,menuView,false);
-        itemView.addView(notificationBadge);
+        if(show){
+            itemView.addView(notificationBadge);
+        }else {
+            itemView.removeView(notificationBadge);
+        }
 
     }
+
     public  void changeToolbarFont(Toolbar toolbar) {
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
