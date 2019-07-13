@@ -13,12 +13,12 @@ import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SurveyViewHolder extends RecyclerView.ViewHolder {
+ class SurveyViewHolder extends RecyclerView.ViewHolder {
     CardView rootCardView;
     TextView timeAgo;
     TextView statusTextView;
     CircleImageView dot;
-    public SurveyViewHolder(@NonNull View itemView) {
+     SurveyViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card);
         timeAgo=itemView.findViewById(R.id.time_ago);

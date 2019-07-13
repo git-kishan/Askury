@@ -3,19 +3,13 @@ package com.droid.solver.askapp.Account;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
-import com.droid.solver.askapp.R;
-
 import java.util.ArrayList;
 
 public class AccountFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    ArrayList<Fragment> fragmentArrayList;
-    private int[] imageResId = {
-            R.drawable.ic_questions_black,
-            R.drawable.ic_questions_black,
-            R.drawable.ic_questions_black };
-    public AccountFragmentPagerAdapter(FragmentManager fm) {
+    private ArrayList<Fragment> fragmentArrayList;
+
+     AccountFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
         fragmentArrayList=new ArrayList<>();
 

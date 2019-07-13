@@ -138,7 +138,7 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
         }
         return "";
     }
-    public String getTime(long oldDate,long newDate){
+    private String getTime(long oldDate,long newDate){
         long diff=newDate-oldDate;//777600
         if (diff<0){
             return null;

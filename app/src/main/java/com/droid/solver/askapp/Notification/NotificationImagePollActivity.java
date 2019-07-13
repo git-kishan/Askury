@@ -2,22 +2,16 @@ package com.droid.solver.askapp.Notification;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.emoji.widget.EmojiTextView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
@@ -26,23 +20,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NotificationImagePollActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar toolbar;
     private CircleImageView profileImage;
     private EmojiTextView profileName,profileBio,question;
     private TextView timeAgo;
     private ImageView image1,image2;
-    private ConstraintLayout constraintLayout;
-    private RelativeLayout relativeView1,relativeView2;
-    private TextView percentView1,percentView2;
-    private ImageView leftWhiteHeart,rightWhiteHeart,leftRedHeart,rightRedHeart;
-    private String imagePollId,imagePollQuestion,askerId,askerName,askerBio,askerImageUrlLow,image1Url,image2Url,type;
+    private String imagePollId,imagePollQuestion,askerId,askerName,askerBio,image1Url,image2Url;
     private int image1LikeNo,image2LikeNo;
-    private boolean containViolanceOrAdult,reported,isStoredLocally;
+    private boolean isStoredLocally;
     private long notifiedTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +43,10 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         askerId=intent.getStringExtra("askerId");
         askerName=intent.getStringExtra("askerName");
         askerBio=intent.getStringExtra("askerBio");
-        askerImageUrlLow=intent.getStringExtra("askerImageUrlLow");
         image1Url=intent.getStringExtra("image1Url");
         image2Url=intent.getStringExtra("image2Url");
         image1LikeNo=intent.getIntExtra("image1LikeNo", 0);
         image2LikeNo=intent.getIntExtra("image2LikeNo", 0);
-        containViolanceOrAdult=intent.getBooleanExtra("containVioloanceOrAdult",false);
-        reported=intent.getBooleanExtra("reported", false);
-        type=intent.getStringExtra("type");
         notifiedTime=intent.getLongExtra("notifiedTime",System.currentTimeMillis());
         isStoredLocally=intent.getBooleanExtra("isStoredLocally", false);
         initView();
@@ -83,7 +67,7 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
 
     private void initView(){
 
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         profileImage=findViewById(R.id.profile_image);
         profileName=findViewById(R.id.asker_name);
         profileBio=findViewById(R.id.about_textview);
@@ -91,16 +75,7 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         timeAgo=findViewById(R.id.time_ago_textview);
         image1=findViewById(R.id.imageView5);
         image2=findViewById(R.id.imageView6);
-        relativeView1=findViewById(R.id.view1);
-        relativeView2=findViewById(R.id.view2);
-        percentView1=findViewById(R.id.text1);
-        percentView2=findViewById(R.id.text2);
-        leftWhiteHeart=findViewById(R.id.imageView7);
-        rightWhiteHeart=findViewById(R.id.imageView9);
-        leftRedHeart=findViewById(R.id.imageView12);
-        rightRedHeart=findViewById(R.id.imageView11);
         changeToolbarTitleFont(toolbar);
-        constraintLayout=findViewById(R.id.constraintLayout8);
         toolbar.setNavigationOnClickListener(this);
     }
 

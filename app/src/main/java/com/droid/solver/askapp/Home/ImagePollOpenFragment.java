@@ -2,6 +2,8 @@ package com.droid.solver.askapp.Home;
 
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,22 +24,23 @@ public class ImagePollOpenFragment extends Fragment {
     private View toolbar,bottomNavigation;
     private ImageView backImage;
     private String imageUrl;
-    private ImageView imageView;
 
     public ImagePollOpenFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_image_poll_open, container, false);
         if(getActivity()!=null)
         getActivity().supportStartPostponedEnterTransition();
         Bundle bundle=getArguments();
-        imageUrl=bundle.getString("imageUrl");
-        String transitionName=bundle.getString("imageTransitionName");
-        imageView=view.findViewById(R.id.image_view);
-
+        String transitionName=null;
+        if(bundle!=null) {
+            imageUrl = bundle.getString("imageUrl");
+            transitionName = bundle.getString("imageTransitionName");
+        }
+        ImageView imageView=view.findViewById(R.id.image_view);
         if(Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP){
             if(transitionName!=null)
             imageView.setTransitionName(transitionName);
@@ -80,7 +83,10 @@ public class ImagePollOpenFragment extends Fragment {
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                if(getActivity()!=null){
+                    getActivity().onBackPressed();
+
+                }
             }
         });
     }

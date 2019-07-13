@@ -5,9 +5,10 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:clickable="true"
-    android:layout_marginTop="5dp"
+    android:layout_marginTop="8dp"
     android:id="@+id/root_card_view"
-    android:elevation="16dp"
+    app:cardCornerRadius="8dp"
+    android:elevation="8dp"
     android:focusable="true"
     android:foreground="?android:selectableItemBackground"
     android:layout_marginEnd="8dp"
@@ -51,7 +52,9 @@
             app:layout_constraintEnd_toStartOf="@+id/answer_count"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
-            tools:text="Freenlancer|writer" />
+            tools:text="Freenlancer|writer"
+            tools:ignore="smallsp"
+            />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
@@ -79,12 +82,12 @@
             android:id="@+id/time_ago_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:text="5 sec ago"
             android:textSize="8sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image"
-            tools:ignore="SmallSp,HardcodedText"/>
+            tools:ignore="SmallSp,HardcodedText" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
@@ -119,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
-            android:text="253 answer"
+            tools:text="253 answer"
             android:textSize="8sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

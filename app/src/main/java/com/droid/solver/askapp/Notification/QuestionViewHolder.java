@@ -13,13 +13,13 @@ import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class QuestionViewHolder extends RecyclerView.ViewHolder {
+ class QuestionViewHolder extends RecyclerView.ViewHolder {
 
     CardView rootCardView;
     CircleImageView likerImage,dot;
     TextView timeAgo,statusTextView,likes;
 
-    public QuestionViewHolder(@NonNull View itemView) {
+     QuestionViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card);
         likerImage=itemView.findViewById(R.id.liker_image);

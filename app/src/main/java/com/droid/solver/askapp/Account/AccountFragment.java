@@ -33,17 +33,17 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AccountFragment extends Fragment implements View.OnClickListener {
 
     private ViewPager viewPager;
-    private TabLayout tabLayout;
     private CircleImageView profileImage;
     private CardView toolbarCardViewActivity;
     private TextView followerCount,followingCount,pointCount;
     private TextView followerTextView,followingTextView,pointTextView;
-    private ImageView expandedImageView;
     public AccountFragment() {
     }
 
@@ -71,7 +71,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         String userName=preferences.getString(Constants.userName, "");
         String muserBio=preferences.getString(Constants.bio, "");
         String gender=preferences.getString(Constants.GENDER, null);
-        expandedImageView=view.findViewById(R.id.expanded);
+        ImageView expandedImageView=view.findViewById(R.id.expanded);
         loadDataFromLocalDatabase();
         if(gender!=null){
             if(gender.equals(Constants.MALE)){
@@ -106,10 +106,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setTabLayout(View view){
-        tabLayout=view.findViewById(R.id.tabLayout);
+        TabLayout tabLayout=view.findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-        TabLayout.Tab tab1=tabLayout.newTab();
-        TabLayout.Tab tab2=tabLayout.newTab();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if(getActivity()!=null) {
                 Window window = getActivity().getWindow();
@@ -117,12 +116,11 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 window.setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
             }
         }
-        try {
-            tabLayout.getTabAt(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_questions_black, null));
-            tabLayout.getTabAt(1).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_qa_black, null));
-        }catch (NullPointerException e){
+            Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_questions_black, null));
+            Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_qa_black, null));
 
-        }
     }
     private void setViewPager(){
         AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getChildFragmentManager());
@@ -142,9 +140,11 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, null));
+            if(getActivity()!=null){
+                Window window = getActivity().getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, null));
+            }
         }
         toolbarCardViewActivity.setVisibility(View.VISIBLE);
         super.onDestroy();

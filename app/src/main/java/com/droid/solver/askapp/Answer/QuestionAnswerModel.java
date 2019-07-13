@@ -152,7 +152,6 @@ public class QuestionAnswerModel {
         return imageAttachedUrl;
     }
 
-
     public boolean isStringAttached() {
         return stringAttached;
     }

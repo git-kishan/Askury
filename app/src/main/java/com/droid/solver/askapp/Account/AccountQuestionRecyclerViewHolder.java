@@ -14,12 +14,9 @@ import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.homeAnswer.AnswerActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AccountQuestionRecyclerViewHolder extends RecyclerView.ViewHolder {
+ class AccountQuestionRecyclerViewHolder extends RecyclerView.ViewHolder {
     EmojiTextView questionTextView,timeAgoTextView,askerName,askerBio;
     TextView  answerCount;
     CardView rootCardView;
@@ -54,7 +51,6 @@ public class AccountQuestionRecyclerViewHolder extends RecyclerView.ViewHolder {
         context.startActivity(intent);
     }
     void onProfileImageClicked(final Context context, final UserQuestionModel model){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Intent intent=new Intent(context,OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getUserImageUrlLow());
         intent.putExtra("uid",model.getUserId());

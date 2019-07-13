@@ -1,11 +1,11 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,10 +16,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.LocalDatabase;
+import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -42,7 +44,7 @@ public class HomeFragment extends Fragment  {
     private static final int MAXIMUM_NO_OF_QUESTION_LOADED_AT_A_TIME=5;
     private static final int MAXIMUM_NO_OF_IMAGEMPOLL_LOADED_AT_A_TIME=1;
     private static final int MAXIMUM_NO_OF_SURVEY_LOADED_AT_A_TIME=1;
-    private static final int QUESTION_ORDER=0;
+//    private static final int QUESTION_ORDER=0;
 //    private static final int IMAGEPOLL_ORDER=1;
 //    private static final int SURVEY_ORDER=2;
     private Stack<RootQuestionModel> questionModelStack;
@@ -51,21 +53,19 @@ public class HomeFragment extends Fragment  {
     private DocumentSnapshot lastQuestionSnapshot;
     private DocumentSnapshot lastImagePollSnapshot;
     private DocumentSnapshot lastSurveySnapshot;
-    private DocumentSnapshot firstQuestionSnapshot;
-    private DocumentSnapshot firstImagePollSnapshot;
-    private DocumentSnapshot firstSurveySnapshot;
+//    private DocumentSnapshot firstQuestionSnapshot;
+//    private DocumentSnapshot firstImagePollSnapshot;
+//    private DocumentSnapshot firstSurveySnapshot;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private FirebaseFirestore rootRef;
-    ArrayList<Object> list;
+    private ArrayList<Object> list;
     private HomeRecyclerViewAdapter adapter;
     private boolean isLoading=false;
-    private CoordinatorLayout rootLayout;
     private ArrayList<String> reportedImageListFromLocalDatabase;
     private ArrayList<String> reportedSurveyListFromLocalDatabase;
     private ArrayList<String> reportedQuestionFromLocalDatabase;
+    private Handler handler;
 
     public HomeFragment() {
     }
@@ -76,16 +76,19 @@ public class HomeFragment extends Fragment  {
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView=view.findViewById(R.id.recycler_view);
-        layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        shimmerFrameLayout=view.findViewById(R.id.shimmer);
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
-        auth=FirebaseAuth.getInstance();
+        FirebaseAuth auth=FirebaseAuth.getInstance();
         list=new ArrayList<>();
-        user=auth.getCurrentUser();
+        FirebaseUser user=auth.getCurrentUser();
         if(user==null){
             startActivity(new Intent(getActivity(), SignInActivity.class));
             if(getActivity()!=null)
             getActivity().finish();
         }
+        handler=new Handler();
         questionModelStack=new Stack<>();
         imagePollModelStack=new Stack<>();
         surveyModelStack=new Stack<>();
@@ -113,9 +116,36 @@ public class HomeFragment extends Fragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadDataFromRemoteDatabase();
         initRecyclerView();
+        if(MainActivity.isFirstTimeHomeLoaded){
+            loadDataFromRemoteDatabase();
+        }else {
+            lastQuestionSnapshot=MainActivity.homeLastQuestionDocumentSnapshot;
+            lastImagePollSnapshot=MainActivity.homeLastImagePollDocumentSnapshot;
+            lastSurveySnapshot=MainActivity.homeLastSurveyDocumentSnapshot;
+            if(lastQuestionSnapshot!=null||lastSurveySnapshot!=null||lastImagePollSnapshot!=null){
+                loadDataFromLocalDatabase();
+            }
+        }
+    }
 
+    private void loadDataFromLocalDatabase(){
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getActivity()!=null) {
+                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+                    list =database.getHomeObject();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            shimmerFrameLayout.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void loadDataFromRemoteDatabase(){
@@ -148,8 +178,9 @@ public class HomeFragment extends Fragment  {
 
                     }
                     if(task.getResult()!=null&&task.getResult().getDocuments().size()>0) {
-                        firstImagePollSnapshot=task.getResult().getDocuments().get(0);
+//                        firstImagePollSnapshot=task.getResult().getDocuments().get(0);
                         lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                        MainActivity.homeLastImagePollDocumentSnapshot=lastImagePollSnapshot;
                     }
                 }
             }
@@ -183,8 +214,9 @@ public class HomeFragment extends Fragment  {
                         }
                     }
                     if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                        firstSurveySnapshot=task.getResult().getDocuments().get(0);
+//                        firstSurveySnapshot=task.getResult().getDocuments().get(0);
                         lastSurveySnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
+                        MainActivity.homeLastSurveyDocumentSnapshot=lastSurveySnapshot;
                     }
                 }
             }
@@ -221,10 +253,11 @@ public class HomeFragment extends Fragment  {
                             questionModelStack.add(questionModel);
                         }
                     }
-                    handleOrderingOfList(QUESTION_ORDER);
+                    handleOrderingOfList();
                     if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                        firstQuestionSnapshot=task.getResult().getDocuments().get(0);
+//                        firstQuestionSnapshot=task.getResult().getDocuments().get(0);
                         lastQuestionSnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
+                        MainActivity.homeLastQuestionDocumentSnapshot=lastQuestionSnapshot;
                     }
                 }else {
                     Log.i("TAG", "error occured in getting question documents from remote database");
@@ -240,11 +273,20 @@ public class HomeFragment extends Fragment  {
         });
     }
 
-    private void handleOrderingOfList( final int order){
-        if(order==QUESTION_ORDER){
-            list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
-            adapter.notifyDataSetChanged();
-        }
+    private void handleOrderingOfList( ){
+        list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
+        adapter.notifyDataSetChanged();
+        shimmerFrameLayout.setVisibility(View.GONE);
+        MainActivity.isFirstTimeHomeLoaded=false;
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getActivity()!=null) {
+                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+                    database.insertHomeObject(list);
+                }
+            }
+        });
 
     }
 
@@ -259,9 +301,6 @@ public class HomeFragment extends Fragment  {
         while (!s1.isEmpty()){
             tempList.add(s1.pop());
         }
-//        Log.i("TAG", "s1Size :- "+s1Size);
-//        Log.i("TAG", "s2Size :- "+s2Size);
-//        Log.i("TAG", "s3Size :- "+s3Size);
 
         for(int i=0;i<(s2Size+s3Size);i++){
             int randomNumber=generateRandomNumber(s1Size++);
@@ -317,7 +356,8 @@ public class HomeFragment extends Fragment  {
         });
         recyclerView.addOnScrollListener(onScrollListener);
     }
-    RecyclerView.OnScrollListener onScrollListener=new RecyclerView.OnScrollListener() {
+
+    private RecyclerView.OnScrollListener onScrollListener=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
@@ -373,8 +413,7 @@ public class HomeFragment extends Fragment  {
                                 }
                             if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                                 lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                            } else if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
-                                lastImagePollSnapshot = firstImagePollSnapshot;
+                                MainActivity.homeLastImagePollDocumentSnapshot=lastImagePollSnapshot;
                             }
                         }
                     }
@@ -411,8 +450,7 @@ public class HomeFragment extends Fragment  {
                                 }
                             if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                                 lastSurveySnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                            } else if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
-                                lastSurveySnapshot = firstSurveySnapshot;
+                                MainActivity.homeLastSurveyDocumentSnapshot=lastSurveySnapshot;
                             }
                         }
                     }
@@ -424,6 +462,7 @@ public class HomeFragment extends Fragment  {
                 });
         }
     }
+
     private void onLoadingLoadQuestionFromRemoteDatabase(){
 
         rootRef=FirebaseFirestore.getInstance();
@@ -449,10 +488,10 @@ public class HomeFragment extends Fragment  {
                                             !reportedQuestionFromLocalDatabase.contains(questionModel.getQuestionId())) {
                                         questionModelStack.add(questionModel);
                                     }
-
                                 }
                             if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                                 lastQuestionSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                MainActivity.homeLastQuestionDocumentSnapshot=lastQuestionSnapshot;
                             } else if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
                                 recyclerView.removeOnScrollListener(onScrollListener);
                             }
@@ -460,8 +499,7 @@ public class HomeFragment extends Fragment  {
                             list.remove(scrollPosition);
                             adapter.notifyItemRemoved(scrollPosition);
                             isLoading = false;
-                            handleOrderingOfList(QUESTION_ORDER);
-
+                            handleOrderingOfList();
 
                         } else {
 

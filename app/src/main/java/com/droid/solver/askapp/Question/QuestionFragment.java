@@ -277,7 +277,6 @@ public class QuestionFragment extends Fragment {
     private void loadDataFromLocalDatabase(){
         if(getActivity()!=null){
             LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
-            ArrayList<Object> tempList=database.getQuestionRootQuestionModelList();
             list.addAll(database.getQuestionRootQuestionModelList());
             adapter.notifyDataSetChanged();
             swipeRefreshLayout.setRefreshing(false);

@@ -26,7 +26,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
     private final int ANSWER=2;
     private final int LOADING=0;
     private StorageReference reference;
-    public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
+    private int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
     QuestionAnswerRecyclerAdapter(Context context, ArrayList<Object> list){
         this.context=context;
         this.list=list;
@@ -42,7 +42,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
         switch (i){
             case QUESTION:
                 view=inflater.inflate(R.layout.home_answer_question_item,viewGroup,false);
-                viewHolder=new QuestionViewHolder(view,context);
+                viewHolder=new QuestionViewHolder(view);
                 break;
             case ANSWER:
                 view=inflater.inflate(R.layout.home_answer_answer_item, viewGroup,false);
@@ -66,14 +66,11 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
 
         if(holder.getItemViewType()==QUESTION&&holder instanceof QuestionViewHolder){
            QuestionModel model = (QuestionModel) list.get(i);
-           String profileImageUrl=model.getAskerImageUrlLow();
            String askerName=model.getAskerName();
            String bio=model.getAskerBio();
            String question=model.getQuestion();
            boolean anonymous=model.isAnonymous();
-           String questionId=model.getQuestionId();
            long timeOfAsking=model.getTimeOfAsking();
-           profileImageUrl=profileImageUrl==null?"":profileImageUrl;
            askerName=askerName==null?"Someone":askerName;
            bio=bio==null?"":bio;
            if(question==null){
@@ -83,7 +80,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
            timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
            String timeAgoText=getTime(timeOfAsking, System.currentTimeMillis());
            if(anonymous){
-               ((QuestionViewHolder) holder).askerName.setText("Unknown");
+               ((QuestionViewHolder) holder).askerName.setText(context.getString(R.string.unknown));
                ((QuestionViewHolder) holder).askerBio.setText("");
                GlideApp.with(context).load(R.drawable.ic_placeholder).into(((QuestionViewHolder) holder).profileImage);
 
@@ -100,14 +97,9 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             ((QuestionViewHolder) holder).timeAgo.setText(timeAgoText);
             ((QuestionViewHolder) holder).question.setText(question);
             questionClickListener(context, (QuestionViewHolder) holder, model);
-
-
-
         }
         else if(holder.getItemViewType()==ANSWER&&holder instanceof AnswerViewHolder){
             AnswerModel model = (AnswerModel) list.get(i);
-
-            String profileImageUrl=model.getAnswererImageUrl();
             String answererName=model.getAnswererName();
             String answererBio=model.getAnswererBio();
             String answer=model.getAnswer();
@@ -116,9 +108,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             String answerImageUrl=model.getImageAttachedUrl();
             int fontUsed=model.getFontUsed();
 
-
             fontUsed=fontUsed<=fontId.length?fontUsed:0;
-            profileImageUrl=profileImageUrl==null?"":profileImageUrl;
             answererName=answererName==null?"Someone":answererName;
             answererBio=answererBio==null?"":answererBio;
             if(answer==null){
@@ -191,7 +181,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
         return "";
     }
 
-    public String getTime(long oldDate,long newDate){
+    private String getTime(long oldDate,long newDate){
         long diff=newDate-oldDate;//777600
         if (diff<0){
             return null;

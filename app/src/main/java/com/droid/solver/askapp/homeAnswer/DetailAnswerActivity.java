@@ -23,14 +23,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailAnswerActivity extends AppCompatActivity implements View.OnClickListener, OnLikeListener {
 
-    private Toolbar toolbar;
     private CircleImageView askerImage,answererImage;
     private EmojiTextView askerName,askerBio,answererName,answererBio;
     private TextView timeOfAsking,timeOfAnswering;
     private EmojiTextView question,answer;
     private LikeButton likeButton;
     private TextView likeCountTextView;
-
     private String maskerId,manswererId;
     private String maskerName,maskerBio,manswererName,manswererBio;
     private long mtimeOfAsking,mtimeOfAnswering;
@@ -62,7 +60,7 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
         likeCount=intent.getIntExtra("likeCount", 0);
         imageAttached=intent.getBooleanExtra("imageAttached", false);
         imageAttachedUrl=intent.getStringExtra("imageAttachedUrl");
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         changeToolbarFont(toolbar);
         askerImage=findViewById(R.id.circleImageView2);
         answererImage=findViewById(R.id.circleImageView3);

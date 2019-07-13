@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.button.MaterialButton;
 import androidx.fragment.app.Fragment;
@@ -19,15 +21,14 @@ import com.droid.solver.askapp.R;
 public class NoInternetFragment extends Fragment implements View.OnClickListener {
 
 
-    private MaterialButton retryButton;
     private SwipeRefreshLayout swipeRefershLayout;
     private Handler handler;
     private Runnable runnable;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_no_internet, container, false);
-        retryButton=view.findViewById(R.id.retry_button);
+        MaterialButton retryButton=view.findViewById(R.id.retry_button);
         retryButton.setOnClickListener( this);
         swipeRefershLayout=view.findViewById(R.id.swipe_refresh);
         handler=new Handler();
@@ -45,7 +46,9 @@ public class NoInternetFragment extends Fragment implements View.OnClickListener
         if(view.getId()==R.id.retry_button){
             swipeRefershLayout.setRefreshing(true);
             if(isNetworkAvailable()){
-                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+                if(getActivity()!=null) {
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+                }
 
             }else {
                  runnable=new Runnable() {
@@ -68,8 +71,13 @@ public class NoInternetFragment extends Fragment implements View.OnClickListener
     }
 
     private boolean isNetworkAvailable(){
-        ConnectivityManager cmm= (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo =cmm.getActiveNetworkInfo();
-        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        if(getActivity()!=null){
+            ConnectivityManager cmm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            if(cmm!=null) {
+                NetworkInfo activeNetworkInfo = cmm.getActiveNetworkInfo();
+                return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+            }return false;
+        }
+        return false;
     }
 }

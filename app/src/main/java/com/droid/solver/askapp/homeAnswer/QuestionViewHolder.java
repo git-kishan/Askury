@@ -14,14 +14,13 @@ import com.droid.solver.askapp.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class QuestionViewHolder extends RecyclerView.ViewHolder {
+ class QuestionViewHolder extends RecyclerView.ViewHolder {
 
     CircleImageView profileImage;
     EmojiTextView question,askerName,askerBio;
     ImageView wantToAnswerImage;
     TextView timeAgo;
-    private Context context;
-    public QuestionViewHolder(@NonNull View itemView, Context context) {
+     QuestionViewHolder(@NonNull View itemView) {
         super(itemView);
         profileImage=itemView.findViewById(R.id.circleImageView2);
         askerName=itemView.findViewById(R.id.textView15);
@@ -29,7 +28,7 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder {
         question=itemView.findViewById(R.id.textView19);
         wantToAnswerImage=itemView.findViewById(R.id.imageView18);
         timeAgo=itemView.findViewById(R.id.textView28);
-        this.context=context;
+
 
     }
     void onWantToAnswerClicked(final Context context, final QuestionModel model){

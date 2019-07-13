@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private HashMap<String,Integer> imagePollLikeMapFromLocalDatabase;
     private HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase;
     private ArrayList<String> followingIdListFromLocalDatabase;
-    public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
+    private  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
 
     HomeRecyclerViewAdapter(Context context, ArrayList<Object> list,ArrayList<String> answerLikeListFromLocalDatabase,
                             HashMap<String,Integer> imagePollLikeMapFromLocalDatabase,HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase,
@@ -80,6 +81,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             case LOADING:
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
                 viewHolder=new LoadingViewHolderVertically(view);
+                break;
                     default:
                         view=inflater.inflate(R.layout.loading, viewGroup,false);
                         viewHolder=new LoadingViewHolderVertically(view);
@@ -125,7 +127,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 if(anonymous){
                     ((QuestionAnswerViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
-                    ((QuestionAnswerViewHolder) holder).askerName.setText("Someone wants to know");
+                    ((QuestionAnswerViewHolder) holder).askerName.setText(context.getString(R.string.some_one_wants_to_know));
                     ((QuestionAnswerViewHolder) holder).askerBio.setText("");
                 }
 
@@ -210,7 +212,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 if (anonymous) {
                     ((QuestionAnswerWithImageViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
-                    ((QuestionAnswerWithImageViewHolder) holder).askerName.setText("Someone wants to know");
+                    ((QuestionAnswerWithImageViewHolder) holder).askerName.setText(context.getString(R.string.some_one_wants_to_know));
                     ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText("");
                 } else {
 
@@ -277,8 +279,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     {
                         if (MainActivity.imagePollLikeMap.containsKey(imagePollId)) {
                             try {
-                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
-                                        MainActivity.imagePollLikeMap.get(imagePollId));
+                                Integer i1 = MainActivity.imagePollLikeMap.get(imagePollId);
+                                String s;
+                                int i2=0;
+                                if(i1!=null){
+                                     s=i1.toString();
+                                     i2=Integer.parseInt(s);
+                                }
+                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo, i2);
                             }catch (NullPointerException e){
                                 ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
                                         image2LikeNo, 0);
@@ -288,8 +296,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     }else if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
                         if(imagePollLikeMapFromLocalDatabase.containsKey(imagePollId)){
                             try {
-                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,
-                                        imagePollLikeMapFromLocalDatabase.get(imagePollId));
+                                Integer i1=imagePollLikeMapFromLocalDatabase.get(imagePollId);
+                                String s;
+                                int i2=0;
+                                if(i1!=null){
+                                    s=i1.toString();
+                                    i2=Integer.parseInt(s);
+                                }
+                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,i2);
                             }catch (NullPointerException e){
                                 ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
                                         image2LikeNo, 0);
@@ -348,8 +362,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 if(MainActivity.surveyParticipatedMap!=null&&MainActivity.surveyParticipatedMap.size()>0){
                     try {
                         if (MainActivity.surveyParticipatedMap.containsKey(surveyId)) {
-                            ((SurveyViewHolder) holder).showSelection(MainActivity.surveyParticipatedMap.get(surveyId),
-                                    (AskSurveyModel) list.get(i));
+                            Integer i1=MainActivity.surveyParticipatedMap.get(surveyId);
+                            String s;
+                            int i2=0;
+                            if(i1!=null){
+                                s=i1.toString();
+                                i2=Integer.parseInt(s);
+                            }
+                            ((SurveyViewHolder) holder).showSelection(i2,(AskSurveyModel) list.get(i));
                         }
                     }catch (NullPointerException e){
                         ((SurveyViewHolder) holder).showSelection(0, (AskSurveyModel)list.get(i));
@@ -358,11 +378,17 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }else if(surveyParticipatedMapFromLocalDatabase!=null&&surveyParticipatedMapFromLocalDatabase.size()>0){
                     try {
                         if (surveyParticipatedMapFromLocalDatabase.containsKey(surveyId)) {
-                            ((SurveyViewHolder) holder).showSelection(surveyParticipatedMapFromLocalDatabase.get(surveyId),
-                                    (AskSurveyModel) list.get(i));
+                            Integer i1=surveyParticipatedMapFromLocalDatabase.get(surveyId);
+                            String s;
+                            int i2=0;
+                            if(i1!=null){
+                                s=i1.toString();
+                                i2=Integer.parseInt(s);
+                            }
+                            ((SurveyViewHolder) holder).showSelection(i2, (AskSurveyModel) list.get(i));
                         }
                     }catch (NullPointerException e){
-                        ((SurveyViewHolder) holder).showSelection(0, (AskSurveyModel)list.get(i));
+                        Log.i("TAG", "exeption occurs in suvey unboxing in recycler adapter ;");
                     }
                 }else
 
@@ -449,7 +475,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         }
         return "";
     }
-    public String getTime(long oldDate,long newDate){
+    private String getTime(long oldDate,long newDate){
         long diff=newDate-oldDate;//777600
         if (diff<0){
             return null;

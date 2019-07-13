@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +19,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -34,30 +34,28 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firebase.storage.FirebaseStorage;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SurveyViewHolder extends RecyclerView.ViewHolder {
+class SurveyViewHolder extends RecyclerView.ViewHolder {
     EmojiTextView profileName,bio,question;
     CircleImageView profileImage;
     ImageView threeDot;
     LinearLayout container1,container2,container3,container4;
     EmojiTextView option1TextView,option2TextView,option3TextView,option4TextView;
-    EmojiTextView percent1,percent2,percent3,percent4;
-    View view1,view2,view3,view4;
-    Context context;
-    Animation animation;
+    private EmojiTextView percent1,percent2,percent3,percent4;
+    private View view1,view2,view3,view4;
+    private Context context;
+    private Animation animation;
     private FirebaseUser user;
     private FirebaseFirestore firestoreRootRef;
     private final int FOLLOW=1;
     private final int UNFOLLOW=2;
     private HomeMessageListener homeMessageListener;
-    public SurveyViewHolder(@NonNull View itemView,Context context) {
+
+     SurveyViewHolder(@NonNull View itemView,Context context) {
         super(itemView);
         this.context=context;
         homeMessageListener= (HomeMessageListener) context;
@@ -185,20 +183,13 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-        public void makeContainerUnClickable(){
+        private void makeContainerUnClickable(){
           container1.setClickable(false);
           container2.setClickable(false);
           container3.setClickable(false);
           container4.setClickable(false);
 
         }
-        public void makeContainerClickable(){
-            container1.setClickable(true);
-            container2.setClickable(true);
-            container3.setClickable(true);
-            container4.setClickable(true);
-        }
-
         // 1 for first option,2 for second option,3 for third option, 4 for fourth option
       private   void updateSelectionInRemoteDatabase(final int selection, final AskSurveyModel surveyModel){
 
@@ -213,23 +204,23 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             if(selection==1) {
                 surveyMap.put("option1Count", FieldValue.increment(1));
                 surveyModel.setOption1Count(surveyModel.getOption1Count()+1);
-                showSelectionPercentage(surveyModel,selection);
+                showSelectionPercentage(surveyModel);
             }
             else if(selection==2) {
                 surveyMap.put("option2Count", FieldValue.increment(1));
                 surveyModel.setOption2Count(surveyModel.getOption2Count()+1);
-                showSelectionPercentage(surveyModel,selection);
+                showSelectionPercentage(surveyModel);
             }
             else if(selection==3) {
                 surveyMap.put("option3Count", FieldValue.increment(1));
                 surveyModel.setOption3Count(surveyModel.getOption3Count()+1);
-                showSelectionPercentage(surveyModel,selection);
+                showSelectionPercentage(surveyModel);
 
             }
             else if(selection==4) {
                 surveyMap.put("option4Count", FieldValue.increment(1));
                 surveyModel.setOption4Count(surveyModel.getOption4Count()+1);
-                showSelectionPercentage(surveyModel,selection);
+                showSelectionPercentage(surveyModel);
 
 
             }
@@ -263,7 +254,7 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
 
         }
 
-        private void showSelectionPercentage(final AskSurveyModel surveyModel,int selection){
+        private void showSelectionPercentage(final AskSurveyModel surveyModel){
 
         boolean isOption1=surveyModel.isOption1();
         boolean isOption2=surveyModel.isOption2();
@@ -427,26 +418,27 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
             animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
             animation.setDuration(500);
         if(selection==1){
-            showSelectionPercentage(surveyModel,selection);
+            showSelectionPercentage(surveyModel);
             container1.startAnimation(animation);
             changeColor(container1.getId());
         }
         else if(selection==2){
-            showSelectionPercentage(surveyModel,selection);
+            showSelectionPercentage(surveyModel);
             container2.startAnimation(animation);
             changeColor(container2.getId());
         }
         else if(selection==3){
-            showSelectionPercentage(surveyModel,selection);
+            showSelectionPercentage(surveyModel);
             container3.startAnimation(animation);
             changeColor(container3.getId());
         }
         else if(selection==4){
-            showSelectionPercentage(surveyModel,selection);
+            showSelectionPercentage(surveyModel);
             container4.startAnimation(animation);
             changeColor(container4.getId());
         }else if(selection==0){
             //nothing to do
+            Log.i("TAG", "survey selection :- "+selection);
         }
 
             makeContainerUnClickable();
@@ -466,7 +458,8 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
     void onThreeDotClicked(final Context context, final AskSurveyModel surveyModel, ArrayList<Object> list,
                            HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
 
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog, null, false);
+        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog,
+                null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
@@ -528,7 +521,7 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
                 }else
                     status=0;
 
-                onFollowClicked(surveyModel, list,status,followingIdListFromLocalDatabase);
+                onFollowClicked(surveyModel, status,followingIdListFromLocalDatabase);
                 dialog.dismiss();
             }
         });
@@ -541,7 +534,8 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
         });
     }
     private void onReportClicked(String surveyId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
-        View dialogView=LayoutInflater.from(context).inflate(R.layout.survey_report_dialog, null,false);
+        @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.survey_report_dialog,
+                null,false);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog dialog=builder.create();
@@ -618,7 +612,8 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     private void onDeleteClicked(final AskSurveyModel surveyModel,final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
+        @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
+                null,false );
         builder.setView(rootview);
         final AlertDialog alertDialog = builder.create();
         if(alertDialog.getWindow()!=null) {
@@ -678,7 +673,7 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    private void onFollowClicked(final AskSurveyModel surveyModel, final ArrayList<Object> list, int status,
+    private void onFollowClicked(final AskSurveyModel surveyModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
             if(status==FOLLOW){
@@ -712,8 +707,11 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
                 selfFollowingMap.put("selfId", selfUid);
 
                 askerFollowerMap.put("followerId", selfUid);
+                assert selfName != null;
                 askerFollowerMap.put("followerName", selfName);
+                assert selfImageUrl != null;
                 askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                assert selfBio != null;
                 askerFollowerMap.put("followerBio",selfBio);
                 askerFollowerMap.put("selfId", surveyModel.getAskerId());
 

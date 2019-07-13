@@ -61,7 +61,9 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/asker_name"
                 app:layout_constraintTop_toBottomOf="@+id/asker_name"
-                tools:text="Freenlancer|writer" />
+                tools:text="Freenlancer|writer"
+                tools:ignore="Smallsp"
+                />
 
             <androidx.emoji.widget.EmojiTextView
                 android:id="@+id/question_textview"
@@ -88,7 +90,9 @@
                 tools:text="5 sec ago"
                 android:textSize="8sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+                app:layout_constraintTop_toBottomOf="@+id/profile_image"
+                tools:ignore="SmallSp"
+                />
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -140,6 +144,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:scaleType="centerCrop"
+                    android:contentDescription="@string/first_image"
                     android:background="?android:selectableItemBackground"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                     app:layout_constraintEnd_toStartOf="@+id/imageView6"
@@ -156,6 +161,7 @@
                     android:layout_marginStart="6dp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:contentDescription="@string/second_image"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -236,10 +242,11 @@
                         android:layout_height="match_parent"
                         android:fontFamily="@font/rochester"
                         android:gravity="center"
-                        android:text="VS"
+                        android:text="@string/vs"
                         android:textStyle="bold"
                         android:textColor="@color/colorAccent"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        />
 
                 </androidx.cardview.widget.CardView>
 
@@ -251,6 +258,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/heart_image"
                     android:src="@drawable/ic_white_heart"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView5"
@@ -265,6 +273,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:contentDescription="@string/heart_image"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_white_heart"
@@ -279,12 +288,14 @@
                     android:id="@+id/imageView11"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:contentDescription="@string/heart_image"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:visibility="visible"
                     android:src="@drawable/ic_heart_red"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@+id/constraintLayout8"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.55"
                     app:layout_constraintStart_toEndOf="@+id/cardView7"
                     app:layout_constraintTop_toTopOf="@+id/constraintLayout8" />
 
@@ -293,6 +304,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="8dp"
+                    android:contentDescription="@string/heart_image"
                     android:layout_marginEnd="8dp"
                     android:visibility="visible"
                     android:src="@drawable/ic_heart_red"
@@ -310,6 +322,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="16dp"
+                android:contentDescription="@string/option"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/ripple_background"
                 android:clickable="true"

@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,23 +40,25 @@ import java.util.HashMap;
 import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
+class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
+
     ImageView answerImageView;
     CircleImageView askerImageView,answererImageView;
     EmojiTextView askerName,askerBio,answererName;
-    TextView timeAgo,wantToAnswerTextView;
+    TextView timeAgo;
     EmojiTextView question,answer;
     ImageView threeDot;
     LikeButton likeButton;
     TextView likeCount,answerCount;
-    FirebaseUser user;
-    FirebaseFirestore firestoreRootRef;
+    private FirebaseUser user;
+    private FirebaseFirestore firestoreRootRef;
     ImageView numberOfAnswerImageView,wantToAnswerImageView;
     private Context context;
     private final int FOLLOW=1;
     private final int UNFOLLOW=2;
     private HomeMessageListener homeMessageListener;
-    public QuestionAnswerWithImageViewHolder(@NonNull View itemView,final Context context) {
+
+    QuestionAnswerWithImageViewHolder(@NonNull View itemView,final Context context) {
         super(itemView);
         this.context=context;
         homeMessageListener = (HomeMessageListener) context;
@@ -68,7 +71,6 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         answererName=itemView.findViewById(R.id.answerer_name);
         timeAgo=itemView.findViewById(R.id.time_ago_textview);
         answerImageView=itemView.findViewById(R.id.answer_image_view);
-        wantToAnswerTextView=itemView.findViewById(R.id.textView18);
         question=itemView.findViewById(R.id.question_textview);
         answer=itemView.findViewById(R.id.answer_text_view);
         threeDot=itemView.findViewById(R.id.imageView4);
@@ -287,7 +289,8 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     void onThreeDotClicked(final Context context, final RootQuestionModel rootQuestionModel, ArrayList<Object> list,
                                   HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
 
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog, null, false);
+        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog,
+                null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
@@ -356,7 +359,7 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                 }else
                     status=0;
 
-                onFollowClicked(rootQuestionModel, list, status, followingIdListFromLocalDatabase);
+                onFollowClicked(rootQuestionModel, status, followingIdListFromLocalDatabase);
                 dialog.dismiss();
             }
         }) ;
@@ -383,12 +386,15 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onReportClicked(String questionId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
-        View dialogView=LayoutInflater.from(context).inflate(R.layout.question_report_dialog, null,false);
+        @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.question_report_dialog,
+                null,false);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog dialog=builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        if(dialog.getWindow()!=null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        }
         dialog.show();
         onReportItemClicked(dialogView,dialog,questionId,list,adapter);
     }
@@ -457,7 +463,8 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
 
     private void onDeleteClicked(final RootQuestionModel questionModel, final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
+        @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
+                null,false );
         builder.setView(rootview);
         final AlertDialog alertDialog = builder.create();
         if(alertDialog.getWindow()!=null) {
@@ -515,7 +522,7 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         return false;
     }
 
-    private void onFollowClicked(final RootQuestionModel questionModel, final ArrayList<Object> list, int status,
+    private void onFollowClicked(final RootQuestionModel questionModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
             if(status==FOLLOW){
@@ -549,8 +556,11 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                 selfFollowingMap.put("selfId", selfUid);
 
                 askerFollowerMap.put("followerId", selfUid);
+                assert selfName != null;
                 askerFollowerMap.put("followerName", selfName);
+                assert selfImageUrl != null;
                 askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                assert selfBio != null;
                 askerFollowerMap.put("followerBio",selfBio);
                 askerFollowerMap.put("selfId", questionModel.getAskerId());
 

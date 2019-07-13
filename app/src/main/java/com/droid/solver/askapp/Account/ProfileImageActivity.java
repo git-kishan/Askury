@@ -56,7 +56,7 @@ import java.util.Map;
 
 public class ProfileImageActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageView imageView,editImage,backImage,tickImage;
+    private ImageView imageView,tickImage;
     private static final int IMAGE_PICKER_REQUEST=351;
     private static final int IMAGE_PICKER=154;
     private Uri cropImageUri=null;
@@ -78,8 +78,8 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         imageView=findViewById(R.id.imageView);
-        editImage=findViewById(R.id.image_edit);
-        backImage=findViewById(R.id.back_image);
+        ImageView editImage=findViewById(R.id.image_edit);
+        ImageView backImage=findViewById(R.id.back_image);
         tickImage=findViewById(R.id.tick);
         rootView=findViewById(R.id.root);
         tickImage.setVisibility(View.GONE);
@@ -174,18 +174,13 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case IMAGE_PICKER_REQUEST: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    loadImageFromGallery();
-                } else {
-
-                    Snackbar.make(rootView, "Pemission denied", Snackbar.LENGTH_SHORT).show();
-                }
-                return;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==IMAGE_PICKER_REQUEST){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                loadImageFromGallery();
+            } else {
+                Snackbar.make(rootView, "Pemission denied", Snackbar.LENGTH_SHORT).show();
             }
-
         }
     }
 
@@ -232,19 +227,16 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                         }
                     });
                     imageView.setImageURI(cropImageUri);
-
-
-
-
                 }else {
                     Snackbar.make(rootView, "Error occured ,try again!", Snackbar.LENGTH_SHORT).show();
                 }
-
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 try {
-                    Exception error = result.getError();
-                    Log.i("TAG", "Error in cropping image :- " + error.getMessage());
-                    Toast.makeText(ProfileImageActivity.this, "Error occurs,try again !", Toast.LENGTH_SHORT).show();
+                    if(result!=null) {
+                        Exception error = result.getError();
+                        Log.i("TAG", "Error in cropping image :- " + error.getMessage());
+                        Toast.makeText(ProfileImageActivity.this, "Error occurs,try again !", Toast.LENGTH_SHORT).show();
+                    }
                 }catch (NullPointerException e){
                     Log.i("TAG","error occured in getting error");
                 }
@@ -265,7 +257,6 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         }catch (FileNotFoundException e){
 
             Snackbar.make(rootView, "Unknown error", Snackbar.LENGTH_SHORT).show();
-
         }
         return null;
     }
@@ -301,7 +292,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                uploadSmallThumbnailToRemoteDatabase(smallThumbnailArray, thumbnail, smallThumbnail);
+                uploadSmallThumbnailToRemoteDatabase(smallThumbnailArray);
                 uploadUrlToRemoteDatabase(thumbnail, smallThumbnail);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -314,7 +305,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-    private void uploadSmallThumbnailToRemoteDatabase(byte [] smallThumbnailArray, final Bitmap thumbnail, final Bitmap smallThumbnail){
+    private void uploadSmallThumbnailToRemoteDatabase(byte[] smallThumbnailArray){
         final String uid=user.getUid();
         String smallThumbnailName=uid+SMALL_THUMBNAIL;
         final StorageReference smallThumbnailRef= FirebaseStorage.getInstance().getReference().child(PROFILE_PICTURE)
@@ -390,6 +381,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         }
         FileOutputStream fileOutputStream = null;
         try {
+            if(path!=null)
             fileOutputStream = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -397,6 +389,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         }
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
         try {
+            if(fileOutputStream!=null)
             fileOutputStream.flush();
 
         } catch (IOException e) {
@@ -404,10 +397,10 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             return null;
         } finally {
             try {
+                if(fileOutputStream!=null)
                 fileOutputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
-                return null;
             }
 
         }

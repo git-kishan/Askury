@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,11 +13,11 @@ import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ImagePollViewHolder extends RecyclerView.ViewHolder {
+ class ImagePollViewHolder extends RecyclerView.ViewHolder {
     CardView rootCardView;
     CircleImageView image1,image2,dot;
     TextView timeAgo,statusTextView,percent1,percent2;
-    public ImagePollViewHolder(@NonNull View itemView) {
+     ImagePollViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card_view);
         image1=itemView.findViewById(R.id.image1);
@@ -36,7 +35,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         intent.putExtra("isStoredLocally", model.isStoredLocally());
         if(!model.isStoredLocally()){
             model.setStoredLocally(true);
-            saveNotificationToLocalDatabase(model.getImagePollId(), "imagePoll", model, context);
+            saveNotificationToLocalDatabase(model.getImagePollId(), model, context);
         }
         intent.putExtra("imagePollId", model.getImagePollId());
         intent.putExtra("question",model.getQuestion());
@@ -55,13 +54,13 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         dot.setVisibility(View.GONE);
         context.startActivity(intent);
     }
-    private void saveNotificationToLocalDatabase(final String notificationId,final String type,final ImagePollModel model,final Context context){
+    private void saveNotificationToLocalDatabase(final String notificationId, final ImagePollModel model, final Context context){
 
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 LocalDatabase db=new LocalDatabase(context.getApplicationContext());
-                db.insertNotification(notificationId, type);
+                db.insertNotification(notificationId, "imagePoll");
                 db.insertNotificationImagePoll(model);
             }
         });

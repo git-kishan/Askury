@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -68,15 +67,18 @@ public class NotificationFragment extends Fragment {
                     .orderByChild("notifiedTime")
                     .limitToFirst(20);
             query.addValueEventListener(listener);
+        }else{
+            Log.i("TAG", "user is null in notification fragment");
+
         }
     }
-
     private ValueEventListener  listener=new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
             for(DataSnapshot snapshot:dataSnapshot.getChildren()){
 
+                Log.i("TAG", "children count :- "+dataSnapshot.getChildrenCount());
                 if(snapshot.hasChild("type")) {
 
                     String type = (String) snapshot.child("type").getValue();
@@ -113,13 +115,16 @@ public class NotificationFragment extends Fragment {
             }
             shimmer.setVisibility(View.GONE);
             adapter.notifyDataSetChanged();
-            shimmer.setVisibility(View.GONE);
             query.removeEventListener(listener);
             query.addChildEventListener(childEventListener);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
+            noNotificationImage.setVisibility(View.VISIBLE);
+            noNotificationText.setVisibility(View.VISIBLE);
+            shimmer.setVisibility(View.GONE);
+            query.removeEventListener(listener);
             Log.i("TAG", "database error :- "+databaseError);
         }
     };

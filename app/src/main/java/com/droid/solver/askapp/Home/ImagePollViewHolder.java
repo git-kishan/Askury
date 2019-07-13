@@ -44,13 +44,15 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ImagePollViewHolder extends RecyclerView.ViewHolder {
+ class ImagePollViewHolder extends RecyclerView.ViewHolder {
     EmojiTextView profileName, bio, question;
     CircleImageView profileImageView;
-    TextView timeAgo, text1, text2;
-    RelativeLayout view1, view2;
-    ConstraintLayout constraintLayout;
-    ImageView image1, image2, leftWhiteHeart, rightWhiteHeart, leftRedHeart, rightRedHeart, threeDot;
+    TextView timeAgo;
+    private TextView  text1, text2;
+    private RelativeLayout view1, view2;
+    private ConstraintLayout constraintLayout;
+    ImageView image1, image2, threeDot;
+    private ImageView leftWhiteHeart, rightWhiteHeart, leftRedHeart, rightRedHeart;
     private FirebaseUser user;
     private FirebaseFirestore firestoreRootRef;
     private ImagePollClickListener listener;
@@ -414,7 +416,8 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                            final ArrayList<Object> list, HomeRecyclerViewAdapter adapter,String status,
                            final ArrayList<String> followingListFromLocalDatabase) {
 
-       View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog, null, false);
+       @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog,
+               null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
@@ -476,7 +479,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                 }else
                     status=0;
 
-                onFollowClicked(imagePollModel, list,status,followingListFromLocalDatabase);
+                onFollowClicked(imagePollModel,status,followingListFromLocalDatabase);
                 dialog.dismiss();
 
             }
@@ -494,7 +497,8 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onReportClicked(String imagePollId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
-        View dialogView=LayoutInflater.from(context).inflate(R.layout.image_poll_report_dialog, null,false);
+        @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.image_poll_report_dialog,
+                null,false);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog dialog=builder.create();
@@ -572,7 +576,8 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
     private void onDeleteClicked(final AskImagePollModel imagePollModel,final ArrayList<Object> list,
                                  final HomeRecyclerViewAdapter adapter){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
+        @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
+                null,false );
         builder.setView(rootview);
         final AlertDialog alertDialog = builder.create();
         if(alertDialog.getWindow()!=null) {
@@ -631,7 +636,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    private void onFollowClicked(final AskImagePollModel imagePollModel, final ArrayList<Object> list, int status,
+    private void onFollowClicked(final AskImagePollModel imagePollModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
             if(status==FOLLOW){
@@ -665,8 +670,11 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                 selfFollowingMap.put("selfId", selfUid);
 
                 askerFollowerMap.put("followerId", selfUid);
+                assert selfName != null;
                 askerFollowerMap.put("followerName", selfName);
+                assert selfImageUrl != null;
                 askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                assert selfBio != null;
                 askerFollowerMap.put("followerBio",selfBio);
                 askerFollowerMap.put("selfId", imagePollModel.getAskerId());
 
@@ -752,7 +760,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
             }
         }
         else {
-
+            Log.i("TAG", "Sign in again");
             //sign in again
         }
     }

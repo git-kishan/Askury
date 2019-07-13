@@ -14,17 +14,14 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import androidx.emoji.widget.EmojiEditText;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.cardview.widget.CardView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,15 +31,12 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.GlideApp;
-import com.droid.solver.askapp.ImagePoll.SuccessfullyUploadDialogFragment;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,37 +46,30 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import steelkiwi.com.library.DotsLoaderView;
 
 public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener,
         CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
-    private Toolbar toolbar;
     private DotsLoaderView dotsLoaderView;
     private FrameLayout overlayFrameLayout;
     private CircleImageView circularImageView;
     private EmojiTextView userNameAsked;
-    private TextInputLayout questionInputLayout;
     private EmojiEditText questionInputEditText;
     private SwitchCompat anonymousSwitch;
-    private CardView cardView ;
     private ConstraintLayout rootView;
     private ImageView imageView,imageViewAdd;
     private static final int PHOTO_PICKER_REQUEST_CODE=60;
-    private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore root;
     private boolean isAnonymous=false;
-    private StorageReference storageRootRef;
     private UploadTask uploadTask;
     private boolean isImageAttached;
     private byte [] compressedByteArray=null;
@@ -92,17 +79,15 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
 
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.questionactivity_toolbar_menu);
         toolbar.setNavigationOnClickListener(this);
         dotsLoaderView=findViewById(R.id.dotsLoaderView);
         overlayFrameLayout=findViewById(R.id.overlay_frame_layout);
         circularImageView=findViewById(R.id.profile_image);
         userNameAsked=findViewById(R.id.userNameAsked);
-        questionInputLayout=findViewById(R.id.questionInputLayout);
         questionInputEditText=findViewById(R.id.questionEditText);
         anonymousSwitch=findViewById(R.id.anonymous);
-        cardView=findViewById(R.id.cardView5);
         imageView=findViewById(R.id.image_view);
         imageViewAdd=findViewById(R.id.image_view_add);
         imageViewAdd.setVisibility(View.VISIBLE);
@@ -114,7 +99,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         imageView.setOnClickListener(this);
         anonymousSwitch.setOnCheckedChangeListener(this);
         toolbar.setOnMenuItemClickListener(this);
-        auth=FirebaseAuth.getInstance();
+        FirebaseAuth auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user==null){
             showSnackBar("Please sign in again...");
@@ -130,7 +115,6 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             finish();
         }
         root=FirebaseFirestore.getInstance();
-        storageRootRef=FirebaseStorage.getInstance().getReference();
     }
 
     @Override
@@ -196,8 +180,9 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         }
     }
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
+        assert data!=null;
         final Uri imageUri = data.getData();
-        Bitmap compressedBitmap=decodeSelectedImageUri(imageUri,250 ,250);
+        Bitmap compressedBitmap=decodeSelectedImageUri(imageUri);
         if(compressedBitmap!=null) {
             imageViewAdd.setVisibility(View.GONE);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -209,16 +194,13 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
         }
     }
-    private  Bitmap decodeSelectedImageUri(Uri uri,int requiredWidth,int requiredHeight){
+    private  Bitmap decodeSelectedImageUri(Uri uri){
         try {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             final InputStream imageStream = getContentResolver().openInputStream(uri);
             BitmapFactory.decodeStream(imageStream, null, options);
-            int selectedImageHeight = options.outHeight;
-            int selectedImageWidth = options.outWidth;
-            String imageType = options.outMimeType;
-            options.inSampleSize=calculateInSampleSize(options, requiredWidth, requiredHeight);
+            options.inSampleSize=calculateInSampleSize(options, 250, 250);
             options.inJustDecodeBounds=false;
             return BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
         }catch (FileNotFoundException e){
@@ -296,60 +278,60 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     }
 
-    private void uploadImageToDatabase(final MenuItem menuItem){
-        if(compressedByteArray==null){
-            uploadQuestionToRemoteDatabase(menuItem);
-        }else {
-            String uid = user.getUid();
-            String currentTime = String.valueOf(System.currentTimeMillis());
-            String imageName = uid + "@" + currentTime;
-            final StorageReference questionImageRef = storageRootRef.child("question").child(imageName);
-            uploadTask = questionImageRef.putBytes(compressedByteArray);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    questionImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            uploadQuestionToRemoteDatabase(menuItem);
-                            Log.i("TAG", "url :- " + uri);
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            overlayFrameLayout.setVisibility(View.GONE);
-                            SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment = new SuccessfullyUploadDialogFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("message", "Failure occur ,try again...");
-                            imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                            imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
-                            anonymousSwitch.setChecked(false);
-                            showSnackBar("Question uploading failed ,try again...");
-                            Log.i("TAG", "failure occurs in getting url:-");
-
-
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    overlayFrameLayout.setVisibility(View.GONE);
-                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment = new SuccessfullyUploadDialogFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("message", "Failure occur ,try again...");
-                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
-                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
-                    anonymousSwitch.setChecked(false);
-                    showSnackBar("Question uploading failed ,try again...");
-
-                    Log.i("TAG", "failure occurs :-");
-
-                }
-            });
-        }
-    }
+//    private void uploadImageToDatabase(final MenuItem menuItem){
+//        if(compressedByteArray==null){
+//            uploadQuestionToRemoteDatabase(menuItem);
+//        }else {
+//            String uid = user.getUid();
+//            String currentTime = String.valueOf(System.currentTimeMillis());
+//            String imageName = uid + "@" + currentTime;
+//            final StorageReference questionImageRef = storageRootRef.child("question").child(imageName);
+//            uploadTask = questionImageRef.putBytes(compressedByteArray);
+//            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    questionImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            uploadQuestionToRemoteDatabase(menuItem);
+//                            Log.i("TAG", "url :- " + uri);
+//
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            overlayFrameLayout.setVisibility(View.GONE);
+//                            SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment = new SuccessfullyUploadDialogFragment();
+//                            Bundle bundle = new Bundle();
+//                            bundle.putString("message", "Failure occur ,try again...");
+//                            imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+//                            imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+//                            anonymousSwitch.setChecked(false);
+//                            showSnackBar("Question uploading failed ,try again...");
+//                            Log.i("TAG", "failure occurs in getting url:-");
+//
+//
+//                        }
+//                    });
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    overlayFrameLayout.setVisibility(View.GONE);
+//                    SuccessfullyUploadDialogFragment imageSuccessfullyUploadDialogFragment = new SuccessfullyUploadDialogFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("message", "Failure occur ,try again...");
+//                    imageSuccessfullyUploadDialogFragment.setArguments(bundle);
+//                    imageSuccessfullyUploadDialogFragment.show(getSupportFragmentManager(), "question_dialog");
+//                    anonymousSwitch.setChecked(false);
+//                    showSnackBar("Question uploading failed ,try again...");
+//
+//                    Log.i("TAG", "failure occurs :-");
+//
+//                }
+//            });
+//        }
+//    }
 
     private void uploadQuestionToRemoteDatabase(final MenuItem menuItem){
 
@@ -414,8 +396,12 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     private boolean isNetworkAvailable(){
         ConnectivityManager comm= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=comm.getActiveNetworkInfo();
-        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        if(comm!=null){
+            NetworkInfo activeNetworkInfo=comm.getActiveNetworkInfo();
+            return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        }
+        return false;
+
     }
     private void showSnackBar(String message){
         Snackbar snackbar=Snackbar.make(rootView,  message, Snackbar.LENGTH_LONG);
@@ -438,8 +424,10 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         TextView textView=dialogView.findViewById(R.id.message_text_view);
         textView.setText(getString(R.string.question_uploading_successfully));
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        }
         alertDialog.show();
 
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -471,8 +459,10 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
+        }
         alertDialog.show();
 
         retryButton.setOnClickListener(new View.OnClickListener() {

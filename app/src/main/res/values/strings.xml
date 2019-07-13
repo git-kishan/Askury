@@ -12,7 +12,7 @@
     <string name="optionB">Option B</string>
     <string name="optionC">Option C</string>
     <string name="optionD">Option D</string>
-    <string name="submit">Submit</string>
+    <string name="submit" translatable="false">Submit</string>
     <string name="optionA">Option A</string>
     <string name="username_created_a_poll">%1$s created a poll</string>
     <string name="some_one_is_doing_a_survey">%1$s is doing a survey</string>
@@ -34,6 +34,23 @@
     <string name="someone_answer_your_question" translatable="false">%1$s answer your question</string>
     <string name="some_one_start_following_you" translatable="false">%1$s started following you</string>
     <string name="no_notification" translatable="false">No notification</string>
+    <string name="number_of_answer" translatable="false">No. of answer</string>
+    <string name="want_to_answer" translatable="false">Want to answer</string>
+    <string name="option" translatable="false">Option</string>
+    <string name="first_image" translatable="false">First image</string>
+    <string name="second_image" translatable="false">Second image</string>
+    <string name="vs" translatable="false">VS</string>
+    <string name="heart_image" translatable="false">Heart</string>
+    <string name="some_one_wants_to_know" translatable="false">Someone wants to know</string>
+    <string name="some_one_not_asked_question" translatable="false">You haven\'t asked any question</string>
+    <string name="some_one_donot_answer_question" translatable="false">You haven\'t answer any question</string>
+    <string name="question" translatable="false">Question</string>
+    <string name="question_answer" translatable="false">Question answer</string>
+    <string name="no_internet" translatable="false">No internet</string>
+    <string name="check_your_internet_connection" translatable="false">Please check your internet connection</string>
+    <string name="retry" translatable="false">Retry</string>
+    <string name="unknown" translatable="false">Unknown</string>
+    <string name="uploading" translatable="false">Uploading ...</string>
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>

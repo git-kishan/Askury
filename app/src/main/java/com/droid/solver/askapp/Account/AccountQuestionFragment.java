@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Question.UserQuestionModel;
@@ -31,14 +33,14 @@ public class AccountQuestionFragment extends Fragment {
 
 
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Object> list;
     private AccountQuestionRecyclerAdapter adapter;
     private DocumentSnapshot lastVisibleQuestionItem;
     private static final int QUESTION_LIMIT=8;
     private boolean isLoading=false;
     private String uid=null;
-    private UidPasserListener uidPasserListener;
+    private ImageView questionImage;
+    private TextView questionText;
     public AccountQuestionFragment() {
     }
 
@@ -47,11 +49,13 @@ public class AccountQuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_account_question, container, false);
-        uidPasserListener= (UidPasserListener) getActivity();
+        UidPasserListener uidPasserListener= (UidPasserListener) getActivity();
         if(uidPasserListener!=null)
             uid=uidPasserListener.passUid();
         recyclerView=view.findViewById(R.id.recycler_view);
         recyclerView.setNestedScrollingEnabled(true);
+        questionImage=view.findViewById(R.id.imageView23);
+        questionText=view.findViewById(R.id.textView45);
         if(uid==null){
             if(FirebaseAuth.getInstance().getCurrentUser()!=null)
                 uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -69,7 +73,7 @@ public class AccountQuestionFragment extends Fragment {
         }
     }
     private void initRecyclerView(){
-        layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         list=new ArrayList<>();
         adapter=new AccountQuestionRecyclerAdapter(getActivity(), list);
@@ -78,7 +82,7 @@ public class AccountQuestionFragment extends Fragment {
         loadQuestionFromRemoteDatabase();
 
     }
-    RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
+   private RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
@@ -117,14 +121,19 @@ public class AccountQuestionFragment extends Fragment {
                                 UserQuestionModel model = snapshot.toObject(UserQuestionModel.class);
                                 list.add(model);
                             }
-                        adapter.notifyDataSetChanged();
+                        if(list!=null&&list.size()==0){
+                            questionImage.setVisibility(View.VISIBLE);
+                            questionText.setVisibility(View.VISIBLE);
+                        }else {
+                            adapter.notifyDataSetChanged();
+                            if (task.getResult() != null && task.getResult().getDocuments().size() > 0)
+                                lastVisibleQuestionItem = task.getResult().getDocuments().get(task.getResult().size() - 1);
 
-                        if (task.getResult() != null && task.getResult().getDocuments().size() > 0)
-                            lastVisibleQuestionItem = task.getResult().getDocuments().get(task.getResult().size() - 1);
-
-                        if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
-                            recyclerView.removeOnScrollListener(scrollListener);
+                            if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
+                                recyclerView.removeOnScrollListener(scrollListener);
+                            }
                         }
+
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -136,6 +145,7 @@ public class AccountQuestionFragment extends Fragment {
             });
         }else {
             //uid null
+            Log.i("TAG", "uid is null in accountQuestionFragment");
         }
 
 

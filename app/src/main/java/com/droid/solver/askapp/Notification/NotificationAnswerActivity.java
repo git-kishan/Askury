@@ -25,7 +25,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NotificationAnswerActivity extends AppCompatActivity implements View.OnClickListener, OnLikeListener {
 
-    private Toolbar toolbar;
     private CircleImageView askerImage,answererImage;
     private EmojiTextView askerName,askerBio,answererName,answererBio;
     private TextView timeOfAsking,timeOfAnswering;
@@ -65,7 +64,7 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
         imageAttached=intent.getBooleanExtra("imageAttached", false);
         imageAttachedUrl=intent.getStringExtra("imageAttachedUrl");
         isStoredLocally=intent.getBooleanExtra("isStoredLocally", false);
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         changeToolbarFont(toolbar);
         askerImage=findViewById(R.id.circleImageView2);
         answererImage=findViewById(R.id.circleImageView3);

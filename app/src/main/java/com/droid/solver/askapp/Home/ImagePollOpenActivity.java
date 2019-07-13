@@ -11,21 +11,16 @@ import android.widget.ImageView;
 import com.droid.solver.askapp.R;
 public class ImagePollOpenActivity extends AppCompatActivity {
 
-    private ImageView backImage;
-    private String image1Url,image2Url;
-    private ViewPager viewPager;
     String [] imageUrlList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent=getIntent();
-        image1Url=intent.getStringExtra("image1Url");
-        image2Url=intent.getStringExtra("image2Url");
+        String image1Url=intent.getStringExtra("image1Url");
+        String image2Url=intent.getStringExtra("image2Url");
         setContentView(R.layout.activity_image_poll_open);
-        backImage=findViewById(R.id.back_image);
+        ImageView backImage=findViewById(R.id.back_image);
         imageUrlList=new String[2];
-        viewPager=findViewById(R.id.view_pager);
-
         imageUrlList[0]=image1Url;
         imageUrlList[1]=image2Url;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

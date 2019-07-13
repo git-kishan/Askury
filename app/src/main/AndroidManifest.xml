@@ -31,7 +31,6 @@
         <activity android:name=".homeAnswer.DetailAnswerActivity" />
         <activity android:name=".Account.ExpandedViewPagerActivity" />
         <activity android:name=".setting.PrivacyPolicyActivity" />
-        <activity android:name=".setting.TextViewToBitmap" />
         <activity android:name=".Account.OtherAccountActivity" />
         <activity android:name=".Account.ProfileImageActivity" />
         <activity android:name=".GenderSelectionActivity" />

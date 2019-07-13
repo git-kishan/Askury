@@ -64,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import steelkiwi.com.library.DotsLoaderView;
 
@@ -283,7 +284,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
     }
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -341,7 +342,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
         if(data!= null) {
             final Uri imageUri = data.getData();
-            Bitmap compressedBitmap = decodeSelectedImageUri(imageUri, 250, 250);
+            Bitmap compressedBitmap = decodeSelectedImageUri(imageUri);
             if (compressedBitmap != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
@@ -366,13 +367,13 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private  Bitmap decodeSelectedImageUri(Uri uri,final int requiredWidth,final int requiredHeight){
+    private  Bitmap decodeSelectedImageUri(Uri uri){
         try {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             final InputStream imageStream = getContentResolver().openInputStream(uri);
             BitmapFactory.decodeStream(imageStream, null, options);
-            options.inSampleSize=calculateInSampleSize(options, requiredWidth, requiredHeight);
+            options.inSampleSize=calculateInSampleSize(options, 250, 250);
             options.inJustDecodeBounds=false;
             return BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
         }catch (FileNotFoundException e){
@@ -513,10 +514,10 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         counter++;
                     }
                     if(counter==0){
-                        uploadAnswerToRemoteDatabase(imageUrl,false,null);
+                        uploadAnswerToRemoteDatabase(imageUrl, null);
 
                     }else if(counter>0){
-                        uploadAnswerToRemoteDatabase(imageUrl, true,answerId);
+                        uploadAnswerToRemoteDatabase(imageUrl, answerId);
                     }
                 }else {
                     Log.i("TAG", "task failed:- ");
@@ -527,7 +528,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void uploadAnswerToRemoteDatabase(@Nullable String answerImageUrl,boolean doOverride,String previousAnswerId){
+    private void uploadAnswerToRemoteDatabase(@Nullable String answerImageUrl, String previousAnswerId){
         String uid=auth.getUid();
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String answererName=preferences.getString(Constants.userName, null);
@@ -536,10 +537,10 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         String answererBio=preferences.getString(Constants.bio, null);
         final boolean imageAttached=compressedByteArray!=null;
         String questionId=this.questionId;
-        DocumentReference userAnswerRef=null;
-        DocumentReference questionAnswer=null;
-        DocumentReference rootQuestionRef=null;
-        DocumentReference userQuestionRef=null;
+        DocumentReference userAnswerRef;
+        DocumentReference questionAnswer;
+        DocumentReference rootQuestionRef;
+        DocumentReference userQuestionRef;
 
         if(previousAnswerId==null&&uid!=null){
 
@@ -560,12 +561,16 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
             Map<String, Object> map = new HashMap<>();
             map.put("recentAnswererId", uid);
+            assert answererImageUrl != null;
             map.put("recentAnswererImageUrlLow",answererImageUrl);
+            assert answererName != null;
             map.put("recentAnswererName", answererName);
+            assert answererBio != null;
             map.put("recentAnswererBio", answererBio);
             map.put("recentAnswerId", answerId);
             map.put("recentAnswer", answer);
             map.put("recentAnswerImageAttached", imageAttached);
+            assert answerImageUrl != null;
             map.put("recentAnswerImageUrl", answerImageUrl);
             map.put("answerCount", FieldValue.increment(1));
             map.put("recentAnswerLikeCount", 0);
@@ -632,13 +637,18 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     fontSelected, false, 0,anonymous);
 
             Map<String, Object> map = new HashMap<>();
+            assert uid != null;
             map.put("recentAnswererId", uid);
+            assert answererImageUrl != null;
             map.put("recentAnswererImageUrlLow",answererImageUrl);
+            assert answererName != null;
             map.put("recentAnswererName", answererName);
+            assert answererBio != null;
             map.put("recentAnswererBio", answererBio);
             map.put("recentAnswerId", previousAnswerId);
             map.put("recentAnswer", answer);
             map.put("recentAnswerImageAttached", imageAttached);
+            assert answerImageUrl != null;
             map.put("recentAnswerImageUrl", answerImageUrl);
             map.put("recentAnswerLikeCount", 0);
             map.put("fontUsed", fontSelected);

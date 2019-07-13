@@ -27,7 +27,7 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
     private static final int LOADING=1;
     private static final int ANSWER=2;
 
-    public AccountQuestionAnswerRecyclerAdapter(final Context context, ArrayList<Object> list,String answererId){
+    AccountQuestionAnswerRecyclerAdapter(final Context context, ArrayList<Object> list,String answererId){
 
         if(context!=null){
             this.context=context;

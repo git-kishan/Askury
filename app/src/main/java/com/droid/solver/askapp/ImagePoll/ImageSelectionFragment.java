@@ -1,6 +1,8 @@
 package com.droid.solver.askapp.ImagePoll;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
@@ -23,11 +25,13 @@ public class ImageSelectionFragment extends BottomSheetDialogFragment implements
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle bundle=getArguments();
-        isImage1Clicked=bundle.getBoolean("image1");
-        isImage2Clicked=bundle.getBoolean("image2");
+        if(bundle !=null) {
+            isImage1Clicked = bundle.getBoolean("image1");
+            isImage2Clicked = bundle.getBoolean("image2");
+        }
         View view= inflater.inflate(R.layout.fragment_image_selection, container, false);
         galleryLayout=view.findViewById(R.id.galleryLayout);
         cameraLayout=view.findViewById(R.id.cameraLayout);

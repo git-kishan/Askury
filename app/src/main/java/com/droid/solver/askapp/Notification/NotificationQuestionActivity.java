@@ -11,25 +11,21 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.Answer.QuestionAnswerModel;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -39,14 +35,10 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
 
     private Toolbar toolbar;
     private CircleImageView askerImage,answererImage;
-    private EmojiTextView askerName,answererName,askerBio,answererBio;;
-    private TextView askerTimeAgo,answererTimeAgo;
+    private EmojiTextView askerName,answererName,askerBio,answererBio;
     private EmojiTextView question,answer;
     private ImageView answerImage;
-
-    private String likerId,likerName,likerImageUrl,likerBio;
-    private String askerId,answererId,answerId,questionId,type;
-    private long notifiedTime;
+    private String askerId,answererId,answerId,questionId;
     private boolean isStoredLocally;
 
     @Override
@@ -54,22 +46,19 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_question);
         Intent intent=getIntent();
-        likerId = intent.getStringExtra("likerId");
-        likerName=intent.getStringExtra("likerName");
-        likerImageUrl=intent.getStringExtra("likerImageUrl");
-        likerBio=intent.getStringExtra("likerBio");
         askerId=intent.getStringExtra("askerId");
         answerId=intent.getStringExtra("answerId");
         answererId=intent.getStringExtra("answererId");
         questionId=intent.getStringExtra("questionId");
-        type=intent.getStringExtra("type");
-        notifiedTime=intent.getLongExtra("notifiedTime",System.currentTimeMillis());
         isStoredLocally=intent.getBooleanExtra("isStoredLocally", false);
         init();
         changeToolbarFont();
         loadProfileImage(true);
-        fetchData();
-        removeNotificationFromRemoteDatabase();
+        if(isNetworkAvailble()){
+            fetchData();
+            removeNotificationFromRemoteDatabase();
+        }
+
 
     }
     private void init(){
@@ -80,8 +69,6 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
         answererName=findViewById(R.id.textView20);
         askerBio=findViewById(R.id.textView16);
         answererBio = findViewById(R.id.textView21);
-        askerTimeAgo=findViewById(R.id.textView28);
-        answererTimeAgo=findViewById(R.id.textView27);
         question=findViewById(R.id.textView22);
         answer=findViewById(R.id.textView19);
         answerImage=findViewById(R.id.imageView19);

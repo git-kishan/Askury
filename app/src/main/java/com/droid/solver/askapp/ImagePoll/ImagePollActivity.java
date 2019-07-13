@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import androidx.emoji.widget.EmojiEditText;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -61,6 +60,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import steelkiwi.com.library.DotsLoaderView;
 
@@ -71,13 +71,11 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private FrameLayout overLayFrameLayout;
     private TextView orTextVeiw;
     private CardView rootCardView;
-    private Toolbar toolbar;
-    private CardView rootView,orCardView;
+    private CardView rootView;
     private ImageView image1,image2;
-    private TextInputLayout questionInputLayout;
     private EmojiEditText questionInputEditText;
     private ImageSelectionFragment dialogFragment;
-    private static  final  int PERMISSION_REQUEST_READ_CAMERA=180;
+//    private static  final  int PERMISSION_REQUEST_READ_CAMERA=180;
     private static  final  int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE=170;
     private static final int PHOTO_PICKER_REQUEST_CODE=60;
     private static final int CAMERE_REQUEST_CODE=13;
@@ -86,30 +84,27 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private TextView option1,option2;
     private String currentPhotoPath;
     private byte[] image1ByteArray,image2ByteArray;
-    private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore root;
     private StorageReference rootStorageRef;
     private UploadTask uploadTask;
-    private static AlertDialog errorDialog;
+//    private static AlertDialog errorDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_poll);
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.questionactivity_toolbar_menu);
         image1=findViewById(R.id.image1);
         image2=findViewById(R.id.image2);
         dotsLoaderView=findViewById(R.id.dotsLoaderView);
         toolbar.setTitleMarginBottom(30);
-        orCardView=findViewById(R.id.or_card_view);
         overLayFrameLayout=findViewById(R.id.overlay_frame_layout);
         orTextVeiw=findViewById(R.id.or_text_view);
         rootCardView = findViewById(R.id.root_card_view);
         rootView=findViewById(R.id.root);
-        questionInputLayout=findViewById(R.id.questionInputLayout);
         questionInputEditText=findViewById(R.id.questionEditText);
         image1CardView=findViewById(R.id.cardView11);
         image2CardView=findViewById(R.id.cardView4);
@@ -125,7 +120,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         dialogFragment=new ImageSelectionFragment();
         orTextVeiw.requestFocus();
         hideSoftKeyboard(orTextVeiw);
-        auth=FirebaseAuth.getInstance();
+        FirebaseAuth auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user==null){
             showSnackBar("Please sign in again...");
@@ -151,13 +146,13 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
                 bundle.putBoolean("image1", true);
                 bundle.putBoolean("image2", false);
                 dialogFragment.setArguments(bundle);
-                ((ImageSelectionFragment) dialogFragment).show(getSupportFragmentManager(), "image_select");
+                (dialogFragment).show(getSupportFragmentManager(), "image_select");
                 break;
             case R.id.image2:
                 bundle.putBoolean("image1", false);
                 bundle.putBoolean("image2", true);
                 dialogFragment.setArguments(bundle);
-                ((ImageSelectionFragment) dialogFragment).show(getSupportFragmentManager(), "image_select");
+                (dialogFragment).show(getSupportFragmentManager(), "image_select");
                 break;
             case R.id.root_card_view:
                 rootCardView.requestFocus();
@@ -235,7 +230,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-
+                Log.i("TAG", "Exception occurs in creating temp file :- "+ex.getMessage());
             }
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
@@ -284,14 +279,11 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions, @NonNull  int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_READ_EXTERNAL_STORAGE: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if(requestCode==PERMISSION_REQUEST_READ_EXTERNAL_STORAGE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                   onGalleryClicked();
-                } else {
-                    Snackbar.make(rootView,"permission denied",Snackbar.LENGTH_SHORT).show();
-                }
-                return;
+            } else {
+                Snackbar.make(rootView,"permission denied",Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -349,6 +341,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
+        assert data != null;
         final Uri imageUri = data.getData();
         Bitmap bitmap=decodeSelectedImageUri(imageUri, image1.getWidth(),image1.getHeight());
         if(bitmap!=null) {
@@ -412,7 +405,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -583,15 +576,14 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         String askerImageUrlLow=preferences.getString(Constants.LOW_IMAGE_URL, null);
         String askerBio=preferences.getString(Constants.bio, null);
         final String question=questionInputEditText.getText().toString();
-        final String image1Url=imageFirstUrl;
-        String image2Url=imageSecondUrl;
         long timeOfPolling=System.currentTimeMillis();
         int image1LikeNo=0;
         int image2LikeNo=0;
         String imagePollId=root.collection("user").document(askerId).collection("imagePoll").document().getId();
         AskImagePollModel pollModel=new AskImagePollModel(
                 askerId, askerName, askerImageUrlLow, askerBio, question,
-                image1Url, image2Url, timeOfPolling, image1LikeNo, image2LikeNo, imagePollId,false,false,timeOfPolling);
+                imageFirstUrl, imageSecondUrl, timeOfPolling, image1LikeNo, image2LikeNo, imagePollId,
+                false,false,timeOfPolling);
 
         DocumentReference userImagePollRef=root.collection("user").document(askerId).
                 collection("imagePoll").document(imagePollId);

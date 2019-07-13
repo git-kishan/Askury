@@ -34,7 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("isStoredLocally", model.isStoredLocally());
         if(!model.isStoredLocally()){
             model.setStoredLocally(true);
-            saveNotificationToLocalDatabase(model.getAnswerId(), "answer", model, context);
+            saveNotificationToLocalDatabase(model.getAnswerId(), model, context);
         }
          boolean isLikedByMe=false;
          int likeCount=0;
@@ -66,12 +66,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     }
 
-     private void saveNotificationToLocalDatabase(final String notificationId,final String type,final AnswerModel model,final Context context) {
+     private void saveNotificationToLocalDatabase(final String notificationId, final AnswerModel model, final Context context) {
              AsyncTask.execute(new Runnable() {
                  @Override
                  public void run() {
                      LocalDatabase db = new LocalDatabase(context.getApplicationContext());
-                     db.insertNotification(notificationId, type);
+                     db.insertNotification(notificationId, "answer");
                      db.insertNotificationAnswer(model);
                  }
              });

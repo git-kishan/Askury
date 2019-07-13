@@ -30,12 +30,8 @@ import java.util.ArrayList;
 
 public class AnswerActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar toolbar;
     private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
-    private String askerImageUrl,askerName,askerBio,questionId,question,askerId;
-    private long timeOfAsking;
-    private boolean anonymous;
+    private String questionId,askerId;
     private FirebaseFirestore firestoreRootRef;
     private FirebaseUser user;
     private ArrayList<Object> objectArrayList;
@@ -48,19 +44,18 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer2);
         Intent intent=getIntent();
-
-        askerImageUrl=intent.getStringExtra("askerImageUrl");
-        timeOfAsking=intent.getLongExtra("timeOfAsking",0);
-        askerName=intent.getStringExtra("askerName");
-        askerBio=intent.getStringExtra("askerBio");
+        String askerImageUrl=intent.getStringExtra("askerImageUrl");
+        long timeOfAsking=intent.getLongExtra("timeOfAsking",0);
+        String askerName=intent.getStringExtra("askerName");
+        String askerBio=intent.getStringExtra("askerBio");
         questionId=intent.getStringExtra("questionId");
-        question=intent.getStringExtra("question");
+        String question=intent.getStringExtra("question");
         askerId=intent.getStringExtra("askerId");
-        anonymous=intent.getBooleanExtra("anonymous", false);
-        toolbar=findViewById(R.id.toolbar);
+        boolean anonymous=intent.getBooleanExtra("anonymous", false);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         changeToolbarFont(toolbar, this);
         recyclerView=findViewById(R.id.recycler_view);
-        layoutManager=new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         toolbar.setNavigationIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back_black, null));
@@ -115,7 +110,6 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             super.onScrolled(recyclerView, dx, dy);
             LinearLayoutManager linearLayoutManager= (LinearLayoutManager) recyclerView.getLayoutManager();
             if(!isLoading){
-                Log.i("TAG", "is Loading :- "+isLoading);
                 if(linearLayoutManager!=null)
                 Log.i("TAG", "position :- "+linearLayoutManager.findLastVisibleItemPosition());
                 if(linearLayoutManager!=null&&linearLayoutManager.findLastVisibleItemPosition()==objectArrayList.size()-1){

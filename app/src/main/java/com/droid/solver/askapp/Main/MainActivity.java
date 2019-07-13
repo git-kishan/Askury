@@ -41,7 +41,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements
 
     public static boolean isFirstTimeQuestionLoaded=true;
     public static boolean isFirstTimeHomeLoaded=true;
+    public static DocumentSnapshot homeLastQuestionDocumentSnapshot=null;
+    public static DocumentSnapshot homeLastImagePollDocumentSnapshot=null;
+    public static DocumentSnapshot homeLastSurveyDocumentSnapshot=null;
     public static DocumentSnapshot questionLastDocumentSnapshot=null;
     private static final String HOME = "home";
     private static final String QUESTION = "ic_question";
@@ -252,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+
     private void showNotificationBadge(boolean show){
 
         BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
@@ -264,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
-
     public  void changeToolbarFont(Toolbar toolbar) {
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);

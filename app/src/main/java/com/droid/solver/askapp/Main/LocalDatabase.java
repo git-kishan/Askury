@@ -27,7 +27,7 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=18;
+    private static final int DATABASE_VERSION=21;
 
     private final String USER_INFO_TABLE="user_info_table";
     private final String USER_QUESTION_MODEL="question_asked_table";
@@ -43,6 +43,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String IMAGE_POLL_REPORT="image_poll_report";
     private final String SURVEY_REPORT="survey_report";
     private final String QUESTION_REPORT="question_report";
+    private final String HOME_OBJECT="home_object";
 
     private final String NOTIFICATION_QUESTION="notification_question";
     private final String NOTIFICATION_ANSWER="notification_answer";
@@ -88,12 +89,18 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String recentAnswererImageUrlLow="recentAnswererImageUrlLow";
     private final String recentAnswererName="recentAnswererName";
     private final String recentAnswererBio="recentAnswererBio";
-    private final String recentAnsweId="recentAnswerId";
+    private final String recentAnswerId="recentAnswerId";
     private final String recentAnswer="recentAnswer";
     private final String recentAnswerImageAttached="recentAnswerImageAttached";
     private final String recentAnswerImageUrl="recentAnswerImageUrl";
     private final String answerCount="answerCount";
     private final String recentAnswerLikeCount="recentAnswerLikeCount";
+
+//home
+    private final String TYPE_ROOT_QUESTION_MODEL="root_question_model";
+    private final String TYPE_IMAGE_POLL_MODEL="image_poll_model";
+    private final String TYPE_SURVEY_POLL_MODEL="survey_poll_model";
+    private final String objectId="object_id";
 
     private final String userNotified="user_notified";
     private final String userImageUrlLow="userImageUrlLow";
@@ -184,22 +191,22 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 userBio+" TEXT ,"+answerCount+" INTEGER ,"+anonymous+" INTEGER ,"+userNotified+" INTEGER "+")";
 
           final String CREATE_TABLE_ROOT_QUESTION_MODEL="CREATE TABLE "+ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
-                askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT ,"+question+" TEXT ,"+
+                askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT PRIMARY KEY ,"+question+" TEXT ,"+
                 questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+recentAnswererId+" TEXT ,"+recentAnswererImageUrlLow+" TEXT ,"+recentAnswererName+" TEXT ,"
-                +recentAnswererBio+" TEXT ,"+recentAnsweId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
-                " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +"INTEGER"+")";
+                +recentAnswererBio+" TEXT ,"+recentAnswerId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
+                " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +" INTEGER"+")";
 
         final String CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL="CREATE TABLE "+QUESTION_ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
-                askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT ,"+question+" TEXT ,"+
+                askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT PRIMARY KEY,"+question+" TEXT ,"+
                 questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+recentAnswererId+" TEXT ,"+recentAnswererImageUrlLow+" TEXT ,"+recentAnswererName+" TEXT ,"
-                +recentAnswererBio+" TEXT ,"+recentAnsweId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
+                +recentAnswererBio+" TEXT ,"+recentAnswerId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
                 " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +" INTEGER"+")";
 
           final String CREATE_TABLE_SURVEY_ASKED_TABLE="CREATE TABLE "+SURVEY_ASKED_TABLE+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
                 askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+timeOfSurvey+" INTEGER ,"+option1+" INTEGER ,"+option2+" INTEGER ,"+
                 option3+" INTEGER ,"+option4+" INTEGER ,"+option1Value+" TEXT ,"+option2Value+" TEXT ,"+option3Value+" TEXT ,"+option4Value+" TEXT ,"+
                 option1Count+" INTEGER ,"+option2Count+" INTEGER ,"+option3Count+" INTEGER ,"+option4Count+" INTEGER ,"+languageSelectedIndex+" INTEGER ,"+
-                surveyId+" TEXT "+")";
+                surveyId+" TEXT PRIMARY KEY "+")";
 
           final String CREATE_TABLE_IMAGE_POLL_TABLE="CREATE TABLE "+IMAGE_POLL_TABLE+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
                 askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+image1Url+" TEXT ,"+image2Url+" TEXT ,"+timeOfPolling+" INTEGER ,"+
@@ -249,8 +256,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
                  followerName+" TEXT ,"+followerBio+" TEXT ,"+followerImageUrl+" TEXT ,"+selfId+" TEXT ,"+isStoredLocally+" INTEGER ,"+
                  notifiedTime+" INTEGER ,"+type+" TEXT "+")";
 
-         final String CREATE_TABLE_NOTIFICATION="CREATE TABLE "+NOTIFICATION+"("+"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+         final String CREATE_TABLE_NOTIFICATION="CREATE TABLE "+NOTIFICATION+"("+"ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +notificationId+" TEXT,"+ notificationType+" TEXT "+")";
+
+         final String CREATE_TABLE_HOME_OBJECT="CREATE TABLE "+HOME_OBJECT+"("+objectId +" TEXT PRIMARY KEY ,"+type +" TEXT "+")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_USER_INFO_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_USER_QUESTION_MODEL);
@@ -272,6 +281,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_SURVEY);
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_FOLLOWER);
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION);
+        sqLiteDatabase.execSQL(CREATE_TABLE_HOME_OBJECT);
         Log.i("TAG", "table created :");
 
     }
@@ -299,6 +309,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_SURVEY);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_FOLLOWER);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+HOME_OBJECT);
         Log.i("TAG", "table upgrade ");
         onCreate(sqLiteDatabase);
 
@@ -464,115 +475,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
      }
 
-     public void insertRootQuestionModel(ArrayList<Object> list){
-        SQLiteDatabase database=this.getWritableDatabase();
-        if(database.isOpen()){
-            if(list!=null)
-                for(int i=0;i<list.size();i++){
-                    if(list.get(i) instanceof RootQuestionModel) {
-                        ContentValues values = new ContentValues();
-                        RootQuestionModel rootQuestionModel = (RootQuestionModel) list.get(i);
-                        values.put(askerId, rootQuestionModel.getAskerId());
-                        values.put(askerName, rootQuestionModel.getAskerName());
-                        values.put(askerImageUrlLow, rootQuestionModel.getAskerImageUrlLow());
-                        int manonymous = rootQuestionModel.isAnonymous() ? 1 : 0;
-                        values.put(anonymous, manonymous);
-                        values.put(askerBio, rootQuestionModel.getAskerBio());
-                        values.put(questionId, rootQuestionModel.getQuestionId());
-                        values.put(question, rootQuestionModel.getQuestion());
-
-                        StringBuilder builder = new StringBuilder();
-                        if (rootQuestionModel.getQuestionType() != null)
-                            for (int j = 0; j < rootQuestionModel.getQuestionType().size(); j++) {
-                                builder.append(rootQuestionModel.getQuestionType().get(j));
-                                builder.append("@");
-                            }
-                        values.put(questionType, builder.toString());
-                        values.put(timeOfAsking, rootQuestionModel.getTimeOfAsking());
-                        values.put(recentAnswererId, rootQuestionModel.getRecentAnswererId());
-                        values.put(recentAnswererImageUrlLow, rootQuestionModel.getRecentAnswererImageUrlLow());
-                        values.put(recentAnswererName, rootQuestionModel.getRecentAnswererName());
-                        values.put(recentAnswererBio, rootQuestionModel.getRecentAnswererBio());
-                        values.put(recentAnswererId, rootQuestionModel.getRecentAnswerId());
-                        values.put(recentAnswer, rootQuestionModel.getRecentAnswer());
-                        boolean temprecentAnswerImageAttached = rootQuestionModel.isRecentAnswerImageAttached();
-                        int mrecentAnswerImageAttached = temprecentAnswerImageAttached ? 1 : 0;
-                        values.put(recentAnswerImageAttached, mrecentAnswerImageAttached);
-                        values.put(recentAnswerImageUrl, rootQuestionModel.getRecentAnswerImageUrl());
-                        values.put(answerCount, rootQuestionModel.getAnswerCount());
-                        values.put(recentAnswerLikeCount, rootQuestionModel.getRecentAnswerLikeCount());
-                        values.put(fontUsed, rootQuestionModel.getFontUsed());
-
-                        database.insert(ROOT_QUESTION_MODEL, null, values);
-
-                        values.clear();
-                    }
-                }
-            if(database.isOpen())
-                database.close();
-        }
-
-     }
-     public int clearRootQuestionModel(){
-        SQLiteDatabase database=this.getWritableDatabase();
-
-        int numberOfRowDeleted=database.delete(ROOT_QUESTION_MODEL, null, null);
-        if(database.isOpen())
-            database.close();
-        return numberOfRowDeleted;
-     }
-     public ArrayList<Object> getRootQuestionModelList(){
-        ArrayList<Object> list=new ArrayList<>();
-        SQLiteDatabase database =this.getWritableDatabase();
-        String query="SELECT * FROM "+ROOT_QUESTION_MODEL;
-        Cursor cursor=database.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            do{
-                String maskerId=cursor.getString(cursor.getColumnIndex(askerId));
-                String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
-                String maskerImageUrlLow=cursor.getString(cursor.getColumnIndex(askerImageUrlLow));
-                int tempAnonymous=cursor.getInt(cursor.getColumnIndex(anonymous));
-                boolean manonymous=tempAnonymous==1;
-                String maskerBio=cursor.getString(cursor.getColumnIndex(askerBio));
-                String mquestionId=cursor.getString(cursor.getColumnIndex(questionId));
-                String mquestion=cursor.getString(cursor.getColumnIndex(question));
-                String tempQuestionType=cursor.getString(cursor.getColumnIndex(questionType));
-                String [] tempArray=tempQuestionType.split("@");
-                List<String> mquestionType=Arrays.asList(tempArray);
-                long mtimeOfAsking=cursor.getLong(cursor.getColumnIndex(timeOfAsking));
-                String mrecentAnswererId=cursor.getString(cursor.getColumnIndex(recentAnswererId));
-                String mrecentAnswererImageUrlLow=cursor.getString(cursor.getColumnIndex(recentAnswererImageUrlLow));
-                String mrecentAnswererName=cursor.getString(cursor.getColumnIndex(recentAnswererName));
-                String mrecentAnswererBio=cursor.getString(cursor.getColumnIndex(recentAnswererBio));
-                String mrecentAnswerId=cursor.getString(cursor.getColumnIndex(recentAnswererId));
-                String mrecentAnswer=cursor.getString(cursor.getColumnIndex(recentAnswer));
-                int tempRecentAnswerImageAttached=cursor.getInt(cursor.getColumnIndex(recentAnswerImageAttached));
-                boolean mrecentAnswerImageAtached=tempRecentAnswerImageAttached==1;
-                String mrecentAnswerImageUrl=cursor.getString(cursor.getColumnIndex(recentAnswerImageUrl));
-                int manswerCount=cursor.getInt(cursor.getColumnIndex(answerCount));
-                int mrecentAnswerLikeCount=cursor.getInt(cursor.getColumnIndex(recentAnswerLikeCount));
-                int mfontUsed=cursor.getInt(cursor.getColumnIndex(fontUsed));
-
-                RootQuestionModel rootQuestionModel=new RootQuestionModel(maskerId, maskerName, maskerImageUrlLow,
-                        manonymous, maskerBio, mquestionId, mquestion, mquestionType,
-                        mtimeOfAsking, mrecentAnswererId, mrecentAnswererImageUrlLow,
-                        mrecentAnswererName, mrecentAnswererBio, mrecentAnswerId,
-                        mrecentAnswer, mrecentAnswerImageAtached, mrecentAnswerImageUrl,
-                        manswerCount, mrecentAnswerLikeCount,mfontUsed);
-                list.add(rootQuestionModel);
-
-
-            }while (cursor.moveToNext());
-            if(database.isOpen())
-                database.close();
-            if(!cursor.isClosed())
-                cursor.close();
-            return list;
-        }
-        return null;
-     }
-
-    public void insertQuestionRootQuestionModel(ArrayList<Object> list){
+     public void insertQuestionRootQuestionModel(ArrayList<Object> list){
         SQLiteDatabase database=this.getWritableDatabase();
         if(database.isOpen()){
             if(list!=null)
@@ -621,14 +524,14 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
 
     }
-    public void clearQuestionRootQuestionModel(){
+     public void clearQuestionRootQuestionModel(){
         SQLiteDatabase database=this.getWritableDatabase();
 
         int numberOfRowDeleted=database.delete(QUESTION_ROOT_QUESTION_MODEL, null, null);
         if(database.isOpen())
             database.close();
     }
-    public ArrayList<Object> getQuestionRootQuestionModelList(){
+     public ArrayList<Object> getQuestionRootQuestionModelList(){
         ArrayList<Object> list=new ArrayList<>();
         SQLiteDatabase database =this.getWritableDatabase();
         String query="SELECT * FROM "+QUESTION_ROOT_QUESTION_MODEL;
@@ -679,73 +582,166 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return null;
     }
 
+     private void insertRootQuestionModel(RootQuestionModel model){
+        if(model!=null) {
+            SQLiteDatabase database = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(askerId, model.getAskerId());
+            values.put(askerName, model.getAskerName());
+            values.put(askerImageUrlLow, model.getAskerImageUrlLow());
+            int manonymous = model.isAnonymous() ? 1 : 0;
+            values.put(anonymous, manonymous);
+            values.put(askerBio, model.getAskerBio());
+            values.put(questionId, model.getQuestionId());
+            values.put(question, model.getQuestion());
 
-     public void insertSurveyAskedModel(ArrayList<AskSurveyModel> list){
-        SQLiteDatabase database=this.getWritableDatabase();
-        if(database.isOpen()){
-            if(list!=null){
-                for(int i=0;i<list.size();i++){
-                    AskSurveyModel model=list.get(i);
-                    ContentValues values=new ContentValues();
-                    values.put(askerId, model.getAskerId());
-                    values.put(askerName, model.getAskerName());
-                    values.put(askerImageUrlLow, model.getAskerImageUrlLow());
-                    values.put(askerBio, model.getAskerBio());
-                    values.put(question, model.getQuestion());
-                    values.put(timeOfSurvey, model.getTimeOfSurvey());
-
-                    boolean temp=model.isOption1();
-                    int mtemp=temp?1:0;
-                    values.put(option1, mtemp);
-
-                    temp=model.isOption2();
-                    mtemp=temp?1:0;
-                    values.put(option2, mtemp);
-
-                    temp=model.isOption3();
-                    mtemp=temp?1:0;
-                    values.put(option3, mtemp);
-
-                    temp=model.isOption4();
-                    mtemp=temp?1:0;
-                    values.put(option4, mtemp);
-
-                    values.put(option1Value, model.getOption1Value());
-                    values.put(option2Value, model.getOption2Value());
-                    values.put(option3Value, model.getOption3Value());
-                    values.put(option4Value, model.getOption4Value());
-                    values.put(option1Count, model.getOption1Count());
-                    values.put(option2Count , model.getOption2Count());
-                    values.put(option3Count, model.getOption3Count());
-                    values.put(option4Count, model.getOption4Count());
-                    values.put(languageSelectedIndex, model.getLanguageSelectedIndex());
-                    values.put(surveyId, model.getSurveyId());
-
-                    database.insert(SURVEY_ASKED_TABLE, null, values);
-                    values.clear();
+            StringBuilder builder = new StringBuilder();
+            if (model.getQuestionType() != null)
+                for (int j = 0; j < model.getQuestionType().size(); j++) {
+                    builder.append(model.getQuestionType().get(j));
+                    builder.append("@");
                 }
-                if(database.isOpen())
-                    database.close();
+            values.put(questionType, builder.toString());
+            values.put(timeOfAsking, model.getTimeOfAsking());
+            values.put(recentAnswererId, model.getRecentAnswererId());
+            values.put(recentAnswererImageUrlLow, model.getRecentAnswererImageUrlLow());
+            values.put(recentAnswererName, model.getRecentAnswererName());
+            values.put(recentAnswererBio, model.getRecentAnswererBio());
+            values.put(recentAnswererId, model.getRecentAnswerId());
+            values.put(recentAnswer, model.getRecentAnswer());
+            boolean temprecentAnswerImageAttached = model.isRecentAnswerImageAttached();
+            int mrecentAnswerImageAttached = temprecentAnswerImageAttached ? 1 : 0;
+            values.put(recentAnswerImageAttached, mrecentAnswerImageAttached);
+            values.put(recentAnswerImageUrl, model.getRecentAnswerImageUrl());
+            values.put(answerCount, model.getAnswerCount());
+            values.put(recentAnswerLikeCount, model.getRecentAnswerLikeCount());
+            values.put(fontUsed, model.getFontUsed());
+            if(database.isOpen()){
+                database.insert(ROOT_QUESTION_MODEL, null, values);
+                values.clear();
+                database.close();
+
             }
+        }
+
+
+     }
+     private void clearRootQuestionModel(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(ROOT_QUESTION_MODEL, null, null);
+        if(database.isOpen())
+            database.close();
+     }
+     private RootQuestionModel getRootQuestionModel(String questionId){
+        SQLiteDatabase database =this.getWritableDatabase();
+        Cursor cursor=database.query(ROOT_QUESTION_MODEL, null, this.questionId+"=?",
+                new String[]{questionId}, null, null, null,"1");
+
+        if(cursor.moveToFirst()){
+
+                String maskerId=cursor.getString(cursor.getColumnIndex(askerId));
+                String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
+                String maskerImageUrlLow=cursor.getString(cursor.getColumnIndex(askerImageUrlLow));
+                int tempAnonymous=cursor.getInt(cursor.getColumnIndex(anonymous));
+                boolean manonymous=tempAnonymous==1;
+                String maskerBio=cursor.getString(cursor.getColumnIndex(askerBio));
+                String mquestionId=cursor.getString(cursor.getColumnIndex(this.questionId));
+                String mquestion=cursor.getString(cursor.getColumnIndex(question));
+                String tempQuestionType=cursor.getString(cursor.getColumnIndex(questionType));
+                String [] tempArray=tempQuestionType.split("@");
+                List<String> mquestionType=Arrays.asList(tempArray);
+                long mtimeOfAsking=cursor.getLong(cursor.getColumnIndex(timeOfAsking));
+                String mrecentAnswererId=cursor.getString(cursor.getColumnIndex(recentAnswererId));
+                String mrecentAnswererImageUrlLow=cursor.getString(cursor.getColumnIndex(recentAnswererImageUrlLow));
+                String mrecentAnswererName=cursor.getString(cursor.getColumnIndex(recentAnswererName));
+                String mrecentAnswererBio=cursor.getString(cursor.getColumnIndex(recentAnswererBio));
+                String mrecentAnswerId=cursor.getString(cursor.getColumnIndex(recentAnswererId));
+                String mrecentAnswer=cursor.getString(cursor.getColumnIndex(recentAnswer));
+                int tempRecentAnswerImageAttached=cursor.getInt(cursor.getColumnIndex(recentAnswerImageAttached));
+                boolean mrecentAnswerImageAtached=tempRecentAnswerImageAttached==1;
+                String mrecentAnswerImageUrl=cursor.getString(cursor.getColumnIndex(recentAnswerImageUrl));
+                int manswerCount=cursor.getInt(cursor.getColumnIndex(answerCount));
+                int mrecentAnswerLikeCount=cursor.getInt(cursor.getColumnIndex(recentAnswerLikeCount));
+                int mfontUsed=cursor.getInt(cursor.getColumnIndex(fontUsed));
+
+                RootQuestionModel model=new RootQuestionModel(maskerId, maskerName, maskerImageUrlLow,
+                        manonymous, maskerBio, mquestionId, mquestion, mquestionType,
+                        mtimeOfAsking, mrecentAnswererId, mrecentAnswererImageUrlLow,
+                        mrecentAnswererName, mrecentAnswererBio, mrecentAnswerId,
+                        mrecentAnswer, mrecentAnswerImageAtached, mrecentAnswerImageUrl,
+                        manswerCount, mrecentAnswerLikeCount,mfontUsed);
+
+            if(database.isOpen())
+                database.close();
+            if(!cursor.isClosed())
+                cursor.close();
+            return model;
+        }
+        return null;
+     }
+
+     private void insertSurveyAskedModel(AskSurveyModel model){
+        if(model!=null) {
+            SQLiteDatabase database = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(askerId, model.getAskerId());
+            values.put(askerName, model.getAskerName());
+            values.put(askerImageUrlLow, model.getAskerImageUrlLow());
+            values.put(askerBio, model.getAskerBio());
+            values.put(question, model.getQuestion());
+            values.put(timeOfSurvey, model.getTimeOfSurvey());
+
+            boolean temp = model.isOption1();
+            int mtemp = temp ? 1 : 0;
+            values.put(option1, mtemp);
+
+            temp = model.isOption2();
+            mtemp = temp ? 1 : 0;
+            values.put(option2, mtemp);
+
+            temp = model.isOption3();
+            mtemp = temp ? 1 : 0;
+            values.put(option3, mtemp);
+
+            temp = model.isOption4();
+            mtemp = temp ? 1 : 0;
+            values.put(option4, mtemp);
+
+            values.put(option1Value, model.getOption1Value());
+            values.put(option2Value, model.getOption2Value());
+            values.put(option3Value, model.getOption3Value());
+            values.put(option4Value, model.getOption4Value());
+            values.put(option1Count, model.getOption1Count());
+            values.put(option2Count, model.getOption2Count());
+            values.put(option3Count, model.getOption3Count());
+            values.put(option4Count, model.getOption4Count());
+            values.put(languageSelectedIndex, model.getLanguageSelectedIndex());
+            values.put(surveyId, model.getSurveyId());
+            if(database.isOpen()){
+                database.insert(SURVEY_ASKED_TABLE, null, values);
+                values.clear();
+                database.close();
+            }
+
 
         }
 
+
      }
-     public void clearSurveyAskedModel(){
+     private void clearSurveyAskedModel(){
         SQLiteDatabase database=this.getWritableDatabase();
         database.delete(SURVEY_ASKED_TABLE, null, null);
         if(database.isOpen())
             database.close();
-        database.close();
 
      }
-     public ArrayList<AskSurveyModel> getSurveyAskedModel(){
-        ArrayList<AskSurveyModel> list=new ArrayList<>();
+     private AskSurveyModel getSurveyAskedModel(String surveyId){
         SQLiteDatabase database=this.getWritableDatabase();
-        String query="SELECT * FROM "+SURVEY_ASKED_TABLE;
-        Cursor cursor=database.rawQuery(query, null);
+        Cursor cursor=database.query(SURVEY_ASKED_TABLE, null, this.surveyId+"=?",
+                new String[]{surveyId}, null, null, null,"1");
+
         if(cursor.moveToFirst()){
-            do{
+
                 String maskerUid=cursor.getString(cursor.getColumnIndex(askerId));
                 String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
                 String maskerImageUrl=cursor.getString(cursor.getColumnIndex(askerImageUrlLow));
@@ -765,68 +761,59 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 int moption3Count=cursor.getInt(cursor.getColumnIndex(option3Count));
                 int moption4Count=cursor.getInt(cursor.getColumnIndex(option4Count));
                 int mlanguageSelectedIndex=cursor.getInt(cursor.getColumnIndex(languageSelectedIndex));
-                String msurveyId=cursor.getString(cursor.getColumnIndex(surveyId));
+                String msurveyId=cursor.getString(cursor.getColumnIndex(this.surveyId));
 
                 AskSurveyModel model = new AskSurveyModel(maskerUid, maskerName, maskerImageUrl,maskerBio,
                         mquestion, mtimeOfSurvey, moption1,
                         moption2, moption3, moption4, moption1Value, moption2Value,
                         moption3Value, moption4Value, moption1Count, moption2Count,
                         moption3Count, moption4Count, mlanguageSelectedIndex, msurveyId);
-                list.add(model);
 
-            }while (cursor.moveToNext());
             if(!cursor.isClosed())
                 cursor.close();
-            database.close();
-
-            return list;
+            if(database.isOpen())
+                database.close();
+            return model;
         }
         return null;
      }
 
-     public void insertImagePollModel(ArrayList<AskImagePollModel> list){
-        SQLiteDatabase database=this.getWritableDatabase();
-        if(database.isOpen()){
-            if(list!=null){
-                for(int i=0;i<list.size();i++){
-                    AskImagePollModel pollModel=list.get(i);
-                    ContentValues values = new ContentValues();
-                    values.put(askerId, pollModel.getAskerId());
-                    values.put(askerName, pollModel.getAskerName());
-                    values.put(askerImageUrlLow, pollModel.getAskerImageUrlLow());
-                    values.put(askerBio, pollModel.getAskerBio());
-                    values.put(question, pollModel.getQuestion());
-                    values.put(image1Url,pollModel.getImage1Url());
-                    values.put(image2Url, pollModel.getImage2Url());
-                    values.put(timeOfPolling,pollModel.getTimeOfPolling());
-                    values.put(image1LikeNo, pollModel.getImage1LikeNo());
-                    values.put(image2LikeNo, pollModel.getImage2LikeNo());
-                    values.put(imagePollId, pollModel.getImagePollId());
-
-                    database.insert(IMAGE_POLL_TABLE, null, values);
-                    values.clear();
-                }
-
-            }
-            if(database.isOpen())
+     private void insertImagePollModel(AskImagePollModel model){
+        if(model!=null) {
+            SQLiteDatabase database = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(askerId, model.getAskerId());
+            values.put(askerName, model.getAskerName());
+            values.put(askerImageUrlLow, model.getAskerImageUrlLow());
+            values.put(askerBio, model.getAskerBio());
+            values.put(question, model.getQuestion());
+            values.put(image1Url, model.getImage1Url());
+            values.put(image2Url, model.getImage2Url());
+            values.put(timeOfPolling, model.getTimeOfPolling());
+            values.put(image1LikeNo, model.getImage1LikeNo());
+            values.put(image2LikeNo, model.getImage2LikeNo());
+            values.put(imagePollId, model.getImagePollId());
+            if(database.isOpen()){
+                database.insert(IMAGE_POLL_TABLE, null, values);
+                values.clear();
                 database.close();
+            }
+
+
         }
 
      }
-     public void clearImagePollModel(){
+     private void clearImagePollModel(){
         SQLiteDatabase database = this.getWritableDatabase();
         database.delete(IMAGE_POLL_TABLE, null, null);
         if(database.isOpen())
             database.close();
      }
-     public ArrayList<AskImagePollModel> getImagePollModel(){
-
-        ArrayList<AskImagePollModel> list=new ArrayList<>();
+     private AskImagePollModel getImagePollModel(String imagePollId){
         SQLiteDatabase database = this.getWritableDatabase();
-        String query="SELECT * FROM "+IMAGE_POLL_TABLE;
-        Cursor cursor=database.rawQuery(query, null);
-        if(cursor.moveToNext()){
-            do {
+        Cursor cursor=database.query(IMAGE_POLL_TABLE, null, this.imagePollId+"=?",
+                new String[]{imagePollId},null,null,null,"1");
+        if(cursor.moveToFirst()){
                 String maskerId=cursor.getString(cursor.getColumnIndex(askerId));
                 String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
                 String maskerImageUrlLow=cursor.getString(cursor.getColumnIndex(askerImageUrlLow));
@@ -837,21 +824,98 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 long mtimeOfPolling=cursor.getLong(cursor.getColumnIndex(timeOfPolling));
                 int mimage1LikeNo=cursor.getInt(cursor.getColumnIndex(image1LikeNo));
                 int mimage2LikeNo=cursor.getInt(cursor.getColumnIndex(image2LikeNo));
-                String mimagePollId=cursor.getString(cursor.getColumnIndex(imagePollId));
+                String mimagePollId=cursor.getString(cursor.getColumnIndex(this.imagePollId));
 
                 AskImagePollModel model = new AskImagePollModel(
                 maskerId,maskerName ,maskerImageUrlLow ,maskerBio , mquestion,
                         mimage1Url, mimage2Url, mtimeOfPolling, mimage1LikeNo, mimage2LikeNo,mimagePollId);
-                list.add(model);
 
-            }while (cursor.moveToNext());
             if(database.isOpen())
                 database.close();
             if(!cursor.isClosed())
                 cursor.close();
-            return list;
+            return model;
         }
         return null;
+     }
+
+     private void insertObject(String objectId,String type){
+        SQLiteDatabase database=this.getWritableDatabase();
+        if(database.isOpen()){
+            ContentValues values = new ContentValues();
+            values.put(this.objectId, objectId);
+            values.put(this.type, type);
+            database.insert(HOME_OBJECT, null, values);
+            database.close();
+        }
+     }
+
+     public void insertHomeObject(ArrayList<Object> list){
+        clearRootQuestionModel();
+        clearImagePollModel();
+        clearSurveyAskedModel();
+        clearObject();
+        if(list!=null){
+           for(Object o:list){
+               if(o instanceof RootQuestionModel){
+                   insertRootQuestionModel((RootQuestionModel) o);
+                   insertObject(((RootQuestionModel) o).getQuestionId(), TYPE_ROOT_QUESTION_MODEL);
+               }else if(o instanceof AskImagePollModel){
+                   insertImagePollModel((AskImagePollModel) o);
+                   insertObject(((AskImagePollModel) o).getImagePollId(), TYPE_IMAGE_POLL_MODEL);
+               }else if(o instanceof AskSurveyModel ){
+                   insertSurveyAskedModel((AskSurveyModel) o);
+                   insertObject(((AskSurveyModel) o).getSurveyId(), TYPE_SURVEY_POLL_MODEL);
+               }
+           }
+        }
+     }
+     private void clearObject(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        if(database.isOpen()){
+            database.delete(HOME_OBJECT, null, null);
+            database.close();
+
+        }
+     }
+     public ArrayList<Object> getHomeObject(){
+
+         SQLiteDatabase database=this.getWritableDatabase();
+         Cursor cursor=database.query(HOME_OBJECT, new String[]{this.objectId,this.type}
+                 ,null,null,null,null,this.objectId,"8");
+         if(cursor.moveToFirst()){
+             ArrayList<Object > list = new ArrayList<>();
+             do{
+                 String objectId=cursor.getString(cursor.getColumnIndex(this.objectId));
+                 String type=cursor.getString(cursor.getColumnIndex(this.type));
+                 Object o;
+                 switch (type){
+                     case TYPE_ROOT_QUESTION_MODEL:
+                         o=getRootQuestionModel(objectId);
+                         if(o!=null)
+                             list.add(o);
+                         break;
+                     case TYPE_IMAGE_POLL_MODEL:
+                         o = getImagePollModel(objectId);
+                         if(o!=null)
+                             list.add(o);
+                         break;
+                     case TYPE_SURVEY_POLL_MODEL:
+                         o=getSurveyAskedModel(objectId);
+                         if(o!=null)
+                             list.add(o);
+                         break;
+                 }
+
+             }while (cursor.moveToNext());
+
+             if(!cursor.isClosed())
+                 cursor.close();
+             if(database.isOpen())
+                 database.close();
+             return list;
+         }
+         return null;
      }
 
      public void insertAnswerLikeModel(ArrayList<String> list){
@@ -1003,12 +1067,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
         return  null;
     }
-    public void removeImagePollLikeModel(String mimagePollId){
-        SQLiteDatabase database = this.getWritableDatabase();
-        database.delete(IMAGE_POLL_LIKE_TABLE, imagePollId+"=?", new String[]{mimagePollId});
-        if(database.isOpen())
-            database.close();
-    }
+//    public void removeImagePollLikeModel(String mimagePollId){
+//        SQLiteDatabase database = this.getWritableDatabase();
+//        database.delete(IMAGE_POLL_LIKE_TABLE, imagePollId+"=?", new String[]{mimagePollId});
+//        if(database.isOpen())
+//            database.close();
+//    }
 
     public  void insertFollowerModel(ArrayList<Follower> list){
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1170,12 +1234,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
         }
     }
-//    public void clearReportedImagePoll(){
-//        SQLiteDatabase database=this.getWritableDatabase();
-//        database.delete(IMAGE_POLL_REPORT, null, null);
-//        if(database.isOpen())
-//            database.close();
-//    }
+    private void clearReportedImagePoll(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(IMAGE_POLL_REPORT, null, null);
+        if(database.isOpen())
+            database.close();
+    }
     public ArrayList<String> getImagePollReport(){
         ArrayList<String> reportedImagePollList;
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1208,12 +1272,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
         database.close();
     }
 }
-//    public void clearReportedSurvey(){
-//        SQLiteDatabase database=this.getWritableDatabase();
-//        database.delete(SURVEY_REPORT, null, null);
-//        if(database.isOpen())
-//            database.close();
-//    }
+    private void clearReportedSurvey(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(SURVEY_REPORT, null, null);
+        if(database.isOpen())
+            database.close();
+    }
     public ArrayList<String> getReportedSurvey(){
         ArrayList<String> reportedSurveyList;
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1246,12 +1310,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
         }
     }
-//    public void clearReportedQuestion(){
-//        SQLiteDatabase database=this.getWritableDatabase();
-//        database.delete(QUESTION_REPORT, null, null);
-//        if(database.isOpen())
-//            database.close();
-//    }
+    private void clearReportedQuestion(){
+        SQLiteDatabase database=this.getWritableDatabase();
+        database.delete(QUESTION_REPORT, null, null);
+        if(database.isOpen())
+            database.close();
+    }
     public ArrayList<String> getReportedQuestion(){
         ArrayList<String> reportedQuestionList;
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1605,6 +1669,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
         return null;
     }
+
     public void insertNotification(String mnotificationId,String mnotificationType){
         ContentValues values=new ContentValues();
         values.put(notificationId, mnotificationId);
@@ -1713,6 +1778,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
         database.delete(NOTIFICATION_SURVEY, null, null);
         database.delete(NOTIFICATION_FOLLOWER, null, null);
         database.delete(NOTIFICATION, null, null);
+        database.delete(HOME_OBJECT, null, null);
+        clearReportedQuestion();
+        clearReportedImagePoll();
+        clearReportedSurvey();
         if(database.isOpen())
             database.close();
     }

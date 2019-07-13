@@ -1,7 +1,6 @@
 package com.droid.solver.askapp.Survey;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +13,6 @@ import com.google.android.material.button.MaterialButton;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.widget.EmojiEditText;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.core.content.res.ResourcesCompat;
@@ -34,7 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
@@ -47,8 +44,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
-
-import java.util.Locale;
 
 public class QuestionTakerActivity extends AppCompatActivity implements
         View.OnClickListener, View.OnFocusChangeListener, TextWatcher {
@@ -67,15 +62,8 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     private EmojiTextView optionATextView,optionBTextView,optionCTextView,optionDTextView;
     private boolean isOption1Available=false,isOption2Available=false,isOption3Available=false,isOption4Available=false;
     private int languageIndex;
-    public  final String [] languageString={"English","Chinese","Hindi","Spanish","Arabic",
-            "Malay","Russian","Bengali","French","Portuguese"};
-    private String [] optionToBeUploaded;
-    private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore root;
-    private static AlertDialog failedDialog;
-    private Locale myLocale;
-    String currentLanguage;
     private boolean isuUploaded=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +109,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         appbarCardView.requestFocus();
         hideSoftKeyboard(appbarCardView);
         questionInputEditText.setHint("What's your question");
-        auth=FirebaseAuth.getInstance();
+        FirebaseAuth auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user==null){
             showSnackBar("Please sign in again...");
@@ -144,6 +132,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         if(imm!=null)
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -182,7 +171,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                     if(isNetworkAvailable()){
 
                         submitButtonConstraintLayout.setEnabled(false);
-                        submitTextView.setText("Uploading ...");
+                        submitTextView.setText(getString(R.string.uploading));
                         progressBar.setVisibility(View.VISIBLE);
                         addImageButton.setEnabled(false);
                         questionInputLayout.setEnabled(false);
@@ -213,9 +202,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
-
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         int length=charSequence.toString().length();
@@ -232,11 +219,8 @@ public class QuestionTakerActivity extends AppCompatActivity implements
 
         }
     }
-
     @Override
     public void afterTextChanged(Editable editable) {
-
-
     }
     private void onAddButtonClicked(){
         Animation scaleInAnimation=AnimationUtils.loadAnimation(this, R.anim.status_scale_in);
@@ -262,6 +246,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         }
 
     }
+
     private void showSnackBar(String message){
         Snackbar snackbar=Snackbar.make(coordinatorLayout,  message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
@@ -293,36 +278,18 @@ public class QuestionTakerActivity extends AppCompatActivity implements
             showSnackBar("Enter your survey question");
             return false;
         }
-        if(!validateOptions()){
-            return false;
-        }
-        setOptionToBeUploaded();
-        return true;
+        return validateOptions();
     }
+
     private void checkOptionsEntered(){
-        if(option1EditText.getText().toString().trim().length()>0){
-            isOption1Available = true;
-        }else {
-            isOption1Available=false;
-        }
-        if(option2EditText.getText().toString().trim().length()>0){
-            isOption2Available=true;
-        }else {
-            isOption2Available=false;
-        }
-        if(option3EditText.getText().toString().trim().length()>0){
-            isOption3Available=true;
-        }else{
-            isOption3Available=false;
-        }
-        if(option4EditText.getText().toString().trim().length()>0){
-            isOption4Available=true;
-        }else {
-            isOption4Available=false;
-        }
+        isOption1Available = option1EditText.getText().toString().trim().length() > 0;
+        isOption2Available = option2EditText.getText().toString().trim().length() > 0;
+        isOption3Available = option3EditText.getText().toString().trim().length() > 0;
+        isOption4Available = option4EditText.getText().toString().trim().length() > 0;
 
 
     }// tell about about is entered or not in edit text
+
     private boolean validateOptions() {
 
         if(!isOption1Available&&!isOption2Available&!isOption3Available&&!isOption4Available){
@@ -342,61 +309,24 @@ public class QuestionTakerActivity extends AppCompatActivity implements
            showSnackBar("Must be atleast two option");
            return false;
         }
-       else if(!isOption1Available&&!isOption2Available&!isOption3Available&&isOption4Available){
+       else if(!isOption1Available&&!isOption2Available&!isOption3Available){
            showSnackBar("Must be atleast two option");
            return false;
 
         }
         return true;
     }
-    private void setOptionToBeUploaded(){
-        if(isOption1Available&&isOption2Available&&isOption3Available&&isOption4Available){
-            optionToBeUploaded=new String[]{option1EditText.getText().toString(),option2EditText.getText().toString(),
-                    option3EditText.getText().toString(),option4EditText.getText().toString()
-            };
 
-        }else if(isOption1Available&&isOption2Available&&isOption3Available){
-
-            optionToBeUploaded=new String[]{option1EditText.getText().toString(),option2EditText.getText().toString(),
-                    option3EditText.getText().toString()};
-
-        }else if(isOption2Available&&isOption3Available&&isOption4Available){
-            optionToBeUploaded=new String[]{option2EditText.getText().toString(),option3EditText.getText().toString(),
-                    option4EditText.getText().toString()};
-
-        }else if(isOption3Available&&isOption4Available&&isOption1Available){
-
-            optionToBeUploaded=new String[]{option3EditText.getText().toString(),option4EditText.getText().toString(),
-                    option1EditText.getText().toString()};
-        }else if(isOption4Available&&isOption1Available&&isOption2Available){
-
-            optionToBeUploaded=new String[]{option4EditText.getText().toString(),option1EditText.getText().toString(),
-                    option2EditText.getText().toString()};
-        }else if(isOption1Available&&isOption2Available){
-
-            optionToBeUploaded=new String[]{option1EditText.getText().toString(),option2EditText.getText().toString()};
-        }else if(isOption1Available&&isOption3Available){
-
-            optionToBeUploaded=new String[]{option1EditText.getText().toString(),option3EditText.getText().toString()};
-        }else if(isOption1Available&&isOption4Available){
-            optionToBeUploaded=new String[]{option1EditText.getText().toString(),option4EditText.getText().toString()};
-
-        }else if(isOption2Available&&isOption3Available){
-            optionToBeUploaded=new String[]{option2EditText.getText().toString(),option3EditText.getText().toString()};
-
-        }else if(isOption2Available&&isOption4Available){
-            optionToBeUploaded=new String[]{option2EditText.getText().toString(),option4EditText.getText().toString()};
-
-        }else if(isOption3Available&&isOption4Available){
-            optionToBeUploaded=new String[]{option3EditText.getText().toString(),option4EditText.getText().toString()};
-
-        }
-    }
     private boolean isNetworkAvailable(){
         ConnectivityManager cmm= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=cmm.getActiveNetworkInfo();
-        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        if(cmm!=null){
+            NetworkInfo activeNetworkInfo=cmm.getActiveNetworkInfo();
+            return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        }
+        return false;
+
     }
+
     private void uploadToRemoteDatabase(){
 
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
@@ -442,7 +372,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
 
 
                 submitButtonConstraintLayout.setEnabled(true);
-                submitTextView.setText("Submit");
+                submitTextView.setText(getString(R.string.submit));
                 progressBar.setVisibility(View.GONE);
                 addImageButton.setEnabled(true);
                 questionInputLayout.setEnabled(true);
@@ -462,7 +392,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
 
 
                 submitButtonConstraintLayout.setEnabled(true);
-                submitTextView.setText("Submit");
+                submitTextView.setText(getString(R.string.submit));
                 progressBar.setVisibility(View.GONE);
                 addImageButton.setEnabled(true);
                 questionInputLayout.setEnabled(true);
@@ -485,8 +415,10 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         TextView textView=dialogView.findViewById(R.id.message_text_view);
         textView.setText(getString(R.string.survey_accepted_successfull));
         final androidx.appcompat.app.AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
         alertDialog.show();
 
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -515,8 +447,10 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setView(dialogView);
         final androidx.appcompat.app.AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_error;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_error;
+        }
         alertDialog.show();
 
         retryButton.setOnClickListener(new View.OnClickListener() {
@@ -527,7 +461,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                     if(isNetworkAvailable()){
 
                         submitButtonConstraintLayout.setEnabled(false);
-                        submitTextView.setText("Uploading ...");
+                        submitTextView.setText(getString(R.string.uploading));
                         progressBar.setVisibility(View.VISIBLE);
                         addImageButton.setEnabled(false);
                         questionInputLayout.setEnabled(false);

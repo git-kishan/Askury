@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.droid.solver.askapp.Answer.UserAnswerModel;
 import com.droid.solver.askapp.Main.UidPasserListener;
@@ -35,13 +37,13 @@ public class AccountQuestionAnswerFragment extends Fragment {
 
     private FrameLayout frameLayout;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager linearLayoutManager;
     private AccountQuestionAnswerRecyclerAdapter adapter;
     private ArrayList<Object> list;
     private boolean isLoading=false;
     private DocumentSnapshot lastVisibleSnapshot=null;
     private String uid=null;
-    private UidPasserListener uidPasserListener;
+    private ImageView qaImage;
+    private TextView qaText;
 
     public AccountQuestionAnswerFragment() {
     }
@@ -51,14 +53,16 @@ public class AccountQuestionAnswerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_account_question_answer, container, false);
-        uidPasserListener= (UidPasserListener) getActivity();
+        UidPasserListener uidPasserListener= (UidPasserListener) getActivity();
         if(uidPasserListener!=null)
             uid=uidPasserListener.passUid();
         recyclerView=view.findViewById(R.id.recycler_view);
-        linearLayoutManager=new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         frameLayout=view.findViewById(R.id.frameLayout);
         frameLayout.setVisibility(View.GONE);
+        qaImage=view.findViewById(R.id.imageView24);
+        qaText=view.findViewById(R.id.textView46);
         list=new ArrayList<>();
         if(uid==null){
             if(FirebaseAuth.getInstance().getCurrentUser()!=null)
@@ -82,7 +86,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
 
     }
 
-    RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
+    private RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
@@ -120,13 +124,19 @@ public class AccountQuestionAnswerFragment extends Fragment {
                             UserAnswerModel model = snapshot.toObject(UserAnswerModel.class);
                             list.add(model);
                         }
-                        if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                            lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                        if(list!=null&&list.size()==0){
+                            qaImage.setVisibility(View.VISIBLE);
+                            qaText.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        }else {
+                            adapter.notifyDataSetChanged();
+                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                                lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                            }
+                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                                recyclerView.removeOnScrollListener(scrollListener);
+                            }
                         }
-                        if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                            recyclerView.removeOnScrollListener(scrollListener);
-                        }
-                        adapter.notifyDataSetChanged();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -135,8 +145,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
                     Log.d("TAG", "failed to fetch answer in account fragment ");
                 }
             });
-        }else
-        {
+        }else {
             //uid null
         }
 

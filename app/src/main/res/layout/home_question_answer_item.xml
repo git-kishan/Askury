@@ -65,7 +65,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
-            tools:text="Freenlancer|writer" />
+            tools:text="Freenlancer|writer"
+            tools:ignore="smallsp"
+            />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
@@ -90,11 +92,12 @@
             android:id="@+id/time_ago_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="5 sec ago"
+            android:layout_marginStart="8dp"
             android:textSize="9sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_image"
+            tools:ignore="SmallSp"
+            tools:text="5 sec ago" />
 
         <LinearLayout
             android:id="@+id/cardView"
@@ -226,7 +229,9 @@
             app:layout_constraintStart_toEndOf="@+id/delete_poll_text_view"
             app:layout_constraintTop_toBottomOf="@+id/view2"
             app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/ic_answer_given" />
+            app:srcCompat="@drawable/ic_answer_given"
+            android:contentDescription="@string/number_of_answer"
+            />
 
         <TextView
             android:id="@+id/textView17"
@@ -247,7 +252,7 @@
             android:gravity="center"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="Want to answer"
+            tools:text="Want to answer"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toStartOf="@+id/imageView3"
@@ -268,6 +273,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2"
             app:layout_constraintVertical_bias="1.0"
+            android:contentDescription="@string/want_to_answer"
             app:srcCompat="@drawable/ic_next_darker_fader" />
 
         <ImageView
@@ -278,6 +284,7 @@
             android:layout_marginEnd="12dp"
             android:background="@drawable/ripple_background"
             android:clickable="true"
+            android:contentDescription="@string/option"
             android:focusable="true"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"

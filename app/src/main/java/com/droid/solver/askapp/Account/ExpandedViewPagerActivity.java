@@ -14,18 +14,18 @@ import android.widget.TextView;
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.R;
 
+import java.util.Objects;
+
 public class ExpandedViewPagerActivity extends AppCompatActivity implements View.OnClickListener,
         UidPasserListener {
 
-    private TabLayout tabLayout;
     private ViewPager viewPager;
-    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expanded_view_pager);
         viewPager=findViewById(R.id.view_pager);
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back_black);
         toolbar.setNavigationOnClickListener(this);
         setViewPager();
@@ -35,17 +35,14 @@ public class ExpandedViewPagerActivity extends AppCompatActivity implements View
     }
 
     private void setTabLayout(){
-        tabLayout=findViewById(R.id.tabLayout);
+        TabLayout tabLayout=findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-        TabLayout.Tab tab1=tabLayout.newTab();
-        TabLayout.Tab tab2=tabLayout.newTab();
-        try {
-            tabLayout.getTabAt(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_questions_black, null));
-            tabLayout.getTabAt(1).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_qa_black, null));
-        }
-        catch (NullPointerException e){
 
-        }
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                R.drawable.ic_questions_black, null));
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                R.drawable.ic_qa_black, null));
+
     }
     private void changeToolbarFont(Toolbar toolbar){
         for(int i=0;i<toolbar.getChildCount();i++){
