@@ -291,10 +291,10 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
-
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations=R.style.customAnimations_successfull;
-
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
         TextView statusView=dialogView.findViewById(R.id.follow_text_view);
         TextView inAppropriateQuestionView=dialogView.findViewById(R.id.inappropriate_question);
         if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
@@ -460,8 +460,10 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,null,false );
         builder.setView(rootview);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+        }
         alertDialog.show();
 
         View cancelButton=rootview.findViewById(R.id.cancel_button);
@@ -544,11 +546,13 @@ public class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                 selfFollowingMap.put("followingName",questionModel.getAskerName());
                 selfFollowingMap.put("followingImageUrl", questionModel.getAskerImageUrlLow());
                 selfFollowingMap.put("followingBio",questionModel.getAskerBio());
+                selfFollowingMap.put("selfId", selfUid);
 
                 askerFollowerMap.put("followerId", selfUid);
                 askerFollowerMap.put("followerName", selfName);
                 askerFollowerMap.put("followerImageUrl", selfImageUrl);
                 askerFollowerMap.put("followerBio",selfBio);
+                askerFollowerMap.put("selfId", questionModel.getAskerId());
 
                 selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
                 askerFollowerCountMap.put("followerCount", FieldValue.increment(1));

@@ -13,25 +13,26 @@ import android.widget.TextView;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NotificationSurveyActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar toolbar;
     private CircleImageView profileImage;
     private EmojiTextView profileName,profileBio,question;
     private LinearLayout linearLayout1,linearLayout2,linearLayout3,linearLayout4;
     private EmojiTextView option1View,option2View,option3View,option4View;
     private View view1,view2,view3,view4;
     private EmojiTextView percent1,percent2,percent3,percent4;
-
-    private String surveyId,askerId,askerName,askerBio,askerImageUrlLow,askerQuestion,type;
-    private long timeOfSurvey,notifiedTime;
+    private String surveyId,askerId,askerName,askerBio,askerQuestion;
     private String option1Value,option2Value,option3Value,option4Value;
     private int option1Count,option2Count,option3Count,option4Count;
     private boolean option1,option2,option3,option4;
+    private boolean isStoredLocally;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +43,7 @@ public class NotificationSurveyActivity extends AppCompatActivity implements Vie
         askerId=intent.getStringExtra("askerId");
         askerName=intent.getStringExtra("askerName");
         askerBio=intent.getStringExtra("askerBio");
-        askerImageUrlLow=intent.getStringExtra("askerImageUrlLow");
         askerQuestion=intent.getStringExtra("question");
-        timeOfSurvey=intent.getLongExtra("timeOfSurvey", System.currentTimeMillis());
         option1Value=intent.getStringExtra("option1Value");
         option2Value=intent.getStringExtra("option2Value");
         option3Value=intent.getStringExtra("option3Value");
@@ -57,11 +56,10 @@ public class NotificationSurveyActivity extends AppCompatActivity implements Vie
         option2=intent.getBooleanExtra("option2", false);
         option3=intent.getBooleanExtra("option3" ,false);
         option4=intent.getBooleanExtra("option4", false);
-        type=intent.getStringExtra("type");
-        notifiedTime=intent.getLongExtra("notifiedTime", System.currentTimeMillis());
+        isStoredLocally=intent.getBooleanExtra("isStoredLocally", false);
         initView();
         setData();
-
+        removeNotificationFromRemoteDatabase();
 
 
     }
@@ -78,7 +76,7 @@ public class NotificationSurveyActivity extends AppCompatActivity implements Vie
     }
 
     private void initView(){
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         changeToolbarTitleFont(toolbar);
         toolbar.setNavigationOnClickListener(this);
         profileImage=findViewById(R.id.profile_image);
@@ -112,6 +110,19 @@ public class NotificationSurveyActivity extends AppCompatActivity implements Vie
         percent4.setVisibility(View.VISIBLE);
 
 
+    }
+
+    private void removeNotificationFromRemoteDatabase(){
+        if(!isStoredLocally) {
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+            if (FirebaseAuth.getInstance().getCurrentUser() != null && askerId != null && surveyId != null) {
+                db.child("user")
+                        .child(askerId)
+                        .child("notification")
+                        .child(surveyId)
+                        .setValue(null);
+            }
+        }
     }
 
     private void setData(){
@@ -161,6 +172,7 @@ public class NotificationSurveyActivity extends AppCompatActivity implements Vie
         showSelectionPercentage();
 
     }
+
     private void showSelectionPercentage(){
         percent1.setTextColor(ResourcesCompat.getColor(getResources(),android.R.color.black,null));
         percent2.setTextColor(ResourcesCompat.getColor(getResources(),android.R.color.black,null));
@@ -297,7 +309,6 @@ public class NotificationSurveyActivity extends AppCompatActivity implements Vie
 
     @Override
     public void onClick(View view) {
-
         onBackPressed();
     }
 }

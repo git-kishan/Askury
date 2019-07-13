@@ -26,6 +26,7 @@ public class RootQuestionModel {
     private int recentAnswerLikeCount;
     private int fontUsed;
     private int point;
+    private boolean isAnswered;
 
     public RootQuestionModel(){
 
@@ -74,6 +75,7 @@ public class RootQuestionModel {
         this.fontUsed=fontUsed;
 
     }
+
     public RootQuestionModel(
             String askerId,
             String askerName,
@@ -214,7 +216,15 @@ public class RootQuestionModel {
         return point;
     }
 
+    public boolean isAnswered() {
+        return isAnswered;
+    }
+
+    public void setAnswered(boolean answered) {
+        isAnswered = answered;
+    }
 }
+
 
 
 

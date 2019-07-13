@@ -17,8 +17,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.emoji.text.EmojiCompat;
-import androidx.emoji.text.FontRequestEmojiCompatConfig;
 import androidx.emoji.widget.EmojiEditText;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.core.app.ActivityCompat;
@@ -37,7 +35,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
@@ -58,7 +55,6 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,7 +65,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import steelkiwi.com.library.DotsLoaderView;
 
 
@@ -79,14 +74,11 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     private static final int PHOTO_PICKER_REQUEST_CODE =601 ;
     private static final int CAMERE_REQUEST_CODE=1565;
     private TextView fontTextView;
-    private EmojiTextView questionTextView;
-    private CardView fontCardView,galleryCardView,cameraCardView;
     public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
     int textViewFontSelectedPosition=0;
     int fontSelected=0;
     int editTextFontSelectedPosition;
     private EmojiEditText answerEditText;
-    private CardView rootView;
     private ImageView nextButtonImage,crossButtonImage,attachImage;
     private byte [] compressedByteArray=null;
     private String currentPhotoPath;
@@ -96,7 +88,6 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     private FirebaseUser user;
     private FirebaseFirestore firestoreRef;
     private StorageReference rootStorageRef;
-    private UploadTask uploadTask;
     private String askerUid,questionId,question,askerName,askerImageUrl,askerBio;
     private long timeOfAsking;
     private ArrayList<String> questionType;
@@ -117,29 +108,18 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         askerBio=intent.getStringExtra("askerBio");
         anonymous=intent.getBooleanExtra("anonymous", false);
         questionType=intent.getStringArrayListExtra("questionType");
-//
-//        Log.i("TAG", "asker Uid :-"+askerUid);
-//        Log.i("TAG", "questionId :- "+questionId);
-//        Log.i("TAG", "question :_ "+question);
-//        Log.i("TAG", "timeOfAsking :- "+timeOfAsking);
-//        Log.i("TAG", "asker Name :- "+askerName);
-//        Log.i("TAG", "askerImageUrl :- "+askerImageUrl);
-//        Log.i("TAG", "askerbio :- "+askerBio);
-//        if(questionType!=null)
-//            Log.i("TAG", "question type :- "+questionType.toString());
-        rootView=findViewById(R.id.root_card_view);
         fontTextView = findViewById(R.id.font_text);
-        fontCardView=findViewById(R.id.cardView10);
+        CardView fontCardView=findViewById(R.id.cardView10);
         answerEditText=findViewById(R.id.answer_edit_text);
         nextButtonImage=findViewById(R.id.imageView13);
-        questionTextView=findViewById(R.id.textView14);
+        EmojiTextView questionTextView=findViewById(R.id.textView14);
         answerEditText.addTextChangedListener(this);
         crossButtonImage=findViewById(R.id.imageView10);
         attachImage=findViewById(R.id.imageView14);
         attachImage.setVisibility(View.GONE);
         crossButtonImage.setVisibility(View.GONE);
-        galleryCardView=findViewById(R.id.cardView12);
-        cameraCardView=findViewById(R.id.cardView13);
+        CardView galleryCardView=findViewById(R.id.cardView12);
+        CardView cameraCardView=findViewById(R.id.cardView13);
         overlayLayout=findViewById(R.id.overlay_frame_layout);
         dotsLoaderView=findViewById(R.id.dotsLoaderView);
         dotsLoaderView.setVisibility(View.GONE);
@@ -151,7 +131,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         fontCardView.setOnClickListener(this);
         nextButtonImage.setOnClickListener(this);
         crossButtonImage.setOnClickListener(this);
-        questionTextView.setText(question);
+         questionTextView.setText(question);
         auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user==null){
@@ -191,7 +171,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                 if(checkValidation()){
                     if(isNetworkAvailable()){
                         String uid=auth.getUid();
-                        if(askerUid!=null)
+                        if(askerUid!=null&&uid!=null)
                         if (uid.equals(askerUid)) {
                             overlayLayout.setVisibility(View.GONE);
                             dotsLoaderView.setVisibility(View.GONE);
@@ -250,6 +230,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
+                //show permission rationale
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA},
                         PERMISSIONS_REQUEST_READ_STORAGE);
@@ -358,32 +339,34 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
-        final Uri imageUri = data.getData();
-        Bitmap compressedBitmap=decodeSelectedImageUri(imageUri,250 ,250);
-        if(compressedBitmap!=null) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            compressedByteArray = byteArrayOutputStream.toByteArray();
-            Log.i("TAG", "compressed byte array size :- "+compressedByteArray.length);
-            final  Bitmap bitmap= BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.length);
-            Handler handler=new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    attachImage.setVisibility(View.VISIBLE);
-                    attachImage.animate().translationX(0).setDuration(500).start();
-                    attachImage.setImageBitmap(bitmap);
-                    crossButtonImage.animate().alpha(1).setDuration(500).start();
-                    crossButtonImage.setVisibility(View.VISIBLE);
+        if(data!= null) {
+            final Uri imageUri = data.getData();
+            Bitmap compressedBitmap = decodeSelectedImageUri(imageUri, 250, 250);
+            if (compressedBitmap != null) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                compressedByteArray = byteArrayOutputStream.toByteArray();
+                Log.i("TAG", "compressed byte array size :- " + compressedByteArray.length);
+                final Bitmap bitmap = BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.length);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        attachImage.setVisibility(View.VISIBLE);
+                        attachImage.animate().translationX(0).setDuration(500).start();
+                        attachImage.setImageBitmap(bitmap);
+                        crossButtonImage.animate().alpha(1).setDuration(500).start();
+                        crossButtonImage.setVisibility(View.VISIBLE);
 
 
-                }
-            }, 100);
+                    }
+                }, 100);
 
+            }
         }
     }
 
-    private  Bitmap decodeSelectedImageUri(Uri uri,int requiredWidth,int requiredHeight){
+    private  Bitmap decodeSelectedImageUri(Uri uri,final int requiredWidth,final int requiredHeight){
         try {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -420,16 +403,13 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case PERMISSIONS_REQUEST_READ_STORAGE:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
-                    //permission denied
-                }
-                break;
-
+        if(requestCode==PERMISSIONS_REQUEST_READ_STORAGE){
+            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
+                //permission denied
+            }
         }
     }
 
@@ -451,8 +431,10 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     }
     private boolean isNetworkAvailable(){
         ConnectivityManager cmm= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=cmm.getActiveNetworkInfo();
-        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        if(cmm!=null) {
+            NetworkInfo activeNetworkInfo = cmm.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }return false;
 
     }
     private void showDialogMessage(String message){
@@ -483,7 +465,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             String currentTime = String.valueOf(System.currentTimeMillis());
             String imageName = uid + "@" + currentTime;
             final StorageReference answerImageRef = rootStorageRef.child("question").child(imageName);
-            uploadTask = answerImageRef.putBytes(compressedByteArray);
+            UploadTask uploadTask = answerImageRef.putBytes(compressedByteArray);
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -525,6 +507,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     Log.i("TAG", "before loop :- ");
                     int counter=0;
                     String answerId=null;
+                    if(task.getResult()!=null)
                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
                         answerId=snapshot.getId();
                         counter++;

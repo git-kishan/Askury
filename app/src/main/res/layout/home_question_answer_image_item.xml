@@ -34,7 +34,7 @@
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/asker_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
@@ -51,10 +51,11 @@
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/about_textview"
-            android:layout_width="154dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
+            android:layout_marginEnd="8dp"
             android:textSize="8sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
             tools:text="Freenlancer|writer" />
@@ -119,13 +120,15 @@
 
                 <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/answerer_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="12dp"
+                    android:layout_marginEnd="8dp"
                     android:alpha="0.8"
                     android:textColor="@android:color/black"
                     android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/circleImageView"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Jennifer lawrence" />

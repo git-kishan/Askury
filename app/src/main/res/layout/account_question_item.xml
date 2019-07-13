@@ -24,7 +24,7 @@
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/asker_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
@@ -48,7 +48,7 @@
             android:layout_marginEnd="8dp"
             android:maxLines="1"
             android:textSize="10sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/answer_count"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
             tools:text="Freenlancer|writer" />

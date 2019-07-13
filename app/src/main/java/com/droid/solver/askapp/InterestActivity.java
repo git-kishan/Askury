@@ -117,7 +117,7 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                                     }
                                 }, 300);
                                 String chipText=chip.getText().toString();
-                               int chipId= chipMap.get(chipText);
+                               int chipId=chipMap.get(chipText);
                                chipMap.remove(chipText);
                                 Chip bottomChip=chipGroup.findViewById(chipId);
                                 bottomChip.startAnimation(fadeIn);
@@ -159,10 +159,10 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                     showProgressDialog();
                     final SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
                     String gender=preferences.getString(Constants.GENDER, null);
-                    if(isNetworkAvailable()){
+                    if(isNetworkAvailable()&&FirebaseAuth.getInstance().getCurrentUser()!=null){
                         String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
                         Map<String,Object> userMap=new HashMap<>();
-                        userMap.put("gender", gender);
+                        userMap.put("gender",  gender);
                         userMap.put("interest",interestsList);
                         FirebaseFirestore.getInstance().collection("user").document(uid)
                                 .set(userMap, SetOptions.merge())
@@ -211,14 +211,18 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
         builder.setView(dialogView);
         builder.setCancelable(false);
         alertDialog=builder.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
         alertDialog.show();
 
     }
 
     private boolean isNetworkAvailable(){
         ConnectivityManager connectivityManager= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        if(connectivityManager!=null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }return false;
     }
 }

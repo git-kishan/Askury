@@ -32,10 +32,12 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
 
 
     void onCardClicked(Context context, ImagePollModel model){
-        model.setStoredLocally(true);
-        dot.setVisibility(View.GONE);
-        saveNotificationToLocalDatabase(model.getImagePollId(), model.getType(), model, context);
         Intent intent=new Intent(context,NotificationImagePollActivity.class);
+        intent.putExtra("isStoredLocally", model.isStoredLocally());
+        if(!model.isStoredLocally()){
+            model.setStoredLocally(true);
+            saveNotificationToLocalDatabase(model.getImagePollId(), "imagePoll", model, context);
+        }
         intent.putExtra("imagePollId", model.getImagePollId());
         intent.putExtra("question",model.getQuestion());
         intent.putExtra("askerId",model.getAskerId());
@@ -50,6 +52,7 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
         intent.putExtra("reported",model.isReported());
         intent.putExtra("type", model.getType());
         intent.putExtra("notifiedTime",model.getNotifiedTime());
+        dot.setVisibility(View.GONE);
         context.startActivity(intent);
     }
     private void saveNotificationToLocalDatabase(final String notificationId,final String type,final ImagePollModel model,final Context context){

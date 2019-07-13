@@ -7,18 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".homeAnswer.DetailAnswerActivity">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:elevation="3dp"
-            app:titleTextColor="@color/colorAccent"
-            app:navigationIcon="@drawable/ic_back_black"
-            android:background="@android:color/white"
-            android:layout_height="?android:actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="Detail" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:elevation="3dp"
+        app:titleTextColor="@color/colorAccent"
+        app:navigationIcon="@drawable/ic_back_black"
+        android:background="@android:color/white"
+        android:layout_height="?android:actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Notification" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -173,7 +173,7 @@
                         android:id="@+id/textView21"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="16dp"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toStartOf="@+id/textView25"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -275,4 +275,4 @@
 
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

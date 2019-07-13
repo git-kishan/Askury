@@ -20,14 +20,14 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/liker_image"
-            android:layout_width="40dp"
-            android:layout_height="0dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:src="@android:color/holo_blue_dark"
+            android:src="@android:color/holo_red_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,40 +47,45 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/liker_image"
             app:layout_constraintTop_toBottomOf="@+id/time_ago"
-            tools:text="Kishan gupta likes your answer " />
+            tools:text="Kishan gupta start following you " />
 
         <TextView
             android:id="@+id/time_ago"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            tools:text="7 minutes ago"
+            android:layout_marginTop="4dp"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/liker_image"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="smallsp" />
-
-        <TextView
-            android:id="@+id/text_view2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            tools:text="26 likes"
-            android:textColor="@color/colorAccent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_view1"
-            app:layout_constraintTop_toBottomOf="@+id/text_view1" />
+            tools:ignore="smallsp"
+            tools:text="7 minutes ago" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/dot"
             android:layout_width="8dp"
             android:layout_height="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:src="@android:color/holo_blue_dark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/bio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Management|Marketing|computer"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/text_view1"
+            app:layout_constraintStart_toEndOf="@+id/liker_image"
+            app:layout_constraintTop_toBottomOf="@+id/text_view1"
+            tools:ignore="SmallSp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

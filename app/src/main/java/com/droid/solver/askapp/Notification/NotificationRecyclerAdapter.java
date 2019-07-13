@@ -3,13 +3,9 @@ package com.droid.solver.askapp.Notification;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
 import com.droid.solver.askapp.Main.Constants;
@@ -26,7 +22,10 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
     private final int QUESTION=1;
     private final int IMAGE_POLL=2;
     private final int SURVEY=3;
+    private final int ANSWER=4;
+    private final int FOLLOWER=5;
     private final int LOADING=0;
+
 
     NotificationRecyclerAdapter(Context context,  List<Object> list){
         this.context=context;
@@ -38,8 +37,8 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view=null;
-        RecyclerView.ViewHolder holder=null;
+        View view;
+        RecyclerView.ViewHolder holder;
         switch (i){
             case QUESTION:
                 view=inflater.inflate(R.layout.notification_question_item, viewGroup,false);
@@ -52,6 +51,14 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             case SURVEY:
                 view=inflater.inflate(R.layout.notification_survey_item,viewGroup,false);
                 holder=new SurveyViewHolder(view);
+                break;
+            case ANSWER:
+                view=inflater.inflate(R.layout.notification_answer_item, viewGroup,false);
+                holder=new AnswerViewHolder(view);
+                break;
+            case FOLLOWER:
+                view=inflater.inflate(R.layout.notification_follower, viewGroup,false);
+                holder=new FollowerViewHolder(view);
                 break;
             case LOADING:
                 view=inflater.inflate(R.layout.loading,viewGroup,false);
@@ -128,7 +135,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
                     ((ImagePollViewHolder) holder).percent1.setText(percentA);
                     ((ImagePollViewHolder) holder).percent2.setText(percentB);
                 }else {
-                    int perA=0,perB=0;
+                    int perA,perB;
                     perA=image1LikeNo*100/(total);
                     perB=100-perA;
                     String percentA=String.format(context.getString(R.string.a_percent), perA)+"%";
@@ -173,6 +180,57 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
 
             handleClickListenerOfSurvey((SurveyViewHolder) holder, model);
 
+        }else if(holder instanceof AnswerViewHolder && list.get(i) instanceof AnswerModel){
+            AnswerModel model =(AnswerModel) list.get(i);
+
+            String answererName=model.getAnswererName();
+            long notifiedTime=model.getNotifiedTime();
+            String answererId=model.getAnswererId();
+            answererName=answererName==null?"Someone":answererName;
+            String imageUrl=Constants.PROFILE_PICTURE+"/"+answererId+Constants.SMALL_THUMBNAIL;
+            StorageReference reference = FirebaseStorage.getInstance().getReference();
+
+            GlideApp.with(context)
+                    .load(reference.child(imageUrl))
+                    .error(android.R.color.holo_orange_light)
+                    .placeholder(android.R.color.holo_orange_light)
+                    .into(((AnswerViewHolder) holder).profileImage);
+            String timeAgo=getTime(notifiedTime, System.currentTimeMillis());
+            ((AnswerViewHolder) holder).timeAgo.setText(timeAgo);
+            String status=String.format(context.getString(R.string.someone_answer_your_question), answererName);
+            ((AnswerViewHolder) holder).status.setText(status);
+
+            if(model.isStoredLocally())
+                ((AnswerViewHolder) holder).dot.setVisibility(View.GONE);
+
+            handleClickListenerOfAnswer((AnswerViewHolder)holder,model);
+        }else if(holder instanceof FollowerViewHolder && list.get(i) instanceof FollowerModel){
+            FollowerModel model = (FollowerModel)list.get(i);
+
+            String followerId=model.getFollowerId();
+            String followerName=model.getFollowerName();
+            String followerBio=model.getFollowerBio();
+            long  notifiedTime=model.getNotifiedTime();
+
+            followerName=followerName==null?"Someone":followerName;
+            String imageUrl=Constants.PROFILE_PICTURE+"/"+followerId+Constants.SMALL_THUMBNAIL;
+            followerBio=followerBio==null?"":followerBio;
+            String timeAgo=getTime(notifiedTime, System.currentTimeMillis());
+
+            StorageReference reference=FirebaseStorage.getInstance().getReference();
+            String followYou=String.format(context.getString(R.string.some_one_start_following_you), followerName);
+            ((FollowerViewHolder) holder).status.setText(followYou);
+            ((FollowerViewHolder) holder).timeAgo.setText(timeAgo);
+            ((FollowerViewHolder) holder).bio.setText(followerBio);
+            GlideApp.with(context).
+                    load(reference.child(imageUrl))
+                    .placeholder(android.R.color.holo_red_light)
+                    .error(android.R.color.holo_red_light)
+                    .into(((FollowerViewHolder) holder).profileImage);
+            if(model.isStoredLocally())
+                ((FollowerViewHolder) holder).dot.setVisibility(View.GONE);
+
+            handleClickListenerOfFollower((FollowerViewHolder)holder,model);
         }
     }
 
@@ -189,6 +247,10 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             return IMAGE_POLL;
         }else if(list.get(position) instanceof  SurveyModel){
             return SURVEY;
+        }else if(list.get(position) instanceof AnswerModel){
+            return ANSWER;
+        }else if(list.get(position) instanceof FollowerModel){
+            return FOLLOWER;
         }else if(list.get(position)==null){
             return LOADING;
         }else {
@@ -250,6 +312,22 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
         });
     }
     private void handleClickListenerOfSurvey(final SurveyViewHolder viewHolder,final  SurveyModel model){
+        viewHolder.rootCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.onCardClicked(context, model);
+            }
+        });
+    }
+    private void handleClickListenerOfAnswer(final AnswerViewHolder viewHolder,final AnswerModel model){
+        viewHolder.rootCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.onCardClicked(context,model);
+            }
+        });
+    }
+    private void handleClickListenerOfFollower(final FollowerViewHolder viewHolder , final FollowerModel model){
         viewHolder.rootCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

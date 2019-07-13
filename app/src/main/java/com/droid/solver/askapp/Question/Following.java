@@ -5,12 +5,23 @@ public class Following{
     private String followingName;
     private String followingImageUrl;
     private  String followingBio;
+    private String selfId;
+
+    Following(){}
 
     public Following(String followingId,String followingName,String followingImageUrl,String followingBio){
         this.followingId=followingId;
         this.followingName=followingName;
         this.followingImageUrl=followingImageUrl;
         this.followingBio=followingBio;
+    }
+
+    public Following(String followingId,String followingName,String followingImageUrl,String followingBio,String selfId){
+        this.followingId=followingId;
+        this.followingName=followingName;
+        this.followingImageUrl=followingImageUrl;
+        this.followingBio=followingBio;
+        this.selfId=selfId;
     }
 
     public String getFollowingId() {
@@ -29,4 +40,7 @@ public class Following{
         return followingName;
     }
 
+    public String getSelfId() {
+        return selfId;
+    }
 }

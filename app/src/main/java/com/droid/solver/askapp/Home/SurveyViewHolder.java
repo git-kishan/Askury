@@ -709,11 +709,13 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
                 selfFollowingMap.put("followingName",surveyModel.getAskerName());
                 selfFollowingMap.put("followingImageUrl", surveyModel.getAskerImageUrlLow());
                 selfFollowingMap.put("followingBio",surveyModel.getAskerBio());
+                selfFollowingMap.put("selfId", selfUid);
 
                 askerFollowerMap.put("followerId", selfUid);
                 askerFollowerMap.put("followerName", selfName);
                 askerFollowerMap.put("followerImageUrl", selfImageUrl);
                 askerFollowerMap.put("followerBio",selfBio);
+                askerFollowerMap.put("selfId", surveyModel.getAskerId());
 
                 selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
                 askerFollowerCountMap.put("followerCount", FieldValue.increment(1));

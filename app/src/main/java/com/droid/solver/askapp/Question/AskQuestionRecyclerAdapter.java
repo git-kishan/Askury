@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.droid.solver.askapp.Account.ProfileImageActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
@@ -14,7 +13,6 @@ import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 
 public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
@@ -25,7 +23,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
     private static final int LOADING=1;
     private static final int QUESTION=2;
 
-    public AskQuestionRecyclerAdapter(Context context, ArrayList<Object> questionModelArrayList){
+    AskQuestionRecyclerAdapter(Context context, ArrayList<Object> questionModelArrayList){
      this.context=context;
      this.questionModelArrayList=questionModelArrayList;
      if(context!=null)
@@ -62,7 +60,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
             final RootQuestionModel model = (RootQuestionModel) questionModelArrayList.get(i);
             boolean isAnonymous = model.isAnonymous();
-            String profileNameAsked = "";
+            String profileNameAsked ;
             if (isAnonymous) {
                 profileNameAsked = context.getString(R.string.someoneasked);
                 GlideApp.with(context)
@@ -148,7 +146,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
         }
         return "Not known";
     }
-    public String getTime(long oldDate,long newDate){
+    private String getTime(long oldDate,long newDate){
         long diff=newDate-oldDate;//777600
         if (diff<0){
             return null;
@@ -160,16 +158,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String askerUid = model.getAskerId();
-                String questionId = model.getQuestionId();
-                String question = model.getQuestion();
-                long timeOfAsking = model.getTimeOfAsking();
-                String askerName =model.getAskerName();
-                String askerImageUrl = model.getAskerImageUrlLow();
-                String askerBio = model.getAskerBio();
-                ArrayList<String> questionType = (ArrayList<String>)model.getQuestionType();
-                 holder.onCardClicked(context, position,
-                        askerUid, questionId, question, timeOfAsking, askerName, askerImageUrl, askerBio, questionType);
+                 holder.onCardClicked(context,position,model);
             }
         });
         holder.profilePicture.setOnClickListener(new View.OnClickListener() {

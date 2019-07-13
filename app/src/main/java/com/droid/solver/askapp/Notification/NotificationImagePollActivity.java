@@ -21,6 +21,9 @@ import com.bumptech.glide.Glide;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -39,7 +42,7 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
     private ImageView leftWhiteHeart,rightWhiteHeart,leftRedHeart,rightRedHeart;
     private String imagePollId,imagePollQuestion,askerId,askerName,askerBio,askerImageUrlLow,image1Url,image2Url,type;
     private int image1LikeNo,image2LikeNo;
-    private boolean containViolanceOrAdult,reported;
+    private boolean containViolanceOrAdult,reported,isStoredLocally;
     private long notifiedTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +64,10 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         reported=intent.getBooleanExtra("reported", false);
         type=intent.getStringExtra("type");
         notifiedTime=intent.getLongExtra("notifiedTime",System.currentTimeMillis());
+        isStoredLocally=intent.getBooleanExtra("isStoredLocally", false);
         initView();
         setData();
+        removeNotificationFromRemoteDatabase();
 
     }
     private void changeToolbarTitleFont(Toolbar toolbar){
@@ -134,6 +139,7 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         setPercentage();
 
     }
+
     private void setPercentage(){
         image1LikeNo=image1LikeNo<0?0:image1LikeNo;
         image2LikeNo=image2LikeNo<0?0:image2LikeNo;
@@ -171,6 +177,19 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         rightTextView.setText(secondLikes);
 
 
+    }
+
+    private void removeNotificationFromRemoteDatabase(){
+        if(!isStoredLocally) {
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+            if (FirebaseAuth.getInstance().getCurrentUser() != null && askerId != null && imagePollId != null) {
+                db.child("user")
+                        .child(askerId)
+                        .child("notification")
+                        .child(imagePollId)
+                        .setValue(null);
+            }
+        }
     }
 
     private String getTimeDifferenceInWords(long diff){

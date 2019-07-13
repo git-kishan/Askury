@@ -31,6 +31,9 @@
     <string name="someone_likes_your_answer" translatable="false">%1$s likes your answer</string>
     <string name="percentage_likes" translatable="false">%1$d</string>
     <string name="likes" translatable="false">likes</string>
+    <string name="someone_answer_your_question" translatable="false">%1$s answer your question</string>
+    <string name="some_one_start_following_you" translatable="false">%1$s started following you</string>
+    <string name="no_notification" translatable="false">No notification</string>
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>

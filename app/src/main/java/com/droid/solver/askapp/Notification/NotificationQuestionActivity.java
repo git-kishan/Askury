@@ -47,6 +47,7 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
     private String likerId,likerName,likerImageUrl,likerBio;
     private String askerId,answererId,answerId,questionId,type;
     private long notifiedTime;
+    private boolean isStoredLocally;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
         questionId=intent.getStringExtra("questionId");
         type=intent.getStringExtra("type");
         notifiedTime=intent.getLongExtra("notifiedTime",System.currentTimeMillis());
+        isStoredLocally=intent.getBooleanExtra("isStoredLocally", false);
         init();
         changeToolbarFont();
         loadProfileImage(true);
@@ -186,14 +188,15 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
     }
 
     private void removeNotificationFromRemoteDatabase(){
-        DatabaseReference db=FirebaseDatabase.getInstance().getReference();
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
-            db.child("user")
-                    .child(answererId)
-                    .child("notification")
-                    .child(questionId)
-                    .setValue(null);
-
+        if(!isStoredLocally) {
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                db.child("user")
+                        .child(answererId)
+                        .child("notification")
+                        .child(questionId)
+                        .setValue(null);
+            }
         }
     }
     @Override

@@ -1,4 +1,4 @@
-package com.droid.solver.askapp.homeAnswer;
+package com.droid.solver.askapp.Notification;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -9,11 +9,13 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.Account.OtherAccountActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.like.LikeButton;
@@ -21,7 +23,7 @@ import com.like.OnLikeListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class DetailAnswerActivity extends AppCompatActivity implements View.OnClickListener, OnLikeListener {
+public class NotificationAnswerActivity extends AppCompatActivity implements View.OnClickListener, OnLikeListener {
 
     private Toolbar toolbar;
     private CircleImageView askerImage,answererImage;
@@ -34,16 +36,15 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
     private String maskerId,manswererId;
     private String maskerName,maskerBio,manswererName,manswererBio;
     private long mtimeOfAsking,mtimeOfAnswering;
-    private String mquestion,manswer,imageAttachedUrl;
+    private String mquestion,manswer,imageAttachedUrl,manswerId;
     private boolean anonymous,isLikedByMe,imageAttached;
     private int fontUsed,likeCount;
     public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
-
-
+    private boolean isStoredLocally;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_answer);
+        setContentView(R.layout.activity_notification_answer);
 
         Intent intent=getIntent();
         maskerId=intent.getStringExtra("askerId");
@@ -56,12 +57,14 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
         mtimeOfAnswering=intent.getLongExtra("timeOfAnswering",System.currentTimeMillis());
         mquestion=intent.getStringExtra("question");
         manswer=intent.getStringExtra("answer");
+        manswerId=intent.getStringExtra("answerId");
         anonymous=intent.getBooleanExtra("anonymous", false);
         fontUsed=intent.getIntExtra("fontUsed", 0);
         isLikedByMe=intent.getBooleanExtra("isLikedByMe", false);
         likeCount=intent.getIntExtra("likeCount", 0);
         imageAttached=intent.getBooleanExtra("imageAttached", false);
         imageAttachedUrl=intent.getStringExtra("imageAttachedUrl");
+        isStoredLocally=intent.getBooleanExtra("isStoredLocally", false);
         toolbar=findViewById(R.id.toolbar);
         changeToolbarFont(toolbar);
         askerImage=findViewById(R.id.circleImageView2);
@@ -77,6 +80,7 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
         likeButton=findViewById(R.id.likeButton);
         likeCountTextView=findViewById(R.id.textView25);
         setData();
+        removeNotificationFromRemoteDatabase();
         askerImage.setOnClickListener(this);
         answererImage.setOnClickListener(this);
         askerName.setOnClickListener(this);
@@ -195,9 +199,21 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
         return getTimeDifferenceInWords(diff);
     }
 
+    private void removeNotificationFromRemoteDatabase(){
+        if(!isStoredLocally) {
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+            if (FirebaseAuth.getInstance().getCurrentUser() != null && maskerId != null && manswererId != null) {
+                db.child("user")
+                        .child(maskerId)
+                        .child("notification")
+                        .child(manswerId)
+                        .setValue(null);
+            }
+        }
+    }
     @Override
     public void onClick(View view) {
-        Intent intent=new Intent(DetailAnswerActivity.this, OtherAccountActivity.class);
+        Intent intent=new Intent(NotificationAnswerActivity.this, OtherAccountActivity.class);
 
         switch (view.getId()){
             case R.id.circleImageView2://on asker image clicked
@@ -228,9 +244,9 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
                 intent.putExtra("bio",manswererBio);
                 startActivity(intent);
                 break;
-                default:
-                    onBackPressed();
-                    break;
+            default:
+                onBackPressed();
+                break;
         }
     }
 

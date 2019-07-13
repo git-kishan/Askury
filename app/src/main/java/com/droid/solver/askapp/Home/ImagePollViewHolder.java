@@ -662,11 +662,13 @@ public class ImagePollViewHolder extends RecyclerView.ViewHolder {
                 selfFollowingMap.put("followingName",imagePollModel.getAskerName());
                 selfFollowingMap.put("followingImageUrl", imagePollModel.getAskerImageUrlLow());
                 selfFollowingMap.put("followingBio",imagePollModel.getAskerBio());
+                selfFollowingMap.put("selfId", selfUid);
 
                 askerFollowerMap.put("followerId", selfUid);
                 askerFollowerMap.put("followerName", selfName);
                 askerFollowerMap.put("followerImageUrl", selfImageUrl);
                 askerFollowerMap.put("followerBio",selfBio);
+                askerFollowerMap.put("selfId", imagePollModel.getAskerId());
 
                 selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
                 askerFollowerCountMap.put("followerCount", FieldValue.increment(1));

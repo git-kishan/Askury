@@ -1,6 +1,5 @@
 package com.droid.solver.askapp.Question;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.ImagePoll.ImagePollActivity;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
@@ -42,18 +40,14 @@ import java.util.ArrayList;
 
 public class QuestionFragment extends Fragment {
 
-    private Animation scaleInAnimation;
-    SpeedDialView speedDialView;
+    private SpeedDialView speedDialView;
     private RecyclerView recyclerView;
-    ShimmerFrameLayout shimmerFrameLayout;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private FirebaseFirestore root;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Object> list;
     private LinearLayoutManager layoutManager;
     private AskQuestionRecyclerAdapter adapter;
-    private Context context;
     private static final int QUESTION_LIMIT=8;
     private boolean isLoading=false;
     private DocumentSnapshot lastVisibleSnapshot=null;
@@ -61,15 +55,15 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
         speedDialView=view.findViewById(R.id.speedDial);
-        scaleInAnimation= AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_in);
+        Animation scaleInAnimation= AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_in);
         speedDialView.startAnimation(scaleInAnimation);
         shimmerFrameLayout=view.findViewById(R.id.shimmer);
         shimmerFrameLayout.startShimmer();
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView=view.findViewById(R.id.recycler_view);
         swipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
-        auth=FirebaseAuth.getInstance();
-        user=auth.getCurrentUser();
+        FirebaseAuth auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
         if(user==null){
             startActivity(new Intent(getActivity(), SignInActivity.class));
             if(getActivity()!=null)
@@ -159,7 +153,7 @@ public class QuestionFragment extends Fragment {
 
     }
 
-    RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
+    private RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
@@ -181,7 +175,6 @@ public class QuestionFragment extends Fragment {
 
         }
     };
-
     private void loadDataFromRemoteDatabase() {
 
         root.collection("question")
@@ -196,6 +189,7 @@ public class QuestionFragment extends Fragment {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
                                 if(model.getAskerId()!=null&&model.getQuestionId()!=null){
+                                    model.setAnswered(false);
                                     list.add(model);
                                 }
                             }
@@ -283,6 +277,7 @@ public class QuestionFragment extends Fragment {
     private void loadDataFromLocalDatabase(){
         if(getActivity()!=null){
             LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
+            ArrayList<Object> tempList=database.getQuestionRootQuestionModelList();
             list.addAll(database.getQuestionRootQuestionModelList());
             adapter.notifyDataSetChanged();
             swipeRefreshLayout.setRefreshing(false);
@@ -290,17 +285,6 @@ public class QuestionFragment extends Fragment {
             shimmerFrameLayout.setVisibility(View.GONE);
 
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        this.context=context;
-        super.onAttach(context);
-    }
-
-    private void goToAnswerActivity(){
-        startActivity(new Intent(context,AnswerActivity.class));
-
     }
 
 }

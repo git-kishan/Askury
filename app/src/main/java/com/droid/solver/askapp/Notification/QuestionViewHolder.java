@@ -30,10 +30,12 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder {
     }
 
      void onCardClicked(Context context, QuestionModel model){
-         model.setStoredLocally(true);
-         dot.setVisibility(View.GONE);
-         saveNotificationToLocalDatabase(model.getAnswerId(), model.getType(), model, context);
          Intent intent=new Intent(context,NotificationQuestionActivity.class);
+         intent.putExtra("isStoredLocally", model.isStoredLocally());
+         if(!model.isStoredLocally()){
+             model.setStoredLocally(true);
+             saveNotificationToLocalDatabase(model.getAnswerId(), model.getType(), model, context);
+         }
          intent.putExtra("likerId", model.getLikerId());
          intent.putExtra("likerName", model.getLikerName());
          intent.putExtra("likerImageUrl", model.getLikerImageUrl());
@@ -44,6 +46,7 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder {
          intent.putExtra("questionId", model.getQuestionId());
          intent.putExtra("type", model.getType());
          intent.putExtra("notifiedTime", model.getNotifiedTime());
+         dot.setVisibility(View.GONE);
          context.startActivity(intent);
     }
 

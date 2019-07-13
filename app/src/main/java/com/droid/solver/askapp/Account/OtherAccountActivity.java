@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.NonNull;
-
 import com.google.android.material.button.MaterialButton;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.snackbar.Snackbar;
@@ -17,14 +16,12 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
@@ -38,13 +35,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
-
+import java.util.Objects;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class OtherAccountActivity extends AppCompatActivity implements View.OnClickListener,
@@ -52,9 +49,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
 
 
     private ViewPager viewPager;
-    private TabLayout tabLayout;
     private CoordinatorLayout coordinatorLayout;
-    private ImageView backImageButton;
     private CircleImageView profileImage;
     private MaterialButton followButton;
     private static final String FOLLOW ="Follow";
@@ -63,17 +58,18 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     private EmojiTextView profileName,about;
     private TextView followNum,followingNum,pointNum;
     private String imageUrl,uid,userName,bio;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
+    private boolean notification=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_account);
         Intent intent=getIntent();
+
         imageUrl=intent.getStringExtra("profile_image");
         uid=intent.getStringExtra("uid");
         userName=intent.getStringExtra("user_name");
         bio=intent.getStringExtra("bio");
+        notification=intent.getBooleanExtra("notification",false);
 
         followButton=findViewById(R.id.follow_button);
         followButton.setVisibility(View.GONE);//starting state of follow button
@@ -85,7 +81,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         followingNum=findViewById(R.id.following_count);
         pointNum=findViewById(R.id.point_count);
         viewPager=findViewById(R.id.view_pager);
-        backImageButton=findViewById(R.id.back_button);
+        ImageView backImageButton=findViewById(R.id.back_button);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window=getWindow();
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -101,6 +97,9 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     }
     private void checkConnection(){
         if(isNetworkAvailable()){
+            if(notification){
+                removeNotificationFromRemoteDatabase();
+            }
             loadDataFromRemoteDatabase();
             checkFollowerList();
         }else {
@@ -141,28 +140,26 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
 
 
     private void setTabLayout(){
-        tabLayout=findViewById(R.id.tabLayout);
+        TabLayout tabLayout=findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-        TabLayout.Tab tab1=tabLayout.newTab();
-        TabLayout.Tab tab2=tabLayout.newTab();
+        tabLayout.newTab();
+        tabLayout.newTab();
         try {
-            tabLayout.getTabAt(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_questions_black, null));
-            tabLayout.getTabAt(1).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_qa_black, null));
+            Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_questions_black, null));
+            Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_qa_black, null));
         }catch (NullPointerException e){
-
+            Log.i("TAG","exception occurs in otherAccountActivity :- "+e.getMessage());
         }
     }
     private void setViewPager(){
         AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getSupportFragmentManager());
-        AccountQuestionFragment accountQuestionFragment=new AccountQuestionFragment();
-        AccountQuestionAnswerFragment accountQuestionAnswerFragment=new AccountQuestionAnswerFragment();
         pagerAdapter.addFragment(new AccountQuestionFragment());
         pagerAdapter.addFragment(new AccountQuestionAnswerFragment());
         viewPager.setAdapter(pagerAdapter);
     }
     private void checkUserAuth(){
-        auth=FirebaseAuth.getInstance();
-        user=auth.getCurrentUser();
+        FirebaseAuth auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
         init();
         if(user==null){
             Snackbar.make(coordinatorLayout, "Sign in again ...",Snackbar.LENGTH_SHORT).show();
@@ -272,4 +269,16 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     public String passUid() {
         return uid;
     }
+
+    private void removeNotificationFromRemoteDatabase(){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null&& uid!=null){
+            FirebaseDatabase.getInstance().getReference()
+                    .child("user")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child("notification")
+                    .child(uid)
+                    .setValue(null);
+        }
+    }
+
 }

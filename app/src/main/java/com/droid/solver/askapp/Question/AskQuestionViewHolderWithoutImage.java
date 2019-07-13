@@ -37,22 +37,20 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
         tapToMore=itemView.findViewById(R.id.tap_to_more_textview);
         view=itemView.findViewById(R.id.view9);
     }
-     void onCardClicked(Context context,int i,
-                              String askerUid,String questionId,
-                              String question,long timeOfAsking,
-                              String askerName,String askerImageUrl,
-                              String askerBio,ArrayList<String > questionType){
+     void onCardClicked(Context context,int i,RootQuestionModel model){
                     Intent intent=new Intent(context,AnswerActivity.class);
-                    intent.putExtra("askerUid",askerUid);
-                    intent.putExtra("questionId",questionId);
-                    intent.putExtra("question", question);
-                    intent.putExtra("timeOfAsking", timeOfAsking);
-                    intent.putExtra("askerName",askerName);
-                    intent.putExtra("askerImageUrl", askerImageUrl);
-                    intent.putExtra("askerBio", askerBio);
-                    intent.putStringArrayListExtra("questionType",questionType);
+                    intent.putExtra("askerUid",model.getAskerId());
+                    intent.putExtra("questionId",model.getQuestionId());
+                    intent.putExtra("question", model.getQuestion());
+                    intent.putExtra("timeOfAsking", model.getTimeOfAsking());
+                    intent.putExtra("askerName",model.getAskerName());
+                    intent.putExtra("askerImageUrl", model.getAskerImageUrlLow());
+                    intent.putExtra("askerBio", model.getAskerBio());
+                    intent.putStringArrayListExtra("questionType",new ArrayList<String>(model.getQuestionType()));
+                    model.setAnswered(true);
                     context.startActivity(intent);
     }
+
     void onProfilePictureClicked(final Context context,RootQuestionModel model){
         goToProfileActivity(context,model);
     }

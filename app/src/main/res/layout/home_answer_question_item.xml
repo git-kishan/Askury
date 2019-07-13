@@ -5,6 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:elevation="5dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
     app:cardCornerRadius="8dp"
     android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,12 +29,14 @@
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView15"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
             android:textColor="@android:color/black"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/circleImageView2"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/circleImageView2"
             app:layout_constraintTop_toTopOf="@+id/circleImageView2"
@@ -40,7 +45,7 @@
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/textView16"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:textSize="12sp"

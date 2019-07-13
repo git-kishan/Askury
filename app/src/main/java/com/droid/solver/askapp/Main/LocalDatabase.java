@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 import android.util.Log;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
+import com.droid.solver.askapp.Notification.AnswerModel;
+import com.droid.solver.askapp.Notification.FollowerModel;
 import com.droid.solver.askapp.Notification.ImagePollModel;
 import com.droid.solver.askapp.Notification.QuestionModel;
 import com.droid.solver.askapp.Notification.SurveyModel;
-import com.droid.solver.askapp.Question.Community;
 import com.droid.solver.askapp.Question.Follower;
 import com.droid.solver.askapp.Question.Following;
 import com.droid.solver.askapp.Question.RootQuestionModel;
@@ -26,7 +27,7 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=16;
+    private static final int DATABASE_VERSION=18;
 
     private final String USER_INFO_TABLE="user_info_table";
     private final String USER_QUESTION_MODEL="question_asked_table";
@@ -39,15 +40,17 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String IMAGE_POLL_LIKE_TABLE="image_poll_like_table";
     private final String FOLLOWER_TABLE="follower_table";
     private final String FOLLOWING_TABLE="following_table";
-    private final String COMMUNITY_TABLE="community_table";
     private final String IMAGE_POLL_REPORT="image_poll_report";
     private final String SURVEY_REPORT="survey_report";
     private final String QUESTION_REPORT="question_report";
 
     private final String NOTIFICATION_QUESTION="notification_question";
+    private final String NOTIFICATION_ANSWER="notification_answer";
     private final String NOTIFICATION_IMAGE_POLL="notification_image_poll";
     private final String NOTIFICATION_SURVEY="notification_survey";
+    private final String NOTIFICATION_FOLLOWER="notification_follower";
     private final String NOTIFICATION="notifiction";
+
 
 
     //user main document
@@ -69,12 +72,18 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String askerName="askerName";
     private final String anonymous="anonymous";
     private final String askerImageUrlLow="askerImageUrlLow";
-    private final String askerImageUrlHigh="askerImageUrlHigh";
     private final String askerBio="askerBio";
     private final String questionId="questionId";//primary key not null
     private final String question="question";
+    private final String answer="answer";
+    private final String answerLikeCount="answerLikeCount";
     private final String questionType="questionType";
     private final String timeOfAsking="timeOfAsking";
+    private final String answererName="answererName";
+    private final String answererBio="answererBio";
+    private final String timeOfAnswering="timeOfAnswering";
+    private final String imageAttached="imageAttached";
+    private final String imageAttachedUrl="imageAttachedUrl";
     private final String recentAnswererId="recentAnswererId";
     private final String recentAnswererImageUrlLow="recentAnswererImageUrlLow";
     private final String recentAnswererName="recentAnswererName";
@@ -134,12 +143,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String followingImageUrl="followingImageUrl";
     private final String followingBio="followingBio";
 
-    //Community document
-    private final String  communityId="communityId";
-    private final String communityImageUrl="communityImageUrl";
-    private final String communityName="communityName";
-    private final String  communityMemberCount="communityMemberCount";
-
     //notification
     private final String likerId="likerId";
     private final String likerName="likerName";
@@ -149,9 +152,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String containVioloanceOrAdult="containVioloanceOrAdult";
     private final String reported="reported";
     private final String notifiedTime="notifiedTime";
+    private final String selfId="selfId";
     private final String TYPE_QUESTION="question";
     private final String TYPE_IMAGE_POLL="imagePoll";
     private final String TYPE_SURVEY="survey";
+    private final String TYPE_ANSWER="answer";
+    private final String TYPE_FOLLOWER="follower";
     private final String notificationId="notificationId";
     private final String notificationType="notificationType";
     private final String answererId="answererId";
@@ -213,9 +219,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
           final String CREATE_TABLE_FOLLOWING_TABLE="CREATE TABLE "+FOLLOWING_TABLE+"("+followingId+" TEXT PRIMARY KEY,"+
                 followingName+" TEXT ,"+followingImageUrl+" TEXT ,"+followingBio+" TEXT "+")";
 
-          final String CREATE_TABLE_COMMUNITY_TABLE="CREATE TABLE "+COMMUNITY_TABLE+"("+communityId+"TEXT PRIMARY KEY, "+communityName+" TEXT ,"+
-                communityImageUrl+" TEXT ,"+communityMemberCount+" INTEGER "+")";
-
           final String CREATE_TABLE_IMAGE_POLL_REPORT_TABLE="CREATE TABLE "+IMAGE_POLL_REPORT+"("+imagePollId+" TEXT PRIMARY KEY "+")";
 
           final String CREATE_TABLE_SURVEY_REPORT_TABLE="CREATE TABLE "+SURVEY_REPORT+"("+surveyId+" TEXT PRIMARY KEY "+")";
@@ -237,6 +240,15 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 option2Count+" INTEGER ,"+option3Count+" INTEGER ,"+option4Count+" INTEGER ,"+option1+" INTEGER ,"+option2+" INTEGER ,"+
                 option3+" INTEGER ,"+option4+" INTEGER ,"+type+" TEXT ,"+notifiedTime+" INTEGER ,"+isStoredLocally+" INTEGER "+")";
 
+         final String CREATE_TABLE_NOTIFICATION_ANSWER="CREATE TABLE "+NOTIFICATION_ANSWER+"("+answerId+" TEXT PRIMARY KEY ,"+askerId+" TEXT ,"+
+                 askerName+" TEXT ,"+askerBio+" TEXT ,"+questionId+" TEXT ,"+question+" TEXT ,"+timeOfAsking+" INTEGER ,"+timeOfAnswering+" INTEGER ,"+
+                 answererId+" TEXT ,"+answererName+" TEXT ,"+answererBio+" TEXT ,"+answer+" TEXT ,"+imageAttached+" INTEGER ,"+imageAttachedUrl+" TEXT ,"+
+                 fontUsed+" INTEGER ,"+anonymous+" INTEGER ,"+notifiedTime+" INTEGER ,"+type+" TEXT ,"+isStoredLocally+" INTEGER "+")";
+
+         final String CREATE_TABLE_NOTIFICATION_FOLLOWER="CREATE TABLE "+NOTIFICATION_FOLLOWER+"("+followerId+" TEXT PRIMARY KEY ,"+
+                 followerName+" TEXT ,"+followerBio+" TEXT ,"+followerImageUrl+" TEXT ,"+selfId+" TEXT ,"+isStoredLocally+" INTEGER ,"+
+                 notifiedTime+" INTEGER ,"+type+" TEXT "+")";
+
          final String CREATE_TABLE_NOTIFICATION="CREATE TABLE "+NOTIFICATION+"("+"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +notificationId+" TEXT,"+ notificationType+" TEXT "+")";
 
@@ -251,13 +263,14 @@ public class LocalDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_LIKE_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWER_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWING_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_COMMUNITY_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_REPORT_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_REPORT_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_REPORT_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_QUESTION);
+        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_ANSWER);
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_IMAGE_POLL);
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_SURVEY);
+        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_FOLLOWER);
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION);
         Log.i("TAG", "table created :");
 
@@ -277,13 +290,14 @@ public class LocalDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+IMAGE_POLL_LIKE_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+FOLLOWER_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+FOLLOWING_TABLE);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+COMMUNITY_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+IMAGE_POLL_REPORT);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+SURVEY_REPORT);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+QUESTION_REPORT);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_QUESTION);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_ANSWER);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_IMAGE_POLL);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_SURVEY);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_FOLLOWER);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION);
         Log.i("TAG", "table upgrade ");
         onCreate(sqLiteDatabase);
@@ -607,13 +621,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
 
     }
-    public int clearQuestionRootQuestionModel(){
+    public void clearQuestionRootQuestionModel(){
         SQLiteDatabase database=this.getWritableDatabase();
 
         int numberOfRowDeleted=database.delete(QUESTION_ROOT_QUESTION_MODEL, null, null);
         if(database.isOpen())
             database.close();
-        return numberOfRowDeleted;
     }
     public ArrayList<Object> getQuestionRootQuestionModelList(){
         ArrayList<Object> list=new ArrayList<>();
@@ -944,7 +957,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
     public void removeSurveyParticipatedModel(String msurveyParticipatedId){
         SQLiteDatabase database=this.getWritableDatabase();
         database.delete(SURVEY_PARTICIPATED_TABLE, surveyParticipatedId+"+=?", new String[]{msurveyParticipatedId});
-//        database.execSQL("DELETE FROM "+SURVEY_PARTICIPATED_TABLE+" WHERE "+surveyParticipatedId+"=="+msurveyParticipatedId);
         if(database.isOpen())
             database.close();
     }
@@ -1073,6 +1085,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
 
     public  void insertFollowingModel(ArrayList<Following> list){
+        clearFollowingModel();
         SQLiteDatabase database=this.getWritableDatabase();
         if(list!=null){
             ContentValues values=new ContentValues();
@@ -1147,63 +1160,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
     }
 
-
-    public  void insertCommunityModel(ArrayList<Community> list){
-
-        SQLiteDatabase database=this.getWritableDatabase();
-        if(list!=null){
-            ContentValues values=new ContentValues();
-            for(int i=0;i<list.size();i++){
-                Community model=list.get(i);
-                values.put(communityId, model.getCommunityId());
-                values.put(communityName, model.getCommunityName());
-                values.put(communityImageUrl, model.getCommunityImageUrl());
-                values.put(communityMemberCount, model.getCommunityMemberCount());
-                database.insert(COMMUNITY_TABLE, null, values);
-                values.clear();
-            }
-            if(database.isOpen())
-                database.close();
-        }
-    }
-    public void clearCommunityModel(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(COMMUNITY_TABLE, null, null);
-        if(database.isOpen())
-            database.close();
-
-    }
-    public ArrayList<Community> getCommunityModelList(){
-        ArrayList<Community> list;
-        SQLiteDatabase database=this.getWritableDatabase();
-        String query="SELECT * FROM "+COMMUNITY_TABLE;
-        Cursor cursor=database.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            list=new ArrayList<>();
-            do {
-                String mcommunityId=cursor.getString(cursor.getColumnIndex(communityId));
-                String mcommunityName=cursor.getString(cursor.getColumnIndex(communityName));
-                String mcommunityImageUrl=cursor.getString(cursor.getColumnIndex(communityImageUrl));
-                int mcommunityMemberCount=cursor.getInt(cursor.getColumnIndex(communityMemberCount));
-                Community model=new Community(mcommunityId,mcommunityName, mcommunityImageUrl, mcommunityMemberCount);
-                list.add(model);
-            }while (cursor.moveToNext());
-            if(database.isOpen())
-                database.close();
-            if(!cursor.isClosed())
-                cursor.close();
-            return list;
-        }
-        return null;
-    }
-    public void removeCommunityModel(String mcommunityId){
-        SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(COMMUNITY_TABLE, communityId+"=?", new String[]{mcommunityId});
-        database.execSQL("DELETE FROM "+COMMUNITY_TABLE+" WHERE "+communityId+"=="+mcommunityId);
-        if(database.isOpen())
-            database.close();
-    }
-
     public void insertReportedImagePoll(String mimagePollId){
         SQLiteDatabase database=this.getWritableDatabase();
         ContentValues values=new ContentValues();
@@ -1214,12 +1170,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
         }
     }
-    public void clearReportedImagePoll(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(IMAGE_POLL_REPORT, null, null);
-        if(database.isOpen())
-            database.close();
-    }
+//    public void clearReportedImagePoll(){
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        database.delete(IMAGE_POLL_REPORT, null, null);
+//        if(database.isOpen())
+//            database.close();
+//    }
     public ArrayList<String> getImagePollReport(){
         ArrayList<String> reportedImagePollList;
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1252,12 +1208,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
         database.close();
     }
 }
-    public void clearReportedSurvey(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(SURVEY_REPORT, null, null);
-        if(database.isOpen())
-            database.close();
-    }
+//    public void clearReportedSurvey(){
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        database.delete(SURVEY_REPORT, null, null);
+//        if(database.isOpen())
+//            database.close();
+//    }
     public ArrayList<String> getReportedSurvey(){
         ArrayList<String> reportedSurveyList;
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1290,13 +1246,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
         }
     }
-    public void clearReportedQuestion(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(QUESTION_REPORT, null, null);
-        if(database.isOpen())
-            database.close();
-    }
-
+//    public void clearReportedQuestion(){
+//        SQLiteDatabase database=this.getWritableDatabase();
+//        database.delete(QUESTION_REPORT, null, null);
+//        if(database.isOpen())
+//            database.close();
+//    }
     public ArrayList<String> getReportedQuestion(){
         ArrayList<String> reportedQuestionList;
         SQLiteDatabase database=this.getWritableDatabase();
@@ -1340,12 +1295,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
 
     }
-    public QuestionModel getNotificationQuestion(String answerId){
+    private QuestionModel getNotificationQuestion(String answerId){
         SQLiteDatabase database=this.getWritableDatabase();
         Cursor cursor=database.query(NOTIFICATION_QUESTION, null,
                 this.answerId+"=?", new String[]{answerId},null,null,null,"1");
         if(cursor.moveToNext()){
-            do {
+
                 String mquestionId=cursor.getString(cursor.getColumnIndex(this.questionId));
                 String maskerId=cursor.getString(cursor.getColumnIndex(askerId));
                 String mlikerId=cursor.getString(cursor.getColumnIndex(likerId));
@@ -1364,7 +1319,88 @@ public class LocalDatabase extends SQLiteOpenHelper {
                     database.close();
                 return new QuestionModel(mlikerId, mlikerName,mlikerImageUrl,mlikerBio, maskerId,manswerId,manswererId,
                         mquestionId, mtype,mnotifiedTime,misStoredLocally);
-            }while (cursor.moveToNext());
+
+        }
+        if(database.isOpen()){
+            database.close();
+        }
+        if(!cursor.isClosed()){
+            cursor.close();
+        }
+        return null;
+    }
+
+    public void insertNotificationAnswer(AnswerModel  model){
+        SQLiteDatabase database=this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(askerId, model.getAskerId());
+        values.put(askerName, model.getAskerName());
+        values.put(askerBio, model.getAskerBio());
+        values.put(questionId, model.getQuestionId());
+        values.put(question, model.getQuestion());
+        values.put(timeOfAsking, model.getTimeOfAsking());
+        values.put(timeOfAnswering,model.getTimeOfAnswering());
+        values.put(answererId, model.getAnswererId());
+        values.put(answererName,model.getAnswererName());
+        values.put(answererBio, model.getAnswererBio());
+        values.put(answerId, model.getAnswerId());
+        values.put(answer, model.getAnswer());
+        values.put(imageAttached, model.isImageAttached()?1:0);
+        values.put(imageAttachedUrl, model.getImageAttachedUrl());
+        values.put(fontUsed, model.getFontUsed());
+        values.put(anonymous, model.isAnonymous()?1:0);
+        values.put(notifiedTime, model.getNotifiedTime());
+        values.put(answerLikeCount, model.getAnswerLikeCount());
+        values.put(type, model.getType());
+        values.put(isStoredLocally, model.isStoredLocally()?1:0);
+
+        if(database.isOpen()){
+            database.insert(NOTIFICATION_ANSWER, null, values);
+            values.clear();
+            database.close();
+        }
+
+    }
+    private AnswerModel getNotificationAnswer(String manswerId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        Cursor cursor=database.query(NOTIFICATION_ANSWER, null,
+                this.answerId+"=?", new String[]{manswerId},null,null,null,"1");
+        if(cursor.moveToNext()){
+
+                String askerId=cursor.getString(cursor.getColumnIndex(this.askerId));
+                String askerName=cursor.getString(cursor.getColumnIndex(this.askerName));
+                String askerBio=cursor.getString(cursor.getColumnIndex(this.askerBio));
+                String questionId=cursor.getString(cursor.getColumnIndex(this.questionId));
+                String question=cursor.getString(cursor.getColumnIndex(this.question));
+                long timeOfAsking=cursor.getLong(cursor.getColumnIndex(this.timeOfAsking));
+                long timeOfAnswering=cursor.getLong(cursor.getColumnIndex(this.timeOfAnswering));
+                String answererId=cursor.getString(cursor.getColumnIndex(this.answererId));
+                String answererName=cursor.getString(cursor.getColumnIndex(this.answererName));
+                String answererBio=cursor.getString(cursor.getColumnIndex(this.answererBio));
+                String answerId=cursor.getString(cursor.getColumnIndex(this.answerId));
+                String answer=cursor.getString(cursor.getColumnIndex(this.answer));
+                boolean imageAttached=cursor.getInt(cursor.getColumnIndex(this.imageAttached))==1;
+                String imageAttachedUrl=cursor.getString(cursor.getColumnIndex(this.imageAttachedUrl));
+                int fontUsed=cursor.getInt(cursor.getColumnIndex(this.fontUsed));
+                boolean anonymous=cursor.getInt(cursor.getColumnIndex(this.anonymous))==1;
+                long notifiedTime=cursor.getLong(cursor.getColumnIndex(this.notifiedTime));
+                int answerLikeCount=cursor.getInt(cursor.getColumnIndex(this.answerLikeCount));
+                String type=cursor.getString(cursor.getColumnIndex(this.type));
+                boolean isStoredLocally=cursor.getInt(cursor.getColumnIndex(this.isStoredLocally))==1;
+
+                AnswerModel model=new AnswerModel(askerId, askerName, askerBio,
+                        questionId, question, timeOfAsking, timeOfAnswering,
+                        answererId, answererName, answererBio, answerId, answer,
+                        imageAttached, imageAttachedUrl, fontUsed, anonymous,
+                        notifiedTime,answerLikeCount, type, isStoredLocally);
+
+                if(!cursor.isClosed()){
+                    cursor.close();
+                }
+                if(database.isOpen())
+                    database.close();
+                return model;
+
         }
         if(database.isOpen()){
             database.close();
@@ -1400,12 +1436,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
         }
     }
-    public ImagePollModel getNotificationImagePoll(String imagePollId){
+    private ImagePollModel getNotificationImagePoll(String imagePollId){
         SQLiteDatabase database=this.getWritableDatabase();
         Cursor cursor=database.query(NOTIFICATION_IMAGE_POLL, null,
                 this.imagePollId+"=?", new String[]{imagePollId},null,null,null,"1");
         if(cursor.moveToNext()){
-            do {
+
                 String mimagePollId=cursor.getString(cursor.getColumnIndex(this.imagePollId));
                 String mquestion=cursor.getString(cursor.getColumnIndex(this.question));
                 String maskerId=cursor.getString(cursor.getColumnIndex(this.askerId));
@@ -1432,8 +1468,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                         maskerBio, maskerImageUrlLow, mimage1Url, mimage2Url,
                         mimage1LikeNo, mimage2LikeNo, mcontainViolanceOrAdult,
                         mreported,mtype, mnotifiedTime,misStoredLocally);
-            }
-            while (cursor.moveToNext());
+
         }
         if(database.isOpen()){
             database.close();
@@ -1475,12 +1510,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
         }
     }
-    public SurveyModel getNotificationSurvey(String surveyId){
+    private SurveyModel getNotificationSurvey(String surveyId){
         SQLiteDatabase database=this.getWritableDatabase();
         Cursor cursor=database.query(NOTIFICATION_SURVEY, null,
                 this.surveyId+"=?", new String[]{surveyId},null,null,null,"1");
         if(cursor.moveToNext()){
-            do {
+
                 String msurveyId=cursor.getString(cursor.getColumnIndex(this.surveyId));
                 String maskerId=cursor.getString(cursor.getColumnIndex(this.askerId));
                 String maskerName=cursor.getString(cursor.getColumnIndex(this.askerName));
@@ -1514,8 +1549,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
                         moption1Value, moption2Value, moption3Value, moption4Value,
                         moption1Count, moption2Count, moption3Count, moption4Count,
                         moption1, moption2, moption3, moption4, mtype, mnotifiedTime,misStoredLocally);
-            }
-            while (cursor.moveToNext());
         }
         if(database.isOpen()){
             database.close();
@@ -1526,6 +1559,52 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return null;
     }
 
+    public void insertNotificationFollower(FollowerModel model){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(followerId, model.getFollowerId());
+        values.put(followerName, model.getFollowerName());
+        values.put(followerBio, model.getFollowerBio());
+        values.put(followerImageUrl, model.getFollowerImageUrl());
+        values.put(selfId, model.getSelfId());
+        values.put(isStoredLocally, model.isStoredLocally()?1:0);
+        values.put(notifiedTime, model.getNotifiedTime());
+        values.put(type, model.getType());
+
+        if(database.isOpen()){
+            database.insert(NOTIFICATION_FOLLOWER, null, values);
+            database.close();
+        }
+
+    }
+    private FollowerModel getNotificationFollower(String followerId){
+        SQLiteDatabase database=this.getWritableDatabase();
+        Cursor cursor=database.query(NOTIFICATION_FOLLOWER, null,
+                this.followerId+"=?", new String[]{followerId},null,null,null,"1");
+        if(cursor.moveToFirst()){
+                String mfollowerId=cursor.getString(cursor.getColumnIndex(this.followerId));
+                String mfollowerName=cursor.getString(cursor.getColumnIndex(this.followerName));
+                String mfollowerBio=cursor.getString(cursor.getColumnIndex(this.followerBio));
+                String mfollowerImageUrl=cursor.getString(cursor.getColumnIndex(this.followerImageUrl));
+                String mselfId=cursor.getString(cursor.getColumnIndex(this.selfId));
+                boolean misStoredLocally=cursor.getInt(cursor.getColumnIndex(this.isStoredLocally))==1;
+                long mnotifiedTime=cursor.getLong(cursor.getColumnIndex(this.notifiedTime));
+                String mtype=cursor.getString(cursor.getColumnIndex(this.type));
+
+                FollowerModel model=new FollowerModel(mfollowerId, mfollowerName,
+                        mfollowerBio, mfollowerImageUrl, mselfId, misStoredLocally,
+                        mnotifiedTime, mtype);
+
+                if(!cursor.isClosed()){
+                    cursor.close();
+                }
+                if(database.isOpen()){
+                    database.close();
+                }
+                return model;
+        }
+        return null;
+    }
     public void insertNotification(String mnotificationId,String mnotificationType){
         ContentValues values=new ContentValues();
         values.put(notificationId, mnotificationId);
@@ -1539,16 +1618,25 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
 
     }
-
-    public void clearNotification(String notificationId,String type){
+    private void clearNotification(String notificationId,String type){
 
         SQLiteDatabase database=this.getWritableDatabase();
-        if(type.equals(TYPE_QUESTION)){
-            database.delete(NOTIFICATION_QUESTION, answerId+"=?",new String[]{notificationId});
-        }else if(type.equals(TYPE_IMAGE_POLL)){
-            database.delete(NOTIFICATION_IMAGE_POLL, imagePollId+"=?",new String[]{notificationId});
-        }else if(type.equals(TYPE_SURVEY)){
-            database.delete(NOTIFICATION_SURVEY, surveyId+"=?",new String[]{notificationId});
+        switch (type){
+            case TYPE_QUESTION:
+                database.delete(NOTIFICATION_QUESTION, answerId+"=?",new String[]{notificationId});
+                break;
+            case TYPE_IMAGE_POLL:
+                database.delete(NOTIFICATION_IMAGE_POLL, imagePollId+"=?",new String[]{notificationId});
+                break;
+            case TYPE_SURVEY:
+                database.delete(NOTIFICATION_SURVEY, surveyId+"=?",new String[]{notificationId});
+                break;
+            case TYPE_ANSWER:
+                database.delete(NOTIFICATION_ANSWER, answerId+"=?", new String[]{notificationId});
+                break;
+            case TYPE_FOLLOWER:
+                database.delete(NOTIFICATION_FOLLOWER, followerId+"=?", new String[]{notificationId});
+                break;
         }
         database.delete(NOTIFICATION, "notificationId =?", new String[]{notificationId});
 
@@ -1556,7 +1644,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
             database.close();
         }
     }
-
     public ArrayList<Object> getNotification(){
         SQLiteDatabase database=this.getWritableDatabase();
         Cursor cursor=database.query(NOTIFICATION, new String[]{"ID",notificationId,notificationType}
@@ -1567,21 +1654,34 @@ public class LocalDatabase extends SQLiteOpenHelper {
             do{
                 String mnotificationId=cursor.getString(cursor.getColumnIndex(notificationId));
                 String mnotificationType=cursor.getString(cursor.getColumnIndex(notificationType));
-                Log.i("TAG", "notificationID :- "+mnotificationId);
+                Object o;
+                switch(mnotificationType){
 
-                if(mnotificationType.equals(TYPE_QUESTION)){
-                    Object o=getNotificationQuestion(mnotificationId);
-                    if(o!=null)
-                        list.add(o);
-                }else if(mnotificationType.equals(TYPE_IMAGE_POLL)){
-                    Object o=getNotificationImagePoll(mnotificationId);
-                    if(o!=null)
-                        list.add(o);
-
-                }else if(mnotificationType.equals(TYPE_SURVEY)){
-                    Object o=getNotificationSurvey(mnotificationId);
-                    if(o!=null)
-                        list.add(o);
+                    case TYPE_QUESTION:
+                         o=getNotificationQuestion(mnotificationId);
+                        if(o!=null)
+                            list.add(o);
+                        break;
+                    case TYPE_ANSWER:
+                        o=getNotificationAnswer(mnotificationId);
+                        if(o!=null)
+                            list.add(o);
+                        break;
+                    case TYPE_IMAGE_POLL:
+                        o=getNotificationImagePoll(mnotificationId);
+                        if(o!=null)
+                            list.add(o);
+                        break;
+                    case TYPE_FOLLOWER:
+                        o=getNotificationFollower(mnotificationId);
+                        if(o!=null)
+                            list.add(o);
+                        break;
+                    case TYPE_SURVEY:
+                        o=getNotificationSurvey(mnotificationId);
+                        if(o!=null)
+                            list.add(o);
+                        break;
                 }
             }while (cursor.moveToNext());
 
@@ -1594,7 +1694,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return null;
     }
 
-    public void clearAllTable(){
+      void clearAllTable(){
 
         SQLiteDatabase database=this.getWritableDatabase();
         database.delete(USER_INFO_TABLE, null, null);
@@ -1607,10 +1707,11 @@ public class LocalDatabase extends SQLiteOpenHelper {
         database.delete(IMAGE_POLL_LIKE_TABLE, null, null);
         database.delete(FOLLOWER_TABLE, null, null);
         database.delete(FOLLOWING_TABLE, null, null);
-        database.delete(COMMUNITY_TABLE, null, null);
         database.delete(NOTIFICATION_QUESTION, null, null);
+        database.delete(NOTIFICATION_ANSWER, null, null);
         database.delete(NOTIFICATION_IMAGE_POLL, null, null);
         database.delete(NOTIFICATION_SURVEY, null, null);
+        database.delete(NOTIFICATION_FOLLOWER, null, null);
         database.delete(NOTIFICATION, null, null);
         if(database.isOpen())
             database.close();

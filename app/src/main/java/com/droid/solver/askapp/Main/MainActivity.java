@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 }
                 fragment = new NotificationFragment();
+                showNotificationBadge(false);
                 loadFragment(fragment, NOTIFICATION);
                 return true;
             case R.id.account:
@@ -235,9 +236,12 @@ public class MainActivity extends AppCompatActivity implements
                     .orderByChild("notifiedTime").addValueEventListener(new ValueEventListener() {
                  @Override
                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                   Log.i("TAG", "children count :- "+dataSnapshot.getChildrenCount());
+                     if(dataSnapshot.getChildrenCount()>0){
+                         showNotificationBadge(true);
+                     }else{
+                         showNotificationBadge(false);
+                     }
                  }
-
                  @Override
                  public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -290,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     String lowProfilePicUrl = documentSnapshot.getString("profilePicUrlLow");
-//                    String highProfilePicUrl = documentSnapshot.getString("profilePicUrlHigh");
                     String userName = documentSnapshot.getString("userName");
                     SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
@@ -301,55 +304,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
-
-//    private String saveProfilePicBitmapToFile(Bitmap bitmap, boolean lowProfilePic, boolean highProfilePic) {
-//        //save profile pic to file and return image path
-//        File directory = getDir("image", Context.MODE_PRIVATE);
-//        File path = null;
-//        if (lowProfilePic) {
-//            path = new File(directory, "profile_pic_low_resolution");
-//        } else if (highProfilePic) {
-//            path = new File(directory, "profile_pic_high_resolution");
-//        }
-//        FileOutputStream fileOutputStream = null;
-//        try {
-//            if(path!=null)
-//            fileOutputStream = new FileOutputStream(path);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//            Toast.makeText(MainActivity.this, "Error occured", Toast.LENGTH_SHORT).show();
-//        }
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-//        try {
-//            if(fileOutputStream!=null)
-//            fileOutputStream.flush();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        } finally {
-//            try {
-//                if(fileOutputStream!=null)
-//                fileOutputStream.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                return null;
-//            }
-//
-//        }
-//        return directory.getAbsolutePath();
-//    }
-//
-//    private void saveProfileImagePathToSharedPreferences(String path, boolean lowProfilePic, boolean highProfilePic) {
-//
-//        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        if (lowProfilePic)
-//            editor.putString(Constants.LOW_PROFILE_PIC_PATH, path);
-//        else if (highProfilePic)
-//            editor.putString(Constants.HIGH_PROFILE_PIC_PATH, path);
-//        editor.apply();
-//    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager cmm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

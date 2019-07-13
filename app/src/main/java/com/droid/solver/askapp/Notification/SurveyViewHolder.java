@@ -27,17 +27,18 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
      void onCardClicked(Context context, SurveyModel model){
-         model.setStoredLocally(true);
-         dot.setVisibility(View.GONE);
-         saveNotificationToLocalDatabase(model.getSurveyId(), model.getType(), model, context);
          Intent intent=new Intent(context,NotificationSurveyActivity.class);
+         intent.putExtra("isStoredLocally", model.isStoredLocally());
+         if(!model.isStoredLocally()){
+             model.setStoredLocally(true);
+             saveNotificationToLocalDatabase(model.getSurveyId(), model.getType(), model, context);
+         }
+
          intent.putExtra("surveyId", model.getSurveyId());
          intent.putExtra("askerId", model.getAskerId());
          intent.putExtra("askerName", model.getAskerName());
          intent.putExtra("askerBio",model.getAskerBio());
-         intent.putExtra("askerImageUrlLow", model.getAskerImageUrlLow());
          intent.putExtra("question", model.getQuestion());
-         intent.putExtra("timeOfSurvey", model.getTimeOfSurvey());
          intent.putExtra("option1Value", model.getOption1Value());
          intent.putExtra("option2Value", model.getOption2Value());
          intent.putExtra("option3Value", model.getOption3Value());
@@ -50,8 +51,8 @@ public class SurveyViewHolder extends RecyclerView.ViewHolder {
          intent.putExtra("option2", model.isOption2());
          intent.putExtra("option3", model.isOption3());
          intent.putExtra("option4", model.isOption4());
-         intent.putExtra("type", model.getType());
-         intent.putExtra("notifiedTime", model.getNotifiedTime());
+         dot.setVisibility(View.GONE);
+
          context.startActivity(intent);
     }
     private void saveNotificationToLocalDatabase(final String notificationId,final String type,final SurveyModel model,final Context context){

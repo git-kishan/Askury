@@ -1,5 +1,6 @@
 package com.droid.solver.askapp;
 
+import android.animation.AnimatorInflater;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
     private ImageView nextButton;
     private String heading;
     private TextView hiUser;
+    private boolean isMaleClickedFirstTime=true,isFemaleClickedFirstTime=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
     }
 
     public void onClick(View view){
+
         switch (view.getId()){
             case R.id.male_card_view:
                 maleCardView.setAlpha(1);
@@ -59,6 +64,8 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
                 femaleCardView.setAlpha(0.8f);
                 femaleText.setAlpha(0.8f);
                 selection = MALE;
+                maleCardView.animate().scaleX(0.8f).scaleY(0.8f).setDuration(300).start();
+                femaleCardView.animate().scaleY(1f).scaleX(1f).setDuration(400).start();
                 break;
             case R.id.female_card_view:
                 maleCardView.setAlpha(0.8f);
@@ -66,6 +73,8 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
                 femaleCardView.setAlpha(1);
                 femaleText.setAlpha(1);
                 selection = FEMALE;
+                maleCardView.animate().scaleX(1f).scaleY(1f).setDuration(400).start();
+                femaleCardView.animate().scaleY(0.8f).scaleX(0.8f).setDuration(400).start();
                 break;
             case R.id.next_button:
                 SharedPreferences.Editor editor=preferences.edit();
