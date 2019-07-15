@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseUser user;
     private String uid;
     private FrameLayout progressFrameLayout;
+    private BottomNavigationItemView itemView;
+    private View notificationBadge;
     public static ArrayList<String> answerLikeList;
     public static HashMap<String,Integer> imagePollLikeMap;
     public static HashMap<String,Integer> surveyParticipatedMap;
@@ -109,11 +111,9 @@ public class MainActivity extends AppCompatActivity implements
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         messageFrameLayout=findViewById(R.id.message_frame_layout);
         progressFrameLayout=findViewById(R.id.progress_frame);
-
         progressFrameLayout.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment(), HOME);
-
         changeToolbarFont(toolbar);
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String lowProfilePicPath = preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
@@ -121,6 +121,14 @@ public class MainActivity extends AppCompatActivity implements
         if (lowProfilePicPath == null && highProfilePath == null) {
             getProfilePicUrlFromRemoteDatabase();
         }
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
+                itemView = (BottomNavigationItemView) menuView.getChildAt(2);
+                notificationBadge= LayoutInflater.from(MainActivity.this).inflate(R.layout.notification_badge_view,menuView,false);
+            }
+        });
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -178,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 }
                 fragment = new NotificationFragment();
-                showNotificationBadge(false);
+                itemView.removeView(notificationBadge);
                 loadFragment(fragment, NOTIFICATION);
                 return true;
             case R.id.account:
@@ -238,10 +246,19 @@ public class MainActivity extends AppCompatActivity implements
                     .orderByChild("notifiedTime").addValueEventListener(new ValueEventListener() {
                  @Override
                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                     try{
                      if(dataSnapshot.getChildrenCount()>0){
-                         showNotificationBadge(true);
+                         if(itemView.getParent()!=null){
+                             itemView.addView(notificationBadge);
+                         }
                      }else{
-                         showNotificationBadge(false);
+                         if(itemView.getParent()!=null){
+                             itemView.removeView(notificationBadge);
+                         }
+                     }
+
+                     }catch (IllegalStateException e){
+                         Log.i("TAG", "illegal state exception in main page");
                      }
                  }
                  @Override
@@ -249,24 +266,10 @@ public class MainActivity extends AppCompatActivity implements
 
                  }
              });
-
-
         }
 
     }
 
-    private void showNotificationBadge(boolean show){
-
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
-        BottomNavigationItemView itemView = (BottomNavigationItemView) menuView.getChildAt(2);
-        View notificationBadge= LayoutInflater.from(this).inflate(R.layout.notification_badge_view,menuView,false);
-        if(show){
-            itemView.addView(notificationBadge);
-        }else {
-            itemView.removeView(notificationBadge);
-        }
-
-    }
     public  void changeToolbarFont(Toolbar toolbar) {
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
@@ -531,4 +534,5 @@ public class MainActivity extends AppCompatActivity implements
     public String passUid() {
         return null;
     }
+
 }

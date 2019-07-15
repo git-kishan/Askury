@@ -11,7 +11,8 @@ public class ImagePollLike{
     // value will be optionSelected , 1 for first one and 2 for second one
 
     public ImagePollLike(){}
-   public  ImagePollLike(HashMap<String,Integer> imagePollMap){
+
+    public  ImagePollLike(HashMap<String,Integer> imagePollMap){
        this.imagePollMap=imagePollMap;
     }
 

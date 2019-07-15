@@ -2,7 +2,6 @@ package com.droid.solver.askapp.Notification;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +15,6 @@ import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,12 +23,11 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class NotificationFragment extends Fragment {
 
     private NotificationRecyclerAdapter adapter;
-    private List<Object> list;
+    private ArrayList<Object> list;
     private Query query;
     private ShimmerFrameLayout shimmer;
     private ImageView noNotificationImage;
@@ -77,8 +74,6 @@ public class NotificationFragment extends Fragment {
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
             for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-
-                Log.i("TAG", "children count :- "+dataSnapshot.getChildrenCount());
                 if(snapshot.hasChild("type")) {
 
                     String type = (String) snapshot.child("type").getValue();
@@ -113,10 +108,10 @@ public class NotificationFragment extends Fragment {
                 noNotificationImage.setVisibility(View.VISIBLE);
                 noNotificationText.setVisibility(View.VISIBLE);
             }
-            shimmer.setVisibility(View.GONE);
             adapter.notifyDataSetChanged();
+            shimmer.setVisibility(View.GONE);
             query.removeEventListener(listener);
-            query.addChildEventListener(childEventListener);
+//            query.addChildEventListener(childEventListener);
         }
 
         @Override
@@ -129,31 +124,31 @@ public class NotificationFragment extends Fragment {
         }
     };
 
-    private  ChildEventListener childEventListener=new ChildEventListener() {
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            Log.i("TAG", "Datasnapshot :- child added in childEventListener "+dataSnapshot);
-        }
-
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.i("TAG", "database error :- "+databaseError.getDetails());
-        }
-    };
+//    private  ChildEventListener childEventListener=new ChildEventListener() {
+//        @Override
+//        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//            Log.i("TAG", "Datasnapshot :- child added in childEventListener "+dataSnapshot);
+//        }
+//
+//        @Override
+//        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//        }
+//
+//        @Override
+//        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//        }
+//
+//        @Override
+//        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//        }
+//
+//        @Override
+//        public void onCancelled(@NonNull DatabaseError databaseError) {
+//            Log.i("TAG", "database error :- "+databaseError.getDetails());
+//        }
+//    };
 
 }

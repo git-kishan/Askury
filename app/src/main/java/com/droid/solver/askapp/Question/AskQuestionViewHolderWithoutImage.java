@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
     EmojiTextView question,timeAgo;
     CardView cardView;
     View view;
+    private Context context;
     public AskQuestionViewHolderWithoutImage(View itemView){
         super(itemView);
         cardView=itemView.findViewById(R.id.root_card_view);
@@ -37,7 +39,7 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
         tapToMore=itemView.findViewById(R.id.tap_to_more_textview);
         view=itemView.findViewById(R.id.view9);
     }
-     void onCardClicked(Context context,int i,RootQuestionModel model){
+     void onCardClicked(Context context, int i, RootQuestionModel model){
                     Intent intent=new Intent(context,AnswerActivity.class);
                     intent.putExtra("askerUid",model.getAskerId());
                     intent.putExtra("questionId",model.getQuestionId());
@@ -46,7 +48,7 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
                     intent.putExtra("askerName",model.getAskerName());
                     intent.putExtra("askerImageUrl", model.getAskerImageUrlLow());
                     intent.putExtra("askerBio", model.getAskerBio());
-                    intent.putStringArrayListExtra("questionType",new ArrayList<String>(model.getQuestionType()));
+                    intent.putStringArrayListExtra("questionType",new ArrayList<>(model.getQuestionType()));
                     model.setAnswered(true);
                     context.startActivity(intent);
     }
@@ -70,6 +72,9 @@ public class AskQuestionViewHolderWithoutImage extends RecyclerView.ViewHolder {
             context.startActivity(intent);
         }
     }
+
+
+
 
 
 }

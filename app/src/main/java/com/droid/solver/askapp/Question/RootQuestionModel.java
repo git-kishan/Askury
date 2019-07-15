@@ -28,6 +28,8 @@ public class RootQuestionModel {
     private int point;
     private boolean isAnswered;
 
+    private boolean likedByMe;
+
     public RootQuestionModel(){
 
     }
@@ -223,7 +225,16 @@ public class RootQuestionModel {
     public void setAnswered(boolean answered) {
         isAnswered = answered;
     }
+
+    public boolean isLikedByMe() {
+        return likedByMe;
+    }
+
+    public void setLikedByMe(boolean likedByMe) {
+        this.likedByMe = likedByMe;
+    }
 }
+
 
 
 

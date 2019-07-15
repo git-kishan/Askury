@@ -13,6 +13,7 @@ public class AskSurveyModel {
     private int languageSelectedIndex;
     private String surveyId;
     private long lastTimeNotified;
+    private int optionSelectedByMe;
 
 
     public AskSurveyModel(){}
@@ -266,6 +267,14 @@ public class AskSurveyModel {
 
     public long getLastTimeNotified() {
         return lastTimeNotified;
+    }
+
+    public int getOptionSelectedByMe() {
+        return optionSelectedByMe;
+    }
+
+    public void setOptionSelectedByMe(int optionSelectedByMe) {
+        this.optionSelectedByMe = optionSelectedByMe;
     }
 }
 

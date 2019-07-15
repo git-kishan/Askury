@@ -11,6 +11,9 @@ import androidx.emoji.widget.EmojiTextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,40 +93,68 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     }
     void onContainer1Clicked(final AskSurveyModel surveyModel){
-        animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-        animation.setDuration(500);
-        container1.startAnimation(animation);
+         new Handler().post(new Runnable() {
+             @Override
+             public void run() {
+                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                 animation.setDuration(500);
+                 container1.startAnimation(animation);
+                 changeColor(container1.getId());
+
+             }
+         });
         changeBackGroundOfLinearLayout();
-        changeColor(container1.getId());
         makeContainerUnClickable();
         updateSelectionInRemoteDatabase(1, surveyModel);
+
     }
     void onContainer2Clicked(final AskSurveyModel surveyModel){
-        animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-        animation.setDuration(500);
-        container2.startAnimation(animation);
+         new Handler().post(new Runnable() {
+             @Override
+             public void run() {
+                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                 animation.setDuration(500);
+                 container2.startAnimation(animation);
+                 changeColor(container2.getId());
+
+             }
+         });
         changeBackGroundOfLinearLayout();
-        changeColor(container2.getId());
         makeContainerUnClickable();
         updateSelectionInRemoteDatabase(2, surveyModel);
+
     }
     void onContainer3Clicked(final AskSurveyModel surveyModel){
-        animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-        animation.setDuration(500);
-        container3.startAnimation(animation);
+         new Handler().post(new Runnable() {
+             @Override
+             public void run() {
+                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                 animation.setDuration(500);
+                 container3.startAnimation(animation);
+                 changeColor(container3.getId());
+
+             }
+         });
         changeBackGroundOfLinearLayout();
-        changeColor(container3.getId());
         makeContainerUnClickable();
         updateSelectionInRemoteDatabase(3, surveyModel);
+
     }
     void onContainer4Clicked(final AskSurveyModel surveyModel){
-        animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-        animation.setDuration(500);
-        container4.startAnimation(animation);
+         new Handler().post(new Runnable() {
+             @Override
+             public void run() {
+                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                 animation.setDuration(500);
+                 container4.startAnimation(animation);
+                 changeColor(container4.getId());
+
+             }
+         });
         changeBackGroundOfLinearLayout();
-        changeColor(container4.getId());
         makeContainerUnClickable();
         updateSelectionInRemoteDatabase(4, surveyModel);
+
     }
 
     private void changeColor(int id){
@@ -183,15 +214,15 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-        private void makeContainerUnClickable(){
+    private void makeContainerUnClickable(){
           container1.setClickable(false);
           container2.setClickable(false);
           container3.setClickable(false);
           container4.setClickable(false);
 
         }
-        // 1 for first option,2 for second option,3 for third option, 4 for fourth option
-      private   void updateSelectionInRemoteDatabase(final int selection, final AskSurveyModel surveyModel){
+
+        private   void updateSelectionInRemoteDatabase(final int selection, final AskSurveyModel surveyModel){
 
             DocumentReference rootSurveyRef=firestoreRootRef.collection("survey").document(surveyModel.getSurveyId());
             DocumentReference askerSurveyRef=firestoreRootRef.collection("user").document(surveyModel.getAskerId())
@@ -200,7 +231,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
             DocumentReference userSurveyLikeRef=firestoreRootRef.collection("user").document(user.getUid())
                     .collection("surveyParticipated").document("participated");
 
-            Map<String,Object > surveyMap=new HashMap<>();
+            final Map<String,Object > surveyMap=new HashMap<>();
             if(selection==1) {
                 surveyMap.put("option1Count", FieldValue.increment(1));
                 surveyModel.setOption1Count(surveyModel.getOption1Count()+1);
@@ -235,6 +266,18 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
             batch.update(rootSurveyRef, surveyMap);
             batch.update(askerSurveyRef, surveyMap);
             batch.set(userSurveyLikeRef, selectionLikeMap, SetOptions.merge());
+
+          AsyncTask.execute(new Runnable() {
+              @Override
+              public void run() {
+                  if(getAdapterPosition()<=7) {
+                      surveyModel.setOptionSelectedByMe(1);
+                      LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                      database.updateSurveyAskedModel(surveyModel);
+                  }
+              }
+          });
+
 
             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

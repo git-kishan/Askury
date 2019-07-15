@@ -277,7 +277,11 @@ public class QuestionFragment extends Fragment {
     private void loadDataFromLocalDatabase(){
         if(getActivity()!=null){
             LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
-            list.addAll(database.getQuestionRootQuestionModelList());
+            ArrayList<Object> tempList=database.getQuestionRootQuestionModelList();
+            if(tempList!=null){
+                list.addAll(tempList);
+                tempList.clear();
+            }
             adapter.notifyDataSetChanged();
             swipeRefreshLayout.setRefreshing(false);
             swipeRefreshLayout.setEnabled(false);
@@ -285,5 +289,4 @@ public class QuestionFragment extends Fragment {
 
         }
     }
-
 }

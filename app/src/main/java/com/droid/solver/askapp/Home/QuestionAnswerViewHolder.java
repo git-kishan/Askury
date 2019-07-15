@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,7 +116,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-     void onLiked(final Context context, final RootQuestionModel model,ArrayList<String> answerLikeListFromLocalDatabase){
+     void onLiked(final Context context, final RootQuestionModel model){
 
         SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         final String likerId=user.getUid();
@@ -174,19 +176,25 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         int count=Integer.parseInt(likeCount.getText().toString())+1;
         likeCount.setText(String.valueOf(count));
 
-        LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-        database.insertSingleAnswerLikeModel(model.getRecentAnswerId());
-
-        if(answerLikeListFromLocalDatabase!=null) {
-            answerLikeListFromLocalDatabase.add(model.getRecentAnswerId());
-        }
+         model.setLikedByMe(true);
+         final LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         if(MainActivity.answerLikeList!=null) {
             MainActivity.answerLikeList.add(model.getRecentAnswerId());
         }
         model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount()+1);
+         database.insertSingleAnswerLikeModel(model.getRecentAnswerId());
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getAdapterPosition()<=7){
+                    database.updateRootQuestionModel(model);
+                }
+            }
+        });
 
     }
-     void onDisliked(final Context context, final RootQuestionModel model,ArrayList<String> answerLikeListFromLocalDatabase){
+     void onDisliked(final Context context, final RootQuestionModel model){
         Log.i("TAG", "disliked triggered");
         String likerId=user.getUid();
         Map<String ,Object> likeMap=new HashMap<>();
@@ -230,18 +238,26 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         int count=Integer.parseInt(likeCount.getText().toString())-1;
         likeCount.setText(String.valueOf(count));
 
-        LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+        final LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         database.removeAnswerLikeModel(model.getRecentAnswerId());
 
         if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
                 MainActivity.answerLikeList.remove(model.getRecentAnswerId());
 
-        }if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0){
-            answerLikeListFromLocalDatabase.remove(model.getRecentAnswerId());
-         }
-
+        }
+        model.setLikedByMe(false);
             model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount()-1);
+
+         AsyncTask.execute(new Runnable() {
+             @Override
+             public void run() {
+                 if(getAdapterPosition()<=7){
+                     database.updateRootQuestionModel(model);
+                 }
+             }
+         });
     }
+
 
      void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
         Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);

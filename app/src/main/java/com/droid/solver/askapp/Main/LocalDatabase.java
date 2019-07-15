@@ -1,11 +1,14 @@
 package com.droid.solver.askapp.Main;
 
+import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
+
+import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Notification.AnswerModel;
@@ -27,9 +30,8 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=21;
+    private static final int DATABASE_VERSION=25;
 
-    private final String USER_INFO_TABLE="user_info_table";
     private final String USER_QUESTION_MODEL="question_asked_table";
     private final String ROOT_QUESTION_MODEL="root_question_model";
     private final String QUESTION_ROOT_QUESTION_MODEL="question_root_question_model";
@@ -57,15 +59,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
     //user main document
     private final String userId="userId";
     private final String userName="userName";
-    private final String profilePicUrlLow="profilePicUrlLow";
-    private final String profilePicUrlHigh="profilePicUrlHigh";
-    private final String bio="about";
-    private final String point="point";
-    private final String country="country";
-    private final String language="language";
-    private final String interest="interest";
-    private final String followerCount="followerCount";
-    private final String followingCount="followingCount";
     private final String fontUsed="fontUsed";
 
     //question asked  document
@@ -95,6 +88,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String recentAnswerImageUrl="recentAnswerImageUrl";
     private final String answerCount="answerCount";
     private final String recentAnswerLikeCount="recentAnswerLikeCount";
+    private final String likedByMe="likedByMe";
 
 //home
     private final String TYPE_ROOT_QUESTION_MODEL="root_question_model";
@@ -130,6 +124,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String image1LikeNo="image1LikeNo";
     private final String image2LikeNo="image2LikeNo";
     private final String imagePollId="imagePollId";//primary key
+    private final String optionSelectedByMe="optionSelectedByMe";
 
     //answer like document
     private final String answerId="questionLikeId";
@@ -172,19 +167,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
     //create table string
 
-
-
-
     public LocalDatabase(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
-          final String CREATE_TABLE_USER_INFO_TABLE="CREATE TABLE "+USER_INFO_TABLE+"("+userId+" TEXT PRIMARY KEY ,"+
-                userName+" TEXT ,"+profilePicUrlLow+" TEXT ,"+profilePicUrlHigh+" TEXT ,"+bio+" TEXT ,"+point +" INTEGER ,"+country+" TEXT ,"+
-                language+" TEXT ,"+interest+" TEXT ,"+followerCount+" INTEGER ,"+followingCount+" INTEGER "+")";
 
           final String CREATE_TABLE_USER_QUESTION_MODEL="CREATE TABLE "+USER_QUESTION_MODEL+"("+questionId+" TEXT PRIMARY KEY,"+
                 question+" TEXT ,"+questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+userId+" TEXT ,"+userName+" TEXT ,"+userImageUrlLow+" TEXT ,"+
@@ -194,7 +182,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT PRIMARY KEY ,"+question+" TEXT ,"+
                 questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+recentAnswererId+" TEXT ,"+recentAnswererImageUrlLow+" TEXT ,"+recentAnswererName+" TEXT ,"
                 +recentAnswererBio+" TEXT ,"+recentAnswerId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
-                " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +" INTEGER"+")";
+                " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +" INTEGER ,"+likedByMe+" INTEGER "+")";
 
         final String CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL="CREATE TABLE "+QUESTION_ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
                 askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT PRIMARY KEY,"+question+" TEXT ,"+
@@ -206,11 +194,11 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+timeOfSurvey+" INTEGER ,"+option1+" INTEGER ,"+option2+" INTEGER ,"+
                 option3+" INTEGER ,"+option4+" INTEGER ,"+option1Value+" TEXT ,"+option2Value+" TEXT ,"+option3Value+" TEXT ,"+option4Value+" TEXT ,"+
                 option1Count+" INTEGER ,"+option2Count+" INTEGER ,"+option3Count+" INTEGER ,"+option4Count+" INTEGER ,"+languageSelectedIndex+" INTEGER ,"+
-                surveyId+" TEXT PRIMARY KEY "+")";
+                surveyId+" TEXT PRIMARY KEY ,"+optionSelectedByMe+" INTEGER "+")";
 
           final String CREATE_TABLE_IMAGE_POLL_TABLE="CREATE TABLE "+IMAGE_POLL_TABLE+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
                 askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+question+" TEXT ,"+image1Url+" TEXT ,"+image2Url+" TEXT ,"+timeOfPolling+" INTEGER ,"+
-                image1LikeNo+" INTEGER ,"+image2LikeNo+" INTEGER ,"+imagePollId+" TEXT PRIMARY KEY"+")";
+                image1LikeNo+" INTEGER ,"+image2LikeNo+" INTEGER ,"+imagePollId+" TEXT PRIMARY KEY,"+optionSelectedByMe+" INTEGER "+")";
 
           final String CREATE_TABLE_ANSWER_LIKE_TABLE="CREATE TABLE "+ANSWER_LIKE_TABLE+"("+answerId+" TEXT PRIMARY KEY"+")";
 
@@ -250,7 +238,8 @@ public class LocalDatabase extends SQLiteOpenHelper {
          final String CREATE_TABLE_NOTIFICATION_ANSWER="CREATE TABLE "+NOTIFICATION_ANSWER+"("+answerId+" TEXT PRIMARY KEY ,"+askerId+" TEXT ,"+
                  askerName+" TEXT ,"+askerBio+" TEXT ,"+questionId+" TEXT ,"+question+" TEXT ,"+timeOfAsking+" INTEGER ,"+timeOfAnswering+" INTEGER ,"+
                  answererId+" TEXT ,"+answererName+" TEXT ,"+answererBio+" TEXT ,"+answer+" TEXT ,"+imageAttached+" INTEGER ,"+imageAttachedUrl+" TEXT ,"+
-                 fontUsed+" INTEGER ,"+anonymous+" INTEGER ,"+notifiedTime+" INTEGER ,"+type+" TEXT ,"+isStoredLocally+" INTEGER "+")";
+                 fontUsed+" INTEGER ,"+anonymous+" INTEGER ,"+notifiedTime+" INTEGER ,"+type+" TEXT ,"+answerLikeCount+" INTEGER, "
+                 +isStoredLocally+" INTEGER "+")";
 
          final String CREATE_TABLE_NOTIFICATION_FOLLOWER="CREATE TABLE "+NOTIFICATION_FOLLOWER+"("+followerId+" TEXT PRIMARY KEY ,"+
                  followerName+" TEXT ,"+followerBio+" TEXT ,"+followerImageUrl+" TEXT ,"+selfId+" TEXT ,"+isStoredLocally+" INTEGER ,"+
@@ -261,7 +250,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
          final String CREATE_TABLE_HOME_OBJECT="CREATE TABLE "+HOME_OBJECT+"("+objectId +" TEXT PRIMARY KEY ,"+type +" TEXT "+")";
 
-        sqLiteDatabase.execSQL(CREATE_TABLE_USER_INFO_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_USER_QUESTION_MODEL);
         sqLiteDatabase.execSQL(CREATE_TABLE_ROOT_QUESTION_MODEL);
         sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL);
@@ -289,7 +277,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+USER_INFO_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+USER_QUESTION_MODEL);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ROOT_QUESTION_MODEL);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+QUESTION_ROOT_QUESTION_MODEL);
@@ -314,82 +301,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
 
     }
-
-     public  void insertUserInfoModel(UserInfoModel model){
-
-        SQLiteDatabase database=this.getWritableDatabase();
-        ContentValues values=new ContentValues();
-        if(database.isOpen()) {
-            values.put(userId, model.getUserId());
-            values.put(userName, model.getUserName());
-            values.put(askerImageUrlLow, model.getProfilePicUrlLow());
-            values.put(profilePicUrlHigh, model.getProfilePicUrlHigh());
-            values.put(bio, model.getBio());
-            values.put(point, model.getPoint());
-            values.put(country, model.getCountry());
-            String mlanguage = model.getLanguage();
-            values.put(language, mlanguage);
-
-            ArrayList<String> minterest = model.getInterest();
-            StringBuilder builder = new StringBuilder();
-
-            if(minterest!=null) {
-                for (int i = 0; i < minterest.size(); i++) {
-                    builder.append(minterest.get(i));
-                    builder.append("@");
-                }
-            }
-            values.put(interest, builder.toString());
-            values.put(followerCount, model.getFollowerCount());
-            values.put(followingCount, model.getFollowingCount());
-
-            database.insert(USER_INFO_TABLE, null, values);
-            values.clear();
-            database.close();
-        }
-
-    }
-     public void clearUserInfoModel(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(USER_INFO_TABLE, null, null);
-        if(database.isOpen())
-        database.close();
-    }
-     public UserInfoModel getUserInfoModel(){
-        SQLiteDatabase database=this.getWritableDatabase();
-        String query="SELECT * FROM "+USER_INFO_TABLE+" ORDER BY "+userId+" DESC  LIMIT 1";
-        Cursor cursor=database.rawQuery(query, null);
-        if(cursor!=null) {
-            cursor.moveToFirst();
-
-            String muserId = cursor.getString(cursor.getColumnIndex(userId));
-            String muserName = cursor.getString(cursor.getColumnIndex(userName));
-            String mprofilePicUrlLow = cursor.getString(cursor.getColumnIndex(profilePicUrlLow));
-            String mprofilePicUrlHigh = cursor.getString(cursor.getColumnIndex(profilePicUrlHigh));
-            String mbio = cursor.getString(cursor.getColumnIndex(bio));
-            int mpoint = cursor.getInt(cursor.getColumnIndex(point));
-            String mlanguage = cursor.getString(cursor.getColumnIndex(language));
-            String minterest = cursor.getString(cursor.getColumnIndex(interest));
-            int mfollowerCount = cursor.getInt(cursor.getColumnIndex(followerCount));
-            int mfollowingCount = cursor.getInt(cursor.getColumnIndex(followingCount));
-
-            String[] interestArr = minterest.split("@");
-            ArrayList<String> interestList = new ArrayList<>();
-            interestList = (ArrayList<String>) Arrays.asList(interestArr);
-
-            UserInfoModel infoModel = new UserInfoModel(
-                    muserId, muserName, mprofilePicUrlLow, mprofilePicUrlHigh, mbio,
-                    mpoint, country, mlanguage, interestList, mfollowerCount, mfollowingCount);
-
-            if (!cursor.isClosed())
-                cursor.close();
-            database.close();
-            return infoModel;
-        }
-        return null;
-
-    }
-
      public void insertUserQuestionModel(ArrayList<UserQuestionModel> list){
         SQLiteDatabase database=this.getWritableDatabase();
         if(database.isOpen()) {
@@ -616,6 +527,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
             values.put(answerCount, model.getAnswerCount());
             values.put(recentAnswerLikeCount, model.getRecentAnswerLikeCount());
             values.put(fontUsed, model.getFontUsed());
+            values.put(likedByMe, model.isLikedByMe()?1:0);
             if(database.isOpen()){
                 database.insert(ROOT_QUESTION_MODEL, null, values);
                 values.clear();
@@ -663,6 +575,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 int manswerCount=cursor.getInt(cursor.getColumnIndex(answerCount));
                 int mrecentAnswerLikeCount=cursor.getInt(cursor.getColumnIndex(recentAnswerLikeCount));
                 int mfontUsed=cursor.getInt(cursor.getColumnIndex(fontUsed));
+                boolean mlikedByMe=cursor.getInt(cursor.getColumnIndex(likedByMe))==1;
 
                 RootQuestionModel model=new RootQuestionModel(maskerId, maskerName, maskerImageUrlLow,
                         manonymous, maskerBio, mquestionId, mquestion, mquestionType,
@@ -670,6 +583,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                         mrecentAnswererName, mrecentAnswererBio, mrecentAnswerId,
                         mrecentAnswer, mrecentAnswerImageAtached, mrecentAnswerImageUrl,
                         manswerCount, mrecentAnswerLikeCount,mfontUsed);
+                model.setLikedByMe(mlikedByMe);
 
             if(database.isOpen())
                 database.close();
@@ -678,6 +592,48 @@ public class LocalDatabase extends SQLiteOpenHelper {
             return model;
         }
         return null;
+     }
+     public void updateRootQuestionModel(RootQuestionModel model){
+         if(model!=null) {
+             SQLiteDatabase database = this.getWritableDatabase();
+             ContentValues values = new ContentValues();
+             values.put(askerId, model.getAskerId());
+             values.put(askerName, model.getAskerName());
+             values.put(askerImageUrlLow, model.getAskerImageUrlLow());
+             int manonymous = model.isAnonymous() ? 1 : 0;
+             values.put(anonymous, manonymous);
+             values.put(askerBio, model.getAskerBio());
+             values.put(questionId, model.getQuestionId());
+             values.put(question, model.getQuestion());
+
+             StringBuilder builder = new StringBuilder();
+             if (model.getQuestionType() != null)
+                 for (int j = 0; j < model.getQuestionType().size(); j++) {
+                     builder.append(model.getQuestionType().get(j));
+                     builder.append("@");
+                 }
+             values.put(questionType, builder.toString());
+             values.put(timeOfAsking, model.getTimeOfAsking());
+             values.put(recentAnswererId, model.getRecentAnswererId());
+             values.put(recentAnswererImageUrlLow, model.getRecentAnswererImageUrlLow());
+             values.put(recentAnswererName, model.getRecentAnswererName());
+             values.put(recentAnswererBio, model.getRecentAnswererBio());
+             values.put(recentAnswererId, model.getRecentAnswerId());
+             values.put(recentAnswer, model.getRecentAnswer());
+             boolean temprecentAnswerImageAttached = model.isRecentAnswerImageAttached();
+             int mrecentAnswerImageAttached = temprecentAnswerImageAttached ? 1 : 0;
+             values.put(recentAnswerImageAttached, mrecentAnswerImageAttached);
+             values.put(recentAnswerImageUrl, model.getRecentAnswerImageUrl());
+             values.put(answerCount, model.getAnswerCount());
+             values.put(recentAnswerLikeCount, model.getRecentAnswerLikeCount());
+             values.put(fontUsed, model.getFontUsed());
+             if(database.isOpen()){
+                 database.update(ROOT_QUESTION_MODEL, values, questionId+"=?", new String[]{model.getQuestionId()});
+                 values.clear();
+                 database.close();
+
+             }
+         }
      }
 
      private void insertSurveyAskedModel(AskSurveyModel model){
@@ -717,6 +673,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
             values.put(option4Count, model.getOption4Count());
             values.put(languageSelectedIndex, model.getLanguageSelectedIndex());
             values.put(surveyId, model.getSurveyId());
+            values.put(optionSelectedByMe, model.getOptionSelectedByMe());
             if(database.isOpen()){
                 database.insert(SURVEY_ASKED_TABLE, null, values);
                 values.clear();
@@ -727,6 +684,53 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
 
 
+     }
+     public void updateSurveyAskedModel(AskSurveyModel model){
+         if(model!=null) {
+             SQLiteDatabase database = this.getWritableDatabase();
+             ContentValues values = new ContentValues();
+             values.put(askerId, model.getAskerId());
+             values.put(askerName, model.getAskerName());
+             values.put(askerImageUrlLow, model.getAskerImageUrlLow());
+             values.put(askerBio, model.getAskerBio());
+             values.put(question, model.getQuestion());
+             values.put(timeOfSurvey, model.getTimeOfSurvey());
+
+             boolean temp = model.isOption1();
+             int mtemp = temp ? 1 : 0;
+             values.put(option1, mtemp);
+
+             temp = model.isOption2();
+             mtemp = temp ? 1 : 0;
+             values.put(option2, mtemp);
+
+             temp = model.isOption3();
+             mtemp = temp ? 1 : 0;
+             values.put(option3, mtemp);
+
+             temp = model.isOption4();
+             mtemp = temp ? 1 : 0;
+             values.put(option4, mtemp);
+
+             values.put(option1Value, model.getOption1Value());
+             values.put(option2Value, model.getOption2Value());
+             values.put(option3Value, model.getOption3Value());
+             values.put(option4Value, model.getOption4Value());
+             values.put(option1Count, model.getOption1Count());
+             values.put(option2Count, model.getOption2Count());
+             values.put(option3Count, model.getOption3Count());
+             values.put(option4Count, model.getOption4Count());
+             values.put(languageSelectedIndex, model.getLanguageSelectedIndex());
+             values.put(surveyId, model.getSurveyId());
+             values.put(optionSelectedByMe, model.getOptionSelectedByMe());
+             if(database.isOpen()){
+                 database.update(SURVEY_ASKED_TABLE, values, surveyId+"=?",new String[]{model.getSurveyId()});
+                 values.clear();
+                 database.close();
+             }
+
+
+         }
      }
      private void clearSurveyAskedModel(){
         SQLiteDatabase database=this.getWritableDatabase();
@@ -762,12 +766,14 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 int moption4Count=cursor.getInt(cursor.getColumnIndex(option4Count));
                 int mlanguageSelectedIndex=cursor.getInt(cursor.getColumnIndex(languageSelectedIndex));
                 String msurveyId=cursor.getString(cursor.getColumnIndex(this.surveyId));
+                int moptionSelectedByMe=cursor.getInt(cursor.getColumnIndex(this.optionSelectedByMe));
 
                 AskSurveyModel model = new AskSurveyModel(maskerUid, maskerName, maskerImageUrl,maskerBio,
                         mquestion, mtimeOfSurvey, moption1,
                         moption2, moption3, moption4, moption1Value, moption2Value,
                         moption3Value, moption4Value, moption1Count, moption2Count,
                         moption3Count, moption4Count, mlanguageSelectedIndex, msurveyId);
+                model.setOptionSelectedByMe(moptionSelectedByMe);
 
             if(!cursor.isClosed())
                 cursor.close();
@@ -793,6 +799,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
             values.put(image1LikeNo, model.getImage1LikeNo());
             values.put(image2LikeNo, model.getImage2LikeNo());
             values.put(imagePollId, model.getImagePollId());
+            values.put(optionSelectedByMe, model.getOptionSelectedByMe());
             if(database.isOpen()){
                 database.insert(IMAGE_POLL_TABLE, null, values);
                 values.clear();
@@ -802,6 +809,31 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
         }
 
+     }
+     public void updateImagePollModel(AskImagePollModel model){
+         if(model!=null) {
+             SQLiteDatabase database = this.getWritableDatabase();
+             ContentValues values = new ContentValues();
+             values.put(askerId, model.getAskerId());
+             values.put(askerName, model.getAskerName());
+             values.put(askerImageUrlLow, model.getAskerImageUrlLow());
+             values.put(askerBio, model.getAskerBio());
+             values.put(question, model.getQuestion());
+             values.put(image1Url, model.getImage1Url());
+             values.put(image2Url, model.getImage2Url());
+             values.put(timeOfPolling, model.getTimeOfPolling());
+             values.put(image1LikeNo, model.getImage1LikeNo());
+             values.put(image2LikeNo, model.getImage2LikeNo());
+             values.put(imagePollId, model.getImagePollId());
+             values.put(optionSelectedByMe, model.getOptionSelectedByMe());
+             if(database.isOpen()){
+                 database.update(IMAGE_POLL_TABLE, values, imagePollId+"=?", new String[]{model.getImagePollId()});
+                 values.clear();
+                 database.close();
+             }
+
+
+         }
      }
      private void clearImagePollModel(){
         SQLiteDatabase database = this.getWritableDatabase();
@@ -825,10 +857,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 int mimage1LikeNo=cursor.getInt(cursor.getColumnIndex(image1LikeNo));
                 int mimage2LikeNo=cursor.getInt(cursor.getColumnIndex(image2LikeNo));
                 String mimagePollId=cursor.getString(cursor.getColumnIndex(this.imagePollId));
+                int moptionSelectedByMe=cursor.getInt(cursor.getColumnIndex(this.optionSelectedByMe));
 
                 AskImagePollModel model = new AskImagePollModel(
                 maskerId,maskerName ,maskerImageUrlLow ,maskerBio , mquestion,
-                        mimage1Url, mimage2Url, mtimeOfPolling, mimage1LikeNo, mimage2LikeNo,mimagePollId);
+                        mimage1Url, mimage2Url, mtimeOfPolling, mimage1LikeNo, mimage2LikeNo,mimagePollId,
+                        moptionSelectedByMe);
 
             if(database.isOpen())
                 database.close();
@@ -855,17 +889,24 @@ public class LocalDatabase extends SQLiteOpenHelper {
         clearImagePollModel();
         clearSurveyAskedModel();
         clearObject();
+        int k=0;
         if(list!=null){
            for(Object o:list){
+               if(k>=8){
+                   break;
+               }
                if(o instanceof RootQuestionModel){
                    insertRootQuestionModel((RootQuestionModel) o);
                    insertObject(((RootQuestionModel) o).getQuestionId(), TYPE_ROOT_QUESTION_MODEL);
+                   k++;
                }else if(o instanceof AskImagePollModel){
                    insertImagePollModel((AskImagePollModel) o);
                    insertObject(((AskImagePollModel) o).getImagePollId(), TYPE_IMAGE_POLL_MODEL);
+                   k++;
                }else if(o instanceof AskSurveyModel ){
                    insertSurveyAskedModel((AskSurveyModel) o);
                    insertObject(((AskSurveyModel) o).getSurveyId(), TYPE_SURVEY_POLL_MODEL);
+                   k++;
                }
            }
         }
@@ -1762,7 +1803,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
       void clearAllTable(){
 
         SQLiteDatabase database=this.getWritableDatabase();
-        database.delete(USER_INFO_TABLE, null, null);
         database.delete(USER_QUESTION_MODEL, null, null);
         database.delete(ROOT_QUESTION_MODEL, null, null);
         database.delete(SURVEY_ASKED_TABLE, null, null);

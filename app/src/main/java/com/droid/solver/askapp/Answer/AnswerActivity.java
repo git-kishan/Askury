@@ -3,6 +3,7 @@ package com.droid.solver.askapp.Answer;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -142,6 +143,11 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         firestoreRef=FirebaseFirestore.getInstance();
         rootStorageRef= FirebaseStorage.getInstance().getReference();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

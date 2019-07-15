@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -84,11 +85,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
         image1 = itemView.findViewById(R.id.imageView5);
         image2 = itemView.findViewById(R.id.imageView6);
         constraintLayout = itemView.findViewById(R.id.constraintLayout8);
-        constraintLayout.setVisibility(View.GONE);
-        leftRedHeart.setVisibility(View.GONE);
-        rightRedHeart.setVisibility(View.GONE);
-        leftWhiteHeart.setVisibility(View.GONE);
-        rightWhiteHeart.setVisibility(View.GONE);
     }
 
     void onImage1SingleClicked(final Context context, String imageUrl) {
@@ -127,6 +123,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
         batch.update(askerImagePollRef, rootImagePollMap);
         batch.set(userImagePollLikeRef, userImagePollLikeMap, SetOptions.merge());
 
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getAdapterPosition()<=7) {
+                    imagePollModel.setOptionSelectedByMe(1);
+                    imagePollModel.setImage1LikeNo(imagePollModel.getImage1LikeNo() + 1);
+                    LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                    database.updateImagePollModel(imagePollModel);
+                }
+            }
+        });
+
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -148,7 +156,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
         leftWhiteHeart.setVisibility(View.GONE);
         rightWhiteHeart.setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
-//        Animation animation2 = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scaleout);
         final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
         leftWhiteHeart.startAnimation(animation);
         constraintLayout.animate().translationY(40f).setDuration(0).start();
@@ -245,6 +252,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
         batch.update(askerImagePollRef, rootImagePollMap);
         batch.update(userImagePollLikeRef, userImagePollLikeMap);
 
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getAdapterPosition()<=7) {
+                    imagePollModel.setOptionSelectedByMe(2);
+                    imagePollModel.setImage1LikeNo(imagePollModel.getImage1LikeNo() + 1);
+                    LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                    database.updateImagePollModel(imagePollModel);
+                }
+            }
+        });
+
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -260,16 +279,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
             }
         });
 
-//        Log.i("TAG", "image 1 like no :- "+imagePollModel.getImage1LikeNo());
-//        Log.i("TAG", "image 2 like no - "+imagePollModel.getImage2LikeNo());
-
         constraintLayout.setVisibility(View.GONE);
         leftRedHeart.setVisibility(View.GONE);
         rightRedHeart.setVisibility(View.GONE);
         leftWhiteHeart.setVisibility(View.GONE);
         rightWhiteHeart.setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
-//        Animation animation2 = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scaleout);
         final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
         rightWhiteHeart.startAnimation(animation);
         constraintLayout.animate().translationY(40f).setDuration(0).start();
@@ -340,67 +355,64 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     }
 
-    void showLike(final Context context, final int image1LikeNo, int image2LikeNo, final int choice) {
+    void showLike(final Context context, final int image1LikeNo, final int image2LikeNo, final int choice) {
+                 final int totalLikeOfBothImages = image1LikeNo + image2LikeNo;//till now in addition to current user
+                 if(choice!=0&&totalLikeOfBothImages!=0) {
+                     leftWhiteHeart.setVisibility(View.GONE);
+                     rightWhiteHeart.setVisibility(View.GONE);
+                     image1.setLongClickable(false);
+                     image2.setLongClickable(false);
+                     constraintLayout.setVisibility(View.VISIBLE);
+                     constraintLayout.animate().translationY(0f).setDuration(50).start();
+                     Handler handler2 = new Handler();
+                     handler2.postDelayed(new Runnable() {
+                         @Override
+                         public void run() {
+                             int firstPercentage = image1LikeNo * 100 / (totalLikeOfBothImages);//white view1
+                             int secondPercentage = 100 - firstPercentage;//black white
+                             double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
+                             ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
+                             layoutParams.width = (int) view1Width;
+                             if (firstPercentage == 100) {
+                                 view2.setVisibility(View.GONE);
+                                 Log.i("TAG", "first percentage match parent");
+                             }
+                             view1.setLayoutParams(layoutParams);
+                             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                                     view2.getHeight());
+                             (params).setMarginStart((int) view1Width);
+                             text2.setLayoutParams(params);
+                             if(firstPercentage>secondPercentage){
+                                 view1.setBackground(context.getDrawable(R.drawable.view1_background));
+                                 view2.setBackground(context.getDrawable(R.drawable.view2_background));
+                                 text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                 text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                             }else {
+                                 view1.setBackground(context.getDrawable(R.drawable.view2_background));
+                                 view2.setBackground(context.getDrawable(R.drawable.view1_background));
+                                 text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                 text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                             }
+                             if (firstPercentage < 20)
+                                 text1.setVisibility(View.GONE);
+                             if (secondPercentage < 20)
+                                 text2.setVisibility(View.GONE);
+                             String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
+                             String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
+                             text1.setText(String.format("%s%%", mfirstPercentage));
+                             text2.setText(String.format("%s%%", msecondPercentage));
+                             if (choice == 1) {
+                                 leftRedHeart.setVisibility(View.VISIBLE);
 
-        if(choice!=0) {
-            final int totalLikeOfBothImages = image1LikeNo + image2LikeNo;//till now in addition to current user
-            leftWhiteHeart.setVisibility(View.GONE);
-            rightWhiteHeart.setVisibility(View.GONE);
-            image1.setLongClickable(false);
-            image2.setLongClickable(false);
-            constraintLayout.setVisibility(View.VISIBLE);
-            constraintLayout.animate().translationY(0f).setDuration(50).start();
-            Handler handler2 = new Handler();
-            handler2.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    int firstPercentage = image1LikeNo * 100 / (totalLikeOfBothImages);//white view1
-                    int secondPercentage = 100 - firstPercentage;//black white
-                    double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
-                    ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
-                    layoutParams.width = (int) view1Width;
-                    if (firstPercentage == 100) {
-                        view2.setVisibility(View.GONE);
-                        Log.i("TAG", "first percentage match parent");
-                    }
-                    view1.setLayoutParams(layoutParams);
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
-                            view2.getHeight());
-                    (params).setMarginStart((int) view1Width);
-                    text2.setLayoutParams(params);
-                    if(firstPercentage>secondPercentage){
-                        view1.setBackground(context.getDrawable(R.drawable.view1_background));
-                        view2.setBackground(context.getDrawable(R.drawable.view2_background));
-                        text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                        text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                    }else {
-                        view1.setBackground(context.getDrawable(R.drawable.view2_background));
-                        view2.setBackground(context.getDrawable(R.drawable.view1_background));
-                        text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                        text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                    }
-                    if (firstPercentage < 20)
-                        text1.setVisibility(View.GONE);
-                    if (secondPercentage < 20)
-                        text2.setVisibility(View.GONE);
-                    String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
-                    String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
-                    text1.setText(String.format("%s%%", mfirstPercentage));
-                    text2.setText(String.format("%s%%", msecondPercentage));
-                    if (choice == 1) {
-                        leftRedHeart.setVisibility(View.VISIBLE);
+                             } else if (choice == 2) {
+                                 rightRedHeart.setVisibility(View.VISIBLE);
+                             }
+                             image1.setLongClickable(false);
+                             image2.setLongClickable(false);
+                         }
+                     }, 0);
 
-                    } else if (choice == 2) {
-                        rightRedHeart.setVisibility(View.VISIBLE);
-                    }
-                    image1.setLongClickable(false);
-                    image2.setLongClickable(false);
-                }
-            }, 0);
-
-        }
-
-
+                 }
     }
 
     void onProfileImageClicked(final Context context,final AskImagePollModel imagePollModel){

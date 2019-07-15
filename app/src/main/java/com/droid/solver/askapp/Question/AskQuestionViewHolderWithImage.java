@@ -30,6 +30,4 @@ public class AskQuestionViewHolderWithImage extends RecyclerView.ViewHolder{
         timeAgo=itemView.findViewById(R.id.time_ago_textview);
 
     }
-
-
 }

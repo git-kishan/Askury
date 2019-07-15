@@ -5,14 +5,12 @@ import android.graphics.Typeface;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.Constants;
-import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
@@ -22,7 +20,6 @@ import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private Context context;
@@ -35,22 +32,15 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private static final int LOADING=4;
     static final String FOLLOW="Follow";
     static final String UNFOLLOW="Unfollow";
-    private ArrayList<String> answerLikeListFromLocalDatabase;
-    private HashMap<String,Integer> imagePollLikeMapFromLocalDatabase;
-    private HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase;
     private ArrayList<String> followingIdListFromLocalDatabase;
     private  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
 
-    HomeRecyclerViewAdapter(Context context, ArrayList<Object> list,ArrayList<String> answerLikeListFromLocalDatabase,
-                            HashMap<String,Integer> imagePollLikeMapFromLocalDatabase,HashMap<String,Integer> surveyParticipatedMapFromLocalDatabase,
+    HomeRecyclerViewAdapter(Context context, ArrayList<Object> list,
                             ArrayList<String> followingId){
         this.context=context;
         this.list=list;
         if(context!=null) {
             inflater = LayoutInflater.from(context);
-            this.answerLikeListFromLocalDatabase=answerLikeListFromLocalDatabase;
-            this.imagePollLikeMapFromLocalDatabase=imagePollLikeMapFromLocalDatabase;
-            this.surveyParticipatedMapFromLocalDatabase=surveyParticipatedMapFromLocalDatabase;
             this.followingIdListFromLocalDatabase=followingId;
         }
     }
@@ -82,46 +72,36 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
                 viewHolder=new LoadingViewHolderVertically(view);
                 break;
-                    default:
-                        view=inflater.inflate(R.layout.loading, viewGroup,false);
-                        viewHolder=new LoadingViewHolderVertically(view);
+                default:
+                    view=inflater.inflate(R.layout.loading, viewGroup,false);
+                    viewHolder=new LoadingViewHolderVertically(view);
                 break;
         }
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int i) {
-        if(holder.getItemViewType()==QUESTION_ANSWER&&holder instanceof QuestionAnswerViewHolder){
-            if(list.get(i) instanceof RootQuestionModel){
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int i) {
+        if(holder.getItemViewType()==QUESTION_ANSWER&&holder instanceof QuestionAnswerViewHolder && list.get(i) instanceof RootQuestionModel){
 
-                String question=((RootQuestionModel) list.get(i)).getQuestion();
-                boolean anonymous=((RootQuestionModel) list.get(i)).isAnonymous();
-                String answer=((RootQuestionModel) list.get(i)).getRecentAnswer();
-                String askerBio=((RootQuestionModel) list.get(i)).getAskerBio();
-                String askerName=((RootQuestionModel) list.get(i)).getAskerName();
-                String recentAnswererName=((RootQuestionModel) list.get(i)).getRecentAnswererName();
-                String recentAnswerId=((RootQuestionModel) list.get(i)).getRecentAnswerId();
-                int likeCount=((RootQuestionModel) list.get(i)).getRecentAnswerLikeCount();
-                int answerCount=((RootQuestionModel) list.get(i)).getAnswerCount();
-                int fontUsed=((RootQuestionModel) list.get(i)).getFontUsed();
+                RootQuestionModel model=(RootQuestionModel) list.get(i);
 
-                if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
-                    if(MainActivity.answerLikeList.contains(recentAnswerId)){
-                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
-                    }else {
-                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
-                    }
-                }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0) {
-                    if(answerLikeListFromLocalDatabase.contains(recentAnswerId)){
-                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
-                    }else {
-                        ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
-                    }
-                }
+                String question=model.getQuestion();
+                boolean anonymous=model.isAnonymous();
+                String answer=model.getRecentAnswer();
+                String askerBio=model.getAskerBio();
+                String askerName=model.getAskerName();
+                String recentAnswererName=model.getRecentAnswererName();
+                int likeCount=model.getRecentAnswerLikeCount();
+                int answerCount=model.getAnswerCount();
+                int fontUsed=model.getFontUsed();
+                long timeOfAsking=model.getTimeOfAsking();
 
+                if(model.isLikedByMe())
+                    ((QuestionAnswerViewHolder) holder).likeButton.setLiked(true);
+                else
+                    ((QuestionAnswerViewHolder) holder).likeButton.setLiked(false);
 
-                long timeOfAsking=((RootQuestionModel) list.get(i)).getTimeOfAsking();
                 timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
                 String timeAgo=getTime(timeOfAsking, System.currentTimeMillis());
 
@@ -130,9 +110,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     ((QuestionAnswerViewHolder) holder).askerName.setText(context.getString(R.string.some_one_wants_to_know));
                     ((QuestionAnswerViewHolder) holder).askerBio.setText("");
                 }
-
                 else {
-                    String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getAskerId()+Constants.SMALL_THUMBNAIL;
+                    String url = Constants.PROFILE_PICTURE + "/" + model.getAskerId()+Constants.SMALL_THUMBNAIL;
                     StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
                     GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
                             .into(((QuestionAnswerViewHolder) holder).askerImageView);
@@ -146,7 +125,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 ((QuestionAnswerViewHolder) holder).question.setText(question);
 
 
-                String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
+                String url = Constants.PROFILE_PICTURE + "/" +model.getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
                 StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
                 GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
                         .into(((QuestionAnswerViewHolder) holder).answererImageView);
@@ -169,46 +148,36 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 handleClickListenerOfQuestionAnswer((QuestionAnswerViewHolder) holder, (RootQuestionModel)list.get(i));
 
-            }
 
-        }else if(holder.getItemViewType()==QUESTION_ANSWER_WITH_IMAGE&&holder instanceof QuestionAnswerWithImageViewHolder){
 
-            if(list.get(i) instanceof RootQuestionModel) {
+        }else if(holder.getItemViewType()==QUESTION_ANSWER_WITH_IMAGE&&holder instanceof QuestionAnswerWithImageViewHolder
+                 && list.get(i) instanceof RootQuestionModel){
 
-                String question = ((RootQuestionModel) list.get(i)).getQuestion();
-                boolean anonymous = ((RootQuestionModel) list.get(i)).isAnonymous();
-                String answer = ((RootQuestionModel) list.get(i)).getRecentAnswer();
-                String answerImageUrl = ((RootQuestionModel) list.get(i)).getRecentAnswerImageUrl();
-                String askerBio = ((RootQuestionModel) list.get(i)).getAskerBio();
-                String askerName = ((RootQuestionModel) list.get(i)).getAskerName();
-                String recentAnswerId=((RootQuestionModel) list.get(i)).getRecentAnswerId();
-                String recentAnswererName = ((RootQuestionModel) list.get(i)).getRecentAnswererName();
-                int likeCount = ((RootQuestionModel) list.get(i)).getRecentAnswerLikeCount();
-                int answerCount = ((RootQuestionModel) list.get(i)).getAnswerCount();
-                long timeOfAsking = ((RootQuestionModel) list.get(i)).getTimeOfAsking();
-                int fontUsed=((RootQuestionModel) list.get(i)).getFontUsed();
+                RootQuestionModel model = (RootQuestionModel) list.get(i);
+
+                String question = model.getQuestion();
+                boolean anonymous = model.isAnonymous();
+                String answer = model.getRecentAnswer();
+                String answerImageUrl =model.getRecentAnswerImageUrl();
+                String askerBio = model.getAskerBio();
+                String askerName =model.getAskerName();
+                String recentAnswererName =model.getRecentAnswererName();
+                int likeCount = model.getRecentAnswerLikeCount();
+                int answerCount = model.getAnswerCount();
+                long timeOfAsking =model.getTimeOfAsking();
+                int fontUsed=model.getFontUsed();
 
                 timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
                 String timeAgo = getTime(timeOfAsking, System.currentTimeMillis());
 
-                if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
-                    if(MainActivity.answerLikeList.contains(recentAnswerId)){
-                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
-                    }else {
-                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
-                    }
-                }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0){
-                    if(answerLikeListFromLocalDatabase.contains(recentAnswerId)){
-                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
-                    }else {
-                        ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
-                    }
-                }
+                if(model.isLikedByMe())
+                    ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(true);
+                else
+                    ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
 
                 if (answerImageUrl != null)
                     GlideApp.with(context).load(answerImageUrl)
                     .into(((QuestionAnswerWithImageViewHolder) holder).answerImageView);
-
 
                 if (anonymous) {
                     ((QuestionAnswerWithImageViewHolder) holder).askerImageView.setImageDrawable(context.getDrawable(R.drawable.ic_placeholder));
@@ -216,7 +185,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText("");
                 } else {
 
-                    String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getAskerId()+Constants.SMALL_THUMBNAIL;
+                    String url = Constants.PROFILE_PICTURE + "/" + model.getAskerId()+Constants.SMALL_THUMBNAIL;
                     StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
                     GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
                             into(((QuestionAnswerWithImageViewHolder)
@@ -230,8 +199,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
                 ((QuestionAnswerWithImageViewHolder) holder).question.setText(question);
 
-
-                String url = Constants.PROFILE_PICTURE + "/" + ((RootQuestionModel) list.get(i)).getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
+                String url = Constants.PROFILE_PICTURE+"/"+model.getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
                 StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
                 GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).
                         into(((QuestionAnswerWithImageViewHolder) holder).answererImageView);
@@ -253,8 +221,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 if(likeCount==0)
                     ((QuestionAnswerWithImageViewHolder) holder).likeButton.setLiked(false);
 
-                handleClickListenerOfQuestionAnswerWithImage((QuestionAnswerWithImageViewHolder)holder,(RootQuestionModel)list.get(i));
-            }
+                handleClickListenerOfQuestionAnswerWithImage((QuestionAnswerWithImageViewHolder)holder,model);
+
 
         }
 
@@ -262,54 +230,23 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
 
             if(list.get(i) instanceof AskImagePollModel){
 
-                String askerId=((AskImagePollModel) list.get(i)).getAskerId();
-                String askerName=((AskImagePollModel) list.get(i)).getAskerName();
-                String askerBio=((AskImagePollModel) list.get(i)).getAskerBio();
-                String askerQuestion=((AskImagePollModel) list.get(i)).getQuestion();
-                String image1Url=((AskImagePollModel) list.get(i)).getImage1Url();
-                String image2Url=((AskImagePollModel) list.get(i)).getImage2Url();
-                long timeOfPolling=((AskImagePollModel) list.get(i)).getTimeOfPolling();
-                int image1LikeNo=((AskImagePollModel) list.get(i)).getImage1LikeNo();
-                int image2LikeNo=((AskImagePollModel) list.get(i)).getImage2LikeNo();
-                String imagePollId=((AskImagePollModel) list.get(i)).getImagePollId();
+                final AskImagePollModel model=(AskImagePollModel) list.get(i);
+
+                String askerId=model.getAskerId();
+                String askerName=model.getAskerName();
+                String askerBio=model.getAskerBio();
+                String askerQuestion=model.getQuestion();
+                String image1Url=model.getImage1Url();
+                String image2Url=model.getImage2Url();
+                long timeOfPolling=model.getTimeOfPolling();
+                final int image1LikeNo=model.getImage1LikeNo();
+                final int image2LikeNo=model.getImage2LikeNo();
                 ((ImagePollViewHolder) holder).image1.setTransitionName("image1"+i);
                 ((ImagePollViewHolder) holder).image2.setTransitionName("image2"+i);
-
-                    if(MainActivity.imagePollLikeMap!=null&&MainActivity.imagePollLikeMap.size()>0)
-                    {
-                        if (MainActivity.imagePollLikeMap.containsKey(imagePollId)) {
-                            try {
-                                Integer i1 = MainActivity.imagePollLikeMap.get(imagePollId);
-                                String s;
-                                int i2=0;
-                                if(i1!=null){
-                                     s=i1.toString();
-                                     i2=Integer.parseInt(s);
-                                }
-                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo, i2);
-                            }catch (NullPointerException e){
-                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
-                                        image2LikeNo, 0);
-                            }
-                        }
-
-                    }else if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
-                        if(imagePollLikeMapFromLocalDatabase.containsKey(imagePollId)){
-                            try {
-                                Integer i1=imagePollLikeMapFromLocalDatabase.get(imagePollId);
-                                String s;
-                                int i2=0;
-                                if(i1!=null){
-                                    s=i1.toString();
-                                    i2=Integer.parseInt(s);
-                                }
-                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo, image2LikeNo,i2);
-                            }catch (NullPointerException e){
-                                ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
-                                        image2LikeNo, 0);
-                            }
-                        }
-                    }
+                if(model.getOptionSelectedByMe()!=0){
+                    ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
+                            image2LikeNo, model.getOptionSelectedByMe());
+                }
 
                 askerName=askerName==null?"Unknown":askerName;
                 askerBio=askerBio==null?"":askerBio;
@@ -336,62 +273,32 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).into(((ImagePollViewHolder) holder).profileImageView);
                 ((ImagePollViewHolder) holder).timeAgo.setText(timeAgo);
 
-                handleClickListenerOfImagePoll((ImagePollViewHolder) holder, (AskImagePollModel) list.get(i));
+                handleClickListenerOfImagePoll((ImagePollViewHolder) holder,model);
 
             }
 
         }
         else if(holder.getItemViewType()==SURVEY&&holder instanceof SurveyViewHolder){
             if(list.get(i) instanceof AskSurveyModel){
-                handleClickListenerOfSurvey((SurveyViewHolder)holder, (AskSurveyModel) list.get(i));
+                final AskSurveyModel model =(AskSurveyModel)list.get(i);
+                handleClickListenerOfSurvey((SurveyViewHolder)holder, model);
+                String askerId=model.getAskerId();
+                String askerName=model.getAskerName();
+                String askerBio=model.getAskerBio();
+                String question=model.getQuestion();
+                final boolean option1=model.isOption1();
+                final boolean option2=model.isOption2();
+                final boolean option3=model.isOption3();
+                final boolean option4=model.isOption4();
+                final String option1Value=model.getOption1Value();
+                final String option2Value=model.getOption2Value();
+                final String option3Value=model.getOption3Value();
+                final String option4Value=model.getOption4Value();
 
-                String askerId=((AskSurveyModel) list.get(i)).getAskerId();
-                String askerName=((AskSurveyModel) list.get(i)).getAskerName();
-                String askerBio=((AskSurveyModel) list.get(i)).getAskerBio();
-                String question=((AskSurveyModel) list.get(i)).getQuestion();
-                boolean option1=((AskSurveyModel) list.get(i)).isOption1();
-                boolean option2=((AskSurveyModel) list.get(i)).isOption2();
-                boolean option3=((AskSurveyModel) list.get(i)).isOption3();
-                boolean option4=((AskSurveyModel) list.get(i)).isOption4();
-                String option1Value=((AskSurveyModel) list.get(i)).getOption1Value();
-                String option2Value=((AskSurveyModel) list.get(i)).getOption2Value();
-                String option3Value=((AskSurveyModel) list.get(i)).getOption3Value();
-                String option4Value=((AskSurveyModel) list.get(i)).getOption4Value();
-                String surveyId=((AskSurveyModel) list.get(i)).getSurveyId();
+                if(model.getOptionSelectedByMe()!=0){
+                    ((SurveyViewHolder) holder).showSelection(model.getOptionSelectedByMe(), model);
 
-                if(MainActivity.surveyParticipatedMap!=null&&MainActivity.surveyParticipatedMap.size()>0){
-                    try {
-                        if (MainActivity.surveyParticipatedMap.containsKey(surveyId)) {
-                            Integer i1=MainActivity.surveyParticipatedMap.get(surveyId);
-                            String s;
-                            int i2=0;
-                            if(i1!=null){
-                                s=i1.toString();
-                                i2=Integer.parseInt(s);
-                            }
-                            ((SurveyViewHolder) holder).showSelection(i2,(AskSurveyModel) list.get(i));
-                        }
-                    }catch (NullPointerException e){
-                        ((SurveyViewHolder) holder).showSelection(0, (AskSurveyModel)list.get(i));
-
-                    }
-                }else if(surveyParticipatedMapFromLocalDatabase!=null&&surveyParticipatedMapFromLocalDatabase.size()>0){
-                    try {
-                        if (surveyParticipatedMapFromLocalDatabase.containsKey(surveyId)) {
-                            Integer i1=surveyParticipatedMapFromLocalDatabase.get(surveyId);
-                            String s;
-                            int i2=0;
-                            if(i1!=null){
-                                s=i1.toString();
-                                i2=Integer.parseInt(s);
-                            }
-                            ((SurveyViewHolder) holder).showSelection(i2, (AskSurveyModel) list.get(i));
-                        }
-                    }catch (NullPointerException e){
-                        Log.i("TAG", "exeption occurs in suvey unboxing in recycler adapter ;");
-                    }
-                }else
-
+                }
                 askerName=askerName==null?"Someone":askerName;
                 askerBio=askerBio==null?"":askerBio;
                 question=question==null?"":question;
@@ -420,8 +327,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     ((SurveyViewHolder) holder).option4TextView.setText(option4Value);
                     ((SurveyViewHolder) holder).container4.setVisibility(View.VISIBLE);
                 }
-
-
             }
         }
 
@@ -621,12 +526,12 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                holder.onLiked(context, rootQuestionModel,answerLikeListFromLocalDatabase);
+                holder.onLiked(context, rootQuestionModel);
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                holder.onDisliked(context, rootQuestionModel,answerLikeListFromLocalDatabase);
+                holder.onDisliked(context, rootQuestionModel);
             }
         });
 
@@ -691,13 +596,12 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         holder.likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                holder.onLiked(context, rootQuestionModel,
-                        answerLikeListFromLocalDatabase);
+                holder.onLiked(context, rootQuestionModel);
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                holder.onDisliked(context, rootQuestionModel,answerLikeListFromLocalDatabase);
+                holder.onDisliked(context, rootQuestionModel);
             }
         });
         holder.numberOfAnswerImageView.setOnClickListener(new View.OnClickListener() {

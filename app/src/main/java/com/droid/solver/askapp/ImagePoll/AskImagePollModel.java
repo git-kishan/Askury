@@ -18,16 +18,13 @@ public class AskImagePollModel {
     private boolean reported;
     private boolean containVioloanceOrAdult;
     private long lastTimeNotified;
-
-    public static final int SPAM=0;
-    public static final int SELF_PROMOTION=1;
-    public static final int PROMOTE_NUDITY_OR_PORNOGRAPHY=2;
-    public static final int NOT_LIKE_IMAGEPOLL=3;
+    private int optionSelectedByMe;
 
 
     public AskImagePollModel(){
 
     }
+
     public AskImagePollModel(String askerId,
                              String askerName,
                              String askerImageUrlLow,
@@ -38,7 +35,8 @@ public class AskImagePollModel {
                              long timeOfPolling,
                              int image1LikeNo,
                              int image2LikeNo,
-                             String imagePollId
+                             String imagePollId,
+                             int optionSelectedByMe
                              ){
         this.askerId=askerId;
         this.askerName=askerName;
@@ -52,6 +50,7 @@ public class AskImagePollModel {
         this.image1LikeNo=image1LikeNo;
         this.image2LikeNo=image2LikeNo;
         this.imagePollId=imagePollId;
+        this.optionSelectedByMe=optionSelectedByMe;
 
     }
     public AskImagePollModel(String askerId,
@@ -141,6 +140,22 @@ public class AskImagePollModel {
 
     public long getLastTimeNotified() {
         return lastTimeNotified;
+    }
+
+    public void setImage1LikeNo(int image1LikeNo) {
+        this.image1LikeNo = image1LikeNo;
+    }
+
+    public void setImage2LikeNo(int image2LikeNo) {
+        this.image2LikeNo = image2LikeNo;
+    }
+
+    public int getOptionSelectedByMe() {
+        return optionSelectedByMe;
+    }
+
+    public void setOptionSelectedByMe(int optionSelectedByMe) {
+        this.optionSelectedByMe = optionSelectedByMe;
     }
 }
 
