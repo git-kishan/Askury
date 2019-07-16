@@ -555,7 +555,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             UserAnswerModel userAnswerModel=new UserAnswerModel(
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
-                    System.currentTimeMillis(), answerId, uid,false, answer,
+                    System.currentTimeMillis(), answerId, uid,answererName,false, answer,
                     imageAttached, answerImageUrl, fontSelected, 0,anonymous);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(
@@ -631,7 +631,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             UserAnswerModel userAnswerModel=new UserAnswerModel(
                     askerUid, askerName, askerImageUrl, askerBio,
                     questionId, question, questionType, timeOfAsking,
-                    System.currentTimeMillis(), previousAnswerId, uid,false, answer,
+                    System.currentTimeMillis(), previousAnswerId, uid,answererName,false, answer,
                     imageAttached, answerImageUrl, fontSelected, 0,anonymous);
 
             QuestionAnswerModel questionAnswerModel=new QuestionAnswerModel(

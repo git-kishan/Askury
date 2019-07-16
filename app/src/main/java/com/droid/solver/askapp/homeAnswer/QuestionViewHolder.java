@@ -25,7 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         profileImage=itemView.findViewById(R.id.circleImageView2);
         askerName=itemView.findViewById(R.id.textView15);
         askerBio=itemView.findViewById(R.id.textView16);
-        question=itemView.findViewById(R.id.textView19);
+        question=itemView.findViewById(R.id.textView1);
         wantToAnswerImage=itemView.findViewById(R.id.imageView18);
         timeAgo=itemView.findViewById(R.id.textView28);
 

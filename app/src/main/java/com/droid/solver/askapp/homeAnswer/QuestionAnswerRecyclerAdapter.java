@@ -1,7 +1,6 @@
 package com.droid.solver.askapp.homeAnswer;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +13,6 @@ import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 
 public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
@@ -46,7 +44,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
                 break;
             case ANSWER:
                 view=inflater.inflate(R.layout.home_answer_answer_item, viewGroup,false);
-                viewHolder=new AnswerViewHolder(view,context);
+                viewHolder=new AnswerViewHolder(view);
                 break;
             case LOADING:
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
@@ -64,7 +62,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
 
-        if(holder.getItemViewType()==QUESTION&&holder instanceof QuestionViewHolder){
+        if(holder.getItemViewType()==QUESTION && holder instanceof QuestionViewHolder && list.get(i) instanceof QuestionModel){
            QuestionModel model = (QuestionModel) list.get(i);
            String askerName=model.getAskerName();
            String bio=model.getAskerBio();
@@ -98,7 +96,8 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             ((QuestionViewHolder) holder).question.setText(question);
             questionClickListener(context, (QuestionViewHolder) holder, model);
         }
-        else if(holder.getItemViewType()==ANSWER&&holder instanceof AnswerViewHolder){
+
+        else if(holder.getItemViewType()==ANSWER && holder instanceof AnswerViewHolder && list.get(i) instanceof AnswerModel ){
             AnswerModel model = (AnswerModel) list.get(i);
             String answererName=model.getAnswererName();
             String answererBio=model.getAnswererBio();
@@ -107,6 +106,11 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             long timeAgo=model.getTimeOfAnswering();
             String answerImageUrl=model.getImageAttachedUrl();
             int fontUsed=model.getFontUsed();
+            if(model.isLikedByMe()){
+                ((AnswerViewHolder) holder).likeButton.setLiked(true);
+            }else{
+                ((AnswerViewHolder) holder).likeButton.setLiked(false);
+            }
 
             fontUsed=fontUsed<=fontId.length?fontUsed:0;
             answererName=answererName==null?"Someone":answererName;
@@ -121,7 +125,8 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
                 GlideApp.with(context).load(answerImageUrl).into(((AnswerViewHolder) holder).answerImage);
             }
             String timeAgoText=getTime(timeAgo, System.currentTimeMillis());
-            String url=Constants.PROFILE_PICTURE+"/"+((AnswerModel) list.get(i)).getAnswererId()+Constants.SMALL_THUMBNAIL;
+            String url=Constants.PROFILE_PICTURE+"/"+model.getAnswererId()+Constants.SMALL_THUMBNAIL;
+
             GlideApp.with(context).load(reference.child(url)).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder)
                     .into(((AnswerViewHolder) holder).profileImage);
 
@@ -132,6 +137,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             ((AnswerViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
             ((AnswerViewHolder) holder).timeAgo.setText(timeAgoText);
 
+//            onAnswerLikeClickListener((AnswerViewHolder) holder,model);
         }
     }
 
@@ -151,6 +157,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
              return LOADING;
         return LOADING;
     }
+
     private String getTimeDifferenceInWords(long diff){
         long yearInMillis=365*24*60*60*1000L;
         long dayInMillis=24*60*60*1000L;//86400000
@@ -198,5 +205,18 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             }
         });
     }
+//    private void onAnswerLikeClickListener(final AnswerViewHolder holder,final AnswerModel model){
+////        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+////            @Override
+////            public void liked(LikeButton likeButton) {
+////                holder.onLikeClicked(context,model);
+////            }
+////
+////            @Override
+////            public void unLiked(LikeButton likeButton) {
+////                holder.onDislikedClicked(context,model);
+////            }
+////        });
+//    }
 
 }

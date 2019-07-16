@@ -15,6 +15,7 @@ public class UserAnswerModel {
     private long timeOfAnswering;
     private String answerId;
     private String answererId;
+    private String answererName;
     private boolean helpful;
     private String answer;
     private boolean imageAttached;
@@ -22,6 +23,8 @@ public class UserAnswerModel {
     private int fontUsed;
     private int answerLikeCount;
     private boolean anonymous;
+
+
 
     public UserAnswerModel(
             String askerId,
@@ -35,6 +38,7 @@ public class UserAnswerModel {
             long timeOfAnswering,
             String answerId,
             String answererId,
+            String answererName,
             boolean helpful,
             String answer,
             boolean imageAttached,
@@ -52,6 +56,7 @@ public class UserAnswerModel {
         this.timeOfAnswering = timeOfAnswering;
         this.answerId = answerId;
         this.answererId=answererId;
+        this.answererName=answererName;
         this.helpful = helpful;
         this.answer = answer;
         this.imageAttached = imageAttached;
@@ -135,5 +140,9 @@ public class UserAnswerModel {
 
     public boolean isAnonymous() {
         return anonymous;
+    }
+
+    public String getAnswererName() {
+        return answererName;
     }
 }

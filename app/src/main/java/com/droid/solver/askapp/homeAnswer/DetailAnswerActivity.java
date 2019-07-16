@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.droid.solver.askapp.Account.OtherAccountActivity;
@@ -27,6 +28,7 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
     private EmojiTextView askerName,askerBio,answererName,answererBio;
     private TextView timeOfAsking,timeOfAnswering;
     private EmojiTextView question,answer;
+    private ImageView answerImage;
     private LikeButton likeButton;
     private TextView likeCountTextView;
     private String maskerId,manswererId;
@@ -71,9 +73,10 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
         timeOfAsking=findViewById(R.id.textView28);
         timeOfAnswering=findViewById(R.id.textView27);
         question=findViewById(R.id.textView22);
-        answer=findViewById(R.id.textView19);
+        answer=findViewById(R.id.textView1);
         likeButton=findViewById(R.id.likeButton);
         likeCountTextView=findViewById(R.id.textView25);
+        answerImage=findViewById(R.id.imageView19);
         setData();
         askerImage.setOnClickListener(this);
         answererImage.setOnClickListener(this);
@@ -121,6 +124,14 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
                     .placeholder(R.drawable.ic_placeholder)
                     .into(askerImage);
             askerName.setText(getString(R.string.someoneasked));
+
+        }
+        if(imageAttached){
+            answerImage.setVisibility(View.VISIBLE);
+            GlideApp.with(this)
+                    .load(imageAttachedUrl)
+                    .placeholder(R.drawable.shimmer_round_shaped)
+                    .into(answerImage);
 
         }
 

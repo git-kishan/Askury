@@ -41,12 +41,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
-            tools:text="7 minutes ago"
+            android:layout_marginTop="8dp"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/image2"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="smallsp" />
+            tools:ignore="smallsp"
+            tools:text="7 minutes ago" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/image1"

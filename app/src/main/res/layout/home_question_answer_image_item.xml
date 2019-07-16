@@ -58,7 +58,9 @@
             app:layout_constraintEnd_toStartOf="@+id/imageView4"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
-            tools:text="Freenlancer|writer" />
+            tools:text="Freenlancer|writer"
+            tools:ignore="Smallsp"
+            />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
@@ -86,7 +88,9 @@
             android:textSize="8sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image"
-            tools:text="5 sec ago" />
+            tools:text="5 sec ago"
+            tools:ignore="smallsp"
+            />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
@@ -131,7 +135,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/circleImageView"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Jennifer lawrence" />
+                    tools:text="Jennifer lawrence"
+                    tools:ignore="smallsp"
+                    />
 
                 <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/answer_text_view"
@@ -162,6 +168,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/answer_image_attached"
                     android:scaleType="centerCrop"
                     android:minHeight="50dp"
                     android:maxHeight="220dp"
@@ -227,6 +234,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginStart="20dp"
+            android:contentDescription="@string/number_of_answer"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"
@@ -257,7 +265,7 @@
             android:gravity="center"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="Want to give answer"
+            android:text="@string/want_to_answer"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toStartOf="@+id/imageView3"
@@ -272,6 +280,7 @@
             android:layout_marginBottom="12dp"
             android:clickable="true"
             android:focusable="true"
+            android:contentDescription="@string/want_to_answer"
             android:background="@drawable/ripple_background"
             android:padding="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -290,6 +299,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="5dp"
+            android:contentDescription="@string/option"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_three_button" />

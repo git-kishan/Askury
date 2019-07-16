@@ -13,9 +13,6 @@ import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
-
 import java.util.ArrayList;
 
 public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
@@ -68,6 +65,7 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             String askerBio=model.getAskerBio();
             String question=model.getQuestion();
             String answer=model.getAnswer();
+            int likeCount=model.getAnswerLikeCount();
 
             askerName=askerName==null?"Someone":askerName;
             askerBio=askerBio==null?"":askerBio;
@@ -91,6 +89,11 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             ((AccountQuestionAnswerRecyclerViewHolder) holder).askerBio.setText(askerBio);
             ((AccountQuestionAnswerRecyclerViewHolder) holder).questionTextView.setText(question);
             ((AccountQuestionAnswerRecyclerViewHolder) holder).answerTextView.setText(answer);
+            ((AccountQuestionAnswerRecyclerViewHolder) holder).likeButton.setLiked(true);
+            ((AccountQuestionAnswerRecyclerViewHolder) holder).likeButton.setEnabled(false);
+            ((AccountQuestionAnswerRecyclerViewHolder) holder).likeButton.setClickable(false);
+            likeCount=likeCount<0?0:likeCount;
+            ((AccountQuestionAnswerRecyclerViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
 
             handleClickListener(context, (AccountQuestionAnswerRecyclerViewHolder) holder, model);
         }
@@ -141,17 +144,18 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
                 holder.onAskerNameClicked(context,model);
             }
         });
-        holder.likeButton.setOnLikeListener(new OnLikeListener() {
-            @Override
-            public void liked(LikeButton likeButton) {
-                holder.onLikedClicked(context, model);
-            }
-
-            @Override
-            public void unLiked(LikeButton likeButton) {
-                holder.onDislikedClicked(context, model);
-            }
-        });
+//        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+//
+//            @Override
+//            public void liked(LikeButton likeButton) {
+//                holder.onLikedClicked(context, model);
+//            }
+//
+//            @Override
+//            public void unLiked(LikeButton likeButton) {
+//                holder.onDislikedClicked(context, model);
+//            }
+//        });
 
     }
 

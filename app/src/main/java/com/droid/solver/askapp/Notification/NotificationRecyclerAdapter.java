@@ -112,7 +112,6 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             long notifiedTime=model.getNotifiedTime();
 
             String timeAgo=getTime(notifiedTime, System.currentTimeMillis());
-            question=question!=null?question:"Image poll result";
             image1Url=image1Url==null?"image1Url":image1Url;
             image2Url=image2Url==null?"image2Url":image2Url;
             image1LikeNo=image1LikeNo<0?0:image1LikeNo;
@@ -143,6 +142,12 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
                     ((ImagePollViewHolder) holder).percent1.setText(percentA);
                     ((ImagePollViewHolder) holder).percent2.setText(percentB);
                 }
+            }
+            if(question!=null&&question.trim().length()==0){
+                question="Image poll result";
+            }else {
+                if(question==null)
+                    question="Image poll result";
             }
             ((ImagePollViewHolder) holder).statusTextView.setText(question);
             ((ImagePollViewHolder) holder).timeAgo.setText(timeAgo);

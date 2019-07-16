@@ -2,10 +2,10 @@ package com.droid.solver.askapp.homeAnswer;
 
 import android.app.Activity;
 import android.content.Intent;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,8 +14,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
+import com.droid.solver.askapp.Main.LocalDatabase;
+import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 
 public class AnswerActivity extends AppCompatActivity implements View.OnClickListener {
@@ -38,6 +39,8 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     private QuestionAnswerRecyclerAdapter adapter;
     private DocumentSnapshot lastSnapshot;
     private boolean isLoading=false;
+    private ShimmerFrameLayout shimmerFrameLayout;
+    private ArrayList<String> answerLikeListFromLocalDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,8 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         boolean anonymous=intent.getBooleanExtra("anonymous", false);
         Toolbar toolbar=findViewById(R.id.toolbar);
         changeToolbarFont(toolbar, this);
+        shimmerFrameLayout=findViewById(R.id.shimmer);
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
         recyclerView=findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -72,10 +77,19 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         objectArrayList.add(questionModel);
         adapter.notifyDataSetChanged();
         fetchAnswerFromRemoteDatabase();
-
+        loadAnswerLikeListFromLocalDatabase();
 
     }
 
+    private void loadAnswerLikeListFromLocalDatabase(){
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                LocalDatabase database = new LocalDatabase(getApplicationContext());
+                answerLikeListFromLocalDatabase=database.getAnswerLikeModel();
+            }
+        });
+    }
 
     public  void changeToolbarFont(Toolbar toolbar, Activity context) {
         for (int i = 0; i < toolbar.getChildCount(); i++) {
@@ -93,7 +107,6 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
     public  void applyFont(TextView textView, Activity context) {
         textView.setTypeface(ResourcesCompat.getFont(context, R.font.aclonica));
     }
-
     @Override
     public void onClick(View view) {
         onBackPressed();
@@ -123,6 +136,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
         }
     };
+
     private void fetchAnswerFromRemoteDatabase(){
 
         if(user!=null)
@@ -139,6 +153,12 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         if(task.getResult()!=null)
                         for(QueryDocumentSnapshot snapshot:task.getResult()){
                             AnswerModel model=snapshot.toObject(AnswerModel.class);
+                            model.setLikedByMe(false);
+                            if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.contains(model.getAnswerId())){
+                                model.setLikedByMe(true);
+                            }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.contains(model.getAnswerId())){
+                                model.setLikedByMe(true);
+                            }
                             objectArrayList.add(model);
                         }
                         if(task.getResult()!=null) {
@@ -147,6 +167,8 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         }
 
                         adapter.notifyDataSetChanged();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
                         recyclerView.addOnScrollListener(scrollListener);
                     }else {
                         Log.i("TAG", "fetching answer documents fail");
@@ -155,6 +177,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             })  ;
         }
     }
+
     private void fetchMoreAnswerFromRemoteDatabase(){
 
         if(lastSnapshot!=null) {
@@ -175,6 +198,12 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         if (task.getResult() != null)
                             for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                 AnswerModel model = snapshot.toObject(AnswerModel.class);
+                                model.setLikedByMe(false);
+                                if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.contains(model.getAnswerId())){
+                                    model.setLikedByMe(true);
+                                }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.contains(model.getAnswerId())){
+                                    model.setLikedByMe(true);
+                                }
                                 objectArrayList.add(model);
                             }
                         adapter.notifyDataSetChanged();

@@ -67,7 +67,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initEmojiFont();
         setContentView(R.layout.activity_sign_in);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         googleButton=findViewById(R.id.google_button);
@@ -180,7 +179,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                 });
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            Snackbar.make(rootLayout, "Sign in failed,try anoter methood", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(rootLayout, "Sign in failed,try anoter methood", Snackbar.LENGTH_SHORT).show();
                         }
 
                     }
@@ -317,89 +316,76 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    UserInfoModel userInfoModel=task.getResult().toObject(UserInfoModel.class);
-                    SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor=preferences.edit();
+                if (task.isSuccessful()) {
+                    if (task.getResult() != null){
+                        UserInfoModel userInfoModel = task.getResult().toObject(UserInfoModel.class);
+                    SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+
+                    if(userInfoModel!=null)
                     editor.putString(Constants.userName, userInfoModel.getUserName());
 
-                    if(userInfoModel.getInterest()==null){
+
+                    if (userInfoModel!=null&&userInfoModel.getInterest() == null) {
                         editor.putBoolean(Constants.INTEREST_SELECTION, false);
-                        editor.putString(Constants.INTEREST,null);
-                    }else {
-                        ArrayList<String> interestList=userInfoModel.getInterest();
-                        StringBuilder builder = new StringBuilder();
-                        if(interestList!=null) {
-                            for (int i = 0; i < interestList.size(); i++) {
-                                builder.append(interestList.get(i));
-                                builder.append("@");
+                        editor.putString(Constants.INTEREST, null);
+                    } else {
+                        if(userInfoModel!=null) {
+                            ArrayList<String> interestList = userInfoModel.getInterest();
+                            StringBuilder builder = new StringBuilder();
+                            if (interestList != null) {
+                                for (int i = 0; i < interestList.size(); i++) {
+                                    builder.append(interestList.get(i));
+                                    builder.append("@");
+                                }
+                                editor.putString(Constants.INTEREST, builder.toString());
+                                editor.putBoolean(Constants.INTEREST_SELECTION, true);
+
+
                             }
-                            editor.putString(Constants.INTEREST, builder.toString());
-                            editor.putBoolean(Constants.INTEREST_SELECTION, true);
-
-
                         }
 
                     }
-                    if(userInfoModel.getGender()==null){
+                    if (userInfoModel!=null&&userInfoModel.getGender() == null) {
                         editor.putBoolean(Constants.GENDER_SELECTION, false);
-                        editor.putString(Constants.GENDER,null);
+                        editor.putString(Constants.GENDER, null);
 
-                    }else {
-                        editor.putString(Constants.GENDER, userInfoModel.getGender());
-                        editor.putBoolean(Constants.GENDER_SELECTION, true);
+                    } else {
+                        if(userInfoModel!=null) {
+                            editor.putString(Constants.GENDER, userInfoModel.getGender());
+                            editor.putBoolean(Constants.GENDER_SELECTION, true);
+                        }
 
                     }
                     editor.apply();
 
-                    if(userInfoModel.getFirstTimeUser()==0){//set firstTimeUser to 1 ,0 means first time user,1 means not first time user
-                        Map<String,Object> map = new HashMap<>();
+                    if (userInfoModel!=null&&userInfoModel.getFirstTimeUser() == 0) {//set firstTimeUser to 1 ,0 means first time user,1 means not first time user
+                        Map<String, Object> map = new HashMap<>();
                         map.put("firstTimeUser", 1);
-                        FirebaseFirestore.getInstance().collection("user").document(uid).set(map,SetOptions.merge());
+                        FirebaseFirestore.getInstance().collection("user").document(uid).set(map, SetOptions.merge());
                         initiliazeImagePollLikeList(uid);
-                    }else {
+                    } else {
                         startActivity(new Intent(SignInActivity.this, MainActivity.class));
                         finish();
                     }
 
-                }else {
+                }
+            }
+
+                else {
                     Toast.makeText(SignInActivity.this, "Error occured", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    private void initEmojiFont(){
-        FontRequest fontRequest = new FontRequest(
-                "com.google.android.gms.fonts",
-                "com.google.android.gms",
-                "Noto Color Emoji Compat",
-                R.array.com_google_android_gms_fonts_certs);
-        EmojiCompat.Config config ;
-        config=new FontRequestEmojiCompatConfig(this, fontRequest)
-                .setReplaceAll(true)
-                .setEmojiSpanIndicatorEnabled(false)
-                .registerInitCallback(new EmojiCompat.InitCallback() {
-                    @Override
-                    public void onInitialized() {
-                        Log.i("TAG", "emoji initiiazed");
-                        super.onInitialized();
-                    }
-
-                    @Override
-                    public void onFailed(@androidx.annotation.Nullable Throwable throwable) {
-                        Log.i("TAG", "emoji initilization failed");
-                        super.onFailed(throwable);
-                    }
-                });
-        EmojiCompat.init(config);
 
 
-
-    }
     private boolean isNetworkAvailable(){
         ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo=manager.getActiveNetworkInfo();
-        return networkInfo!=null&&networkInfo.isConnected();
+        if(manager!=null) {
+            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected();
+        }return false;
     }
 
 

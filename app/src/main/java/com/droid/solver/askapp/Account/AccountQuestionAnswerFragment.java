@@ -1,6 +1,5 @@
 package com.droid.solver.askapp.Account;
 
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.droid.solver.askapp.Answer.UserAnswerModel;
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.R;
@@ -30,7 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 
 public class AccountQuestionAnswerFragment extends Fragment {
@@ -48,7 +45,6 @@ public class AccountQuestionAnswerFragment extends Fragment {
     public AccountQuestionAnswerFragment() {
     }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,9 +60,9 @@ public class AccountQuestionAnswerFragment extends Fragment {
         qaImage=view.findViewById(R.id.imageView24);
         qaText=view.findViewById(R.id.textView46);
         list=new ArrayList<>();
-        if(uid==null){
-            if(FirebaseAuth.getInstance().getCurrentUser()!=null)
-            uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(uid==null) {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null)
+                uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
         return view;
     }
@@ -74,18 +70,20 @@ public class AccountQuestionAnswerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(isNetworkAvailable()&&uid!=null){
-            adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list,uid);
-            recyclerView.setAdapter(adapter);
-            loadAnswerFromRemoteDatabase();
-            recyclerView.addOnScrollListener(scrollListener);
+        if(isNetworkAvailable()){
+            if(uid!=null){
+                adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list,uid);
+                recyclerView.setAdapter(adapter);
+                adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list,uid);
+                recyclerView.setAdapter(adapter);
+                loadAnswerFromRemoteDatabase();
+                recyclerView.addOnScrollListener(scrollListener);
+
+            }
         }else {
             frameLayout.setVisibility(View.VISIBLE);
         }
-
-
     }
-
     private RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -146,7 +144,7 @@ public class AccountQuestionAnswerFragment extends Fragment {
                 }
             });
         }else {
-            //uid null
+            //uid is null
         }
 
     }

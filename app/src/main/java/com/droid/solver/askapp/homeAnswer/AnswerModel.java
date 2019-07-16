@@ -27,6 +27,8 @@ public class AnswerModel {
     private boolean notifiedToAsker;
     private int answerLikeCount;
 
+    private boolean isLikedByMe;
+
     public AnswerModel(){}
     public AnswerModel(String askerId,
                        String askerName,
@@ -251,7 +253,13 @@ public class AnswerModel {
         this.answerLikeCount = answerLikeCount;
     }
 
+    public boolean isLikedByMe() {
+        return isLikedByMe;
+    }
 
+    public void setLikedByMe(boolean likedByMe) {
+        isLikedByMe = likedByMe;
+    }
 }
 class QuestionModel{
 
@@ -348,7 +356,6 @@ class QuestionModel{
         this.questionId = questionId;
         this.question = question;
     }
-
 
 
 

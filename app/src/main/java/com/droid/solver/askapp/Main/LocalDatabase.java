@@ -1,15 +1,13 @@
 package com.droid.solver.askapp.Main;
 
-import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
-
-import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
+import com.droid.solver.askapp.Answer.UserAnswerModel;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Notification.AnswerModel;
 import com.droid.solver.askapp.Notification.FollowerModel;
@@ -30,9 +28,10 @@ import java.util.Set;
 public class LocalDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="database";
-    private static final int DATABASE_VERSION=25;
+    private static final int DATABASE_VERSION=27;
 
     private final String USER_QUESTION_MODEL="question_asked_table";
+    private final String USER_ANSWER_MODEL="user_answer_table";
     private final String ROOT_QUESTION_MODEL="root_question_model";
     private final String QUESTION_ROOT_QUESTION_MODEL="question_root_question_model";
     private final String SURVEY_ASKED_TABLE="survey_asked_table";
@@ -89,6 +88,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
     private final String answerCount="answerCount";
     private final String recentAnswerLikeCount="recentAnswerLikeCount";
     private final String likedByMe="likedByMe";
+    private final String helpful="helpful";
 
 //home
     private final String TYPE_ROOT_QUESTION_MODEL="root_question_model";
@@ -178,13 +178,19 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 question+" TEXT ,"+questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+userId+" TEXT ,"+userName+" TEXT ,"+userImageUrlLow+" TEXT ,"+
                 userBio+" TEXT ,"+answerCount+" INTEGER ,"+anonymous+" INTEGER ,"+userNotified+" INTEGER "+")";
 
+          final String CREATE_TABLE_USER_ANSWER_MODEL="CREATE TABLE "+USER_ANSWER_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
+                  askerImageUrlLow+" TEXT ,"+askerBio+" TEXT ,"+questionId+" TEXT PRIMARY KEY ,"+question+" TEXT ,"+questionType+" TEXT ,"+
+                  timeOfAsking+" INTEGER ,"+timeOfAnswering+" TEXT ,"+answerId+" TEXT ,"+answererId+" TEXT ,"+answererName+" TEXT ,"+
+                  helpful+" INTEGER ,"+answer+" TEXT ,"+imageAttached+" INTEGER ,"+imageAttachedUrl+" TEXT ,"+fontUsed+" INTEGER ,"+
+                  answerLikeCount+" INTEGER ,"+anonymous+" INTEGER "+")";
+
           final String CREATE_TABLE_ROOT_QUESTION_MODEL="CREATE TABLE "+ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
                 askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT PRIMARY KEY ,"+question+" TEXT ,"+
                 questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+recentAnswererId+" TEXT ,"+recentAnswererImageUrlLow+" TEXT ,"+recentAnswererName+" TEXT ,"
                 +recentAnswererBio+" TEXT ,"+recentAnswerId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
                 " TEXT ,"+answerCount+" INTEGER ,"+recentAnswerLikeCount+" INTEGER ,"+fontUsed +" INTEGER ,"+likedByMe+" INTEGER "+")";
 
-        final String CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL="CREATE TABLE "+QUESTION_ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
+          final String CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL="CREATE TABLE "+QUESTION_ROOT_QUESTION_MODEL+"("+askerId+" TEXT ,"+askerName+" TEXT ,"+
                 askerImageUrlLow+" TEXT ,"+anonymous+" INTEGER ,"+askerBio+" TEXT ,"+questionId+" TEXT PRIMARY KEY,"+question+" TEXT ,"+
                 questionType+" TEXT ,"+timeOfAsking+" INTEGER ,"+recentAnswererId+" TEXT ,"+recentAnswererImageUrlLow+" TEXT ,"+recentAnswererName+" TEXT ,"
                 +recentAnswererBio+" TEXT ,"+recentAnswerId+" TEXT ,"+recentAnswer+" TEXT ,"+recentAnswerImageAttached+" INTEGER ,"+recentAnswerImageUrl+
@@ -251,6 +257,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
          final String CREATE_TABLE_HOME_OBJECT="CREATE TABLE "+HOME_OBJECT+"("+objectId +" TEXT PRIMARY KEY ,"+type +" TEXT "+")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_USER_QUESTION_MODEL);
+        sqLiteDatabase.execSQL(CREATE_TABLE_USER_ANSWER_MODEL);
         sqLiteDatabase.execSQL(CREATE_TABLE_ROOT_QUESTION_MODEL);
         sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL);
         sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_ASKED_TABLE);
@@ -278,6 +285,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+USER_QUESTION_MODEL);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+USER_ANSWER_MODEL);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ROOT_QUESTION_MODEL);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+QUESTION_ROOT_QUESTION_MODEL);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+SURVEY_ASKED_TABLE);
@@ -301,49 +309,159 @@ public class LocalDatabase extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
 
     }
-     public void insertUserQuestionModel(ArrayList<UserQuestionModel> list){
+     public void insertUserAnswerModel(ArrayList<Object> list){
+        clearUserAnswerModel();
+         SQLiteDatabase database=this.getWritableDatabase();
+         if(database.isOpen()) {
+             if (list != null)
+                 for (int i = 0; i < list.size(); i++) {
+                     if (list.get(i) instanceof UserAnswerModel) {
+                         UserAnswerModel model =(UserAnswerModel)list.get(i);
+                         ContentValues values = new ContentValues();
+                         values.put(askerId, model.getAskerId());
+                         values.put(askerName, model.getAskerName());
+                         values.put(askerImageUrlLow, model.getAskerImageUrl());
+                         values.put(askerBio, model.getAskerBio());
+                         values.put(questionId, model.getQuestionId());
+                         values.put(question, model.getQuestion());
+
+                         StringBuilder builder = new StringBuilder("");
+                         try {
+                             if (model.getQuestionType() != null)
+                                 for (int j = 0; j < model.getQuestionType().size(); j++) {
+                                     builder.append(model.getQuestionType().get(i));
+                                     builder.append("@");
+                                 }
+                         }catch (ArrayIndexOutOfBoundsException e){
+                             Log.i("TAG", "Exception occurs  in database userAnswermodeInsertion :- "+e.getMessage());
+                         }
+                         values.put(questionType, builder.toString());
+                         values.put(timeOfAsking, model.getTimeOfAsking());
+                         values.put(timeOfAnswering, model.getTimeOfAnswering());
+                         values.put(answerId, model.getAnswerId());
+                         values.put(answererId, model.getAnswererId());
+                         values.put(answererName, model.getAnswererName());
+                         values.put(helpful, model.isHelpful()?1:0);
+                         values.put(answer, model.getAnswer());
+                         values.put(imageAttached, model.isImageAttached());
+                         values.put(imageAttachedUrl, model.getImageAttachedUrl());
+                         values.put(fontUsed, model.getFontUsed());
+                         values.put(answerLikeCount, model.getAnswerLikeCount());
+                         values.put(anonymous, model.isAnonymous()?1:0);
+
+                         database.insert(USER_ANSWER_MODEL, null, values);
+                         values.clear();
+                     }
+                 }
+             if (database.isOpen())
+                 database.close();
+         }
+     }
+     private void clearUserAnswerModel(){
         SQLiteDatabase database=this.getWritableDatabase();
+        if(database.isOpen()){
+            database.delete(USER_ANSWER_MODEL, null, null);
+            database.close();
+        }
+     }
+     public ArrayList<UserAnswerModel> getUserAnswerModelList(){
+
+         ArrayList<UserAnswerModel> modelList=new ArrayList<>();
+         SQLiteDatabase database=this.getWritableDatabase();
+         String query="SELECT * FROM "+USER_ANSWER_MODEL;
+         Cursor cursor=database.rawQuery(query, null);
+         if(cursor.moveToFirst()){
+             do{
+                 String maskerId=cursor.getString(cursor.getColumnIndex(askerId));
+                 String maskerName=cursor.getString(cursor.getColumnIndex(askerName));
+                 String maskerImageUrl=cursor.getString(cursor.getColumnIndex(this.askerImageUrlLow));
+                 String maskerBio=cursor.getString(cursor.getColumnIndex(this.askerBio));
+                 String mquestionId=cursor.getString(cursor.getColumnIndex(questionId));
+                 String mquestion=cursor.getString(cursor.getColumnIndex(question));
+                 String tempQuestionType=cursor.getString(cursor.getColumnIndex(questionType));
+                 String [] tempQuestionTypeArr=tempQuestionType.split("@");
+                 List<String> mquestionType= Arrays.asList(tempQuestionTypeArr);
+                 long mtimeOfAsking=cursor.getLong(cursor.getColumnIndex(timeOfAsking));
+                 long mtimeOfAnswering=cursor.getLong(cursor.getColumnIndex(timeOfAnswering));
+                 String manswerId=cursor.getString(cursor.getColumnIndex(answerId));
+                 String manswererId=cursor.getString(cursor.getColumnIndex(answererId));
+                 String manswererName=cursor.getString(cursor.getColumnIndex(answererName));
+                 boolean mhelpful=cursor.getInt(cursor.getColumnIndex(helpful))==1;
+                 String manswer=cursor.getString(cursor.getColumnIndex(answer));
+                 boolean mimageAttached=cursor.getInt(cursor.getColumnIndex(imageAttached))==1;
+                 String mimageAttachedUrl=cursor.getString(cursor.getColumnIndex(imageAttachedUrl));
+                 int mfontUsed=cursor.getInt(cursor.getColumnIndex(fontUsed));
+                 int manswerLikeCount=cursor.getInt(cursor.getColumnIndex(answerLikeCount));
+                 boolean manonymous=cursor.getInt(cursor.getColumnIndex(anonymous))==1;
+
+
+                 UserAnswerModel model = new UserAnswerModel(maskerId, maskerName, maskerImageUrl,
+                         maskerBio, mquestionId, mquestion, mquestionType, mtimeOfAsking,
+                         mtimeOfAnswering, manswerId, manswererId, manswererName, mhelpful,
+                         manswer, mimageAttached, mimageAttachedUrl, mfontUsed, manswerLikeCount,
+                         manonymous);
+
+                 modelList.add(model);
+             }while (cursor.moveToNext());
+
+             if(!cursor.isClosed())
+                 cursor.close();
+             if(database.isOpen())
+                 database.close();
+             return modelList;
+         }
+         return null;
+     }
+
+     public void insertUserQuestionModel(ArrayList<Object> list){
+         clearUserQuestionModel();
+         SQLiteDatabase database=this.getWritableDatabase();
         if(database.isOpen()) {
             if (list != null)
                 for (int i = 0; i < list.size(); i++) {
-                    UserQuestionModel model = list.get(i);
-                    ContentValues values = new ContentValues();
-                    values.put(questionId, model.getQuestionId());
-                    values.put(question, model.getQuestion());
+                    if (list.get(i) instanceof UserQuestionModel) {
+                        UserQuestionModel model =(UserQuestionModel)list.get(i);
+                        ContentValues values = new ContentValues();
+                        values.put(questionId, model.getQuestionId());
+                        values.put(question, model.getQuestion());
 
-                    StringBuilder builder = new StringBuilder();
-                    if (model.getQuestionType() != null)
-                        for (int j = 0; j < model.getQuestionType().size(); j++) {
-                            builder.append(model.getQuestionType().get(i));
-                            builder.append("@");
-                        }
-
-                    values.put(timeOfAsking, model.getTimeOfAsking());
-                    values.put(userId, model.getUserId());
-                    values.put(userName, model.getUserName());
-                    values.put(userImageUrlLow, model.getUserImageUrlLow());
-                    values.put(userBio, model.getUserBio());
-                    values.put(answerCount, model.getAnswerCount());
-                    int manonymous = model.isAnonymous() ? 1 : 0;
-                    values.put(anonymous, manonymous);
-                    int muserNotified = model.isUserNotified() ? 1 : 0;
-                    values.put(userNotified, muserNotified);
-                    database.insert(USER_QUESTION_MODEL, null, values);
-                    values.clear();
+                        StringBuilder builder = new StringBuilder("");
+                        if (model.getQuestionType() != null)
+                            for (int j = 0; j < model.getQuestionType().size(); j++) {
+                                builder.append(model.getQuestionType().get(i));
+                                builder.append("@");
+                            }
+                        values.put(questionType, builder.toString());
+                        values.put(timeOfAsking, model.getTimeOfAsking());
+                        values.put(userId, model.getUserId());
+                        values.put(userName, model.getUserName());
+                        values.put(userImageUrlLow, model.getUserImageUrlLow());
+                        values.put(userBio, model.getUserBio());
+                        values.put(answerCount, model.getAnswerCount());
+                        int manonymous = model.isAnonymous() ? 1 : 0;
+                        values.put(anonymous, manonymous);
+                        int muserNotified = model.isUserNotified() ? 1 : 0;
+                        values.put(userNotified, muserNotified);
+                        database.insert(USER_QUESTION_MODEL, null, values);
+                        values.clear();
+                    }
                 }
-
-
             if (database.isOpen())
                 database.close();
-
         }
      }
-     public int  clearUserQuestionModel(){
+     private void  clearUserQuestionModel(){
          SQLiteDatabase database=this.getWritableDatabase();
-         int numberOfRowsDeleted=database.delete(USER_QUESTION_MODEL, null, null);
-         database.close();
-         return numberOfRowsDeleted;
-
+         if(database.isOpen()){
+             database.delete(USER_QUESTION_MODEL, null, null);
+         }
+     }
+     public void removeUserQuestionModel(final String questionId){
+        SQLiteDatabase database = this.getWritableDatabase();
+        if(database.isOpen()){
+            database.delete(USER_QUESTION_MODEL,this.questionId+"=?",new String[]{questionId});
+            database.close();
+        }
      }
      public ArrayList<UserQuestionModel> getUserQuestionModelList(){
 
@@ -351,7 +469,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
         SQLiteDatabase database=this.getWritableDatabase();
         String query="SELECT * FROM "+USER_QUESTION_MODEL;
         Cursor cursor=database.rawQuery(query, null);
-
         if(cursor.moveToFirst()){
             do{
                 String mquestionId=cursor.getString(cursor.getColumnIndex(questionId));
@@ -379,7 +496,8 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
             if(!cursor.isClosed())
                 cursor.close();
-            database.close();
+            if(database.isOpen())
+                database.close();
             return modelList;
         }
         return null;
@@ -437,10 +555,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
      public void clearQuestionRootQuestionModel(){
         SQLiteDatabase database=this.getWritableDatabase();
-
-        int numberOfRowDeleted=database.delete(QUESTION_ROOT_QUESTION_MODEL, null, null);
-        if(database.isOpen())
+        if(database.isOpen()){
+            database.delete(QUESTION_ROOT_QUESTION_MODEL, null, null);
             database.close();
+        }
     }
      public ArrayList<Object> getQuestionRootQuestionModelList(){
         ArrayList<Object> list=new ArrayList<>();
@@ -1108,12 +1226,12 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
         return  null;
     }
-//    public void removeImagePollLikeModel(String mimagePollId){
-//        SQLiteDatabase database = this.getWritableDatabase();
-//        database.delete(IMAGE_POLL_LIKE_TABLE, imagePollId+"=?", new String[]{mimagePollId});
-//        if(database.isOpen())
-//            database.close();
-//    }
+    public void removeImagePollLikeModel(String mimagePollId){
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(IMAGE_POLL_LIKE_TABLE, imagePollId+"=?", new String[]{mimagePollId});
+        if(database.isOpen())
+            database.close();
+    }
 
     public  void insertFollowerModel(ArrayList<Follower> list){
         SQLiteDatabase database=this.getWritableDatabase();

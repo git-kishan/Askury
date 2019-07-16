@@ -252,11 +252,13 @@
             android:gravity="center"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            tools:text="Want to answer"
+            android:text="@string/want_to_answer"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3" />
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:layout_constraintVertical_bias="0.25"
+            />
 
         <ImageView
             android:id="@+id/imageView3"

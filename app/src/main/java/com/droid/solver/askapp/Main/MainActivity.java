@@ -484,6 +484,7 @@ public class MainActivity extends AppCompatActivity implements
                     if(task.getResult()!=null) {
                         UserInfoModel infoModel = task.getResult().toObject(UserInfoModel.class);
                         if(infoModel!=null){
+                            String userId=infoModel.getUserId();
                             String userName=infoModel.getUserName();
                             String profilePicUrlLow=infoModel.getProfilePicUrlLow();
                             String profilePicUrlHigh=infoModel.getProfilePicUrlHigh();
@@ -512,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements
                             }
                             SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE );
                             SharedPreferences.Editor editor=preferences.edit();
+                            editor.putString(Constants.userId, userId);
                             editor.putString(Constants.userName, userName);
                             editor.putString(Constants.profilePicLowUrl, profilePicUrlLow);
                             editor.putString(Constants.profilePicHighUrl, profilePicUrlHigh);

@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.emoji.widget.EmojiTextView;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 import com.droid.solver.askapp.Answer.UserAnswerModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
@@ -21,6 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
     CircleImageView askerImageView,answererImageView;
     EmojiTextView askerName,askerBio,questionTextView,answerTextView;
     LikeButton likeButton;
+    TextView likeCount;
 
      AccountQuestionAnswerRecyclerViewHolder(View itemView){
         super(itemView);
@@ -30,8 +30,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
         askerBio=itemView.findViewById(R.id.about_textview);
         questionTextView=itemView.findViewById(R.id.question_textview);
         answerTextView=itemView.findViewById(R.id.answer_text_view);
-        CardView rootCardView=itemView.findViewById(R.id.root_card_view);
         likeButton=itemView.findViewById(R.id.likeButton);
+        likeCount=itemView.findViewById(R.id.like_count);
 
     }
      void onAskerImageClicked(final Context context, final UserAnswerModel model){
@@ -69,15 +69,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
          intent.putExtra("bio", model.getAskerBio());
          context.startActivity(intent);
     }
-
-     void onLikedClicked(final Context context,final UserAnswerModel model){
-        onClicked("Like", context);
-
-    }
-
-     void onDislikedClicked(final Context context,final UserAnswerModel model){
-        onClicked("Dislike", context);
-    }
+//
+//     void onLikedClicked(final Context context,final UserAnswerModel model){
+//        onClicked("Like", context);
+//
+//    }
+//
+//     void onDislikedClicked(final Context context,final UserAnswerModel model){
+//        onClicked("Dislike", context);
+//    }
 
      private void goToHomeAnswerActivity(final Context context,final UserAnswerModel model){
         Intent intent=new Intent(context, AnswerActivity.class);
@@ -93,7 +93,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     }
 
-     private void onClicked(final String message,final Context context){
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
+//     private void onClicked(final String message,final Context context){
+//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+//    }
 }

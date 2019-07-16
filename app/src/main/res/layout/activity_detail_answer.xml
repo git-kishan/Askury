@@ -182,7 +182,7 @@
                         tools:text="Computer science graduate from nit patna " />
 
                     <androidx.emoji.widget.EmojiTextView
-                        android:id="@+id/textView19"
+                        android:id="@+id/textView1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -211,6 +211,7 @@
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/ripple_background"
                         app:anim_scale_factor="2"
+                        android:visibility="gone"
                         app:circle_end_color="@color/heart_color"
                         app:circle_start_color="@color/heart_color"
                         app:dots_primary_color="@color/heart_color"
@@ -231,7 +232,7 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginBottom="3dp"
                         android:textSize="8sp"
-                        app:layout_constraintBottom_toTopOf="@+id/textView19"
+                        app:layout_constraintBottom_toTopOf="@+id/textView1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/circleImageView3"
                         tools:ignore="SmallSp"
@@ -245,13 +246,13 @@
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="12dp"
                         android:layout_marginBottom="16dp"
-                        android:contentDescription="Answer Image"
+                        android:contentDescription="@string/answer_image_attached"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView19"
+                        app:layout_constraintTop_toBottomOf="@+id/textView1"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
@@ -260,6 +261,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-4dp"
                         android:textSize="10sp"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="@+id/likeButton"
                         app:layout_constraintStart_toStartOf="@+id/likeButton"
                         app:layout_constraintTop_toBottomOf="@+id/likeButton"

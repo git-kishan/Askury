@@ -1,19 +1,19 @@
 package com.droid.solver.askapp.Account;
 
-
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.emoji.widget.EmojiTextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
@@ -26,7 +26,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 
 public class AccountQuestionFragment extends Fragment {
@@ -82,7 +81,7 @@ public class AccountQuestionFragment extends Fragment {
         loadQuestionFromRemoteDatabase();
 
     }
-   private RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
+    private RecyclerView.OnScrollListener scrollListener=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
@@ -96,17 +95,53 @@ public class AccountQuestionFragment extends Fragment {
                     list.add(list.size(), null);
                     adapter.notifyItemInserted(list.size());
                     isLoading = true;
-                    Log.i("TAG", "inside onLoading");
                     loadMoreQuestionFromRemoteDatabase();
 
                 }
             }
         }
     };
+//    private void loadDataFromLocalDatabase(){
+//        final Handler handler=new Handler();
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(getActivity()!=null) {
+//                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+//
+//                    if(database.getUserQuestionModelList()!=null) {
+//                        list.addAll(database.getUserQuestionModelList());
+//                       handler.post(new Runnable() {
+//                           @Override
+//                           public void run() {
+//                               adapter.notifyDataSetChanged();
+//                           }
+//                       });
+//                    }
+//                    if(list!=null&&list.size()==0){
+//                       loadQuestionFromRemoteDatabase();
+//                    }else if(list==null){
+//                        loadQuestionFromRemoteDatabase();
+//                    }
+//                }
+//            }
+//        });
+//    }
+//    private void insertDataInLocalDatabase(){
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(getActivity()!=null) {
+//                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+//                    database.insertUserQuestionModel(list);
+//                }
+//
+//            }
+//        });
+//    }
     private void loadQuestionFromRemoteDatabase(){
 
         if(uid!=null) {
-
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             Query query = rootRef.collection("user").document(uid)
                     .collection("question")
@@ -126,14 +161,14 @@ public class AccountQuestionFragment extends Fragment {
                             questionText.setVisibility(View.VISIBLE);
                         }else {
                             adapter.notifyDataSetChanged();
-                            if (task.getResult() != null && task.getResult().getDocuments().size() > 0)
+                            if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                                 lastVisibleQuestionItem = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                            }
 
                             if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
                                 recyclerView.removeOnScrollListener(scrollListener);
                             }
                         }
-
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -155,7 +190,11 @@ public class AccountQuestionFragment extends Fragment {
     private void loadMoreQuestionFromRemoteDatabase(){
 
         FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
-        if(uid !=null&&lastVisibleQuestionItem!=null) {
+        if(lastVisibleQuestionItem==null){
+            recyclerView.removeOnScrollListener(scrollListener);
+            return;
+        }
+        if(uid !=null) {
 
             Query query=rootRef.collection("user").document(uid)
                     .collection("question")
@@ -195,4 +234,5 @@ public class AccountQuestionFragment extends Fragment {
 
         }
     }
+
 }
