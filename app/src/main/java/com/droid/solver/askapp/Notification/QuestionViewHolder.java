@@ -3,6 +3,8 @@ package com.droid.solver.askapp.Notification;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -30,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
     }
 
      void onCardClicked(Context context, QuestionModel model){
+         Activity activity=(Activity)context;
          Intent intent=new Intent(context,NotificationQuestionActivity.class);
          intent.putExtra("isStoredLocally", model.isStoredLocally());
          if(!model.isStoredLocally()){
@@ -46,9 +49,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
          intent.putExtra("questionId", model.getQuestionId());
          intent.putExtra("type", model.getType());
          intent.putExtra("notifiedTime", model.getNotifiedTime());
+
          dot.setVisibility(View.GONE);
          context.startActivity(intent);
-    }
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+     }
 
     private void saveNotificationToLocalDatabase(final String notificationId,final String type,final QuestionModel model,final Context context){
 

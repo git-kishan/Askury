@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +29,6 @@ import com.droid.solver.askapp.homeAnswer.DetailAnswerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -81,6 +80,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
 
      void onWantToAnswer(Context context, RootQuestionModel model){
+         Activity activity= (Activity) context;
         Intent intent=new Intent(context,AnswerActivity.class);
         intent.putExtra("askerUid", model.getAskerId());
         intent.putExtra("questionId", model.getQuestionId());
@@ -91,12 +91,13 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         intent.putExtra("askerBio", model.getAskerBio());
         intent.putExtra("anonymous", model.isAnonymous());
         intent.putStringArrayListExtra("questionType", (ArrayList<String>)model.getQuestionType());
-
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
 
      void onAnswerClicked(Context context,RootQuestionModel model){
-
+         Activity activity= (Activity) context;
         Intent intent=new Intent(context, DetailAnswerActivity.class);
         intent.putExtra("askerId", model.getAskerId());
         intent.putExtra("answererId",model.getRecentAnswererId());
@@ -113,8 +114,10 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         intent.putExtra("isLikedByMe", likeButton.isLiked());
         intent.putExtra("likeCount", model.getRecentAnswerLikeCount());
         context.startActivity(intent);
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-    }
+
+     }
 
      void onLiked(final Context context, final RootQuestionModel model) {
 
@@ -197,7 +200,8 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
          }
      }
-         void onDisliked ( final Context context, final RootQuestionModel model){
+
+     void onDisliked ( final Context context, final RootQuestionModel model){
              Log.i("TAG", "disliked triggered");
              SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE);
              String likerId = preferences.getString(Constants.userId, null);
@@ -265,20 +269,23 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
          }
 
      void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
-        Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
-        intent.putExtra("askerImageUrl", rootQuestionModel.getAskerImageUrlLow());
-        intent.putExtra("timeOfAsking", rootQuestionModel.getTimeOfAsking());
-        intent.putExtra("askerName", rootQuestionModel.getAskerName());
-        intent.putExtra("askerBio", rootQuestionModel.getAskerBio());
-        intent.putExtra("questionId", rootQuestionModel.getQuestionId());
-        intent.putExtra("question", rootQuestionModel.getQuestion());
-        intent.putExtra("askerId", rootQuestionModel.getAskerId());
-        intent.putExtra("anonymous", rootQuestionModel.isAnonymous());
-        context.startActivity(intent);
-    }
+         Activity activity= (Activity) context;
+         Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
+         intent.putExtra("askerImageUrl", rootQuestionModel.getAskerImageUrlLow());
+         intent.putExtra("timeOfAsking", rootQuestionModel.getTimeOfAsking());
+         intent.putExtra("askerName", rootQuestionModel.getAskerName());
+         intent.putExtra("askerBio", rootQuestionModel.getAskerBio());
+         intent.putExtra("questionId", rootQuestionModel.getQuestionId());
+         intent.putExtra("question", rootQuestionModel.getQuestion());
+         intent.putExtra("askerId", rootQuestionModel.getAskerId());
+         intent.putExtra("anonymous", rootQuestionModel.isAnonymous());
+         context.startActivity(intent);
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+     }
 
 
-    void onAskerImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
+     void onAskerImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
 
         if(rootQuestionModel.isAnonymous()){
             homeMessageListener.onSomeMessage("Anonymous user");
@@ -294,7 +301,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-    void onAnswererImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
+     void onAnswererImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
         if(rootQuestionModel.isAnonymous()){
             homeMessageListener.onSomeMessage("Anonymous user");
         }else {
@@ -350,7 +357,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-    private void handleDialogItemClicked(final View view,final AlertDialog dialog,final RootQuestionModel rootQuestionModel,
+     private void handleDialogItemClicked(final View view,final AlertDialog dialog,final RootQuestionModel rootQuestionModel,
                                          final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter,
                                          final ArrayList<String> followingIdListFromLocalDatabase){
 
@@ -407,7 +414,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
     }
 
-    private void onReportClicked(String questionId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
+     private void onReportClicked(String questionId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
         @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.question_report_dialog,
                 null,false);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
@@ -422,7 +429,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
 
 
-    private void onReportItemClicked(final View view, final AlertDialog dialog,
+     private void onReportItemClicked(final View view, final AlertDialog dialog,
                                      final String questionId,final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter){
 
         TextView spamTextView=view.findViewById(R.id.spam);
@@ -483,7 +490,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
     }
 
-    private void onDeleteClicked(final RootQuestionModel questionModel, final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
+     private void onDeleteClicked(final RootQuestionModel questionModel, final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
                 null,false );
@@ -535,7 +542,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
     }
 
-    private boolean isNetworkAvailable(){
+     private boolean isNetworkAvailable(){
         ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if(manager!=null){
             NetworkInfo info=manager.getActiveNetworkInfo();
@@ -546,7 +553,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
 
 
-    private void onFollowClicked(final RootQuestionModel questionModel, int status,
+     private void onFollowClicked(final RootQuestionModel questionModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
             if(status==FOLLOW){

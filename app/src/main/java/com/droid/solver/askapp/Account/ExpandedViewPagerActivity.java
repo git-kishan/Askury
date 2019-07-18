@@ -44,6 +44,12 @@ public class ExpandedViewPagerActivity extends AppCompatActivity implements View
                 R.drawable.ic_qa_black, null));
 
     }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
+    }
     private void changeToolbarFont(Toolbar toolbar){
         for(int i=0;i<toolbar.getChildCount();i++){
             View view=toolbar.getChildAt(i);

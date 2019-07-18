@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -84,7 +85,7 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     void onWantToAnswer(Context context, RootQuestionModel model){
-
+        Activity activity= (Activity) context;
         Intent intent=new Intent(context,AnswerActivity.class);
         intent.putExtra("askerUid", model.getAskerId());
         intent.putExtra("questionId", model.getQuestionId());
@@ -95,11 +96,13 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         intent.putExtra("askerBio", model.getAskerBio());
         intent.putStringArrayListExtra("questionType", (ArrayList<String>)model.getQuestionType());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
 
     }
 
     void onAnswerClicked(Context context,RootQuestionModel model){
-
+        Activity activity= (Activity) context;
         Intent intent=new Intent(context, DetailAnswerActivity.class);
         intent.putExtra("askerId", model.getAskerId());
         intent.putExtra("answererId",model.getRecentAnswererId());
@@ -115,8 +118,13 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         intent.putExtra("fontUsed",model.getFontUsed());
         intent.putExtra("isLikedByMe", likeButton.isLiked());
         intent.putExtra("likeCount", model.getRecentAnswerLikeCount());
+        intent.putExtra("imageAttached", model.isRecentAnswerImageAttached());
+        intent.putExtra("imageAttachedUrl", model.getRecentAnswerImageUrl());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
+
     void onLiked(final Context context, final RootQuestionModel model){
 
         SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -254,7 +262,7 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
-
+        Activity activity= (Activity) context;
         Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
         intent.putExtra("askerImageUrl", rootQuestionModel.getAskerImageUrlLow());
         intent.putExtra("timeOfAsking", rootQuestionModel.getTimeOfAsking());
@@ -265,6 +273,8 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         intent.putExtra("askerId", rootQuestionModel.getAskerId());
         intent.putExtra("anonymous", rootQuestionModel.isAnonymous());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
 
     void onAskerImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){

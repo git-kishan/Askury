@@ -2,7 +2,6 @@ package com.droid.solver.askapp.Question;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +61,13 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
             final RootQuestionModel model = (RootQuestionModel) questionModelArrayList.get(i);
             boolean isAnonymous = model.isAnonymous();
-            String profileNameAsked ;
+            String profileNameAsked =model.getAskerName();
+            String bio=model.getAskerBio();
+            String mquestion =model.getQuestion();
+            long mtime =model.getTimeOfAsking();
+
+
+
             if (isAnonymous) {
                 profileNameAsked = context.getString(R.string.someoneasked);
                 GlideApp.with(context)
@@ -70,10 +75,12 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                         .error(R.drawable.ic_placeholder)
                         .placeholder(R.drawable.ic_placeholder)
                         .into(((AskQuestionViewHolderWithoutImage) holder).profilePicture);
+                bio="";
             } else {
-                String name =model.getAskerName();
-                name = name == null ? "Someone" : name;
-                profileNameAsked = String.format(context.getString(R.string.user_name_asked), name);
+                profileNameAsked = profileNameAsked == null ? "Someone" : profileNameAsked;
+                profileNameAsked = String.format(context.getString(R.string.user_name_asked), profileNameAsked);
+                bio=bio==null?"":bio;
+
 
                 String url = Constants.PROFILE_PICTURE + "/" + model.getAskerId() + ProfileImageActivity.SMALL_THUMBNAIL;
                 StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
@@ -83,10 +90,9 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                         into(((AskQuestionViewHolderWithoutImage) holder).profilePicture);
             }
             ((AskQuestionViewHolderWithoutImage) holder).profileName.setText(profileNameAsked);
-            String mquestion =model.getQuestion();
             mquestion = mquestion == null ? "Question not available" : mquestion;
             ((AskQuestionViewHolderWithoutImage) holder).question.setText(mquestion);
-            long mtime =model.getTimeOfAsking();
+            ((AskQuestionViewHolderWithoutImage) holder).about.setText(bio);
             mtime = mtime == 0 ? System.currentTimeMillis() : mtime;
             long oldTime = mtime;
             long currentTime = System.currentTimeMillis();
@@ -99,7 +105,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
             if (i == questionModelArrayList.size() - 1) {
                 ((AskQuestionViewHolderWithoutImage) holder).view.setVisibility(View.GONE);
             }
-            handleClickListener((AskQuestionViewHolderWithoutImage) holder, model, i);
+            handleClickListener((AskQuestionViewHolderWithoutImage) holder, model);
         }
 
     }
@@ -156,11 +162,11 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
         return getTimeDifferenceInWords(diff);
     }
 
-    private void handleClickListener(final AskQuestionViewHolderWithoutImage holder,final RootQuestionModel model, final int position){
+    private void handleClickListener(final AskQuestionViewHolderWithoutImage holder,final RootQuestionModel model){
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 holder.onCardClicked(context,position,model);
+                 holder.onCardClicked(context,model);
             }
         });
         holder.profilePicture.setOnClickListener(new View.OnClickListener() {

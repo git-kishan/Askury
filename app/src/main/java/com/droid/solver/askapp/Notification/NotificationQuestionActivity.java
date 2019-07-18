@@ -70,7 +70,7 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
         askerBio=findViewById(R.id.textView16);
         answererBio = findViewById(R.id.textView21);
         question=findViewById(R.id.textView22);
-        answer=findViewById(R.id.textView19);
+        answer=findViewById(R.id.textView1);
         answerImage=findViewById(R.id.imageView19);
         toolbar.setNavigationOnClickListener(this);
     }
@@ -85,6 +85,12 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
                 break;
             }
         }
+    }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
     }
 
     private void loadProfileImage(boolean isAnonymous){

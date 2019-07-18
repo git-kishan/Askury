@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".homeAnswer.DetailAnswerActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:elevation="3dp"
-        app:titleTextColor="@color/colorAccent"
-        app:navigationIcon="@drawable/ic_back_black"
-        android:background="@android:color/white"
-        android:layout_height="?android:actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="Q&amp;A" />
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:elevation="3dp"
+            app:titleTextColor="@color/colorAccent"
+            app:navigationIcon="@drawable/ic_back_black"
+            android:background="@android:color/white"
+            android:layout_height="?android:actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="Q&amp;A" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_marginTop="?android:actionBarSize"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,11 +40,10 @@
                 android:id="@+id/card_top"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:elevation="3dp"
-                app:cardCornerRadius="8dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                app:cardCornerRadius="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -65,13 +67,15 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView15"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
                         android:background="?android:selectableItemBackground"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/circleImageView2"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/circleImageView2"
                         app:layout_constraintTop_toTopOf="@+id/circleImageView2"
@@ -80,7 +84,7 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView16"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:textSize="12sp"
@@ -95,14 +99,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="8dp"
                         android:alpha="0.8"
                         android:autoLink="all"
                         android:linksClickable="true"
                         android:paddingBottom="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -115,26 +121,28 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:textSize="8sp"
+                        android:visibility="gone"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/circleImageView2"
                         tools:ignore="smallSp"
                         tools:text="5 year ago" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="8dp"
-                android:layout_marginStart="8dp"
-                android:elevation="5dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@+id/card_top"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                app:cardCornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_top">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -153,7 +161,7 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView20"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="8dp"
@@ -170,10 +178,9 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView21"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:paddingRight="5dp"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toStartOf="@+id/likeButton"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -186,8 +193,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="8dp"
                         android:alpha="0.8"
                         android:autoLink="all"
                         android:baselineAligned="false"
@@ -197,6 +205,7 @@
                         android:paddingBottom="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -210,6 +219,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/ripple_background"
+                        android:visibility="gone"
                         app:anim_scale_factor="2"
                         app:circle_end_color="@color/heart_color"
                         app:circle_start_color="@color/heart_color"
@@ -217,7 +227,6 @@
                         app:dots_secondary_color="@color/heart_color"
                         app:icon_size="16dp"
                         app:icon_type="heart"
-                        android:visibility="gone"
                         app:is_enabled="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -232,7 +241,8 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginBottom="3dp"
                         android:textSize="8sp"
-                        app:layout_constraintBottom_toTopOf="@+id/textView19"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@+id/textView1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/circleImageView3"
                         tools:ignore="SmallSp"
@@ -246,13 +256,13 @@
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="12dp"
                         android:layout_marginBottom="16dp"
-                        android:contentDescription="Answer Image"
+                        android:contentDescription="@string/answer_image_attached"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView19"
+                        app:layout_constraintTop_toBottomOf="@+id/textView1"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
@@ -277,4 +287,4 @@
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

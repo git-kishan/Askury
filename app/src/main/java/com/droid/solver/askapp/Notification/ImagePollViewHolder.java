@@ -3,6 +3,8 @@ package com.droid.solver.askapp.Notification;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -37,6 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
             model.setStoredLocally(true);
             saveNotificationToLocalDatabase(model.getImagePollId(), model, context);
         }
+        Activity activity= (Activity) context;
         intent.putExtra("imagePollId", model.getImagePollId());
         intent.putExtra("question",model.getQuestion());
         intent.putExtra("askerId",model.getAskerId());
@@ -53,6 +56,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("notifiedTime",model.getNotifiedTime());
         dot.setVisibility(View.GONE);
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
     private void saveNotificationToLocalDatabase(final String notificationId, final ImagePollModel model, final Context context){
 

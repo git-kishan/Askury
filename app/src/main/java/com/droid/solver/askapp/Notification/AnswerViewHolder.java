@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Notification;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -30,6 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
     }
 
     void onCardClicked(final Context context,final AnswerModel model){
+        Activity activity= (Activity) context;
         Intent intent=new Intent(context, NotificationAnswerActivity.class);
         intent.putExtra("isStoredLocally", model.isStoredLocally());
         if(!model.isStoredLocally()){
@@ -63,6 +65,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("imageAttachedUrl", model.getImageAttachedUrl());
         dot.setVisibility(View.GONE);
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
 
     }
 

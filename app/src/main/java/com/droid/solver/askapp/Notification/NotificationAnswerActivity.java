@@ -75,7 +75,7 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
         timeOfAsking=findViewById(R.id.textView28);
         timeOfAnswering=findViewById(R.id.textView27);
         question=findViewById(R.id.textView22);
-        answer=findViewById(R.id.textView19);
+        answer=findViewById(R.id.textView1);
         likeButton=findViewById(R.id.likeButton);
         likeCountTextView=findViewById(R.id.textView25);
         setData();
@@ -160,6 +160,12 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
 
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
+    }
     private String getTimeDifferenceInWords(long diff){
         long yearInMillis=365*24*60*60*1000L;
         long dayInMillis=24*60*60*1000L;//86400000

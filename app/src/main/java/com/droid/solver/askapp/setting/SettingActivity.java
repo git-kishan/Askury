@@ -169,14 +169,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.linearLayout9:
                 startActivity(new Intent(SettingActivity.this,PrivacyPolicyActivity.class));
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 break;
             case R.id.linearLayout10:
                 Toast.makeText(this, "report Error", Toast.LENGTH_SHORT).show();
-
                 break;
 
 
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
     }
 
     private void hideSoftKeyboard(View view){

@@ -80,6 +80,12 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         loadAnswerLikeListFromLocalDatabase();
 
     }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
+    }
 
     private void loadAnswerLikeListFromLocalDatabase(){
         AsyncTask.execute(new Runnable() {

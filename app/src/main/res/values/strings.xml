@@ -52,6 +52,13 @@
     <string name="unknown" translatable="false">Unknown</string>
     <string name="uploading" translatable="false">Uploading ...</string>
     <string name="want_to_answer" translatable="false">Want to answer</string>
+    <string name="follower" translatable="false">Follower</string>
+    <string name="following" translatable="false">Following</string>
+    <string name="gender" translatable="false">Gender</string>
+    <string name="setting" translatable="false">Setting</string>
+    <string name="points" translatable="false">Points</string>
+    <string name="expand" translatable="false">Expand</string>
+    <string name="back" translatable="false">back</string>
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>

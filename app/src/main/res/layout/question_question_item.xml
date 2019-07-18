@@ -5,10 +5,9 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="5dp"
     android:clickable="true"
-    android:layout_marginTop="8dp"
-    app:cardCornerRadius="8dp"
+    android:layout_marginTop="5dp"
+    app:cardCornerRadius="5dp"
     android:id="@+id/root_card_view"
-    android:elevation="8dp"
     android:focusable="true"
     android:foreground="?android:selectableItemBackground"
     android:layout_marginEnd="5dp"
@@ -53,7 +52,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
-            tools:text="Freenlancer|writer" />
+            tools:text="Freenlancer|writer"
+            tools:ignore="smallsp"
+            />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
@@ -81,8 +82,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="5 sec ago"
+            tools:text="5 sec ago"
             android:textSize="8sp"
+            tools:ignore="smallsp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
@@ -109,7 +111,7 @@
             android:layout_marginBottom="2dp"
             android:alpha="0.7"
             android:visibility="gone"
-            android:text="Tap to answer"
+            tools:text="Tap to answer"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

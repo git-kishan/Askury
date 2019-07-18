@@ -11,6 +11,8 @@ import com.google.android.material.button.MaterialButton;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -21,7 +23,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
@@ -178,7 +179,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
 
         switch (view.getId()){
             case R.id.circleImageView4:
-                Toast.makeText(OtherAccountActivity.this, "Profile image clicked",Toast.LENGTH_SHORT ).show();
+                onProfileImageClicked();
                 break;
             case R.id.back_button:
                 onBackPressed();
@@ -188,6 +189,14 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
                 break;
 
         }
+    }
+
+    private void onProfileImageClicked(){
+        Intent intent=new Intent(this,ProfileImageZoomActivity.class);
+        intent.putExtra("uid", uid);
+        ActivityOptionsCompat optionsCompat=ActivityOptionsCompat.makeSceneTransitionAnimation(this,profileImage,
+                Objects.requireNonNull(ViewCompat.getTransitionName(profileImage)));
+        startActivity(intent,optionsCompat.toBundle());
     }
     private void onFollowButtonClicked(String status){
 

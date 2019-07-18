@@ -492,6 +492,7 @@ public class MainActivity extends AppCompatActivity implements
                             int point=infoModel.getPoint();
                             int followerCount=infoModel.getFollowerCount();
                             int followingCount=infoModel.getFollowingCount();
+
                             String gender=infoModel.getGender();
                             ArrayList<String> interest=infoModel.getInterest();
 

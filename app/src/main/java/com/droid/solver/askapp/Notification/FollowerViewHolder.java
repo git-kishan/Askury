@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Notification;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -31,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
             model.setStoredLocally(true);
             saveNotificationToLocalDatabase(model.getFollowerId(), model, context);
         }
+        Activity activity =new Activity();
         Intent intent=new Intent(context, OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getFollowerImageUrl());
         intent.putExtra("uid", model.getFollowerId());
@@ -39,6 +41,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("notification", true);
         dot.setVisibility(View.GONE);
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
     private void saveNotificationToLocalDatabase(final String notificationId, final FollowerModel model, final Context context){
 

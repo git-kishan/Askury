@@ -43,7 +43,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private CircleImageView profileImage;
     private CardView toolbarCardViewActivity;
     private TextView followerCount,followingCount,pointCount;
-    private TextView followerTextView,followingTextView,pointTextView;
     public AccountFragment() {
     }
 
@@ -60,9 +59,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         followerCount=view.findViewById(R.id.follower_count_number);
         followingCount=view.findViewById(R.id.following_count_number);
         pointCount=view.findViewById(R.id.point_count_number);
-        followerTextView=view.findViewById(R.id.follower_text_view);
-        followingTextView=view.findViewById(R.id.following_text_view);
-        pointTextView=view.findViewById(R.id.points_text_view);
+        TextView followerTextView=view.findViewById(R.id.follower_text_view);
+        TextView followingTextView=view.findViewById(R.id.following_text_view);
+        TextView pointTextView=view.findViewById(R.id.points_text_view);
         CardView typeImageCard=view.findViewById(R.id.type_image_card);
         ImageView typeImageView=view.findViewById(R.id.type_image);
         toolbarCardViewActivity.setVisibility(View.GONE);
@@ -92,9 +91,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         followerTextView.setOnClickListener(this);
         followingTextView.setOnClickListener(this);
         pointTextView.setOnClickListener(this);
-        followerCount.setOnClickListener(this);
-        followingCount.setOnClickListener(this);
-        pointCount.setOnClickListener(this);
         expandedImageView.setOnClickListener(this);
         return view;
     }
@@ -134,6 +130,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         followingCount.setText(String.valueOf(0));
         followerCount.setText(String.valueOf(0));
         pointCount.setText(String.valueOf(0));
+        loadCount();
 
     }
 
@@ -153,32 +150,29 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     public void onClick(final View view) {
         switch (view.getId()){
             case R.id.setting_image:
-                startActivity(new Intent(getActivity(), SettingActivity.class));
+                if(getActivity()!=null) {
+                    startActivity(new Intent(getActivity(), SettingActivity.class));
+                    getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }
+
                 break;
             case R.id.profile_image:
-
                 startActivity(new Intent(getActivity(),ProfileImageActivity.class));
                 break;
             case (R.id.follower_text_view):
-                Toast.makeText(getActivity(), "follower text view is clicked", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.follower_count_number:
-                Toast.makeText(getActivity(), "follower text view is clicked", Toast.LENGTH_SHORT).show();
+                loadFollowers();
                 break;
             case R.id.following_text_view:
-                Toast.makeText(getActivity(), "following text view  is clicked", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.following_count_number:
-                Toast.makeText(getActivity(), "following text view  is clicked", Toast.LENGTH_SHORT).show();
+                loadFollowings();
                 break;
             case R.id.points_text_view:
-                Toast.makeText(getActivity(), "point text view  is clicked", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.point_count_number:
-                Toast.makeText(getActivity(), "point text view  is clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.expanded:
-                startActivity(new Intent(getActivity(), ExpandedViewPagerActivity.class));
+                if(getActivity()!=null) {
+                    startActivity(new Intent(getActivity(), ExpandedViewPagerActivity.class));
+                    getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }
+
                 break;
         }
     }
@@ -220,7 +214,50 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void loadCount(){
+        if(getActivity()!=null) {
+            SharedPreferences preferences = getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+            int mfollowerCount=preferences.getInt(Constants.followerCount, 0);
+            int mfollowingCount=preferences.getInt(Constants.followingCount, 0);
+            int mpointCount=preferences.getInt(Constants.point, 0);
+            followerCount.setText(String.valueOf(mfollowerCount));
+            followingCount.setText(String.valueOf(mfollowingCount));
+            pointCount.setText(String.valueOf(mpointCount));
 
+
+        }
+
+    }
+
+    private void loadFollowers(){
+        if(getActivity()!=null) {
+            SharedPreferences preferences = getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+            int count=preferences.getInt(Constants.followerCount, 0);
+            if(count>0){
+                Intent intent=new Intent(getActivity(),FollowActivity.class);
+                intent.putExtra("title", "followers");
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+            }else {
+                Toast.makeText(getActivity(), "No followers", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void loadFollowings(){
+        if(getActivity()!=null) {
+            SharedPreferences preferences = getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+            int count=preferences.getInt(Constants.followingCount, 0);
+            if(count>0){
+                Intent intent=new Intent(getActivity(),FollowActivity.class);
+                intent.putExtra("title", "followings");
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+            }else {
+                Toast.makeText(getActivity(), "No followings", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 
 }

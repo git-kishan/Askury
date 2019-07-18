@@ -44,6 +44,7 @@
             tools:text="Freenlancer|writer"
             android:maxLines="1"
             android:textSize="8sp"
+            tools:ignore="smallsp"
             app:layout_constraintEnd_toStartOf="@+id/share_image_view"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
@@ -73,6 +74,7 @@
             android:layout_marginStart="8dp"
             tools:text="5 sec ago"
             android:textSize="8sp"
+            tools:ignore="smallsp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
@@ -85,6 +87,8 @@
             android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:contentDescription="@string/answer_image_attached"
+            android:visibility="gone"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -107,6 +111,7 @@
                 android:id="@+id/question_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/question"
                  />
         </androidx.cardview.widget.CardView>
 
@@ -133,8 +138,9 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="2dp"
             android:alpha="0.5"
-            android:text="Tap to more"
+            tools:text="Tap to more"
             android:textSize="10sp"
+            tools:ignore="smallsp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/question_textview" />
