@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,7 +76,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
         timeAgo = itemView.findViewById(R.id.time_ago_textview);
         threeDot = itemView.findViewById(R.id.imageView4);
         rightRedHeart = itemView.findViewById(R.id.imageView11);
+        rightRedHeart.setVisibility(View.GONE);
         leftRedHeart = itemView.findViewById(R.id.imageView12);
+        leftRedHeart.setVisibility(View.GONE);
         rightWhiteHeart = itemView.findViewById(R.id.imageView9);
         leftWhiteHeart = itemView.findViewById(R.id.imageView7);
         text1 = itemView.findViewById(R.id.text1);
@@ -363,7 +366,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
                      image1.setLongClickable(false);
                      image2.setLongClickable(false);
                      constraintLayout.setVisibility(View.VISIBLE);
-                     constraintLayout.animate().translationY(0f).setDuration(50).start();
+//                     constraintLayout.animate().translationY(0f).setDuration(0).start();
                      Handler handler2 = new Handler();
                      handler2.postDelayed(new Runnable() {
                          @Override
@@ -403,7 +406,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
                              text2.setText(String.format("%s%%", msecondPercentage));
                              if (choice == 1) {
                                  leftRedHeart.setVisibility(View.VISIBLE);
-
                              } else if (choice == 2) {
                                  rightRedHeart.setVisibility(View.VISIBLE);
                              }
@@ -416,12 +418,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
     }
 
     void onProfileImageClicked(final Context context,final AskImagePollModel imagePollModel){
+        Activity activity=(Activity)context;
         Intent intent=new Intent(context, OtherAccountActivity.class);
         intent.putExtra("profile_image", imagePollModel.getAskerImageUrlLow());
         intent.putExtra("uid", imagePollModel.getAskerId());
         intent.putExtra("user_name", imagePollModel.getAskerName());
         intent.putExtra("bio", imagePollModel.getAskerBio());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_in_down);
     }
 
     void onThreeDotClicked(final Context context, final AskImagePollModel imagePollModel,

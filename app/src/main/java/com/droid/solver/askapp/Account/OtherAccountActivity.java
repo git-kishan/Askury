@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
@@ -179,6 +181,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
 
         switch (view.getId()){
             case R.id.circleImageView4:
+                Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
                 onProfileImageClicked();
                 break;
             case R.id.back_button:
@@ -187,16 +190,21 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
             case R.id.follow_button:
                 onFollowButtonClicked(STATUS);
                 break;
-
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
     }
 
     private void onProfileImageClicked(){
         Intent intent=new Intent(this,ProfileImageZoomActivity.class);
         intent.putExtra("uid", uid);
-        ActivityOptionsCompat optionsCompat=ActivityOptionsCompat.makeSceneTransitionAnimation(this,profileImage,
-                Objects.requireNonNull(ViewCompat.getTransitionName(profileImage)));
-        startActivity(intent,optionsCompat.toBundle());
+        ActivityOptionsCompat optionsCompat=ActivityOptionsCompat.makeSceneTransitionAnimation(OtherAccountActivity.this,
+                profileImage, profileImage.getTransitionName());
+        startActivity(intent);
     }
     private void onFollowButtonClicked(String status){
 

@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -201,6 +202,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
                 break;
         }
     }
+
     private void changeBackGroundOfLinearLayout(){
         container1.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.survey_outline_box, null));
         container2.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.survey_outline_box, null));
@@ -460,25 +462,51 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
         void showSelection(int selection,final AskSurveyModel surveyModel){
             animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
             animation.setDuration(500);
+            Handler handler=new Handler();
+
         if(selection==1){
-            showSelectionPercentage(surveyModel);
-            container1.startAnimation(animation);
-            changeColor(container1.getId());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    showSelectionPercentage(surveyModel);
+                    container1.startAnimation(animation);
+                    changeColor(container1.getId());
+                }
+            });
+
         }
         else if(selection==2){
-            showSelectionPercentage(surveyModel);
-            container2.startAnimation(animation);
-            changeColor(container2.getId());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    showSelectionPercentage(surveyModel);
+                    container2.startAnimation(animation);
+                    changeColor(container2.getId());
+                }
+            });
+
         }
         else if(selection==3){
-            showSelectionPercentage(surveyModel);
-            container3.startAnimation(animation);
-            changeColor(container3.getId());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    showSelectionPercentage(surveyModel);
+                    container3.startAnimation(animation);
+                    changeColor(container3.getId());
+                }
+            });
+
         }
         else if(selection==4){
-            showSelectionPercentage(surveyModel);
-            container4.startAnimation(animation);
-            changeColor(container4.getId());
+           handler.post(new Runnable() {
+               @Override
+               public void run() {
+                   showSelectionPercentage(surveyModel);
+                   container4.startAnimation(animation);
+                   changeColor(container4.getId());
+               }
+           });
+
         }else if(selection==0){
             //nothing to do
             Log.i("TAG", "survey selection :- "+selection);
@@ -489,12 +517,14 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
         }
 
         void onProfileImageClicked(final Context context,final AskSurveyModel surveyModel){
+            Activity activity=(Activity)context;
             Intent intent=new Intent(context, OtherAccountActivity.class);
             intent.putExtra("profile_image", surveyModel.getAskerName());
             intent.putExtra("uid", surveyModel.getAskerId());
             intent.putExtra("user_name", surveyModel.getAskerName());
             intent.putExtra("bio", surveyModel.getAskerBio());
             context.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_in_down);
 
         }
 
@@ -715,7 +745,6 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-
     private void onFollowClicked(final AskSurveyModel surveyModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
@@ -839,6 +868,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
             }
         }
         else {
+
             //sign in again
         }
     }

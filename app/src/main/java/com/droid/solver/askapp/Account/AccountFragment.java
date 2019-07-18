@@ -170,7 +170,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
             case R.id.expanded:
                 if(getActivity()!=null) {
                     startActivity(new Intent(getActivity(), ExpandedViewPagerActivity.class));
-                    getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                    getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_in_down);
                 }
 
                 break;

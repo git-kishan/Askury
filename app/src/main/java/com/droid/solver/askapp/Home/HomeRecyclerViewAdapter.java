@@ -45,6 +45,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         }
     }
 
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -124,12 +125,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
                 ((QuestionAnswerViewHolder) holder).question.setText(question);
 
-
                 String url = Constants.PROFILE_PICTURE + "/" +model.getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
                 StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);
                 GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder)
                         .into(((QuestionAnswerViewHolder) holder).answererImageView);
-
 
                 ((QuestionAnswerViewHolder) holder).timeAgo.setText(timeAgo);
                 recentAnswererName=recentAnswererName!=null?recentAnswererName:"Unknown";
@@ -231,7 +230,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             if(list.get(i) instanceof AskImagePollModel){
 
                 final AskImagePollModel model=(AskImagePollModel) list.get(i);
-
                 String askerId=model.getAskerId();
                 String askerName=model.getAskerName();
                 String askerBio=model.getAskerBio();
@@ -247,7 +245,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     ((ImagePollViewHolder) holder).showLike(context, image1LikeNo,
                             image2LikeNo, model.getOptionSelectedByMe());
                 }
-
                 askerName=askerName==null?"Unknown":askerName;
                 askerBio=askerBio==null?"":askerBio;
                 askerQuestion=askerQuestion==null?"":askerQuestion;
@@ -278,6 +275,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             }
 
         }
+
         else if(holder.getItemViewType()==SURVEY&&holder instanceof SurveyViewHolder){
             if(list.get(i) instanceof AskSurveyModel){
                 final AskSurveyModel model =(AskSurveyModel)list.get(i);
@@ -331,6 +329,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         }
 
     }
+
     @Override
     public int getItemCount() {
         return list==null?0:list.size();
@@ -351,6 +350,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         }
         return -1;
     }
+
     private String getTimeDifferenceInWords(long diff){
         long yearInMillis=365*24*60*60*1000L;
         long dayInMillis=24*60*60*1000L;//86400000
@@ -380,6 +380,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
         }
         return "";
     }
+
     private String getTime(long oldDate,long newDate){
         long diff=newDate-oldDate;//777600
         if (diff<0){

@@ -283,12 +283,14 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
             homeMessageListener.onSomeMessage("Anonymous user");
         }
         else {
+            Activity activity=(Activity)context;
             Intent intent=new Intent(context, OtherAccountActivity.class);
             intent.putExtra("profile_image", rootQuestionModel.getAskerImageUrlLow());
             intent.putExtra("uid", rootQuestionModel.getAskerId());
             intent.putExtra("user_name", rootQuestionModel.getAskerName());
             intent.putExtra("bio", rootQuestionModel.getAskerBio());
             context.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_in_down);
         }
 
 
@@ -299,12 +301,15 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
             homeMessageListener.onSomeMessage("Anonymous user");
 
         }else {
+            Activity activity=(Activity)context;
             Intent intent=new Intent(context, OtherAccountActivity.class);
             intent.putExtra("profile_image", rootQuestionModel.getRecentAnswererImageUrlLow());
             intent.putExtra("uid", rootQuestionModel.getRecentAnswererId());
             intent.putExtra("user_name", rootQuestionModel.getRecentAnswererName());
             intent.putExtra("bio", rootQuestionModel.getAskerBio());
             context.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_in_down);
+
         }
 
     }

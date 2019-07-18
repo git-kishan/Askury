@@ -40,7 +40,6 @@ import java.util.Stack;
 
 public class HomeFragment extends Fragment  {
 
-
     private static final int MAXIMUM_NO_OF_QUESTION_LOADED_AT_A_TIME=5;
     private static final int MAXIMUM_NO_OF_IMAGEMPOLL_LOADED_AT_A_TIME=1;
     private static final int MAXIMUM_NO_OF_SURVEY_LOADED_AT_A_TIME=1;
@@ -64,9 +63,7 @@ public class HomeFragment extends Fragment  {
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private Handler handler;
 
-    public HomeFragment() {
-    }
-
+    public HomeFragment() {}
 
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
@@ -95,27 +92,31 @@ public class HomeFragment extends Fragment  {
         imagePollLikeMapFromLocalDatabase=new HashMap<>();
         surveyParticipatedMapFromLocalDatabase=new HashMap<>();
         answerLikeListFromLocalDatabase=new ArrayList<>();
-        Handler handler=new Handler();
-        handler.post(new Runnable() {
+        return view;
+    }
+
+    private void loadListFromLocalDatabase(){
+        AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+
                 if(getActivity()!=null) {
                     LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
                     if(localDatabase.getImagePollReport()!=null)
-                    reportedImageListFromLocalDatabase.addAll(localDatabase.getImagePollReport());
+                        reportedImageListFromLocalDatabase.addAll(localDatabase.getImagePollReport());
                     if(localDatabase.getReportedSurvey()!=null)
-                    reportedSurveyListFromLocalDatabase.addAll(localDatabase.getReportedSurvey());
+                        reportedSurveyListFromLocalDatabase.addAll(localDatabase.getReportedSurvey());
                     if(localDatabase.getReportedQuestion()!=null)
-                    reportedQuestionFromLocalDatabase.addAll(localDatabase.getReportedQuestion());
+                        reportedQuestionFromLocalDatabase.addAll(localDatabase.getReportedQuestion());
                 }
             }
         });
-        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        loadListFromLocalDatabase();
         initRecyclerView();
         if(MainActivity.isFirstTimeHomeLoaded){
             loadDataFromRemoteDatabase();
@@ -175,22 +176,28 @@ public class HomeFragment extends Fragment  {
                                 !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
                             int i2 = 0;
 
-                            if(MainActivity.imagePollLikeMap!=null&&MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())) {
-                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                String s;
-                                if (i1 != null) {
-                                    s = i1.toString();
-                                    i2 = Integer.parseInt(s);
+                            if(MainActivity.imagePollLikeMap!=null) {
+
+                                if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
+                                    Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                    String s;
+                                    if (i1 != null) {
+                                        s = i1.toString();
+                                        i2 = Integer.parseInt(s);
+                                    }
                                 }
                             }
-                            else if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.
-                                    containsKey(askImagePollModel.getImagePollId())){
-                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                String s;
-                                if (i1 != null) {
-                                    s = i1.toString();
-                                    i2 = Integer.parseInt(s);
+                            else if(imagePollLikeMapFromLocalDatabase!=null){
+
+                                if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
+                                    Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                    String s;
+                                    if (i1 != null) {
+                                        s = i1.toString();
+                                        i2 = Integer.parseInt(s);
+                                    }
                                 }
+
                             }
                             askImagePollModel.setOptionSelectedByMe(i2);
                             imagePollModelStack.add(askImagePollModel);
@@ -215,9 +222,7 @@ public class HomeFragment extends Fragment  {
     private void loadSurveyFromRemoteDatabase(){
         rootRef=FirebaseFirestore.getInstance();
         CollectionReference surveyRef=rootRef.collection("survey");
-
         Query query=surveyRef.orderBy("timeOfSurvey", Query.Direction.DESCENDING).limit(MAXIMUM_NO_OF_SURVEY_LOADED_AT_A_TIME);
-
         if(getActivity()!=null)
         query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -228,23 +233,30 @@ public class HomeFragment extends Fragment  {
                         AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
                         if(askSurveyModel.getSurveyId()!=null&&
                                 !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())){
+
                             int i2=0;
-                            if(MainActivity.surveyParticipatedMap!=null&&MainActivity.surveyParticipatedMap.
-                                    containsKey(askSurveyModel.getSurveyId())){
-                                Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                String s;
-                                if(i1!=null){
-                                    s=i1.toString();
-                                    i2=Integer.parseInt(s);
+                            if(MainActivity.surveyParticipatedMap!=null){
+
+                                if (MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())) {
+                                    Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                    String s;
+                                    if(i1!=null){
+                                        s=i1.toString();
+                                        i2=Integer.parseInt(s);
+                                    }
                                 }
-                            }else if(surveyParticipatedMapFromLocalDatabase!=null&&surveyParticipatedMapFromLocalDatabase.
-                                    containsKey(askSurveyModel.getSurveyId())){
-                                Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                String s;
-                                if(i1!=null){
-                                    s=i1.toString();
-                                    i2=Integer.parseInt(s);
+
+                            }else if(surveyParticipatedMapFromLocalDatabase!=null){
+
+                                if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
+                                    Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                    String s;
+                                    if(i1!=null){
+                                        s=i1.toString();
+                                        i2=Integer.parseInt(s);
+                                    }
                                 }
+
                             }
                             askSurveyModel.setOptionSelectedByMe(i2);
                             surveyModelStack.add(askSurveyModel);
@@ -284,13 +296,15 @@ public class HomeFragment extends Fragment  {
                     if(task.getResult()!=null)
                     for(QueryDocumentSnapshot snapshot:task.getResult()){
                         RootQuestionModel questionModel=snapshot.toObject(RootQuestionModel.class);
+                        questionModel.setLikedByMe(false);
                         if(questionModel.getQuestionId()!=null&&
                                 !reportedQuestionFromLocalDatabase.contains(questionModel.getQuestionId())){
-                            if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.
-                                    contains(questionModel.getRecentAnswerId())){
-                                questionModel.setLikedByMe(true);
-                            }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.
-                                    contains(questionModel.getRecentAnswerId())){
+                            if(MainActivity.answerLikeList!=null){
+                                if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
+                                    questionModel.setLikedByMe(true);
+
+                            }else if(answerLikeListFromLocalDatabase!=null){
+                                if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
                                 questionModel.setLikedByMe(true);
                             }
                             questionModelStack.add(questionModel);
@@ -456,23 +470,30 @@ public class HomeFragment extends Fragment  {
                                     AskImagePollModel askImagePollModel = snapshot.toObject(AskImagePollModel.class);
                                     if (askImagePollModel.getImagePollId() != null &&
                                             !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
+
                                         int i2 = 0;
-                                        if(MainActivity.imagePollLikeMap!=null&&MainActivity.imagePollLikeMap.
-                                                containsKey(askImagePollModel.getImagePollId())) {
-                                            Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                            String s;
-                                            if (i1 != null) {
-                                                s = i1.toString();
-                                                i2 = Integer.parseInt(s);
+                                        if(MainActivity.imagePollLikeMap!=null) {
+
+                                            if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
+                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                String s;
+                                                if (i1 != null) {
+                                                    s = i1.toString();
+                                                    i2 = Integer.parseInt(s);
+                                                }
                                             }
-                                        }else if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.
-                                                containsKey(askImagePollModel.getImagePollId())){
-                                            Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                            String s;
-                                            if (i1 != null) {
-                                                s = i1.toString();
-                                                i2 = Integer.parseInt(s);
+
+                                        }else if(imagePollLikeMapFromLocalDatabase!=null){
+
+                                            if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
+                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                String s;
+                                                if (i1 != null) {
+                                                    s = i1.toString();
+                                                    i2 = Integer.parseInt(s);
+                                                }
                                             }
+
                                         }
                                         askImagePollModel.setOptionSelectedByMe(i2);
                                         imagePollModelStack.add(askImagePollModel);
@@ -512,23 +533,29 @@ public class HomeFragment extends Fragment  {
                                     if (askSurveyModel.getSurveyId() != null &&
                                             !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())) {
                                         int i2=0;
-                                        if(MainActivity.surveyParticipatedMap!=null&&MainActivity.surveyParticipatedMap.
-                                                containsKey(askSurveyModel.getSurveyId())){
-                                            Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                            String s;
-                                            if(i1!=null){
-                                                s=i1.toString();
-                                                i2=Integer.parseInt(s);
-                                            }
-                                        }else {
-                                            if(surveyParticipatedMapFromLocalDatabase!=null&&surveyParticipatedMapFromLocalDatabase.
-                                                    containsKey(askSurveyModel.getSurveyId())){
+                                        if(MainActivity.surveyParticipatedMap!=null){
+
+                                            if(MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())){
                                                 Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
                                                 String s;
                                                 if(i1!=null){
                                                     s=i1.toString();
                                                     i2=Integer.parseInt(s);
                                                 }
+                                            }
+
+                                        }else {
+                                            if(surveyParticipatedMapFromLocalDatabase!=null){
+
+                                                if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
+                                                    Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                                    String s;
+                                                    if(i1!=null){
+                                                        s=i1.toString();
+                                                        i2=Integer.parseInt(s);
+                                                    }
+                                                }
+
                                             }
                                         }
                                         askSurveyModel.setOptionSelectedByMe(i2);
@@ -553,7 +580,6 @@ public class HomeFragment extends Fragment  {
 
         rootRef=FirebaseFirestore.getInstance();
         CollectionReference questionRef=rootRef.collection("question");
-
         if(lastQuestionSnapshot!=null) {
             final Query query = questionRef
                     .whereGreaterThanOrEqualTo("answerCount", 1)
@@ -570,14 +596,19 @@ public class HomeFragment extends Fragment  {
                             if (task.getResult() != null)
                                 for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                     RootQuestionModel questionModel = snapshot.toObject(RootQuestionModel.class);
+                                    questionModel.setLikedByMe(false);
                                     if (questionModel.getQuestionId() != null &&
                                             !reportedQuestionFromLocalDatabase.contains(questionModel.getRecentAnswerId())) {
-                                        questionModelStack.add(questionModel);
-                                    }else {
-                                        if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.
-                                                contains(questionModel.getRecentAnswerId())){
-                                            questionModelStack.add(questionModel);
+
+                                        if(MainActivity.answerLikeList!=null){
+                                            if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
+                                                questionModel.setLikedByMe(true);
+
+                                        }else if(answerLikeListFromLocalDatabase!=null){
+                                            if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
+                                                questionModel.setLikedByMe(true);
                                         }
+                                        questionModelStack.add(questionModel);
                                     }
                                 }
                             if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {

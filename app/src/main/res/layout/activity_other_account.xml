@@ -29,6 +29,8 @@
                         android:layout_width="60dp"
                         android:transitionName="profile_image_transition"
                         android:layout_height="60dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="64dp"
                         android:background="@drawable/ripple_background"
