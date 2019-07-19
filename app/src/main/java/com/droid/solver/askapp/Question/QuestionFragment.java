@@ -129,7 +129,7 @@ public class QuestionFragment extends Fragment {
 
         speedDialView.addActionItem(
                 new SpeedDialActionItem.Builder(R.id.fab_action1, R.drawable.ic_imagepoll)
-                        .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.google_color,null))
+                        .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent,null))
                         .setLabel("Image poll")
                         .setLabelColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null))
                         .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), android.R.color.white,null))

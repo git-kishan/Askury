@@ -27,34 +27,34 @@
 
         <TextView
             android:id="@+id/profile_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            tools:text="Sahil Sekhawat"
+            android:layout_marginEnd="16dp"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/circleImageView4"
-            app:layout_constraintTop_toBottomOf="@+id/textView37" />
+            app:layout_constraintTop_toBottomOf="@+id/textView37"
+            tools:text="Sahil Sekhawat" />
 
         <TextView
             android:id="@+id/about"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:alpha="0.6"
-            tools:text="Author | Writer | Dancer | Actor"
             android:textColor="@android:color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/circleImageView4"
-            app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_name"
+            tools:text="Author | Writer | Dancer | Actor" />
 
         <TextView
             android:id="@+id/textView37"
@@ -251,7 +251,6 @@
                 android:layout_marginBottom="16dp">
 
 
-
                 <LinearLayout
                     android:id="@+id/linearLayout8"
                     android:layout_width="0dp"
@@ -267,7 +266,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
+                    app:layout_constraintTop_toTopOf="parent">
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -276,8 +276,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center|left"
-                            android:padding="8dp"
                             android:gravity="center"
+                            android:padding="8dp"
                             android:text="Notification"
                             android:textColor="@android:color/black"
                             android:textSize="14sp"

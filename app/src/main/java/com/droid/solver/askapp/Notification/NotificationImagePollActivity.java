@@ -54,6 +54,12 @@ public class NotificationImagePollActivity extends AppCompatActivity implements 
         removeNotificationFromRemoteDatabase();
 
     }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
+    }
     private void changeToolbarTitleFont(Toolbar toolbar){
         for(int i=0;i<toolbar.getChildCount();i++){
             View view=toolbar.getChildAt(i);

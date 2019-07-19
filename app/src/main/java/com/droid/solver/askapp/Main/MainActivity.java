@@ -351,9 +351,15 @@ public class MainActivity extends AppCompatActivity implements
                     set.addAll(answerLikeList);
                     answerLikeList.clear();
                     answerLikeList.addAll(set);
-                    LocalDatabase database = new LocalDatabase(getApplicationContext());
-                    database.clearAnswerLikeModel();
-                    database.insertAnswerLikeModel(answerLikeList);
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            LocalDatabase database = new LocalDatabase(getApplicationContext());
+                            database.clearAnswerLikeModel();
+                            database.insertAnswerLikeModel(answerLikeList);
+                        }
+                    });
+
 
                 }
             }
@@ -377,9 +383,15 @@ public class MainActivity extends AppCompatActivity implements
                         imagePollLikeMap.putAll(tempList.get(i));
                     }
                     tempList.clear();
-                    LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
-                    localDatabase.clearImagePollLikeModel();
-                    localDatabase.insertImagePollLikeModel(imagePollLikeMap);
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
+                            localDatabase.clearImagePollLikeModel();
+                            localDatabase.insertImagePollLikeModel(imagePollLikeMap);
+                        }
+                    });
+
 
                 }else {
                     Log.i("TAG", "error in fetching image poll like");
@@ -405,9 +417,15 @@ public class MainActivity extends AppCompatActivity implements
                         surveyParticipatedMap.putAll(tempList.get(i));
                     }
                     tempList.clear();
-                    LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
-                    localDatabase.clearSurveyParticipatedModel();
-                    localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
+                            localDatabase.clearSurveyParticipatedModel();
+                            localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
+                        }
+                    });
+
                 }else {
                     Log.i("TAG", "task is not successful in fetching survey participated documents");
                 }

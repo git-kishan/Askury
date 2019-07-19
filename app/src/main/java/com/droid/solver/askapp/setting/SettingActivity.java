@@ -71,7 +71,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private TextInputEditText userNameInputEditText, aboutInputEditText;
     private MaterialButton editButton, updateButton;
     private ChipGroup chipGroup;
-    private LinearLayout languageLayout, notificationLayout, privacyPolicyLayout, reportErrorLayout;
+    private LinearLayout  notificationLayout, privacyPolicyLayout, reportErrorLayout;
     private SwitchCompat notificationSwitch;
     private ImageView privacyPolicyImageButton, reportErrorImageButton;
     private List<String> savedInterestList, newInterestList;
@@ -97,7 +97,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         setting=findViewById(R.id.textView37);
         addInterest=findViewById(R.id.textView31);
         interestTextView=findViewById(R.id.textView38);
-        languageLayout=findViewById(R.id.linearLayout7);
+//        languageLayout=findViewById(R.id.linearLayout7);
         notificationLayout=findViewById(R.id.linearLayout8);
         privacyPolicyLayout=findViewById(R.id.linearLayout9);
         reportErrorLayout=findViewById(R.id.linearLayout10);
@@ -161,9 +161,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 intent.putExtra("activity", SETTING_ACTIVITY);
                 startActivityForResult(intent,INTEREST_REQUEST_CODE);
                 break;
-            case R.id.linearLayout7:
-                 Toast.makeText(this, "language ", Toast.LENGTH_SHORT).show();
-                break;
+//            case R.id.linearLayout7:
+//                 Toast.makeText(this, "language ", Toast.LENGTH_SHORT).show();
+//                break;
             case R.id.linearLayout8:
                 notificationSwitch.performClick();
                 break;

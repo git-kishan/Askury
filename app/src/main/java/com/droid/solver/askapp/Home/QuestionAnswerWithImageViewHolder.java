@@ -554,7 +554,7 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
             if(status==FOLLOW){
-
+                try{
                 String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
                 SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE);
                 String selfName=preferences.getString(Constants.userName, null);
@@ -577,7 +577,9 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                 Map<String ,Object> selfFollowingCountMap=new HashMap<>();
                 Map<String,Object> askerFollowerCountMap=new HashMap<>();
 
+                assert questionModel.getAskerId()!=null;
                 selfFollowingMap.put("followingId", questionModel.getAskerId());
+                assert questionModel.getAskerName()!=null;
                 selfFollowingMap.put("followingName",questionModel.getAskerName());
                 selfFollowingMap.put("followingImageUrl", questionModel.getAskerImageUrlLow());
                 selfFollowingMap.put("followingBio",questionModel.getAskerBio());
@@ -586,10 +588,12 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                 askerFollowerMap.put("followerId", selfUid);
                 assert selfName != null;
                 askerFollowerMap.put("followerName", selfName);
-                assert selfImageUrl != null;
-                askerFollowerMap.put("followerImageUrl", selfImageUrl);
-                assert selfBio != null;
-                askerFollowerMap.put("followerBio",selfBio);
+                if (selfImageUrl != null) {
+                    askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                }
+                if (selfBio != null) {
+                    askerFollowerMap.put("followerBio",selfBio);
+                }
                 askerFollowerMap.put("selfId", questionModel.getAskerId());
 
                 selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
@@ -609,16 +613,23 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Log.i("TAG", "follower add successfully");
-                            LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                            String followingId=questionModel.getAskerId();
-                            String followingName=questionModel.getAskerName();
-                            String followingImageUrl=questionModel.getAskerImageUrlLow();
-                            String followingBio=questionModel.getAskerBio();
+                            final String followingId=questionModel.getAskerId();
+                            final String followingName=questionModel.getAskerName();
+                            final String followingImageUrl=questionModel.getAskerImageUrlLow();
+                            final String followingBio=questionModel.getAskerBio();
                             Following following=new Following(followingId, followingName, followingImageUrl
                                     , followingBio);
-                            ArrayList<Following> followingsList=new ArrayList<>();
+                            final ArrayList<Following> followingsList=new ArrayList<>();
                             followingsList.add(following);
-                            database.insertFollowingModel(followingsList);
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LocalDatabase database=new LocalDatabase(context.getApplicationContext());
+                                    database.removeFollowingModel(followingId);
+                                    database.insertFollowingModel(followingsList);
+
+                                }
+                            });
 
 
                         }
@@ -626,6 +637,10 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                 }else {
                     homeMessageListener.onSomeMessage("No internet connection");
 
+                }
+
+                }catch (AssertionError e){
+                    Log.i("TAG", "Assertion error occurs in following user :- "+e.getMessage());
                 }
             }
             else if (status == UNFOLLOW) {
@@ -661,8 +676,14 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Log.i("TAG","unfollow successfully");
-                            LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
-                            database.removeFollowingModel(questionModel.getAskerId());
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
+                                    database.removeFollowingModel(questionModel.getAskerId());
+                                }
+                            });
+
 
                         }
                     });

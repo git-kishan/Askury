@@ -6,6 +6,8 @@ public class Follower{
     private String followerImageUrl;
     private String followerBio;
     private String selfId;
+
+    public Follower(){}
     public Follower(String followerId,String followerName,String followerImageUrl,String followerBio){
         this.followerId=followerId;
         this.followerName=followerName;

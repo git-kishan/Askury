@@ -1,32 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fadingEdge="horizontal"
+    android:fadingEdgeLength="30dp"
+    android:fillViewport="false"
+    android:requiresFadingEdge="vertical"
     android:background="@android:color/white"
-    android:layout_height="match_parent"
-    tools:context=".Home.ImagePollOpenActivity">
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/progress_card"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        app:cardCornerRadius="20dp"
+        android:elevation="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/image_view"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="visible"
+            android:interpolator="@android:anim/anticipate_overshoot_interpolator"
+            android:indeterminateTint="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.cardview.widget.CardView>
+
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@string/first_image"
+        android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/back_image" />
     <ImageView
-        android:id="@+id/image_view"
-        android:layout_marginTop="?android:actionBarSize"
-        android:layout_width="match_parent"
-        android:foregroundGravity="center"
-        android:layout_height="match_parent"/>
-    <ImageView
-        android:contentDescription="back"
+        android:contentDescription="@string/back"
         android:id="@+id/back_image"
         android:layout_width="25dp"
         android:layout_height="25dp"

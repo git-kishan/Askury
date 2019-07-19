@@ -38,6 +38,7 @@ import com.like.LikeButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -561,78 +562,91 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
      private void onFollowClicked(final RootQuestionModel questionModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
-            if(status==FOLLOW){
 
-                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-                String selfName=preferences.getString(Constants.userName, null);
-                String selfImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
-                String selfBio=preferences.getString(Constants.bio, null);
+            if(status==FOLLOW) {
 
-                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid).collection("following")
-                        .document(questionModel.getAskerId());
-                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(questionModel.getAskerId()).collection("follower")
-                        .document(selfUid);
-                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid);
-                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(questionModel.getAskerId());
+                try {
+                    String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                    String selfName = preferences.getString(Constants.userName, null);
+                    String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
+                    String selfBio = preferences.getString(Constants.bio, null);
 
-                Map<String,Object> selfFollowingMap=new HashMap<>();
-                Map<String,Object> askerFollowerMap=new HashMap<>();
-                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
-                Map<String,Object> askerFollowerCountMap=new HashMap<>();
+                    DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(selfUid).collection("following")
+                            .document(questionModel.getAskerId());
+                    DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(questionModel.getAskerId()).collection("follower")
+                            .document(selfUid);
+                    DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(selfUid);
+                    DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(questionModel.getAskerId());
 
-                selfFollowingMap.put("followingId", questionModel.getAskerId());
-                selfFollowingMap.put("followingName",questionModel.getAskerName());
-                selfFollowingMap.put("followingImageUrl", questionModel.getAskerImageUrlLow());
-                selfFollowingMap.put("followingBio",questionModel.getAskerBio());
-                selfFollowingMap.put("selfId", selfUid);
+                    Map<String, Object> selfFollowingMap = new HashMap<>();
+                    Map<String, Object> askerFollowerMap = new HashMap<>();
+                    Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                    Map<String, Object> askerFollowerCountMap = new HashMap<>();
 
-                askerFollowerMap.put("followerId", selfUid);
-                assert selfName != null;
-                askerFollowerMap.put("followerName", selfName);
-                assert selfImageUrl != null;
-                askerFollowerMap.put("followerImageUrl", selfImageUrl);
-                assert selfBio != null;
-                askerFollowerMap.put("followerBio",selfBio);
-                askerFollowerMap.put("selfId", questionModel.getAskerId());
+                    assert questionModel.getAskerId() != null;
+                    selfFollowingMap.put("followingId", questionModel.getAskerId());
+                    assert questionModel.getAskerName()!=null;
+                    selfFollowingMap.put("followingName", questionModel.getAskerName());
+                    selfFollowingMap.put("followingImageUrl", questionModel.getAskerImageUrlLow());
+                    selfFollowingMap.put("followingBio", questionModel.getAskerBio());
+                    selfFollowingMap.put("selfId", selfUid);
 
-                selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
-                askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+                    askerFollowerMap.put("followerId", selfUid);
+                    assert selfName != null;
+                    askerFollowerMap.put("followerName", selfName);
+                    askerFollowerMap.put("followerImageUrl",Objects.requireNonNull(selfImageUrl) );
+                    askerFollowerMap.put("followerBio", Objects.requireNonNull(selfBio));
+                    assert questionModel.getAskerId()!=null;
+                    askerFollowerMap.put("selfId", questionModel.getAskerId());
 
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
-                batch.set(askerFollowerRef, askerFollowerMap,SetOptions.merge());
-                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
-                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+                    selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+                    askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+
+                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                    batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
+                    batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
+                    batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                    batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
+
+                    if (isNetworkAvailable()) {
+                        followingListFromLocalDatabase.add(questionModel.getAskerId());
+                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.i("TAG", "follower add successfully");
+                                final String followingId = questionModel.getAskerId();
+                                String followingName = questionModel.getAskerName();
+                                String followingImageUrl = questionModel.getAskerImageUrlLow();
+                                String followingBio = questionModel.getAskerBio();
+                                final Following following = new Following(followingId, followingName, followingImageUrl
+                                        , followingBio);
+                                final ArrayList<Following> followingsList = new ArrayList<>();
+                                followingsList.add(following);
+
+                                AsyncTask.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                        database.removeFollowingModel(followingId);
+                                        database.insertFollowingModel(followingsList);
+
+                                    }
+                                });
+                            }
+                        });
 
 
+                    } else {
+                        homeMessageListener.onSomeMessage("No internet connection");
 
-                if(isNetworkAvailable()){
-                            followingListFromLocalDatabase.add(questionModel.getAskerId());
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.i("TAG", "follower add successfully");
-                            LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                            String followingId=questionModel.getAskerId();
-                            String followingName=questionModel.getAskerName();
-                            String followingImageUrl=questionModel.getAskerImageUrlLow();
-                            String followingBio=questionModel.getAskerBio();
-                            Following following=new Following(followingId, followingName, followingImageUrl
-                                    , followingBio);
-                            ArrayList<Following> followingsList=new ArrayList<>();
-                            followingsList.add(following);
-                            database.insertFollowingModel(followingsList);
-
-                        }
-                    });
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
-
+                    }
+                }catch (AssertionError e){
+                    Log.i("TAG", "Assertion error occurs in following user :- "+e.getLocalizedMessage());
                 }
             }
             else if (status == UNFOLLOW) {
@@ -668,8 +682,14 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Log.i("TAG","unfollow successfully");
-                            LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
-                            database.removeFollowingModel(questionModel.getAskerId());
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
+                                    database.removeFollowingModel(questionModel.getAskerId());
+                                }
+                            });
+
 
                         }
                     });

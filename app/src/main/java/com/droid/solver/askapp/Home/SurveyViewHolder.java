@@ -41,6 +41,8 @@ import com.google.firebase.firestore.WriteBatch;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 class SurveyViewHolder extends RecyclerView.ViewHolder {
@@ -287,15 +289,18 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
                     selectionMap.clear();
                     selectionLikeMap.clear();
                     Log.i("TAG", "survey  batch written complete");
-                    LocalDatabase localDatabase=new LocalDatabase(context.getApplicationContext());
-                    HashMap<String,Integer> participatedMap=new HashMap<>();
+                    final HashMap<String,Integer> participatedMap=new HashMap<>();
                     participatedMap.put(surveyModel.getSurveyId(),selection);
-                    localDatabase.insertSurveyParticipatedModel(participatedMap);
-
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            LocalDatabase localDatabase=new LocalDatabase(context.getApplicationContext());
+                            localDatabase.removeSurveyParticipatedModel(surveyModel.getSurveyId());
+                            localDatabase.insertSurveyParticipatedModel(participatedMap);
+                        }
+                    });
                 }
             });
-
-
 
         }
 
@@ -748,81 +753,91 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
     private void onFollowClicked(final AskSurveyModel surveyModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
-            if(status==FOLLOW){
+            if(status==FOLLOW) {
 
-                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE);
-                String selfName=preferences.getString(Constants.userName, null);
-                String selfImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
-                String selfBio=preferences.getString(Constants.bio, null);
+                try {
+                    String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+                    String selfName = preferences.getString(Constants.userName, null);
+                    String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
+                    String selfBio = preferences.getString(Constants.bio, null);
 
-                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid).collection("following")
-                        .document(surveyModel.getAskerId());
-                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(surveyModel.getAskerId()).collection("follower")
-                        .document(selfUid);
-                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid);
-                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(surveyModel.getAskerId());
+                    DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(selfUid).collection("following")
+                            .document(surveyModel.getAskerId());
+                    DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(surveyModel.getAskerId()).collection("follower")
+                            .document(selfUid);
+                    DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(selfUid);
+                    DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+                            .document(surveyModel.getAskerId());
 
-                Map<String,Object> selfFollowingMap=new HashMap<>();
-                Map<String,Object> askerFollowerMap=new HashMap<>();
-                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
-                Map<String,Object> askerFollowerCountMap=new HashMap<>();
+                    Map<String, Object> selfFollowingMap = new HashMap<>();
+                    Map<String, Object> askerFollowerMap = new HashMap<>();
+                    Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                    Map<String, Object> askerFollowerCountMap = new HashMap<>();
 
-                selfFollowingMap.put("followingId", surveyModel.getAskerId());
-                selfFollowingMap.put("followingName",surveyModel.getAskerName());
-                selfFollowingMap.put("followingImageUrl", surveyModel.getAskerImageUrlLow());
-                selfFollowingMap.put("followingBio",surveyModel.getAskerBio());
-                selfFollowingMap.put("selfId", selfUid);
+                    assert surveyModel.getAskerId() != null;
+                    selfFollowingMap.put("followingId", surveyModel.getAskerId());
+                    assert surveyModel.getAskerName() != null;
+                    selfFollowingMap.put("followingName", surveyModel.getAskerName());
+                    selfFollowingMap.put("followingImageUrl", surveyModel.getAskerImageUrlLow());
+                    selfFollowingMap.put("followingBio", surveyModel.getAskerBio());
+                    selfFollowingMap.put("selfId", selfUid);
 
-                askerFollowerMap.put("followerId", selfUid);
-                assert selfName != null;
-                askerFollowerMap.put("followerName", selfName);
-                assert selfImageUrl != null;
-                askerFollowerMap.put("followerImageUrl", selfImageUrl);
-                assert selfBio != null;
-                askerFollowerMap.put("followerBio",selfBio);
-                askerFollowerMap.put("selfId", surveyModel.getAskerId());
+                    askerFollowerMap.put("followerId", selfUid);
+                    assert selfName != null;
+                    askerFollowerMap.put("followerName", selfName);
+                    assert selfImageUrl != null;
+                    askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                    askerFollowerMap.put("followerBio", Objects.requireNonNull(selfBio));
+                    assert surveyModel.getAskerId() != null;
+                    askerFollowerMap.put("selfId", surveyModel.getAskerId());
 
-                selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
-                askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+                    selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+                    askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
 
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.set(selfFollowingRef, selfFollowingMap,SetOptions.merge());
-                batch.set(askerFollowerRef, askerFollowerMap,SetOptions.merge());
-                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
-                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
-
-
-
-                if(isNetworkAvailable()){
-                    followingListFromLocalDatabase.add(surveyModel.getAskerId());
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.i("TAG", "follower add successfully");
-                            LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                            String followingId=surveyModel.getAskerId();
-                            String followingName=surveyModel.getAskerName();
-                            String followingImageUrl=surveyModel.getAskerImageUrlLow();
-                            String followingBio=surveyModel.getAskerBio();
-                            Following following=new Following(followingId, followingName, followingImageUrl
-                                    , followingBio);
-                            ArrayList<Following> followingsList=new ArrayList<>();
-                            followingsList.add(following);
-                            database.insertFollowingModel(followingsList);
+                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                    batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
+                    batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
+                    batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                    batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
 
 
-                        }
-                    });
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
+                    if (isNetworkAvailable()) {
+                        followingListFromLocalDatabase.add(surveyModel.getAskerId());
+                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.i("TAG", "follower add successfully");
+                                final String followingId = surveyModel.getAskerId();
+                                String followingName = surveyModel.getAskerName();
+                                String followingImageUrl = surveyModel.getAskerImageUrlLow();
+                                String followingBio = surveyModel.getAskerBio();
+                                Following following = new Following(followingId, followingName, followingImageUrl
+                                        , followingBio);
+                                final ArrayList<Following> followingsList = new ArrayList<>();
+                                followingsList.add(following);
+                                AsyncTask.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                        database.removeFollowingModel(followingId);
+                                        database.insertFollowingModel(followingsList);
 
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        homeMessageListener.onSomeMessage("No internet connection");
+
+                    }
+                }catch (AssertionError e){
+                    Log.i("TAG", "Assertion error occurs in following :- "+e.getMessage());
                 }
-            }//end of follow
+            }
             else if (status == UNFOLLOW) {
 
                 String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();

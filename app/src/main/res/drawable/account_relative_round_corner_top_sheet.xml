@@ -5,6 +5,9 @@ android:shape="rectangle"
 <corners
     android:bottomRightRadius="15sp"
     android:bottomLeftRadius="15sp"/>
-    <solid
-        android:color="@color/accout_top_sheet_color"/>
+    <gradient
+        android:angle="270"
+        android:startColor="#82003d"
+        android:endColor="#E7687C"/>
+    />
 </shape>

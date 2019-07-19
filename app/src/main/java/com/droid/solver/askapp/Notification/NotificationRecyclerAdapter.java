@@ -82,7 +82,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             String timeAgo=getTime(notifiedTime, System.currentTimeMillis());
 
             likerName=likerName==null?"Someone":likerName;
-            String url= Constants.PROFILE_PICTURE+"/"+likerUid+Constants.SMALL_THUMBNAIL;
+            String url= Constants.PROFILE_PICTURE+"/"+likerUid+Constants.THUMBNAIL;
             StorageReference reference= FirebaseStorage.getInstance().getReference();
 
             GlideApp.with(context)
@@ -192,7 +192,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             long notifiedTime=model.getNotifiedTime();
             String answererId=model.getAnswererId();
             answererName=answererName==null?"Someone":answererName;
-            String imageUrl=Constants.PROFILE_PICTURE+"/"+answererId+Constants.SMALL_THUMBNAIL;
+            String imageUrl=Constants.PROFILE_PICTURE+"/"+answererId+Constants.THUMBNAIL;
             StorageReference reference = FirebaseStorage.getInstance().getReference();
 
             GlideApp.with(context)
@@ -218,7 +218,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             long  notifiedTime=model.getNotifiedTime();
 
             followerName=followerName==null?"Someone":followerName;
-            String imageUrl=Constants.PROFILE_PICTURE+"/"+followerId+Constants.SMALL_THUMBNAIL;
+            String imageUrl=Constants.PROFILE_PICTURE+"/"+followerId+Constants.THUMBNAIL;
             followerBio=followerBio==null?"":followerBio;
             String timeAgo=getTime(notifiedTime, System.currentTimeMillis());
 
@@ -238,7 +238,6 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             handleClickListenerOfFollower((FollowerViewHolder)holder,model);
         }
     }
-
     @Override
     public int getItemCount() {
         return list==null?0:list.size();
