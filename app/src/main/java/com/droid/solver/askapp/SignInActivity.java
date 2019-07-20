@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -63,7 +64,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     public static final int RC_SIGN_IN=313;
     private MaterialButton googleButton,facebookButton;
     private ConstraintLayout rootLayout;
-    private ProgressBar progressBar;
+    private CardView progressCard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +73,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         googleButton=findViewById(R.id.google_button);
         facebookButton=findViewById(R.id.facebook_button);
         rootLayout=findViewById(R.id.root_layout);
-        progressBar=findViewById(R.id.progress_bar);
+        progressCard=findViewById(R.id.progress_card);
         SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         callbackManager = CallbackManager.Factory.create();
         loginButton = findViewById(R.id.login_button);
@@ -106,7 +107,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         googleButton.setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View view) {
 
@@ -114,7 +114,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.google_button:
                 if(isNetworkAvailable()){
                     signInWithGoogle();
-                    progressBar.setVisibility(View.VISIBLE);
+                    progressCard.setVisibility(View.VISIBLE);
                 }else {
                     Snackbar.make(rootLayout, "No network available ", Snackbar.LENGTH_LONG).show();
                 }
@@ -122,7 +122,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.facebook_button:
                 if(isNetworkAvailable()){
                     loginButton.performClick();
-                    progressBar.setVisibility(View.VISIBLE);
+                    progressCard.setVisibility(View.VISIBLE);
                 }else {
                     Snackbar.make(rootLayout, "No network available", Snackbar.LENGTH_LONG).show();
                 }
@@ -140,6 +140,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             } catch (ApiException e) {
                 Snackbar.make(rootLayout, "Error occured in sign in,try again", Snackbar.LENGTH_LONG).show();
                 Log.i("TAG","Api exception occurs in sign in page" );
+                progressCard.setVisibility(View.GONE);
+            }catch (Exception e){
+                Snackbar.make(rootLayout, "Error occured in sign in,try again", Snackbar.LENGTH_LONG).show();
+                Log.i("TAG","Api exception occurs in sign in page" );
+                progressCard.setVisibility(View.GONE);
             }
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -156,15 +161,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             FirebaseFirestore db=FirebaseFirestore.getInstance();
                             Map<String,Object> userDetail = new HashMap<>();
                             FirebaseUser user = auth.getCurrentUser();
-                            String userName=user.getDisplayName();
-                            final String userId=user.getUid();
+                            if(user!=null) {
+                                String userName = user.getDisplayName();
+                                final String userId = user.getUid();
                                 userDetail.put("userName", userName);
                                 userDetail.put("userId", userId);
                                 db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                progressBar.setVisibility(View.GONE);
+                                                progressCard.setVisibility(View.GONE);
                                                 Log.i("TAG", "Sign in successfully through facebook");
                                                 Snackbar.make(rootLayout, "Please wait ...", Snackbar.LENGTH_LONG).show();
                                                 checkFirstTimeUser(userId);
@@ -174,11 +180,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         Snackbar.make(rootLayout, "Error occured in sign in", Snackbar.LENGTH_SHORT).show();
-                                        Log.i("TAG", "Error "+e.getLocalizedMessage());
+                                        Log.i("TAG", "Error " + e.getLocalizedMessage());
                                     }
                                 });
+                            }
+
                         } else {
-                            progressBar.setVisibility(View.GONE);
+                            progressCard.setVisibility(View.GONE);
                             Snackbar.make(rootLayout, "Sign in failed,try anoter methood", Snackbar.LENGTH_SHORT).show();
                         }
 
@@ -190,19 +198,19 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 Snackbar.make(rootLayout, "Sign in failed through facebook", Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 Snackbar.make(rootLayout, "Sign in failed through facebook", Snackbar.LENGTH_LONG).show();
                 Log.i("TAG", "Error occured in facebook sign in :- "+error.toString());
             }
@@ -235,7 +243,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             checkFirstTimeUser(userId);
-                                            progressBar.setVisibility(View.GONE);
+                                            progressCard.setVisibility(View.GONE);
                                             Snackbar.make(rootLayout,"Please wait ...",Snackbar.LENGTH_LONG).show();
 
                                         }
@@ -244,10 +252,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                 public void onFailure(@NonNull Exception e) {
                                     Snackbar.make(rootLayout, "Error occured in sign in", Snackbar.LENGTH_SHORT).show();
                                     Log.i("TAG", "Error "+e.getLocalizedMessage());
+                                    progressCard.setVisibility(View.GONE);
                                 }
                             });
 
                         } else {
+                            progressCard.setVisibility(View.GONE);
                             Snackbar.make(rootLayout, "Sign in failed,try another method",Snackbar.LENGTH_SHORT).show();
 
                         }
@@ -267,7 +277,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         userLikeRef.set(map, SetOptions.merge()).addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
                 finish();
                 Log.i("TAG", "array list created in remote database");
@@ -371,15 +381,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
                 }
             }
-
                 else {
                     Toast.makeText(SignInActivity.this, "Error occured", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
-
     private boolean isNetworkAvailable(){
         ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         if(manager!=null) {

@@ -8,25 +8,16 @@
     android:background="@android:color/black"
     android:layout_height="match_parent"
     tools:context=".Account.ProfileImageActivity">
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
     <ImageView
         android:id="@+id/image_edit"
         android:layout_width="wrap_content"
         android:clickable="true"
         android:focusable="true"
+        android:contentDescription="@string/change_profile_picture"
         android:background="@drawable/white_ripple"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -34,13 +25,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_edit_profile_image" />
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:elevation="5dp"
-        android:layout_marginTop="?android:actionBarSize"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="5dp"
         android:src="@drawable/round_account"
-        android:layout_height="match_parent" />
+        tools:layout_editor_absoluteX="-341dp"
+        tools:layout_editor_absoluteY="100dp" />
 
     <ImageView
         android:id="@+id/tick"
@@ -49,6 +42,7 @@
         android:layout_marginEnd="32dp"
         android:clickable="true"
         android:alpha="0.8"
+        android:contentDescription="@string/set_image"
         android:focusable="true"
         android:background="@drawable/white_ripple"
         app:layout_constraintBottom_toBottomOf="@+id/image_edit"
@@ -60,16 +54,47 @@
         android:id="@+id/back_image"
         android:layout_width="25dp"
         android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/white_ripple"
         android:clickable="true"
+        android:contentDescription="@string/back"
         android:focusable="true"
         android:padding="5dp"
-        android:background="@drawable/white_ripple"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        android:src="@drawable/ic_back_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_back_white" />
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/progress_card"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:backgroundTint="@android:color/white"
+        android:background="@android:color/white"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:cardElevation="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent">
 
-
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:interpolator="@android:anim/anticipate_overshoot_interpolator"
+            android:indeterminateTint="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

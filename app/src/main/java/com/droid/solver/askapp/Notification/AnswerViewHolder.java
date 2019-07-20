@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -18,15 +19,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
  class AnswerViewHolder extends RecyclerView.ViewHolder {
 
      CardView rootCardView;
-     CircleImageView profileImage,dot;
+     CircleImageView profileImage;
      TextView status,timeAgo;
+     FrameLayout frameLayout;
      AnswerViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card);
-        dot=itemView.findViewById(R.id.dot);
         timeAgo=itemView.findViewById(R.id.time_ago);
         profileImage=itemView.findViewById(R.id.liker_image);
         status=itemView.findViewById(R.id.text_view1);
+        frameLayout=itemView.findViewById(R.id.frameLayout);
 
     }
 
@@ -63,7 +65,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("likeCount", likeCount);
         intent.putExtra("imageAttached", model.isImageAttached());
         intent.putExtra("imageAttachedUrl", model.getImageAttachedUrl());
-        dot.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.GONE);
         context.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

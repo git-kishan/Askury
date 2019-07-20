@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -19,13 +20,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
     CardView rootCardView;
     TextView timeAgo;
     TextView statusTextView;
-    CircleImageView dot;
+    FrameLayout frameLayout;
      SurveyViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card);
         timeAgo=itemView.findViewById(R.id.time_ago);
         statusTextView=itemView.findViewById(R.id.text_view1);
-        dot=itemView.findViewById(R.id.dot);
+        frameLayout=itemView.findViewById(R.id.frameLayout);
     }
 
      void onCardClicked(Context context, SurveyModel model){
@@ -54,7 +55,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
          intent.putExtra("option2", model.isOption2());
          intent.putExtra("option3", model.isOption3());
          intent.putExtra("option4", model.isOption4());
-         dot.setVisibility(View.GONE);
+         frameLayout.setVisibility(View.GONE);
          context.startActivity(intent);
          activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -18,9 +19,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
  class QuestionViewHolder extends RecyclerView.ViewHolder {
 
     CardView rootCardView;
-    CircleImageView likerImage,dot;
+    CircleImageView likerImage;
     TextView timeAgo,statusTextView,likes;
-
+    FrameLayout frameLayout;
      QuestionViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card);
@@ -28,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         timeAgo=itemView.findViewById(R.id.time_ago);
         statusTextView=itemView.findViewById(R.id.text_view1);
         likes=itemView.findViewById(R.id.text_view2);
-        dot=itemView.findViewById(R.id.dot);
+        frameLayout=itemView.findViewById(R.id.frameLayout);
     }
 
      void onCardClicked(Context context, QuestionModel model){
@@ -49,8 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
          intent.putExtra("questionId", model.getQuestionId());
          intent.putExtra("type", model.getType());
          intent.putExtra("notifiedTime", model.getNotifiedTime());
-
-         dot.setVisibility(View.GONE);
+         frameLayout.setVisibility(View.GONE);
          context.startActivity(intent);
          activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

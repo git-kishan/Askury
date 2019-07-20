@@ -12,7 +12,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="52dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,8 +20,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/liker_image"
-            android:layout_width="40dp"
-            android:layout_height="0dp"
+            android:layout_width="36dp"
+            android:layout_height="35dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -30,20 +30,21 @@
             android:src="@android:color/holo_blue_dark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/text_view1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:gravity="center|start"
             android:maxLines="2"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/dot"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/liker_image"
             app:layout_constraintTop_toBottomOf="@+id/time_ago"
@@ -51,36 +52,36 @@
 
         <TextView
             android:id="@+id/time_ago"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            tools:text="7 minutes ago"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="8dp"
             android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/liker_image"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="smallsp" />
+            tools:ignore="smallsp"
+            tools:text="7 minutes ago" />
 
         <TextView
             android:id="@+id/text_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            tools:text="26 likes"
+            android:layout_marginBottom="5dp"
             android:textColor="@color/colorAccent"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/text_view1"
-            app:layout_constraintTop_toBottomOf="@+id/text_view1" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/dot"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_marginEnd="16dp"
-            android:src="@android:color/holo_blue_dark"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/text_view1"
+            tools:text="26 likes"
+            tools:ignore="smallsp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/frameLayout"
+        android:background="#10000000"
+        android:layout_height="match_parent"/>
 </androidx.cardview.widget.CardView>

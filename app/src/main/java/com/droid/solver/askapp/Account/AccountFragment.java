@@ -153,11 +153,19 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 if(getActivity()!=null) {
                     startActivity(new Intent(getActivity(), SettingActivity.class));
                     getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }else {
+                    Toast.makeText(getActivity(), "Can't proceed at this time", Toast.LENGTH_LONG).show();
                 }
 
                 break;
             case R.id.profile_image:
-                startActivity(new Intent(getActivity(),ProfileImageActivity.class));
+                if(getActivity()!=null) {
+                    startActivity(new Intent(getActivity(), ProfileImageActivity.class));
+                    getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }else {
+                    Toast.makeText(getActivity(), "Can't proceed at this time", Toast.LENGTH_LONG).show();
+                }
+
                 break;
             case (R.id.follower_text_view):
                 loadFollowers();
@@ -171,6 +179,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 if(getActivity()!=null) {
                     startActivity(new Intent(getActivity(), ExpandedViewPagerActivity.class));
                     getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_in_down);
+                }else {
+                    Toast.makeText(getActivity(), "Can't proceed at this time", Toast.LENGTH_LONG).show();
                 }
 
                 break;

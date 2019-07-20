@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -17,8 +18,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
  class ImagePollViewHolder extends RecyclerView.ViewHolder {
     CardView rootCardView;
-    CircleImageView image1,image2,dot;
+    CircleImageView image1,image2;
     TextView timeAgo,statusTextView,percent1,percent2;
+    FrameLayout frameLayout;
      ImagePollViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card_view);
@@ -28,7 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         statusTextView=itemView.findViewById(R.id.text_view1);
         percent1=itemView.findViewById(R.id.textViewa);
         percent2=itemView.findViewById(R.id.textViewb);
-        dot=itemView.findViewById(R.id.dot);
+        frameLayout=itemView.findViewById(R.id.frameLayout);
     }
 
 
@@ -54,11 +56,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("reported",model.isReported());
         intent.putExtra("type", model.getType());
         intent.putExtra("notifiedTime",model.getNotifiedTime());
-        dot.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.GONE);
         context.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
     }
+
     private void saveNotificationToLocalDatabase(final String notificationId, final ImagePollModel model, final Context context){
 
         AsyncTask.execute(new Runnable() {

@@ -64,16 +64,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public static String SETTING_ACTIVITY = "SettingActivity";
     private ConstraintLayout rootLayout;
     private CircleImageView profileImage;
-    private ImageView backImage;
-    private TextView profileName, about, setting, addInterest;
+    private TextView addInterest;
     private TextView interestTextView;
     private TextInputLayout userNameInputLayout, aboutInputLayout;
     private TextInputEditText userNameInputEditText, aboutInputEditText;
     private MaterialButton editButton, updateButton;
     private ChipGroup chipGroup;
-    private LinearLayout  notificationLayout, privacyPolicyLayout, reportErrorLayout;
     private SwitchCompat notificationSwitch;
-    private ImageView privacyPolicyImageButton, reportErrorImageButton;
     private List<String> savedInterestList, newInterestList;
     private String savedUserName, newUserName, newAbout, savedAbout;
 
@@ -82,7 +79,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         profileImage=findViewById(R.id.circleImageView4);
-        backImage=findViewById(R.id.back_image);
+        ImageView backImage=findViewById(R.id.back_image);
         rootLayout=findViewById(R.id.root_layout);
         userNameInputLayout=findViewById(R.id.user_name_input_layout);
         userNameInputEditText=findViewById(R.id.user_name_input_edit_text);
@@ -92,18 +89,17 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         updateButton=findViewById(R.id.update_button);
         updateButton.setEnabled(false);
         chipGroup=findViewById(R.id.chipGroup);
-        profileName=findViewById(R.id.profile_name);
-        about=findViewById(R.id.about);
-        setting=findViewById(R.id.textView37);
+        TextView profileName=findViewById(R.id.profile_name);
+        TextView about=findViewById(R.id.about);
+        TextView setting=findViewById(R.id.textView37);
         addInterest=findViewById(R.id.textView31);
         interestTextView=findViewById(R.id.textView38);
-//        languageLayout=findViewById(R.id.linearLayout7);
-        notificationLayout=findViewById(R.id.linearLayout8);
-        privacyPolicyLayout=findViewById(R.id.linearLayout9);
-        reportErrorLayout=findViewById(R.id.linearLayout10);
+        LinearLayout notificationLayout=findViewById(R.id.linearLayout8);
+        LinearLayout privacyPolicyLayout=findViewById(R.id.linearLayout9);
+        LinearLayout reportErrorLayout=findViewById(R.id.linearLayout10);
         notificationSwitch=findViewById(R.id.notification_switch);
-        privacyPolicyImageButton=findViewById(R.id.privacy_policy_image);
-        reportErrorImageButton=findViewById(R.id.report_error_image);
+        ImageView privacyPolicyImageButton=findViewById(R.id.privacy_policy_image);
+        ImageView reportErrorImageButton=findViewById(R.id.report_error_image);
         updateButton.setVisibility(View.GONE);
         userNameInputLayout.setEnabled(false);
         aboutInputLayout.setEnabled(false);
@@ -132,7 +128,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         profileName.setText(savedUserName);
         about.setText(savedAbout);
         if(interestString!=null) {
-//            Log.i("TAG", "interest :- "+interestString);
             String[] interestArr = interestString.split("@");
             savedInterestList = Arrays.asList(interestArr);
         }
@@ -161,9 +156,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 intent.putExtra("activity", SETTING_ACTIVITY);
                 startActivityForResult(intent,INTEREST_REQUEST_CODE);
                 break;
-//            case R.id.linearLayout7:
-//                 Toast.makeText(this, "language ", Toast.LENGTH_SHORT).show();
-//                break;
             case R.id.linearLayout8:
                 notificationSwitch.performClick();
                 break;
@@ -318,7 +310,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             if(isNetworkAvailable()){
 
                 final Map<String,Object> userMap=new HashMap<>();
+                if(userNameInputEditText.getText()!=null)
                 userMap.put("userName",userNameInputEditText.getText().toString());
+                if(aboutInputEditText.getText()!=null)
                 userMap.put("bio", aboutInputEditText.getText().toString());
                 userMap.put("interest", tempList);
                 if(FirebaseAuth.getInstance().getCurrentUser()!=null){
@@ -365,9 +359,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
 
     }
+
     private boolean  validateProfileUpdation(){
 
-         if(userNameInputEditText.getText().toString().length()==0){
+         if(userNameInputEditText.getText()!=null&&userNameInputEditText.getText().toString().length()==0){
              Snackbar.make(rootLayout, "User name can't be empty", Snackbar.LENGTH_LONG).show();
              return false;
          }
@@ -420,7 +415,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     private boolean isNetworkAvailable(){
         ConnectivityManager manager= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=manager.getActiveNetworkInfo();
-        return activeNetworkInfo!=null&&activeNetworkInfo.isConnected();
+        if(manager!=null) {
+            NetworkInfo activeNetworkInfo = manager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }return false;
     }
 }

@@ -66,8 +66,7 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:focusedByDefault="true"
-            android:text="Setting"
+            android:text="@string/setting"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -80,6 +79,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginStart="16dp"
+            android:contentDescription="@string/back"
             android:background="@drawable/ripple_background"
             android:padding="5dp"
             android:layout_marginTop="16dp"
@@ -93,12 +93,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Edit profile"
+            android:text="@string/edit_profile"
             android:textSize="10sp"
             android:textAllCaps="false"
             android:textColor="@android:color/black"
             app:layout_constraintStart_toEndOf="@+id/circleImageView4"
-            app:layout_constraintTop_toBottomOf="@+id/about" />
+            app:layout_constraintTop_toBottomOf="@+id/about"
+            tools:ignore="smallsp"
+            />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView14"
@@ -124,7 +126,7 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="16dp"
                     android:focusableInTouchMode="true"
-                    android:hint="Username"
+                    android:hint="@string/username"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -145,7 +147,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="About you"
+                    android:hint="@string/about_you"
                     app:helperText="Preffered way  (Actor | Dancer | Student)"
                     app:helperTextEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -170,7 +172,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="24dp"
                     android:alpha="0.2"
-                    android:text="Interests"
+                    android:text="@string/interest"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toTopOf="@+id/update_button"
@@ -198,14 +200,14 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/update_button"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:layout_marginBottom="16dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="Update profile"
+                    android:text="@string/update_profile"
                     android:textAllCaps="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -222,7 +224,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="5dp"
-                    android:text="Add interests"
+                    android:text="@string/add_interest"
                     android:textColor="@color/colorAccent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
@@ -275,10 +277,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_gravity="center|left"
+                            android:layout_gravity="center|start"
                             android:gravity="center"
                             android:padding="8dp"
-                            android:text="Notification"
+                            android:text="@string/Notification"
                             android:textColor="@android:color/black"
                             android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -291,8 +293,8 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center|end"
                             android:layout_marginEnd="5dp"
-                            android:textOff="Off"
-                            android:textOn="On"
+                            android:textOff="@string/off"
+                            android:textOn="@string/on"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -323,18 +325,18 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
-                        android:gravity="center|left"
+                        android:gravity="center|start"
                         android:padding="8dp"
-                        android:text="Privacy policy"
+                        android:text="@string/privacy_policy"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
+                        android:layout_marginStart="8dp"
                         android:layout_weight="5"
-                        android:gravity="center|right"
+                        android:gravity="center|start"
                         android:textSize="12sp" />
 
                     <ImageView
@@ -342,6 +344,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:contentDescription="@string/privacy_policy"
                         android:background="@drawable/ripple_background"
                         android:clickable="true"
                         android:focusable="true"
@@ -372,9 +375,9 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
-                        android:gravity="center|left"
+                        android:gravity="center|start"
                         android:padding="8dp"
-                        android:text="Report error"
+                        android:text="@string/report_error"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
@@ -382,7 +385,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="5"
-                        android:gravity="center|right"
+                        android:gravity="center|start"
                         android:textSize="12sp" />
 
                     <ImageView
@@ -393,6 +396,7 @@
                         android:background="@drawable/ripple_background"
                         android:clickable="true"
                         android:focusable="true"
+                        android:contentDescription="@string/report_error"
                         android:padding="8dp"
                         android:rotation="180"
                         app:srcCompat="@drawable/ic_back_black" />

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -16,16 +17,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
  class FollowerViewHolder extends RecyclerView.ViewHolder {
     CardView rootCardView;
-    CircleImageView profileImage,dot;
+    CircleImageView profileImage;
     TextView status,timeAgo,bio;
+    FrameLayout frameLayout;
      FollowerViewHolder(@NonNull View itemView) {
         super(itemView);
         rootCardView=itemView.findViewById(R.id.root_card);
         profileImage=itemView.findViewById(R.id.liker_image);
-        dot=itemView.findViewById(R.id.dot);
         timeAgo=itemView.findViewById(R.id.time_ago);
         status=itemView.findViewById(R.id.text_view1);
         bio=itemView.findViewById(R.id.bio);
+        frameLayout=itemView.findViewById(R.id.frameLayout);
     }
     void onCardClicked(final Context context,final FollowerModel model){
         if(!model.isStoredLocally()){
@@ -39,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("user_name", model.getFollowerName());
         intent.putExtra("bio", model.getFollowerBio());
         intent.putExtra("notification", true);
-        dot.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.GONE);
         context.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

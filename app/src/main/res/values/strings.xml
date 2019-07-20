@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">AsQry</string>
+    <string name="app_name" translatable="false">Askury</string>
     <string name="facebook_app_id" translatable="false">395972514579548</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb395972514579548</string>
     <string name="optionsNum">options %1$d</string>
@@ -59,6 +59,22 @@
     <string name="points" translatable="false">Points</string>
     <string name="expand" translatable="false">Expand</string>
     <string name="back" translatable="false">back</string>
+    <string name="edit_profile" translatable="false">Edit profile</string>
+    <string name="username" translatable="false">Username</string>
+    <string name="about_you" translatable="false">About you</string>
+    <string name="interest" translatable="false">Interests</string>
+    <string name="update_profile" translatable="false">Update profile</string>
+    <string name="add_interest" translatable="false">Add interests</string>
+    <string name="Notification" translatable="false">Notification</string>
+    <string name="off" translatable="false">Off</string>
+    <string name="on" translatable="false">On</string>
+    <string name="privacy_policy" translatable="false">Privacy policy</string>
+    <string name="report_error" translatable="false">Report error</string>
+    <string name="set_image" translatable="false">Set image as profile picture</string>
+    <string name="change_profile_picture" translatable="false">Change profile picture</string>
+    <string name="login_with_facebook" translatable="false">Log in with facebook</string>
+    <string name="login_with_google" translatable="false">Log in with google</string>
+
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>

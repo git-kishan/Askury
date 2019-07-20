@@ -14,7 +14,9 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -24,7 +26,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
@@ -53,7 +54,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileImageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -66,7 +66,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
     private FirebaseUser user;
     private ConstraintLayout rootView;
     private UploadTask uploadTask;
-    private ProgressBar progressBar;
+    private CardView progressCard;
     private byte [] largeBitmapByteArray=null;
     private  byte [] smallBitmapByteArray=null;
     private Bitmap thumbnail=null,smallThumbnail=null;
@@ -86,8 +86,8 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         tickImage=findViewById(R.id.tick);
         rootView=findViewById(R.id.root);
         tickImage.setVisibility(View.GONE);
-        progressBar=findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.GONE);
+        progressCard=findViewById(R.id.progress_card);
+        progressCard.setVisibility(View.GONE);
         tickImage.setOnClickListener(this);
         backImage.setOnClickListener(this);
         editImage.setOnClickListener(this);
@@ -105,6 +105,14 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             }, 1500);
         }
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
+    }
+
     private void loadProfilePicFromFile(){
         Log.i("TAG", "load from file ");
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -286,7 +294,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
     private void uploadThumbnailToRemoteDatabase(byte [] thumbnailByteArray, final byte [] smallThumbnailArray,
                                                  final Bitmap thumbnail, final Bitmap smallThumbnail){
 
-        progressBar.setVisibility(View.VISIBLE);
+        progressCard.setVisibility(View.VISIBLE);
         final String uid=user.getUid();
         String thumbnailName=uid+THUMBNAIL;
         final StorageReference thumbnailRef= FirebaseStorage.getInstance().getReference().child(PROFILE_PICTURE)
@@ -297,12 +305,23 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 uploadSmallThumbnailToRemoteDatabase(smallThumbnailArray);
                 uploadUrlToRemoteDatabase(thumbnail, smallThumbnail);
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                Glide.get(ProfileImageActivity.this).clearDiskCache();
+                            }
+                        });
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 tickImage.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 Snackbar.make(rootView, "Error occured !,try again", Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -323,7 +342,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onFailure(@NonNull Exception e) {
                 tickImage.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 Snackbar.make(rootView, "Error occured ! ,try again", Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -350,14 +369,14 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                saveProfileImagePathToSharedPreferences(path, false, true);
                 path=saveProfilePicBitmapToFile(smallThumbnail, true, false);
                 saveProfileImagePathToSharedPreferences(path, true, false);
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 Snackbar.make(rootView, "Profile Picture updated successfully",Snackbar.LENGTH_INDEFINITE ).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 tickImage.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                progressCard.setVisibility(View.GONE);
                 Snackbar.make(rootView, "Profile Picture uploading failed,try again",Snackbar.LENGTH_LONG).show();
             }
         });

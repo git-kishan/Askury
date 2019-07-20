@@ -1,8 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,8 +9,11 @@
 
     </style>
     <style name="Widget.CustomBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="android:fontFamily">@font/bubbler_one</item>
+        <item name="android:fontFamily">@font/bitter</item>
 
+    </style>
+    <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">10sp</item>
     </style>
     <style name="QuestionActivitytoolbarActionButton" parent="Widget.AppCompat.ActionButton">
         <item name="android:layout_marginRight">10dp</item>

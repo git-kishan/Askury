@@ -12,7 +12,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:foreground="?android:selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="52dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -23,14 +23,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:gravity="center|start"
             android:maxLines="2"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/dot"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image2"
             app:layout_constraintTop_toBottomOf="@+id/time_ago"
             tools:text="Image poll update question" />
@@ -40,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="3dp"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/image2"
             app:layout_constraintTop_toTopOf="parent"
@@ -49,11 +48,11 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/image1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:clickable="true"
             android:focusable="true"
             android:src="@android:color/darker_gray"
@@ -63,13 +62,13 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/image2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginBottom="16dp"
             android:src="@android:color/holo_blue_dark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,34 +79,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            tools:text="A :- 57%"
+            android:layout_marginBottom="5dp"
             android:textColor="@color/colorAccent"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image2"
-            app:layout_constraintTop_toBottomOf="@+id/text_view1" />
+            app:layout_constraintTop_toBottomOf="@+id/text_view1"
+            app:layout_constraintVertical_bias="0.19999999"
+            tools:text="A :- 57%"
+            tools:ignore="smallsp"
+            />
 
         <TextView
             android:id="@+id/textViewb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            tools:text="B :- 63%"
+            android:layout_marginBottom="5dp"
             android:textColor="@color/colorAccent"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textViewa"
-            app:layout_constraintTop_toBottomOf="@+id/text_view1" />
+            app:layout_constraintTop_toBottomOf="@+id/text_view1"
+            app:layout_constraintVertical_bias="0.19"
+            tools:text="B :- 63%"
+            tools:ignore="smallsp"
+            />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/dot"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_marginEnd="16dp"
-            android:src="@android:color/holo_blue_dark"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/frameLayout"
+        android:background="#10000000"
+        android:layout_height="match_parent"/>
 
 </androidx.cardview.widget.CardView>

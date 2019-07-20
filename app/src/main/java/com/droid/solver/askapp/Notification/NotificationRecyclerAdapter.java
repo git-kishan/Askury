@@ -88,7 +88,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             GlideApp.with(context)
                     .load(reference.child(url))
                     .placeholder(android.R.color.holo_blue_dark)
-                    .error(R.drawable.ic_placeholder)
+                    .error(android.R.color.holo_blue_dark)
                     .into(((QuestionViewHolder) holder).likerImage);
 
             String likes=String.format(context.getString(R.string.someone_likes_your_answer), likerName);
@@ -96,7 +96,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             ((QuestionViewHolder) holder).timeAgo.setText(timeAgo);
 
             if(model.isStoredLocally())
-                ((QuestionViewHolder) holder).dot.setVisibility(View.GONE);
+                ((QuestionViewHolder) holder).frameLayout.setVisibility(View.GONE);
 
             handleClickListenerOfQuestion((QuestionViewHolder) holder, model);
 
@@ -165,7 +165,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
                     .into(((ImagePollViewHolder) holder).image2);
 
             if(model.isStoredLocally())
-                ((ImagePollViewHolder) holder).dot.setVisibility(View.GONE);
+                ((ImagePollViewHolder) holder).frameLayout.setVisibility(View.GONE);
 
             handleClickListenerOfImagePoll((ImagePollViewHolder) holder, model);
 
@@ -181,7 +181,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             ((SurveyViewHolder) holder).statusTextView.setText(question);
 
             if(model.isStoredLocally())
-                ((SurveyViewHolder) holder).dot.setVisibility(View.GONE);
+                ((SurveyViewHolder) holder).frameLayout.setVisibility(View.GONE);
 
             handleClickListenerOfSurvey((SurveyViewHolder) holder, model);
 
@@ -206,7 +206,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
             ((AnswerViewHolder) holder).status.setText(status);
 
             if(model.isStoredLocally())
-                ((AnswerViewHolder) holder).dot.setVisibility(View.GONE);
+                ((AnswerViewHolder) holder).frameLayout.setVisibility(View.GONE);
 
             handleClickListenerOfAnswer((AnswerViewHolder)holder,model);
         }else if(holder instanceof FollowerViewHolder && list.get(i) instanceof FollowerModel){
@@ -233,7 +233,7 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
                     .error(android.R.color.holo_red_light)
                     .into(((FollowerViewHolder) holder).profileImage);
             if(model.isStoredLocally())
-                ((FollowerViewHolder) holder).dot.setVisibility(View.GONE);
+                ((FollowerViewHolder) holder).frameLayout.setVisibility(View.GONE);
 
             handleClickListenerOfFollower((FollowerViewHolder)holder,model);
         }
