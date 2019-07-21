@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:scrollbars="vertical"
         android:visibility="visible"
-        android:scrollbarSize="100dp"
         android:fadeScrollbars="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_height="match_parent"/>

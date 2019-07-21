@@ -9,9 +9,6 @@
     android:layout_height="match_parent"
     tools:context=".Account.ProfileImageActivity">
 
-
-
-
     <ImageView
         android:id="@+id/image_edit"
         android:layout_width="wrap_content"
@@ -26,14 +23,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_edit_profile_image" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="5dp"
         android:src="@drawable/round_account"
-        tools:layout_editor_absoluteX="-341dp"
-        tools:layout_editor_absoluteY="100dp" />
+       />
 
     <ImageView
         android:id="@+id/tick"

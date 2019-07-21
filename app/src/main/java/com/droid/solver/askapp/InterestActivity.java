@@ -121,12 +121,14 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                                 }, 300);
                                 try {
                                     String chipText = chip.getText().toString();
-                                    int chipId = chipMap.get(chipText);
-                                    chipMap.remove(chipText);
-                                    Chip bottomChip = chipGroup.findViewById(chipId);
-                                    bottomChip.startAnimation(fadeIn);
-                                    bottomChip.setVisibility(View.VISIBLE);
-                                    bottomChip.setChecked(false);
+                                    Integer chipId = chipMap.get(chipText);
+                                    if(chipId!=null) {
+                                        chipMap.remove(chipText);
+                                        Chip bottomChip = chipGroup.findViewById(chipId);
+                                        bottomChip.startAnimation(fadeIn);
+                                        bottomChip.setVisibility(View.VISIBLE);
+                                        bottomChip.setChecked(false);
+                                    }
                                 }catch (NullPointerException e){
                                     Log.i("TAG", "NullPointerException occurs in unboxing chip text ,Interest Activity ,"+e.getMessage());
                                 }
@@ -137,6 +139,14 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+
     }
 
     @Override
@@ -188,6 +198,7 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                                         editor.apply();
                                         alertDialog.dismiss();
                                         startActivity(new Intent(InterestActivity.this, MainActivity.class));
+                                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                                         finish();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {

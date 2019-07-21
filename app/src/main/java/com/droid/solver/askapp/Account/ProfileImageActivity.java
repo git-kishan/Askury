@@ -54,12 +54,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import de.hdodenhof.circleimageview.CircleImageView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ProfileImageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView tickImage;
-    private CircleImageView imageView;
+    private ImageView imageView;
     private static final int IMAGE_PICKER_REQUEST=351;
     private static final int IMAGE_PICKER=154;
     private Uri cropImageUri=null;

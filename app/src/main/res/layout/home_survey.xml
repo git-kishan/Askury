@@ -39,10 +39,12 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                tools:ignore="UselessParent">
 
-                <View
+                <LinearLayout
                     android:id="@+id/view1"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
@@ -105,7 +107,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name"
-            tools:text="Freenlancer|writer" />
+            tools:text="Freenlancer|writer"
+            tools:ignore="smallsp"
+            />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/question_textview"
@@ -148,7 +152,7 @@
             android:background="@drawable/ripple_background"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="option"
+            android:contentDescription="@string/option"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -171,9 +175,11 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <View
+                android:layout_height="match_parent"
+                tools:ignore="UselessParent">
+                <LinearLayout
                     android:id="@+id/view2"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
@@ -218,8 +224,10 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <View
+                android:layout_height="match_parent"
+                tools:ignore="UselessParent">
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:id="@+id/view3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
@@ -228,9 +236,11 @@
                     android:id="@+id/option3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_alignTop="@+id/view3"
                     android:layout_alignBottom="@+id/view3"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
-                    android:layout_centerInParent="true"
                     android:gravity="center"
                     tools:text="Undemocrate China" />
                 <androidx.emoji.widget.EmojiTextView
@@ -269,10 +279,12 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <View
+                android:layout_height="match_parent"
+                tools:ignore="UselessParent">
+                <LinearLayout
                     android:id="@+id/view4"
                     android:layout_width="match_parent"
+                    android:orientation="horizontal"
                     android:layout_height="match_parent"/>
                 <androidx.emoji.widget.EmojiTextView
                     android:id="@+id/option4"

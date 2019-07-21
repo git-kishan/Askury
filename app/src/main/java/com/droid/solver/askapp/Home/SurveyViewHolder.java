@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import androidx.annotation.NonNull;
@@ -12,7 +13,6 @@ import androidx.emoji.widget.EmojiTextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
@@ -52,7 +52,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
     LinearLayout container1,container2,container3,container4;
     EmojiTextView option1TextView,option2TextView,option3TextView,option4TextView;
     private EmojiTextView percent1,percent2,percent3,percent4;
-    private View view1,view2,view3,view4;
+    private LinearLayout view1,view2,view3,view4;
     private Context context;
     private Animation animation;
     private FirebaseUser user;
@@ -161,42 +161,46 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void changeColor(int id){
+
+        Drawable lightGreenDrawable=ResourcesCompat.getDrawable(context.getResources(), R.drawable.round_corner_light_green, null);
+        Drawable lightPinkDrawable=ResourcesCompat.getDrawable(context.getResources(), R.drawable.round_corner_light_pink, null);
+
         switch (id){
             case R.id.linearLayout3:
-                view1.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_green, null));
-                view2.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view3.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view4.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
+                view1.setBackground(lightGreenDrawable);
+                view2.setBackground(lightPinkDrawable);
+                view3.setBackground(lightPinkDrawable);
+                view4.setBackground(lightPinkDrawable);
                 option1TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_green, null));
                 option2TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option3TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option4TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 break;
             case R.id.linearLayout4:
-                view1.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view2.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_green, null));
-                view3.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view4.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
+                view1.setBackground(lightPinkDrawable);
+                view2.setBackground(lightGreenDrawable);
+                view3.setBackground(lightPinkDrawable);
+                view4.setBackground(lightPinkDrawable);
                 option1TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option2TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_green, null));
                 option3TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option4TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 break;
             case R.id.linearLayout5:
-                view1.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view2.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view3.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_green, null));
-                view4.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
+                view1.setBackground(lightPinkDrawable);
+                view2.setBackground(lightPinkDrawable);
+                view3.setBackground(lightGreenDrawable);
+                view4.setBackground(lightPinkDrawable);
                 option1TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option2TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option3TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_green, null));
                 option4TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 break;
             case R.id.linearLayout6:
-                view1.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view2.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view3.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_pink, null));
-                view4.setBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_light_green, null));
+                view1.setBackground(lightPinkDrawable);
+                view2.setBackground(lightPinkDrawable);
+                view3.setBackground(lightPinkDrawable);
+                view4.setBackground(lightGreenDrawable);
                 option1TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option2TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));
                 option3TextView.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.survey_dark_pink, null));

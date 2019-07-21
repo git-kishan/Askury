@@ -259,28 +259,34 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
          final String CREATE_TABLE_HOME_OBJECT="CREATE TABLE "+HOME_OBJECT+"("+objectId +" TEXT PRIMARY KEY ,"+type +" TEXT "+")";
 
-        sqLiteDatabase.execSQL(CREATE_TABLE_USER_QUESTION_MODEL);
-        sqLiteDatabase.execSQL(CREATE_TABLE_USER_ANSWER_MODEL);
-        sqLiteDatabase.execSQL(CREATE_TABLE_ROOT_QUESTION_MODEL);
-        sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL);
-        sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_ASKED_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_ANSWER_LIKE_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_PARTICIPATED_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_LIKE_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWER_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWING_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_REPORT_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_REPORT_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_REPORT_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_QUESTION);
-        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_ANSWER);
-        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_IMAGE_POLL);
-        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_SURVEY);
-        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_FOLLOWER);
-        sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION);
-        sqLiteDatabase.execSQL(CREATE_TABLE_HOME_OBJECT);
-        Log.i("TAG", "table created :");
+         try {
+
+             sqLiteDatabase.execSQL(CREATE_TABLE_USER_QUESTION_MODEL);
+             sqLiteDatabase.execSQL(CREATE_TABLE_USER_ANSWER_MODEL);
+             sqLiteDatabase.execSQL(CREATE_TABLE_ROOT_QUESTION_MODEL);
+             sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_ROOT_QUESTION_MODEL);
+             sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_ASKED_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_ANSWER_LIKE_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_PARTICIPATED_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_LIKE_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWER_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_FOLLOWING_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE_POLL_REPORT_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_SURVEY_REPORT_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_QUESTION_REPORT_TABLE);
+             sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_QUESTION);
+             sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_ANSWER);
+             sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_IMAGE_POLL);
+             sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_SURVEY);
+             sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION_FOLLOWER);
+             sqLiteDatabase.execSQL(CREATE_TABLE_NOTIFICATION);
+             sqLiteDatabase.execSQL(CREATE_TABLE_HOME_OBJECT);
+             Log.i("TAG", "table created :");
+         }
+         catch(SQLiteException e){
+             Log.i("TAG", "Sqlite exception occurs ,"+e.getMessage());
+         }
 
     }
 

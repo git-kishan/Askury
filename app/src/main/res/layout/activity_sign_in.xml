@@ -62,6 +62,7 @@
         android:textAllCaps="false"
         android:textColor="#CC000000"
         android:textSize="16sp"
+        android:visibility="visible"
         app:icon="@drawable/ic_google_logo"
         app:iconGravity="start"
         app:iconTint="@null"
@@ -106,9 +107,9 @@
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:layout_width="20dp"
+            android:layout_width="24dp"
             android:layout_gravity="center"
-            android:layout_height="20dp"
+            android:layout_height="24dp"
             android:backgroundTint="@android:color/white"
             android:indeterminateOnly="true"
             android:indeterminateTint="@android:color/black"

@@ -235,6 +235,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -344,9 +345,9 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:contentDescription="@string/privacy_policy"
                         android:background="@drawable/ripple_background"
                         android:clickable="true"
+                        android:contentDescription="@string/privacy_policy"
                         android:focusable="true"
                         android:padding="8dp"
                         android:rotation="180"
@@ -395,16 +396,32 @@
                         android:layout_weight="1"
                         android:background="@drawable/ripple_background"
                         android:clickable="true"
-                        android:focusable="true"
                         android:contentDescription="@string/report_error"
+                        android:focusable="true"
                         android:padding="8dp"
                         android:rotation="180"
                         app:srcCompat="@drawable/ic_back_black" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/textView33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.8"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/version"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView3"
+            app:layout_constraintVertical_bias="0.3" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

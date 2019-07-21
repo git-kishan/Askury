@@ -1,3 +1,7 @@
 #Internal package file, do not edit.
-#Tue Jun 11 22:09:10 IST 2019
-count=0
+#Sun Jul 21 10:37:56 IST 2019
+0.baseType=DIRECTORY
+0.base=/home/notebook/projects/AskApp/app/build/intermediates/merged_assets/debug/out
+0.path=PrivacyPolicy.html
+0.set=ASSET
+count=1

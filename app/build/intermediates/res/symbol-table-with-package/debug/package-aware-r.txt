@@ -1243,6 +1243,7 @@ drawable account_gradient
 drawable account_relative_round_corner_bottom_sheet
 drawable account_relative_round_corner_top_sheet
 drawable answer_question_dash
+drawable askury_logo
 drawable avd_hide_password
 drawable avd_show_password
 drawable badge_drawable
@@ -1375,7 +1376,6 @@ drawable image_loading_background
 drawable image_placeholder
 drawable image_poll_frame_layout
 drawable image_successfull_uploaded_bottom_sheet_dialog_fragment
-drawable logo
 drawable male_cartoon
 drawable mtrl_snackbar_background
 drawable mtrl_tabs_default_indicator
@@ -1398,8 +1398,12 @@ drawable ripple_background
 drawable round_account
 drawable round_bottomsheetdialogfragment
 drawable round_button
+drawable round_corner_dark_green
+drawable round_corner_dark_pink
 drawable round_corner_edittext
 drawable round_corner_frame_layout
+drawable round_corner_light_green
+drawable round_corner_light_pink
 drawable round_relative_layout
 drawable shimmer_circle_image_view
 drawable shimmer_round_shaped
@@ -1507,6 +1511,7 @@ id buttonPanel
 id cameraLayout
 id cancel_action
 id cancel_button
+id card
 id cardView
 id cardView10
 id cardView11
@@ -1514,6 +1519,7 @@ id cardView12
 id cardView13
 id cardView14
 id cardView2
+id cardView3
 id cardView4
 id cardView5
 id cardView6
@@ -1897,6 +1903,7 @@ id tap_to_more_textview
 id text
 id text1
 id text2
+id textInputEditText
 id textInputLayout
 id textSpacerNoButtons
 id textSpacerNoTitle
@@ -1928,6 +1935,7 @@ id textView3
 id textView30
 id textView31
 id textView32
+id textView33
 id textView35
 id textView36
 id textView37
@@ -2083,6 +2091,7 @@ layout activity_profile_image
 layout activity_profile_image_zoom
 layout activity_question
 layout activity_question_taker
+layout activity_report
 layout activity_setting
 layout activity_sign_in
 layout activity_text_view_to_bitmap
@@ -2427,8 +2436,10 @@ string uploading
 string user_name_asked
 string username
 string username_created_a_poll
+string version
 string vs
 string want_to_answer
+string write_your_problem
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style Animation_AppCompat_Dialog

@@ -56,7 +56,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 view=inflater.inflate(R.layout.home_question_answer_item,viewGroup,false);
                 viewHolder= new QuestionAnswerViewHolder(view,context);
                 break;
-
             case QUESTION_ANSWER_WITH_IMAGE:
                 view=inflater.inflate(R.layout.home_question_answer_image_item, viewGroup,false);
                 viewHolder= new QuestionAnswerWithImageViewHolder(view,context);

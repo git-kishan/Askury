@@ -17,7 +17,6 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
 import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.droid.solver.askapp.Account.ProfileImageActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.InterestActivity;
@@ -46,7 +44,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -71,8 +68,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private MaterialButton editButton, updateButton;
     private ChipGroup chipGroup;
     private SwitchCompat notificationSwitch;
-    private List<String> savedInterestList, newInterestList;
-    private String savedUserName, newUserName, newAbout, savedAbout;
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,15 +113,17 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         setting.requestFocus();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         hideSoftKeyboard(setting);
-        savedInterestList=new ArrayList<>();
+        List<String>savedInterestList=new ArrayList<>();
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String interestString=preferences.getString(Constants.INTEREST, null);
-        savedUserName=preferences.getString(Constants.userName, null);
-        savedAbout=preferences.getString(Constants.bio, null);
+        String savedUserName=preferences.getString(Constants.userName, null);
+        String savedAbout=preferences.getString(Constants.bio, null);
+        boolean switchState=preferences.getBoolean(Constants.NOTIFICATION, false);
         savedUserName=savedUserName==null?"Someone":savedUserName;
         savedAbout=savedAbout==null?"Nothing about yourself is mentioned":savedAbout;
         profileName.setText(savedUserName);
         about.setText(savedAbout);
+        notificationSwitch.setChecked(switchState);
         if(interestString!=null) {
             String[] interestArr = interestString.split("@");
             savedInterestList = Arrays.asList(interestArr);
@@ -134,8 +131,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         userNameInputEditText.setText(savedUserName);
         aboutInputEditText.setText(savedAbout);
         generateChipDynamically(savedInterestList);
-
     }
+
 
     public void onClick(View view){
         switch (view.getId()){
@@ -164,7 +161,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 break;
             case R.id.linearLayout10:
-                Toast.makeText(this, "report Error", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SettingActivity.this,ReportActivity.class));
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 break;
 
 
@@ -266,23 +264,46 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void onEditButtonClicked(){
-        editButton.setAlpha(0.0f);
-        userNameInputLayout.setEnabled(true);
-        aboutInputLayout.setEnabled(true);
-        editButton.setEnabled(false);
-        updateButton.setEnabled(true);
-        chipGroup.setEnabled(true);
-        interestTextView.setAlpha(1);//0.2
-        updateButton.setVisibility(View.VISIBLE);
-        addInterest.setVisibility(View.VISIBLE);
-        makeChipTextBlack();
+    Handler handler=new Handler();
+    handler.post(new Runnable() {
+        @Override
+        public void run() {
+            editButton.setAlpha(1f);
+            userNameInputLayout.setAlpha(0f);
+            aboutInputLayout.setAlpha(0f);
+            chipGroup.setAlpha(0f);
+            interestTextView.setAlpha(0f);
+            updateButton.setAlpha(0f);
+            addInterest.setAlpha(0f);
+
+            editButton.animate().alpha(0f).setDuration(300).start();
+            userNameInputLayout.animate().alpha(1f).setDuration(300).start();
+            aboutInputLayout.animate().alpha(1f).setDuration(300).start();
+            updateButton.animate().alpha(1f).setDuration(300).start();
+            chipGroup.animate().alpha(1f).setDuration(300).start();
+            interestTextView.animate().alpha(1f).setDuration(300).start();
+            addInterest.animate().alpha(1f).setDuration(300).start();
+
+            userNameInputLayout.setEnabled(true);
+            aboutInputLayout.setEnabled(true);
+            editButton.setEnabled(false);
+            updateButton.setEnabled(true);
+            chipGroup.setEnabled(true);
+            interestTextView.setAlpha(1);//0.2
+            updateButton.setVisibility(View.VISIBLE);
+            addInterest.setVisibility(View.VISIBLE);
+            makeChipTextBlack();
+        }
+    });
+
 
     }
 
     private void onUpdateButtonClicked(){
 
     if(validateProfileUpdation()){
-        editButton.setAlpha(1.0f);
+        editButton.setAlpha(0.0f);
+        editButton.animate().alpha(1f).setDuration(300).start();
         userNameInputLayout.setEnabled(false);
         aboutInputLayout.setEnabled(false);
         editButton.setEnabled(true);
@@ -303,7 +324,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             final Chip chip=(Chip)chipGroup.getChildAt(i);
             if(chip!=null) {
                 tempList.add(chip.getText().toString());
-//                Log.i("TAG", "text :- "+chip.getText().toString());
             }
         }
 
@@ -384,12 +404,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor=preferences.edit();
         if(b){
-           Toast.makeText(this, "switch on", Toast.LENGTH_SHORT).show();
             editor.putBoolean(Constants.NOTIFICATION,true );
-
         }else {
-            Toast.makeText(this, "switch off", Toast.LENGTH_SHORT).show();
-
             editor.putBoolean(Constants.NOTIFICATION, false);
         }
         editor.apply();
@@ -401,7 +417,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if(requestCode==INTEREST_REQUEST_CODE){
             if(resultCode==RESULT_OK){
                 if(data!=null) {
-                    newInterestList = data.getStringArrayListExtra("interestList");
+                    List<String> newInterestList = data.getStringArrayListExtra("interestList");
                     generateChipDynamically(newInterestList);
                     makeChipTextBlack();
                     Log.i("TAG", "interest list :- "+newInterestList.size());

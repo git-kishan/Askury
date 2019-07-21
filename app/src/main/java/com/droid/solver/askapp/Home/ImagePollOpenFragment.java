@@ -2,7 +2,6 @@ package com.droid.solver.askapp.Home;
 
 import android.os.Build;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -32,6 +31,8 @@ public class ImagePollOpenFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view= inflater.inflate(R.layout.fragment_image_poll_open, container, false);
+        if(getActivity()!=null)
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if(getActivity()!=null)
         getActivity().supportStartPostponedEnterTransition();
         Bundle bundle=getArguments();
@@ -96,10 +97,10 @@ public class ImagePollOpenFragment extends Fragment {
             }
         });
     }
-
-
     @Override
     public void onDestroy() {
+        if(getActivity()!=null)
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         bottomNavigation.setVisibility(View.VISIBLE);
         toolbar.setVisibility(View.VISIBLE);
         super.onDestroy();

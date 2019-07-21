@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
-INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
-INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
-INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
+INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
+INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
+INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
 MERGED from [com.leinardi.android:speed-dial:2.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/d23e0eac042ae4be3a27781250175e30/AndroidManifest.xml:17:1-26:12
 MERGED from [com.google.android.material:material:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/AndroidManifest.xml:17:1-24:12
 MERGED from [com.facebook.android:facebook-login:5.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/cb4e39cba5173b961e54e52d565dbd81/AndroidManifest.xml:21:1-31:12
@@ -75,25 +75,27 @@ MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/notebook/.gradle/cache
 MERGED from [com.google.firebase:firebase-database-collection:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/84101dde10a81322f0002438ab02c4c1/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.firebase:protolite-well-known-types:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/0820784264782e62742a5f42c48f57b4/AndroidManifest.xml:2:1-11:12
 MERGED from [io.grpc:grpc-android:1.21.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/0fd068977eab99a40187b357ae2d4a84/AndroidManifest.xml:2:1-13:12
-INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
-INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
-INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
+INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
+INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
+INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
 	package
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:3:5-38
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:4:5-38
 		INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml
 		INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
 		INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:3:5-51
 	android:versionCode
 		INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-112:12
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:1-166:12
 		INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:2:11-69
 uses-permission#android.permission.INTERNET
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:5:5-67
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:6:5-67
 MERGED from [com.google.firebase:firebase-firestore:20.1.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/72a79f73bd3adcba1c66159246695ca2/AndroidManifest.xml:14:5-67
 MERGED from [com.google.firebase:firebase-firestore:20.1.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/72a79f73bd3adcba1c66159246695ca2/AndroidManifest.xml:14:5-67
 MERGED from [com.google.firebase:firebase-storage:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/1f12ed799eb0ee32a898acc7f66c5a1b/AndroidManifest.xml:27:5-67
@@ -103,17 +105,17 @@ MERGED from [com.google.firebase:firebase-database:18.0.0] /home/notebook/.gradl
 MERGED from [com.google.firebase:firebase-iid:19.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/f05bb582734f19b1643017c066e7f1b7/AndroidManifest.xml:23:5-67
 MERGED from [com.google.firebase:firebase-iid:19.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/f05bb582734f19b1643017c066e7f1b7/AndroidManifest.xml:23:5-67
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:5:22-64
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:6:22-64
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:6:5-80
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:7:5-80
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:6:22-77
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:7:22-77
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:7:5-81
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:8:5-81
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:7:22-78
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:8:22-78
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:8:5-79
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:9:5-79
 MERGED from [com.google.firebase:firebase-firestore:20.1.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/72a79f73bd3adcba1c66159246695ca2/AndroidManifest.xml:13:5-79
 MERGED from [com.google.firebase:firebase-firestore:20.1.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/72a79f73bd3adcba1c66159246695ca2/AndroidManifest.xml:13:5-79
 MERGED from [com.google.firebase:firebase-storage:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/1f12ed799eb0ee32a898acc7f66c5a1b/AndroidManifest.xml:26:5-79
@@ -125,29 +127,23 @@ MERGED from [com.google.firebase:firebase-iid:19.0.1] /home/notebook/.gradle/cac
 MERGED from [io.grpc:grpc-android:1.21.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/0fd068977eab99a40187b357ae2d4a84/AndroidManifest.xml:11:5-79
 MERGED from [io.grpc:grpc-android:1.21.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/0fd068977eab99a40187b357ae2d4a84/AndroidManifest.xml:11:5-79
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:8:22-76
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:9:22-76
 uses-permission#android.permission.CAMERA
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:9:5-65
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:10:5-65
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:9:22-62
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:10:22-62
 uses-permission#android.permission.VIBRATE
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:10:5-66
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:11:5-66
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:10:22-63
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:11:22-63
 uses-feature#android.hardware.camera
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:12:5-14:36
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:13:5-15:36
 	android:required
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:14:9-33
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:15:9-33
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:13:9-47
-meta-data#fontProviderRequests
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:16:5-18:51
-	android:value
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:18:9-48
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:17:9-44
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:14:9-47
 application
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:20:5-110:19
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:16:5-164:19
 MERGED from [com.google.android.material:material:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/AndroidManifest.xml:22:5-20
 MERGED from [com.facebook.android:facebook-login:5.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/cb4e39cba5173b961e54e52d565dbd81/AndroidManifest.xml:28:5-29:19
@@ -207,213 +203,319 @@ MERGED from [com.github.bumptech.glide:gifdecoder:4.9.0] /home/notebook/.gradle/
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/0c94f53dbea8558483422cca450bfba0/AndroidManifest.xml:22:18-86
 	android:supportsRtl
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:26:9-35
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:21:9-35
 	android:label
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:24:9-41
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:19:9-41
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:23:9-35
 	android:roundIcon
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:25:9-54
-	android:icon
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:23:9-38
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:20:9-54
 	android:allowBackup
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:22:9-35
+		ADDED from [com.steelkiwi:dots-loader-view:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/2b74df40e70806354fe222ee82cc72a7/AndroidManifest.xml:12:9-35
+	android:icon
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:18:9-45
 	android:theme
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:27:9-40
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:22:9-40
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:21:9-38
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:17:9-38
+activity#com.droid.solver.askapp.setting.ReportActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:24:9-26:75
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:25:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:26:13-73
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:24:19-57
 activity#com.droid.solver.askapp.Account.ProfileImageZoomActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:28:9-79
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:27:9-30:49
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:28:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:29:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:30:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:28:19-67
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:27:19-67
 activity#com.droid.solver.askapp.Account.FollowActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:29:9-60
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:31:9-32:50
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:32:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:29:19-57
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:31:19-57
 activity#com.droid.solver.askapp.Notification.NotificationAnswerActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:30:9-77
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:33:9-36:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:34:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:35:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:36:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:30:19-74
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:33:19-74
 activity#com.droid.solver.askapp.Notification.NotificationQuestionActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:31:9-79
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:37:9-40:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:38:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:39:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:40:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:31:19-76
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:37:19-76
 activity#com.droid.solver.askapp.Notification.NotificationSurveyActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:32:9-77
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:41:9-44:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:42:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:43:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:44:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:32:19-74
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:41:19-74
 activity#com.droid.solver.askapp.Notification.NotificationImagePollActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:33:9-80
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:33:19-77
-activity#com.droid.solver.askapp.homeAnswer.DetailAnswerActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:34:9-69
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:34:19-66
-activity#com.droid.solver.askapp.Account.ExpandedViewPagerActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:35:9-71
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:35:19-68
-activity#com.droid.solver.askapp.setting.PrivacyPolicyActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:36:9-67
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:36:19-64
-activity#com.droid.solver.askapp.Account.OtherAccountActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:37:9-66
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:37:19-63
-activity#com.droid.solver.askapp.Account.ProfileImageActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:38:9-66
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:38:19-63
-activity#com.droid.solver.askapp.GenderSelectionActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:39:9-61
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:39:19-58
-activity#com.droid.solver.askapp.InterestActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:40:9-54
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:40:19-51
-activity#com.droid.solver.askapp.setting.SettingActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:41:9-61
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:41:19-58
-activity#com.droid.solver.askapp.homeAnswer.AnswerActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:42:9-63
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:42:19-60
-activity#com.droid.solver.askapp.Home.ImagePollOpenActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:43:9-64
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:43:19-61
-activity#com.droid.solver.askapp.Answer.AnswerActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:44:9-47:58
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:45:9-48:50
 	android:screenOrientation
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:46:13-49
 	android:windowSoftInputMode
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:47:13-55
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:47:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:48:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:45:13-50
-activity#com.droid.solver.askapp.Survey.QuestionTakerActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:48:9-51:58
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:45:19-77
+activity#com.droid.solver.askapp.homeAnswer.DetailAnswerActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:49:9-52:15
 	android:screenOrientation
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:50:13-49
 	android:windowSoftInputMode
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:51:13-55
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:51:13-73
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:49:13-57
-activity#com.droid.solver.askapp.LanguageSelectionActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:52:9-54:52
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:49:19-66
+activity#com.droid.solver.askapp.Account.ExpandedViewPagerActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:53:9-56:50
 	android:screenOrientation
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:54:13-49
-	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:53:13-54
-activity#com.droid.solver.askapp.ImagePoll.ImagePollActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:55:9-58:76
-	android:screenOrientation
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:57:13-49
 	android:windowSoftInputMode
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:58:13-73
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:55:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:56:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:56:13-56
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:53:19-68
+activity#com.droid.solver.askapp.setting.PrivacyPolicyActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:57:9-60:15
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:58:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:59:13-73
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:57:19-64
+activity#com.droid.solver.askapp.Account.OtherAccountActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:61:9-64:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:62:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:63:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:64:13-47
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:61:19-63
+activity#com.droid.solver.askapp.Account.ProfileImageActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:65:9-68:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:66:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:67:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:68:13-47
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:65:19-63
+activity#com.droid.solver.askapp.GenderSelectionActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:69:9-72:15
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:70:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:71:13-73
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:69:19-58
+activity#com.droid.solver.askapp.InterestActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:73:9-76:15
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:74:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:75:13-73
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:73:19-51
+activity#com.droid.solver.askapp.setting.SettingActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:77:9-80:15
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:78:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:79:13-73
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:77:19-58
+activity#com.droid.solver.askapp.homeAnswer.AnswerActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:81:9-84:15
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:82:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:83:13-73
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:81:19-60
+activity#com.droid.solver.askapp.Home.ImagePollOpenActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:85:9-88:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:86:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:87:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:88:13-47
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:85:19-61
+activity#com.droid.solver.askapp.Answer.AnswerActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:89:9-93:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:91:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:92:13-55
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:93:13-47
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:90:13-50
+activity#com.droid.solver.askapp.Survey.QuestionTakerActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:94:9-98:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:96:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:97:13-55
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:98:13-47
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:95:13-57
+activity#com.droid.solver.askapp.LanguageSelectionActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:99:9-101:52
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:101:13-49
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:100:13-54
+activity#com.droid.solver.askapp.ImagePoll.ImagePollActivity
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:102:9-106:50
+	android:screenOrientation
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:104:13-49
+	android:windowSoftInputMode
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:105:13-73
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:106:13-47
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:103:13-56
 activity#com.droid.solver.askapp.Question.QuestionActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:59:9-61:52
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:107:9-110:50
 	android:screenOrientation
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:61:13-49
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:109:13-49
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:110:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:60:13-54
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:108:13-54
 activity#com.droid.solver.askapp.Main.MainActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:62:9-65:52
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:111:9-115:50
 	android:screenOrientation
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:65:13-49
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:114:13-49
+	tools:ignore
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:115:13-47
 	android:configChanges
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:64:13-72
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:113:13-72
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:63:13-46
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:112:13-46
 activity#com.droid.solver.askapp.SignInActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:66:9-73:20
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:116:9-123:20
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:66:19-49
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:116:19-49
 intent-filter#action:name:android.intent.action.MAIN+action:name:android.intent.action.VIEW+category:name:android.intent.category.LAUNCHER
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:67:13-72:29
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:117:13-122:29
 action#android.intent.action.MAIN
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:68:17-69
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:118:17-69
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:68:25-66
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:118:25-66
 action#android.intent.action.VIEW
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:69:17-69
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:119:17-69
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:69:25-66
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:119:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:71:17-77
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:121:17-77
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:71:27-74
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:121:27-74
 activity#com.facebook.FacebookActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:74:9-77:48
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:124:9-127:48
 MERGED from [com.facebook.android:facebook-common:5.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/AndroidManifest.xml:29:9-32:66
 MERGED from [com.facebook.android:facebook-common:5.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/AndroidManifest.xml:29:9-32:66
 	android:label
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:77:13-45
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:127:13-45
 	android:configChanges
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:76:13-96
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:126:13-96
 	android:theme
 		ADDED from [com.facebook.android:facebook-common:5.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/AndroidManifest.xml:32:13-63
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:75:13-57
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:125:13-57
 activity#com.facebook.CustomTabActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:78:9-89:20
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:128:9-139:20
 MERGED from [com.facebook.android:facebook-common:5.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/AndroidManifest.xml:34:9-67
 MERGED from [com.facebook.android:facebook-common:5.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/AndroidManifest.xml:34:9-67
 	android:exported
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:80:13-36
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:130:13-36
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:79:13-58
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:129:13-58
 intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:scheme:@string/fb_login_protocol_scheme
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:81:13-88:29
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:131:13-138:29
 category#android.intent.category.DEFAULT
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:84:17-76
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:134:17-76
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:84:27-73
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:134:27-73
 category#android.intent.category.BROWSABLE
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:85:17-78
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:135:17-78
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:85:27-75
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:135:27-75
 data
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:87:17-75
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:137:17-75
 	android:scheme
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:87:23-72
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:137:23-72
 activity#com.theartofdev.edmodo.cropper.CropImageActivity
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:90:9-92:59
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:140:9-142:59
 	android:theme
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:92:13-56
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:142:13-56
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:91:13-76
-meta-data#com.facebook.sdk.ApplicationId
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:94:9-96:55
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:141:13-76
+meta-data#fontProviderRequests
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:144:9-146:55
 	android:value
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:96:13-52
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:146:13-52
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:95:13-58
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:145:13-48
+meta-data#com.facebook.sdk.ApplicationId
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:148:9-150:55
+	android:value
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:150:13-52
+	android:name
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:149:13-58
 meta-data#preloaded_fonts
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:97:9-99:57
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:151:9-153:57
 	android:resource
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:99:13-54
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:153:13-54
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:98:13-43
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:152:13-43
 provider#androidx.core.content.FileProvider
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:101:9-109:20
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:155:9-163:20
 	android:grantUriPermissions
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:105:13-47
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:159:13-47
 	android:authorities
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:103:13-67
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:157:13-67
 	android:exported
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:104:13-37
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:158:13-37
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:102:13-62
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:156:13-62
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:106:13-108:54
+ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:160:13-162:54
 	android:resource
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:108:17-51
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:162:17-51
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:107:17-67
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:161:17-67
 uses-sdk
 INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml

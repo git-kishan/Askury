@@ -158,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements
         checkNotification();
 
     }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment fragment, tempFragment;

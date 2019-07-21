@@ -8,7 +8,7 @@
     android:fadingEdgeLength="30dp"
     android:fillViewport="false"
     android:requiresFadingEdge="vertical"
-    android:background="@android:color/white"
+    android:background="@android:color/black"
     android:clickable="true"
     android:focusable="true"
     android:layout_height="match_parent">
@@ -44,15 +44,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.cardview.widget.CardView>
-
-
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
+        android:scaleType="centerInside"
         android:contentDescription="@string/first_image"
-        android:foregroundGravity="center"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,5 +68,5 @@
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back_black" />
+        app:srcCompat="@drawable/ic_back_white" />
 </androidx.constraintlayout.widget.ConstraintLayout>
