@@ -7,6 +7,7 @@
     <ImageView
         android:layout_marginTop="5dp"
         android:id="@+id/badge_image"
+        android:contentDescription="@string/Notification"
         android:layout_gravity="top|center"
         android:layout_marginStart="10dp"
         android:layout_width="18dp"

@@ -16,7 +16,7 @@
     <string name="optionA">Option A</string>
     <string name="username_created_a_poll">%1$s created a poll</string>
     <string name="some_one_is_doing_a_survey">%1$s is doing a survey</string>
-    <string name="image_poll_uploading_failed">Image uploading failed,try again !</string>
+    <string name="image_poll_uploading_failed" translatable="false">Image uploading failed,try again !</string>
     <string name="image_poll_uploaded_successfully">Image poll uploaded successfully</string>
     <string name="question_uploading_successfully">Your question uploaded successfully </string>
     <string name="question_uploading_failed">Question uploading failed,try again !</string>
@@ -74,7 +74,17 @@
     <string name="change_profile_picture" translatable="false">Change profile picture</string>
     <string name="login_with_facebook" translatable="false">Log in with facebook</string>
     <string name="login_with_google" translatable="false">Log in with google</string>
-
+    <string name="got_it" translatable="false">Got it</string>
+    <string name="thank_you" translatable="false">Thank you !!!</string>
+    <string name="image_poll_uploaded" translatable="false">Image poll uploaded successfully</string>
+    <string name="error_occured" translatable="false">Error Occured</string>
+    <string name="its_spam" translatable="false">it\'s spam</string>
+    <string name="self_promotion" translatable="false">Self promotion</string>
+    <string name="contain_violent_words" translatable="false">Contains violent words</string>
+    <string name="i_dont_like_survey" translatable="false">I don\'t like the survey</string>
+    <string name="are_you_sure_to_delete" translatable="false">Are you sure to delete ?</string>
+    <string name="i_dont_like_question" translatable="false">I don\'t like the question</string>
+    <string name="please_wait" translatable="false">Please wait ...</string>
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>
@@ -93,6 +103,9 @@
     <string name="Marketing">Marketing</string>
     <string name="Medical">Medical</string>
     <string name="Management">Management</string>
+    <string name="delete" translatable="false">Delete</string>
+    <string name="cancel" translatable="false">Cancel</string>
+
 
     <string name="English" translatable="false">English</string>
     <string name="Chinese" translatable="false">Chinese</string>

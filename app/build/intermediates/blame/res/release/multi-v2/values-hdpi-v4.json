@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/notebook/projects/AskApp/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-hdpi-v4/values-hdpi-v4.xml",
+            "map": [
+                {
+                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/511c3723f5bfe64e0b5731253610df2b/res/values-hdpi-v4/values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "13",
+                        "endOffsets": "327"
+                    }
+                }
+            ]
+        }
+    ]
+}

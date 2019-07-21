@@ -41,12 +41,10 @@ import java.util.Set;
 
 public class InterestActivity extends AppCompatActivity implements ChipGroup.OnCheckedChangeListener, View.OnClickListener {
 
-    private ChipGroup chipGroupBottom;
     private ChipGroup chipGroupTop;
     private Chip chip;
     private ConstraintLayout rootLayout;
     private Map<String,Integer> chipMap;//chip text and chip id
-    private ImageView nextImageButton;
     private String activity;
     private  AlertDialog alertDialog;
 
@@ -57,11 +55,11 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
         setContentView(R.layout.activity_interest);
         Intent intent=getIntent();
         activity=intent.getStringExtra("activity");
-        chipGroupBottom=findViewById(R.id.chipGroupBottom);
+        ChipGroup chipGroupBottom=findViewById(R.id.chipGroupBottom);
         chipGroupTop = findViewById(R.id.chipGroupTop);
         chipMap=new HashMap<>();
         rootLayout=findViewById(R.id.root);
-        nextImageButton=findViewById(R.id.imageView20);
+        ImageView nextImageButton=findViewById(R.id.imageView20);
         nextImageButton.setOnClickListener(this);
         chipGroupTop.setOnCheckedChangeListener(this);
         chipGroupBottom.setOnCheckedChangeListener(this);
@@ -82,6 +80,11 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
 
                     final Animation fadeIn=AnimationUtils.loadAnimation(this, R.anim.chip_scale_in);
                     final Animation fadeOut=AnimationUtils.loadAnimation(this, R.anim.chip_scale_out);
+                    if(chipMap!=null&&chipMap.size()==5){
+                        Snackbar.make(rootLayout, "Atmost five interest", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(chipMap!=null)
                     chipMap.put(chip.getText().toString(), checkedId);
                     chip.startAnimation(fadeOut);
                     Handler handler=new Handler();
@@ -116,23 +119,24 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
 
                                     }
                                 }, 300);
-                                String chipText=chip.getText().toString();
-                               int chipId=chipMap.get(chipText);
-                               chipMap.remove(chipText);
-                                Chip bottomChip=chipGroup.findViewById(chipId);
-                                bottomChip.startAnimation(fadeIn);
-                                bottomChip.setVisibility(View.VISIBLE);
-                                bottomChip.setChecked(false);
-
+                                try {
+                                    String chipText = chip.getText().toString();
+                                    int chipId = chipMap.get(chipText);
+                                    chipMap.remove(chipText);
+                                    Chip bottomChip = chipGroup.findViewById(chipId);
+                                    bottomChip.startAnimation(fadeIn);
+                                    bottomChip.setVisibility(View.VISIBLE);
+                                    bottomChip.setChecked(false);
+                                }catch (NullPointerException e){
+                                    Log.i("TAG", "NullPointerException occurs in unboxing chip text ,Interest Activity ,"+e.getMessage());
+                                }
                             }
-
                         }
                     });
 
                 }
                 break;
         }
-
     }
 
     @Override
@@ -141,13 +145,11 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
         if(view.getId()==R.id.imageView20){
             if(chipMap.isEmpty()||chipMap.size()<2){
                 Snackbar.make(rootLayout, "At least two interest", Snackbar.LENGTH_SHORT).show();
-                return;
             }else if (chipMap.size()>5) {
                 Snackbar.make(rootLayout,"Atmost five interest", Snackbar.LENGTH_SHORT).show();
             }else {
-                final ArrayList<String> interestsList=new ArrayList<>();
-                    Set<String> keySet=chipMap.keySet();
-                    interestsList.addAll(keySet);
+                Set<String> keySet=chipMap.keySet();
+                final ArrayList<String> interestsList = new ArrayList<>(keySet);
 
                 if(activity!=null&&activity.equals(SettingActivity.SETTING_ACTIVITY)){
                     Intent intent=new Intent();
@@ -162,6 +164,7 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                     if(isNetworkAvailable()&&FirebaseAuth.getInstance().getCurrentUser()!=null){
                         String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
                         Map<String,Object> userMap=new HashMap<>();
+                        if(gender!=null)
                         userMap.put("gender",  gender);
                         userMap.put("interest",interestsList);
                         FirebaseFirestore.getInstance().collection("user").document(uid)

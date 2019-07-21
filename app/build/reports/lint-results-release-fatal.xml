@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="5" by="lint 3.4.1">
+
+    <issue
+        id="NotSibling"
+        severity="Fatal"
+        message="`@+id/linearLayout7` is not a sibling in the same `ConstraintLayout`"
+        category="Correctness"
+        priority="6"
+        summary="Invalid Constraints"
+        explanation="Layout constraints in a given `ConstraintLayout` or `RelativeLayout` should reference other views within the same relative layout (but not itself!)"
+        errorLine1="                    app:layout_constraintTop_toBottomOf=&quot;@+id/linearLayout7&quot;>"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/home/notebook/projects/AskApp/app/src/main/res/layout/activity_setting.xml"
+            line="270"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="NotSibling"
+        severity="Fatal"
+        message="`@+id/about_input_layout` is not a sibling in the same `ConstraintLayout`"
+        category="Correctness"
+        priority="6"
+        summary="Invalid Constraints"
+        explanation="Layout constraints in a given `ConstraintLayout` or `RelativeLayout` should reference other views within the same relative layout (but not itself!)"
+        errorLine1="            app:layout_constraintTop_toBottomOf=&quot;@+id/about_input_layout&quot;>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/home/notebook/projects/AskApp/app/src/main/res/layout/temp3.xml"
+            line="32"
+            column="13"/>
+    </issue>
+
+</issues>

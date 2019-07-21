@@ -1,9 +1,8 @@
 package com.droid.solver.askapp.Answer;
 
 import android.Manifest;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -31,6 +30,7 @@ import androidx.cardview.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -274,17 +275,13 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(this, "No camera app present", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void onCameraClicked(){
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            }
-            catch (IOException ex) {
-                //exception occurs in making new file for image
-            }
+            photoFile = createImageFile();
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
@@ -296,17 +293,26 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
-    private File createImageFile() throws IOException {
+
+    private File createImageFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-        currentPhotoPath = image.getAbsolutePath();
+        File image=null;
+        try {
+            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            image = File.createTempFile(
+                    imageFileName,
+                    ".jpg",
+                    storageDir
+            );
+            currentPhotoPath = image.getAbsolutePath();
+        }catch (IOException e){
+            Log.i("TAG", "IOException occurs in creating image file in answer activity ,"+e.getMessage());
+            return image;
+        }
         return image;
+
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -443,6 +449,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         }
         return true;
     }
+
     private boolean isNetworkAvailable(){
         ConnectivityManager cmm= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         if(cmm!=null) {
@@ -451,25 +458,31 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         }return false;
 
     }
-    private void showDialogMessage(String message){
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setMessage(message)
-                .setCancelable(true)
-                .setPositiveButton("got it", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Handler handler=new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                onBackPressed();
-                            }
-                        }, 300);
-                    }
-                });
 
-        AlertDialog dialog=builder.create();
-        dialog.show();
+    private void showDialogMessage(String message){
+
+        LayoutInflater inflater=LayoutInflater.from(this);
+        @SuppressLint("inflateparams")
+        View dialogView=inflater.inflate(R.layout.successfully_answered_dialog,null,false);
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        final AlertDialog alertDialog = builder.create();
+        if(alertDialog.getWindow()!=null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
+        TextView textView =dialogView.findViewById(R.id.title);
+        MaterialButton gotItButton=dialogView.findViewById(R.id.gotit_button);
+        textView.setText(message);
+        gotItButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+        alertDialog.show();
+
 
     }
 
@@ -619,7 +632,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     answerEditText.setText("");
                     attachImage.setImageBitmap(null);
                     Log.i("TAG","successfully commited batch" );
-                    showDialogMessage("Answered successfully \n\nThank you ");
+                    showDialogMessage("Answered successfully");
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -690,7 +703,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                     answerEditText.setText("");
                     attachImage.setImageBitmap(null);
                     Log.i("TAG","successfully commited batch" );
-                    showDialogMessage("Answered successfully \n\nThank you ");
+                    showDialogMessage("Answered successfully");
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
