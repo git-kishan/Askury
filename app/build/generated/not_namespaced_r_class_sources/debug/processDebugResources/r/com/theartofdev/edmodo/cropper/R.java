@@ -888,8 +888,8 @@ public final class R {
         public static final int crop_image_menu_rotate_left = 0x7f100086;
         public static final int crop_image_menu_rotate_right = 0x7f100087;
         public static final int pick_image_intent_chooser_title = 0x7f1000c3;
-        public static final int search_menu_title = 0x7f1000d1;
-        public static final int status_bar_notification_info_overflow = 0x7f1000e1;
+        public static final int search_menu_title = 0x7f1000d2;
+        public static final int status_bar_notification_info_overflow = 0x7f1000e2;
     }
     public static final class style {
         private style() {}

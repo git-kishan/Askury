@@ -42,10 +42,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         button=findViewById(R.id.button);
         button.setEnabled(false);
         changeToolbarFont(toolbar);
-        rootLayout.performClick();
-        rootLayout.requestFocus();
         hideSoftKeyboard();
-        rootLayout.setOnClickListener(this);
         toolbar.setNavigationOnClickListener(this);
         textInputEditText.addTextChangedListener(textWatcher);
         button.setOnClickListener(this);
@@ -79,7 +76,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view){
         if(view.getId()==R.id.button){
             if(textInputEditText.getText()==null||textInputEditText.getText().toString().length()==0){
-                Snackbar.make(rootLayout, "Please write your problem ", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootLayout, "Please write your problem.", Snackbar.LENGTH_LONG).show();
                 return;
             }
             cardView.setVisibility(View.VISIBLE);
@@ -88,6 +85,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             onBackPressed();
         }
     }
+
     TextWatcher textWatcher=new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -121,14 +119,14 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                         if(task.isSuccessful()){
                             cardView.setVisibility(View.GONE);
                             textInputEditText.setText("");
-                            Snackbar.make(rootLayout, "Problem reported successfully ,thank you!!!", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootLayout, "Problem reported successfully ,thank you.", Snackbar.LENGTH_LONG).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         cardView.setVisibility(View.GONE);
-                        Snackbar.make(rootLayout, "Error not reported,try again later ", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootLayout, "Error not reported,try again later.", Snackbar.LENGTH_LONG).show();
                     }
                 });
 

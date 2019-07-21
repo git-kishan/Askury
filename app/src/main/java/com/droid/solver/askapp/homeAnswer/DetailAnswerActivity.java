@@ -39,7 +39,6 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
     private int fontUsed,likeCount;
     public  int [] fontId=new int[]{R.font.open_sans,R.font.abril_fatface,R.font.aclonica,R.font.bubbler_one,R.font.bitter,R.font.geo};
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

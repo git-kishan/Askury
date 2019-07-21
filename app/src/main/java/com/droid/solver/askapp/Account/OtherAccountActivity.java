@@ -181,7 +181,6 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
 
         switch (view.getId()){
             case R.id.circleImageView4:
-                Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
                 onProfileImageClicked();
                 break;
             case R.id.back_button:
@@ -202,9 +201,8 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     private void onProfileImageClicked(){
         Intent intent=new Intent(this,ProfileImageZoomActivity.class);
         intent.putExtra("uid", uid);
-        ActivityOptionsCompat optionsCompat=ActivityOptionsCompat.makeSceneTransitionAnimation(OtherAccountActivity.this,
-                profileImage, profileImage.getTransitionName());
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
     }
     private void onFollowButtonClicked(String status){
 

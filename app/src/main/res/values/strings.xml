@@ -87,6 +87,7 @@
     <string name="please_wait" translatable="false">Please wait ...</string>
     <string name="version" translatable="false">Version 1.0.0</string>
     <string name="write_your_problem" translatable="false">Write your problem</string>
+    <string name="profile_image" translatable="false">Profile image</string>
 
 
     <string name="Painting">Painting</string>

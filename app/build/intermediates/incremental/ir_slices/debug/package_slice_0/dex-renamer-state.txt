@@ -1,4 +1,4 @@
-#Sun Jul 21 19:06:17 IST 2019
+#Mon Jul 22 00:37:57 IST 2019
 base.0=/home/notebook/projects/AskApp/app/build/intermediates/transforms/dexMerger/debug/0
 path.0=classes.dex
 renamed.0=classes.dex

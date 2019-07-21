@@ -81,6 +81,7 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                     final Animation fadeIn=AnimationUtils.loadAnimation(this, R.anim.chip_scale_in);
                     final Animation fadeOut=AnimationUtils.loadAnimation(this, R.anim.chip_scale_out);
                     if(chipMap!=null&&chipMap.size()==5){
+                        chip.setChecked(false);
                         Snackbar.make(rootLayout, "Atmost five interest", Snackbar.LENGTH_SHORT).show();
                         return;
                     }

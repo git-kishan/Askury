@@ -221,7 +221,6 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-
     private void makeContainerUnClickable(){
           container1.setClickable(false);
           container2.setClickable(false);
@@ -540,7 +539,8 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
     void onThreeDotClicked(final Context context, final AskSurveyModel surveyModel, ArrayList<Object> list,
                            HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
 
-        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog,
+        @SuppressLint("InflateParams")
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog,
                 null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
@@ -572,6 +572,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
         handleDialogItemClicked(dialogView,alertDialog,surveyModel,list,adapter,followingIdListFromLocalDatabase);
 
     }
+
     private void handleDialogItemClicked(final View view,final AlertDialog dialog,final AskSurveyModel surveyModel,
                                          final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter,
                                          final ArrayList<String> followingIdListFromLocalDatabase){
@@ -615,6 +616,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
+
     private void onReportClicked(String surveyId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
         @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.survey_report_dialog,
                 null,false);

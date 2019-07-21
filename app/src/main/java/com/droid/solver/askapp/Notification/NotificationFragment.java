@@ -1,10 +1,12 @@
 package com.droid.solver.askapp.Notification;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,7 @@ public class NotificationFragment extends Fragment {
     private ShimmerFrameLayout shimmer;
     private ImageView noNotificationImage;
     private TextView noNotificationText;
+    private Handler handler;
 
     public NotificationFragment() {
 
@@ -50,6 +53,7 @@ public class NotificationFragment extends Fragment {
         noNotificationText.setVisibility(View.GONE);
         noNotificationImage.setVisibility(View.GONE);
         list=new ArrayList<>();
+        handler=new Handler();
         adapter =new NotificationRecyclerAdapter(getActivity(), list);
         recyclerView.setAdapter(adapter);
         checkNotification();
@@ -71,47 +75,61 @@ public class NotificationFragment extends Fragment {
     }
     private ValueEventListener  listener=new ValueEventListener() {
         @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
-            for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                if(snapshot.hasChild("type")) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
 
-                    String type = (String) snapshot.child("type").getValue();
+                    for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                        if(snapshot.hasChild("type")) {
 
-                    if(type!=null&&type.equals("question")){
-                        QuestionModel model = snapshot.getValue(QuestionModel.class);
-                        list.add(model);
-                    }else if(type!=null&&type.equals("imagePoll")){
+                            String type = (String) snapshot.child("type").getValue();
 
-                        ImagePollModel model = snapshot.getValue(ImagePollModel.class);
-                        list.add(model);
-                    }else if(type!=null&&type.equals("survey")){
-                        SurveyModel model = snapshot.getValue(SurveyModel.class);
-                        list.add(model);
-                    }else if(type!=null&&type.equals("answer")){
-                        AnswerModel model = snapshot.getValue(AnswerModel.class);
-                        list.add(model);
-                    }else if(type!=null&&type.equals("follower")){
-                        FollowerModel model=snapshot.getValue(FollowerModel.class);
-                        list.add(model);
+                            if(type!=null&&type.equals("question")){
+                                QuestionModel model = snapshot.getValue(QuestionModel.class);
+                                list.add(model);
+                            }else if(type!=null&&type.equals("imagePoll")){
+
+                                ImagePollModel model = snapshot.getValue(ImagePollModel.class);
+                                list.add(model);
+                            }else if(type!=null&&type.equals("survey")){
+                                SurveyModel model = snapshot.getValue(SurveyModel.class);
+                                list.add(model);
+                            }else if(type!=null&&type.equals("answer")){
+                                AnswerModel model = snapshot.getValue(AnswerModel.class);
+                                list.add(model);
+                            }else if(type!=null&&type.equals("follower")){
+                                FollowerModel model=snapshot.getValue(FollowerModel.class);
+                                list.add(model);
+                            }
+                        }
                     }
+                    Collections.reverse(list);
+                    if(getActivity()!=null) {
+                        LocalDatabase db = new LocalDatabase(getActivity().getApplicationContext());
+                        if(db.getNotification()!=null) {
+                            list.addAll(db.getNotification());
+                        }
+                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(list!=null&&list.size()==0){
+                                noNotificationImage.setVisibility(View.VISIBLE);
+                                noNotificationText.setVisibility(View.VISIBLE);
+                            }
+
+                            adapter.notifyDataSetChanged();
+                            shimmer.setVisibility(View.GONE);
+                            query.removeEventListener(listener);
+                        }
+                    });
+
                 }
-            }
-            Collections.reverse(list);
-            if(getActivity()!=null) {
-                LocalDatabase db = new LocalDatabase(getActivity().getApplicationContext());
-                if(db.getNotification()!=null) {
-                    list.addAll(db.getNotification());
-                }
-            }
-            if(list!=null&&list.size()==0){
-                noNotificationImage.setVisibility(View.VISIBLE);
-                noNotificationText.setVisibility(View.VISIBLE);
-            }
-            adapter.notifyDataSetChanged();
-            shimmer.setVisibility(View.GONE);
-            query.removeEventListener(listener);
-//            query.addChildEventListener(childEventListener);
+            });
+
+
         }
 
         @Override

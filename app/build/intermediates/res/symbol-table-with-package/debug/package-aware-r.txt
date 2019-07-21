@@ -2399,6 +2399,7 @@ string please_wait
 string points
 string privacy_policy
 string private_info
+string profile_image
 string project_id
 string provide_option_limit
 string question

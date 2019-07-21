@@ -483,7 +483,6 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         });
         alertDialog.show();
 
-
     }
 
     private void uploadImageToStorage(){

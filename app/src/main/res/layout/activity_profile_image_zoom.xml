@@ -26,11 +26,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/first_image"
-        android:src="@drawable/round_account"
+        android:src="@drawable/ic_placeholder_large"
         android:transitionName="profile_image_transition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back_button" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

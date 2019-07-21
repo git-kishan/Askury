@@ -7,7 +7,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
     private static final String FOLLOWERS="followers";
     private static final String FOLLOWINGS="followings";
     private static  String MODE=null;
-    private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private FollowerAdapter followerAdapter;
     private FollowingAdapter followingAdapter;
@@ -53,7 +51,6 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         Toolbar toolbar=findViewById(R.id.toobar);
-        refreshLayout=findViewById(R.id.refresh);
         rootLayout =findViewById(R.id.root_layout);
         changeToolbarFont(toolbar);
         list=new ArrayList<>();
@@ -134,8 +131,6 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
     };
 
     private void loadFollowersFromRemoteDatabase(){
-        refreshLayout.setRefreshing(true);
-        refreshLayout.setEnabled(false);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid;
         if(user!=null){
@@ -158,12 +153,9 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
                             if(task.getResult()!=null&&task.getResult().size()==0){
                                 recyclerView.removeOnScrollListener(onScrollListener);
                             }
-                            refreshLayout.setRefreshing(false);
-                            refreshLayout.setRefreshing(false);
                             followerAdapter.notifyDataSetChanged();
                         }else {
-                            refreshLayout.setRefreshing(false);
-                            refreshLayout.setRefreshing(false);
+
                             Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
 
                         }
@@ -171,16 +163,13 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        refreshLayout.setRefreshing(false);
-                        refreshLayout.setRefreshing(false);
                         Snackbar.make(rootLayout, "Error occured in loading followers", Snackbar.LENGTH_LONG).show();
 
                     }
                 });
 
         }else {
-            refreshLayout.setRefreshing(false);
-            refreshLayout.setRefreshing(false);
+
             Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
 
             //uid is null
@@ -189,8 +178,6 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void loadFollowingFromRemoteDatabase(){
-        refreshLayout.setEnabled(true);
-        refreshLayout.setRefreshing(true);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid;
         if(user!=null){
@@ -213,13 +200,9 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
                         if(task.getResult()!=null&&task.getResult().size()==0){
                             recyclerView.removeOnScrollListener(onScrollListener);
                         }
-                        refreshLayout.setEnabled(false);
-                        refreshLayout.setRefreshing(false);
 
                         followingAdapter.notifyDataSetChanged();
                     }else {
-                        refreshLayout.setEnabled(false);
-                        refreshLayout.setRefreshing(false);
                         Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
 
                     }
@@ -227,16 +210,12 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    refreshLayout.setEnabled(false);
-                    refreshLayout.setRefreshing(false);
                     Snackbar.make(rootLayout, "Error occured in loading following", Snackbar.LENGTH_LONG).show();
 
                 }
             });
 
         }else {
-            refreshLayout.setEnabled(false);
-            refreshLayout.setRefreshing(false);
             Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
             //uid is null
         }
@@ -244,8 +223,6 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void loadMoreFollowersFromRemoteDatabase(){
-        refreshLayout.setEnabled(true);
-        refreshLayout.setRefreshing(true);
         if(lastVisibleSnapshot!=null) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String uid ;
@@ -273,12 +250,8 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
                             if (task.getResult() != null && task.getResult().size() == 0) {
                                 recyclerView.removeOnScrollListener(onScrollListener);
                             }
-                            refreshLayout.setEnabled(false);
-                            refreshLayout.setRefreshing(false);
                             followerAdapter.notifyDataSetChanged();
                         } else {
-                            refreshLayout.setEnabled(false);
-                            refreshLayout.setRefreshing(false);
                             Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
 
                         }
@@ -286,16 +259,12 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        refreshLayout.setEnabled(false);
-                        refreshLayout.setRefreshing(false);
                         Snackbar.make(rootLayout, "Error occured in loading followers", Snackbar.LENGTH_LONG).show();
 
                     }
                 });
 
             } else {
-                refreshLayout.setEnabled(false);
-                refreshLayout.setRefreshing(false);
                 Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
             }
         }
@@ -304,8 +273,6 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
 
     private void loadMoreFollowingFromRemoteDatabase() {
         if (lastVisibleSnapshot != null) {
-            refreshLayout.setEnabled(false);
-            refreshLayout.setRefreshing(false);
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String uid ;
             if (user != null) {
@@ -332,12 +299,9 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
                             if (task.getResult() != null && task.getResult().size() == 0) {
                                 recyclerView.removeOnScrollListener(onScrollListener);
                             }
-                            refreshLayout.setEnabled(false);
-                            refreshLayout.setRefreshing(false);
                             followingAdapter.notifyDataSetChanged();
                         } else {
-                            refreshLayout.setEnabled(false);
-                            refreshLayout.setRefreshing(false);
+
                             Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
 
                         }
@@ -345,16 +309,14 @@ public class FollowActivity extends AppCompatActivity implements View.OnClickLis
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        refreshLayout.setEnabled(false);
-                        refreshLayout.setRefreshing(false);
+
                         Snackbar.make(rootLayout, "Error occured in loading followings", Snackbar.LENGTH_LONG).show();
 
                     }
                 });
 
             } else {
-                refreshLayout.setEnabled(false);
-                refreshLayout.setRefreshing(false);
+
                 Snackbar.make(rootLayout, "Can't proceed at this time", Snackbar.LENGTH_LONG).show();
 
             }

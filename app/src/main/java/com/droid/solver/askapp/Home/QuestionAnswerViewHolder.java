@@ -91,7 +91,6 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         intent.putExtra("askerImageUrl", model.getAskerImageUrlLow());
         intent.putExtra("askerBio", model.getAskerBio());
         intent.putExtra("anonymous", model.isAnonymous());
-        intent.putStringArrayListExtra("questionType", (ArrayList<String>)model.getQuestionType());
         context.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
@@ -115,9 +114,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         intent.putExtra("isLikedByMe", likeButton.isLiked());
         intent.putExtra("likeCount", model.getRecentAnswerLikeCount());
         context.startActivity(intent);
-         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-
-
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
      }
 
      void onLiked(final Context context, final RootQuestionModel model) {

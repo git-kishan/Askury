@@ -60,12 +60,12 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/res/layout/com_facebook_activity_layout.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/interpolator-v21_mtrl_fast_out_slow_in.xml.flat",
-        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/interpolator-v21/mtrl_fast_out_slow_in.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_ic_account.xml.flat",
         "source": "/home/notebook/projects/AskApp/app/src/main/res/drawable/ic_account.xml"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/interpolator-v21_mtrl_fast_out_slow_in.xml.flat",
+        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/interpolator-v21/mtrl_fast_out_slow_in.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/color_mtrl_tabs_icon_color_selector_colored.xml.flat",
@@ -212,12 +212,12 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-xxhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_circular_text_view.xml.flat",
-        "source": "/home/notebook/projects/AskApp/app/src/main/res/drawable/circular_text_view.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_design_layout_tab_text.xml.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/layout/design_layout_tab_text.xml"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_circular_text_view.xml.flat",
+        "source": "/home/notebook/projects/AskApp/app/src/main/res/drawable/circular_text_view.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_com_facebook_tooltip_black_topnub.png.flat",
@@ -244,20 +244,20 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-xxhdpi-v4/abc_tab_indicator_mtrl_alpha.9.png"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_googleg_disabled_color_18.png.flat",
-        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/469cc189668a4fd18444c2521cfeba31/res/drawable-xxhdpi-v4/googleg_disabled_color_18.png"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_com_facebook_button_background.xml.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/res/drawable/com_facebook_button_background.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_common_google_signin_btn_icon_light_normal_background.9.png.flat",
-        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/469cc189668a4fd18444c2521cfeba31/res/drawable-mdpi-v4/common_google_signin_btn_icon_light_normal_background.9.png"
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_googleg_disabled_color_18.png.flat",
+        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/469cc189668a4fd18444c2521cfeba31/res/drawable-xxhdpi-v4/googleg_disabled_color_18.png"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_crop_image_menu_rotate_left.png.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/45724135996be2df2d1ecc67f9ef0059/res/drawable-xxhdpi-v4/crop_image_menu_rotate_left.png"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_common_google_signin_btn_icon_light_normal_background.9.png.flat",
+        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/469cc189668a4fd18444c2521cfeba31/res/drawable-mdpi-v4/common_google_signin_btn_icon_light_normal_background.9.png"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_abc_text_select_handle_right_mtrl_light.png.flat",
@@ -344,20 +344,20 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/layout/mtrl_layout_snackbar_include.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_fragment_account_like.xml.flat",
-        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/fragment_account_like.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/interpolator-v21_mtrl_fast_out_linear_in.xml.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/interpolator-v21/mtrl_fast_out_linear_in.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_mtrl_tabs_default_indicator.xml.flat",
-        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/drawable/mtrl_tabs_default_indicator.xml"
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_fragment_account_like.xml.flat",
+        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/fragment_account_like.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_notification_bg_normal_pressed.9.png.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/0c94f53dbea8558483422cca450bfba0/res/drawable-mdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_mtrl_tabs_default_indicator.xml.flat",
+        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/drawable/mtrl_tabs_default_indicator.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_common_google_signin_btn_icon_light_normal_background.9.png.flat",
@@ -420,12 +420,12 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-hdpi-v4/abc_textfield_default_mtrl_alpha.9.png"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_ic_menu_copy_mtrl_am_alpha.png.flat",
-        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-hdpi-v4/abc_ic_menu_copy_mtrl_am_alpha.png"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_abc_popup_background_mtrl_mult.9.png.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-mdpi-v4/abc_popup_background_mtrl_mult.9.png"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_ic_menu_copy_mtrl_am_alpha.png.flat",
+        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-hdpi-v4/abc_ic_menu_copy_mtrl_am_alpha.png"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_abc_btn_check_to_on_mtrl_015.png.flat",
@@ -684,12 +684,12 @@
         "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/notification_badge_view.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_activity_interest.xml.flat",
-        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/activity_interest.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_abc_action_mode_bar.xml.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/layout/abc_action_mode_bar.xml"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_activity_interest.xml.flat",
+        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/activity_interest.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_home_answer_answer_item.xml.flat",
@@ -836,12 +836,12 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/03c3145dcce7712579f18a464f1fbd33/res/color/mtrl_text_btn_text_color_selector.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_image_successfull_uploaded_bottom_sheet_dialog_fragment.xml.flat",
-        "source": "/home/notebook/projects/AskApp/app/src/main/res/drawable/image_successfull_uploaded_bottom_sheet_dialog_fragment.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_question_question_item.xml.flat",
         "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/question_question_item.xml"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_image_successfull_uploaded_bottom_sheet_dialog_fragment.xml.flat",
+        "source": "/home/notebook/projects/AskApp/app/src/main/res/drawable/image_successfull_uploaded_bottom_sheet_dialog_fragment.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/font_open_sans.ttf.flat",
@@ -852,12 +852,12 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/0c94f53dbea8558483422cca450bfba0/res/layout/notification_template_part_chronometer.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_circle_background.xml.flat",
-        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/2b74df40e70806354fe222ee82cc72a7/res/drawable/circle_background.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_abc_scrubber_control_off_mtrl_alpha.png.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-xxhdpi-v4/abc_scrubber_control_off_mtrl_alpha.png"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_circle_background.xml.flat",
+        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/2b74df40e70806354fe222ee82cc72a7/res/drawable/circle_background.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_abc_scrubber_control_off_mtrl_alpha.png.flat",
@@ -1236,12 +1236,12 @@
         "source": "/home/notebook/projects/AskApp/app/src/main/res/drawable/round_corner_dark_green.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_com_facebook_tooltip_blue_background.9.png.flat",
-        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/cb4e39cba5173b961e54e52d565dbd81/res/drawable-hdpi-v4/com_facebook_tooltip_blue_background.9.png"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable_ic_next_fader.xml.flat",
         "source": "/home/notebook/projects/AskApp/app/src/main/res/drawable/ic_next_fader.xml"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_com_facebook_tooltip_blue_background.9.png.flat",
+        "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/cb4e39cba5173b961e54e52d565dbd81/res/drawable-hdpi-v4/com_facebook_tooltip_blue_background.9.png"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_abc_btn_switch_to_on_mtrl_00001.9.png.flat",
@@ -1276,12 +1276,12 @@
         "source": "/home/notebook/projects/AskApp/app/src/main/res/anim/status_scale_in.xml"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_shimmer_home.xml.flat",
-        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/shimmer_home.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_text_select_handle_right_mtrl_dark.png.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-hdpi-v4/abc_text_select_handle_right_mtrl_dark.png"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_shimmer_home.xml.flat",
+        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/shimmer_home.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_common_full_open_on_phone.png.flat",
@@ -1296,12 +1296,12 @@
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/082f5546b8996f9dba9aa8ec6d290f86/res/drawable-hdpi-v4/abc_ic_menu_selectall_mtrl_alpha.png"
     },
     {
-        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_successfully_answered_dialog.xml.flat",
-        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/successfully_answered_dialog.xml"
-    },
-    {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_com_facebook_close.png.flat",
         "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/3a78772f22120cc414079c3589d28785/res/drawable-xhdpi-v4/com_facebook_close.png"
+    },
+    {
+        "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/layout_successfully_answered_dialog.xml.flat",
+        "source": "/home/notebook/projects/AskApp/app/src/main/res/layout/successfully_answered_dialog.xml"
     },
     {
         "merged": "/home/notebook/projects/AskApp/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_list_pressed_holo_dark.9.png.flat",

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -26,33 +27,41 @@ public class ProfileImageZoomActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_image_zoom);
         Intent intent=getIntent();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         String uid=intent.getStringExtra("uid");
         String url= Constants.PROFILE_PICTURE+"/"+uid+Constants.THUMBNAIL;
         StorageReference reference= FirebaseStorage.getInstance().getReference();
-        supportPostponeEnterTransition();
-        ImageView profileImageView=findViewById(R.id.profile_image);
+        final ImageView profileImageView=findViewById(R.id.profile_image);
         ImageView backButton=findViewById(R.id.back_button);
         Glide.with(this)
                 .load(reference.child(url))
-                .dontAnimate()
-                .fitCenter()
+                .placeholder(R.drawable.ic_placeholder_large)
+                .error(R.drawable.ic_placeholder_large)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        supportStartPostponedEnterTransition();
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        PhotoViewAttacher attacher=new PhotoViewAttacher(profileImageView);
+                        attacher.update();
                         return false;
                     }
-                }).into(profileImageView);
+                })
+                .into(profileImageView);
         backButton.setOnClickListener( this);
-        PhotoViewAttacher attacher=new PhotoViewAttacher(profileImageView);
-        attacher.update();
+
     }
     public void onClick(View view){
         onBackPressed();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
     }
 }

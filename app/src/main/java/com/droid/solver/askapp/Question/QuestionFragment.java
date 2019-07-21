@@ -10,6 +10,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,7 @@ public class QuestionFragment extends Fragment {
     private static final int QUESTION_LIMIT=8;
     private boolean isLoading=false;
     private DocumentSnapshot lastVisibleSnapshot=null;
+    private Handler handler;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
@@ -69,6 +72,7 @@ public class QuestionFragment extends Fragment {
             if(getActivity()!=null)
             getActivity().finish();
         }
+        handler=new Handler();
         root=FirebaseFirestore.getInstance();
         addFabItem();
         initScrollListener();
@@ -83,12 +87,12 @@ public class QuestionFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         if(MainActivity.isFirstTimeQuestionLoaded){
             loadDataFromRemoteDatabase();
-            swipeRefreshLayout.setEnabled(true);
-            swipeRefreshLayout.setRefreshing(true);
+//            swipeRefreshLayout.setEnabled(true);
+//            swipeRefreshLayout.setRefreshing(true);
 
         }else{
-            swipeRefreshLayout.setEnabled(true);
-            swipeRefreshLayout.setRefreshing(true);
+//            swipeRefreshLayout.setEnabled(true);
+//            swipeRefreshLayout.setRefreshing(true);
 
             if(MainActivity.questionLastDocumentSnapshot!=null){
                 lastVisibleSnapshot=MainActivity.questionLastDocumentSnapshot;
@@ -96,13 +100,12 @@ public class QuestionFragment extends Fragment {
             }else {
                 loadDataFromRemoteDatabase();
             }
-
         }
     }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         speedDialView.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
             @Override
             public boolean onActionSelected(SpeedDialActionItem speedDialActionItem) {
@@ -116,14 +119,12 @@ public class QuestionFragment extends Fragment {
                     case R.id.fab_action3:
                         startActivity(new Intent(getActivity(),QuestionActivity.class));
                         return false; // true to keep the floating button Speed Dial open
-
                     default:
                         return false;
                 }
             }
         });
     }
-
 
     private void addFabItem(){
 
@@ -175,6 +176,7 @@ public class QuestionFragment extends Fragment {
 
         }
     };
+
     private void loadDataFromRemoteDatabase() {
 
         root.collection("question")
@@ -183,33 +185,38 @@ public class QuestionFragment extends Fragment {
                 limit(QUESTION_LIMIT).
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if(task.getResult()!=null)
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
-                                if(model.getAskerId()!=null&&model.getQuestionId()!=null){
-                                    model.setAnswered(false);
-                                    list.add(model);
-                                }
-                            }
-                            if(task.getResult()!=null&&task.getResult().size()>0){
-                                lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
-                                MainActivity.questionLastDocumentSnapshot=lastVisibleSnapshot;
-                            }
-                            adapter.notifyDataSetChanged();
-                            swipeRefreshLayout.setRefreshing(false);
-                            swipeRefreshLayout.setEnabled(false);
-                            shimmerFrameLayout.setVisibility(View.GONE);
-                            MainActivity.isFirstTimeQuestionLoaded=false;
                             AsyncTask.execute(new Runnable() {
                                 @Override
                                 public void run() {
+                                    if(task.getResult()!=null)
+                                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                            RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
+                                            if(model.getAskerId()!=null&&model.getQuestionId()!=null){
+                                                model.setAnswered(false);
+                                                list.add(model);
+                                            }
+                                        }
+
+                                    if(task.getResult()!=null&&task.getResult().size()>0){
+                                        lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                                        MainActivity.questionLastDocumentSnapshot=lastVisibleSnapshot;
+                                    }
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                            swipeRefreshLayout.setRefreshing(false);
+                                            swipeRefreshLayout.setEnabled(false);
+                                            shimmerFrameLayout.setVisibility(View.GONE);
+                                        }
+                                    });
+                                    MainActivity.isFirstTimeQuestionLoaded=false;
                                     if(getActivity()!=null) {
                                         LocalDatabase db = new LocalDatabase(getActivity().getApplicationContext());
                                         db.clearQuestionRootQuestionModel();
                                         db.insertQuestionRootQuestionModel(list);
-
                                     }
                                 }
                             });
@@ -238,28 +245,38 @@ public class QuestionFragment extends Fragment {
                     .limit(QUESTION_LIMIT).
                     get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         int scrollPosition=list.size()-1;
                         list.remove(scrollPosition);
                         adapter.notifyItemRemoved(list.size());
                         isLoading=false;
-                        if (task.getResult() != null)
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
-                                if (model.getAskerId() != null && model.getQuestionId() != null) {
-                                    list.add(model);
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (task.getResult() != null)
+                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                        RootQuestionModel model = documentSnapshot.toObject(RootQuestionModel.class);
+                                        if (model.getAskerId() != null && model.getQuestionId() != null) {
+                                            list.add(model);
+                                        }
+                                    }
+                                if(task.getResult()!=null&&task.getResult().size()>0){
+                                    lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
+                                }else if(task.getResult()!=null&&task.getResult().size()==0){
+                                    recyclerView.removeOnScrollListener(scrollListener);
                                 }
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adapter.notifyDataSetChanged();
+                                        swipeRefreshLayout.setRefreshing(false);
+                                        swipeRefreshLayout.setEnabled(false);
+                                        shimmerFrameLayout.setVisibility(View.GONE);
+                                    }
+                                });
                             }
-                        if(task.getResult()!=null&&task.getResult().size()>0){
-                            lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
-                        }else if(task.getResult()!=null&&task.getResult().size()==0){
-                            recyclerView.removeOnScrollListener(scrollListener);
-                        }
-                        adapter.notifyDataSetChanged();
-                        swipeRefreshLayout.setRefreshing(false);
-                        swipeRefreshLayout.setEnabled(false);
-                        shimmerFrameLayout.setVisibility(View.GONE);
+                        });
                     } else {
                         swipeRefreshLayout.setRefreshing(false);
                         swipeRefreshLayout.setEnabled(false);
@@ -275,18 +292,30 @@ public class QuestionFragment extends Fragment {
     }
 
     private void loadDataFromLocalDatabase(){
-        if(getActivity()!=null){
-            LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
-            ArrayList<Object> tempList=database.getQuestionRootQuestionModelList();
-            if(tempList!=null){
-                list.addAll(tempList);
-                tempList.clear();
-            }
-            adapter.notifyDataSetChanged();
-            swipeRefreshLayout.setRefreshing(false);
-            swipeRefreshLayout.setEnabled(false);
-            shimmerFrameLayout.setVisibility(View.GONE);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getActivity()!=null){
+                    LocalDatabase database=new LocalDatabase(getActivity().getApplicationContext());
+                    ArrayList<Object> tempList=database.getQuestionRootQuestionModelList();
+                    if(tempList!=null){
+                        list.addAll(tempList);
+                        tempList.clear();
+                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            swipeRefreshLayout.setRefreshing(false);
+                            swipeRefreshLayout.setEnabled(false);
+                            shimmerFrameLayout.setVisibility(View.GONE);
+                        }
+                    });
 
-        }
+
+                }
+            }
+        });
+
     }
 }

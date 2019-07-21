@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -17,6 +18,10 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -87,7 +92,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         rootView=findViewById(R.id.root);
         tickImage.setVisibility(View.GONE);
         progressCard=findViewById(R.id.progress_card);
-        progressCard.setVisibility(View.GONE);
+        progressCard.setVisibility(View.VISIBLE);
         tickImage.setOnClickListener(this);
         backImage.setOnClickListener(this);
         editImage.setOnClickListener(this);
@@ -121,6 +126,9 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         try {
             Bitmap bitmap= BitmapFactory.decodeStream(new FileInputStream(file));
             imageView.setImageBitmap(bitmap);
+            progressCard.setVisibility(View.GONE);
+            PhotoViewAttacher attacher=new PhotoViewAttacher(imageView);
+            attacher.update();
         } catch (FileNotFoundException e) {
 
             if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
@@ -129,8 +137,22 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                         +ProfileImageActivity.THUMBNAIL;
                 StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
                 GlideApp.with(this).load(reference)
-                        .error(R.drawable.round_account)
+                        .error(R.drawable.ic_placeholder_large)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
+                                attacher.update();
+                                return false;
+                            }
+                        })
                         .into(imageView);
+                progressCard.setVisibility(View.GONE);
                 e.printStackTrace();
             }
         }

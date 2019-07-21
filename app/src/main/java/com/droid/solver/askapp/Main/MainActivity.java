@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements
     public static ArrayList<String> answerLikeList;
     public static HashMap<String,Integer> imagePollLikeMap;
     public static HashMap<String,Integer> surveyParticipatedMap;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements
         if (lowProfilePicPath == null && highProfilePath == null) {
             getProfilePicUrlFromRemoteDatabase();
         }
+        handler=new Handler();
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -139,24 +141,27 @@ public class MainActivity extends AppCompatActivity implements
                     SharedPreferences.Editor editor=sharedPreferences.edit();
                     editor.clear();
                     editor.apply();
-                    clearDatabase();
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
+                            clearDatabase();
                             Glide.get(MainActivity.this)
                                     .clearDiskCache();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LoginManager.getInstance().logOut();
+                                    signInAgain();
+                                }
+                            });
                         }
                     });
-                    LoginManager.getInstance().logOut();
-                    signInAgain();
-
                     return true;
                 }
                 return false;
             }
         });
         checkNotification();
-
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -332,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                 if(task.isSuccessful()) {
                     if(task.getResult()!=null)
                     for (QueryDocumentSnapshot snapshots : task.getResult()) {
@@ -343,24 +349,22 @@ public class MainActivity extends AppCompatActivity implements
                 }
                     else {
                         Log.i("TAG", "error in fetching answer like documents ");
-                        //task is not successfull
                     }
 
                 if(answerLikeList!=null) {
-                    set.addAll(answerLikeList);
-                    answerLikeList.clear();
-                    answerLikeList.addAll(set);
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
+                            set.addAll(answerLikeList);
+                            answerLikeList.clear();
+                            answerLikeList.addAll(set);
                             LocalDatabase database = new LocalDatabase(getApplicationContext());
                             database.clearAnswerLikeModel();
                             database.insertAnswerLikeModel(answerLikeList);
                         }
                     });
-
-
                 }
+
             }
         });
     }
@@ -371,23 +375,27 @@ public class MainActivity extends AppCompatActivity implements
                 .collection("imagePollLike");
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-                    if(task.getResult()!=null)
-                    for(QueryDocumentSnapshot snapshot:task.getResult()){
-                        ImagePollLike imagePollLike=snapshot.toObject(ImagePollLike.class);
-                        tempList.addAll(imagePollLike.getImagePollMapList());
-                    }
-                    for(int i=0;i<tempList.size();i++){
-                        imagePollLikeMap.putAll(tempList.get(i));
-                    }
-                    tempList.clear();
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
-                            LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
-                            localDatabase.clearImagePollLikeModel();
-                            localDatabase.insertImagePollLikeModel(imagePollLikeMap);
+                            try {
+                                if(task.getResult()!=null)
+                                    for(QueryDocumentSnapshot snapshot:task.getResult()){
+                                        ImagePollLike imagePollLike=snapshot.toObject(ImagePollLike.class);
+                                        tempList.addAll(imagePollLike.getImagePollMapList());
+                                    }
+                                for (int i = 0; i < tempList.size(); i++) {
+                                    imagePollLikeMap.putAll(tempList.get(i));
+                                }
+                                tempList.clear();
+                                LocalDatabase localDatabase = new LocalDatabase(getApplicationContext());
+                                localDatabase.clearImagePollLikeModel();
+                                localDatabase.insertImagePollLikeModel(imagePollLikeMap);
+                            }catch (NullPointerException e){
+                                Log.i("TAG", "NullpointerException occurs in retrieving image poll like map ,"+e.getMessage());
+                            }
                         }
                     });
 
@@ -405,20 +413,20 @@ public class MainActivity extends AppCompatActivity implements
                 .collection("surveyParticipated");
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-                    if(task.getResult()!=null)
-                    for(QueryDocumentSnapshot snapshots:task.getResult()){
-                        SurveyParticipated surveyParticipated=snapshots.toObject(SurveyParticipated.class);
-                        tempList.addAll(surveyParticipated.getSurveyMapList());
-                    }
-                    for(int i=0;i<tempList.size();i++){
-                        surveyParticipatedMap.putAll(tempList.get(i));
-                    }
-                    tempList.clear();
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
+                            if(task.getResult()!=null)
+                                for(QueryDocumentSnapshot snapshots:task.getResult()){
+                                    SurveyParticipated surveyParticipated=snapshots.toObject(SurveyParticipated.class);
+                                    tempList.addAll(surveyParticipated.getSurveyMapList());
+                                }
+                            for(int i=0;i<tempList.size();i++){
+                                surveyParticipatedMap.putAll(tempList.get(i));
+                            }
+                            tempList.clear();
                             LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
                             localDatabase.clearSurveyParticipatedModel();
                             localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
@@ -435,6 +443,7 @@ public class MainActivity extends AppCompatActivity implements
     private void clearDatabase(){
         LocalDatabase database=new LocalDatabase(getApplicationContext());
         database.clearAllTable();
+
     }
 
     private void signInAgain(){
@@ -496,53 +505,59 @@ public class MainActivity extends AppCompatActivity implements
                 .document(uid)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     if(task.getResult()!=null) {
-                        UserInfoModel infoModel = task.getResult().toObject(UserInfoModel.class);
-                        if(infoModel!=null){
-                            String userId=infoModel.getUserId();
-                            String userName=infoModel.getUserName();
-                            String profilePicUrlLow=infoModel.getProfilePicUrlLow();
-                            String profilePicUrlHigh=infoModel.getProfilePicUrlHigh();
-                            String bio=infoModel.getBio();
-                            int point=infoModel.getPoint();
-                            int followerCount=infoModel.getFollowerCount();
-                            int followingCount=infoModel.getFollowingCount();
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                final UserInfoModel infoModel = task.getResult().toObject(UserInfoModel.class);
+                                if(infoModel!=null){
+                                    String userId=infoModel.getUserId();
+                                    String userName=infoModel.getUserName();
+                                    String profilePicUrlLow=infoModel.getProfilePicUrlLow();
+                                    String profilePicUrlHigh=infoModel.getProfilePicUrlHigh();
+                                    String bio=infoModel.getBio();
+                                    int point=infoModel.getPoint();
+                                    int followerCount=infoModel.getFollowerCount();
+                                    int followingCount=infoModel.getFollowingCount();
 
-                            String gender=infoModel.getGender();
-                            ArrayList<String> interest=infoModel.getInterest();
+                                    String gender=infoModel.getGender();
+                                    ArrayList<String> interest=infoModel.getInterest();
 
-                            StringBuilder builder=new StringBuilder();
-                            StringBuilder bioBuilder=new StringBuilder();
-                            if(interest!=null) {
-                                for (int i = 0; i < interest.size(); i++) {
-                                    builder.append(interest.get(i));
-                                    builder.append("@");
-                                }
-                                if(bio==null){
-                                    for(int i=0;i<interest.size();i++){
-                                        bioBuilder.append(interest.get(i));
-                                        if(i!=interest.size())
-                                            bioBuilder.append(" |");
+                                    StringBuilder builder=new StringBuilder();
+                                    StringBuilder bioBuilder=new StringBuilder();
+                                    if(interest!=null) {
+                                        for (int i = 0; i < interest.size(); i++) {
+                                            builder.append(interest.get(i));
+                                            builder.append("@");
+                                        }
+                                        if(bio==null){
+                                            for(int i=0;i<interest.size();i++){
+                                                bioBuilder.append(interest.get(i));
+                                                if(i!=interest.size())
+                                                    bioBuilder.append(" |");
 
+                                            }
+                                        }
                                     }
+                                    SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE );
+                                    SharedPreferences.Editor editor=preferences.edit();
+                                    editor.putString(Constants.userId, userId);
+                                    editor.putString(Constants.userName, userName);
+                                    editor.putString(Constants.profilePicLowUrl, profilePicUrlLow);
+                                    editor.putString(Constants.profilePicHighUrl, profilePicUrlHigh);
+                                    editor.putInt(Constants.point, point);
+                                    editor.putInt(Constants.followerCount, followerCount);
+                                    editor.putInt(Constants.followingCount, followingCount);
+                                    editor.putString(Constants.GENDER, gender);
+                                    editor.putString(Constants.bio, bioBuilder.toString());
+                                    editor.putString(Constants.INTEREST, builder.toString());
+                                    editor.apply();
                                 }
                             }
-                            SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE );
-                            SharedPreferences.Editor editor=preferences.edit();
-                            editor.putString(Constants.userId, userId);
-                            editor.putString(Constants.userName, userName);
-                            editor.putString(Constants.profilePicLowUrl, profilePicUrlLow);
-                            editor.putString(Constants.profilePicHighUrl, profilePicUrlHigh);
-                            editor.putInt(Constants.point, point);
-                            editor.putInt(Constants.followerCount, followerCount);
-                            editor.putInt(Constants.followingCount, followingCount);
-                            editor.putString(Constants.GENDER, gender);
-                            editor.putString(Constants.bio, bioBuilder.toString());
-                            editor.putString(Constants.INTEREST, builder.toString());
-                            editor.apply();
-                        }
+                        });
+
 
                     }
                 }

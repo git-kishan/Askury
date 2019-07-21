@@ -260,6 +260,27 @@ public class LocalDatabase extends SQLiteOpenHelper {
          final String CREATE_TABLE_HOME_OBJECT="CREATE TABLE "+HOME_OBJECT+"("+objectId +" TEXT PRIMARY KEY ,"+type +" TEXT "+")";
 
          try {
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+USER_QUESTION_MODEL);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+USER_ANSWER_MODEL);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ROOT_QUESTION_MODEL);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+QUESTION_ROOT_QUESTION_MODEL);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+SURVEY_ASKED_TABLE);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+IMAGE_POLL_TABLE);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ANSWER_LIKE_TABLE);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+SURVEY_PARTICIPATED_TABLE);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+IMAGE_POLL_LIKE_TABLE);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+FOLLOWER_TABLE);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+FOLLOWING_TABLE);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+IMAGE_POLL_REPORT);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+SURVEY_REPORT);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+QUESTION_REPORT);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_QUESTION);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_ANSWER);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_IMAGE_POLL);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_SURVEY);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION_FOLLOWER);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+NOTIFICATION);
+             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+HOME_OBJECT);
 
              sqLiteDatabase.execSQL(CREATE_TABLE_USER_QUESTION_MODEL);
              sqLiteDatabase.execSQL(CREATE_TABLE_USER_ANSWER_MODEL);

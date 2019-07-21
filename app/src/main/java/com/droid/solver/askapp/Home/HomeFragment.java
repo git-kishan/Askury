@@ -126,9 +126,66 @@ public class HomeFragment extends Fragment  {
             lastSurveySnapshot=MainActivity.homeLastSurveyDocumentSnapshot;
             if(lastQuestionSnapshot!=null||lastSurveySnapshot!=null||lastImagePollSnapshot!=null){
                 loadDataFromLocalDatabase();
+                Log.i("TAG", "Load data from local database :- ");
+            }else {
+                loadDataFromRemoteDatabase();
             }
         }
     }
+
+
+    private void initRecyclerView(){
+        final ArrayList<String> followingIdListFromLocalDatabase = new ArrayList<>();
+        adapter = new HomeRecyclerViewAdapter(getActivity(), list, followingIdListFromLocalDatabase);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(onScrollListener);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getActivity()!=null) {
+                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+                    if(database.getImagePollLikeModel()!=null)
+                        imagePollLikeMapFromLocalDatabase=database.getImagePollLikeModel();
+                    if(database.getSurveyParticipatedModel()!=null)
+                        surveyParticipatedMapFromLocalDatabase=database.getSurveyParticipatedModel();
+                    if(database.getAnswerLikeModel()!=null)
+                        answerLikeListFromLocalDatabase=database.getAnswerLikeModel();
+                    if (database.getFollowingIdList()!=null) {
+                        followingIdListFromLocalDatabase.addAll(database.getFollowingIdList());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+    }
+
+    private RecyclerView.OnScrollListener onScrollListener=new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LinearLayoutManager manager= (LinearLayoutManager) recyclerView.getLayoutManager();
+            if(!isLoading){
+                if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
+                    list.add(list.size(),null);
+                    adapter.notifyItemInserted(list.size());
+                    isLoading=true;
+                    loadMoreItemFromRemoteDatabase();
+                }
+            }
+
+        }
+    };
 
     private void loadDataFromLocalDatabase(){
         AsyncTask.execute(new Runnable() {
@@ -136,7 +193,8 @@ public class HomeFragment extends Fragment  {
             public void run() {
                 if(getActivity()!=null) {
                     LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-                    list =database.getHomeObject();
+                    if(database.getHomeObject()!=null)
+                    list.addAll(database.getHomeObject());
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -166,48 +224,55 @@ public class HomeFragment extends Fragment  {
         if(getActivity()!=null)
         query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
 
-                if(task.isSuccessful()){
-                    if(task.getResult()!=null)
-                    for(QueryDocumentSnapshot snapshot :task.getResult()){
-                        AskImagePollModel askImagePollModel=snapshot.toObject(AskImagePollModel.class);
-                        if(askImagePollModel.getImagePollId()!=null&&
-                                !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
-                            int i2 = 0;
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(task.isSuccessful()){
+                            if(task.getResult()!=null)
+                                for(QueryDocumentSnapshot snapshot :task.getResult()){
+                                    AskImagePollModel askImagePollModel=snapshot.toObject(AskImagePollModel.class);
+                                    if(askImagePollModel.getImagePollId()!=null&&
+                                            !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
+                                        int i2 = 0;
 
-                            if(MainActivity.imagePollLikeMap!=null) {
+                                        if(MainActivity.imagePollLikeMap!=null) {
 
-                                if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
-                                    Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                    String s;
-                                    if (i1 != null) {
-                                        s = i1.toString();
-                                        i2 = Integer.parseInt(s);
+                                            if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
+                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                String s;
+                                                if (i1 != null) {
+                                                    s = i1.toString();
+                                                    i2 = Integer.parseInt(s);
+                                                }
+                                            }
+                                        }
+                                        else if(imagePollLikeMapFromLocalDatabase!=null){
+
+                                            if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
+                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                String s;
+                                                if (i1 != null) {
+                                                    s = i1.toString();
+                                                    i2 = Integer.parseInt(s);
+                                                }
+                                            }
+
+                                        }
+                                        askImagePollModel.setOptionSelectedByMe(i2);
+                                        imagePollModelStack.add(askImagePollModel);
                                     }
                                 }
+                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0) {
+                                lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                MainActivity.homeLastImagePollDocumentSnapshot=lastImagePollSnapshot;
                             }
-                            else if(imagePollLikeMapFromLocalDatabase!=null){
-
-                                if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
-                                    Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                    String s;
-                                    if (i1 != null) {
-                                        s = i1.toString();
-                                        i2 = Integer.parseInt(s);
-                                    }
-                                }
-
-                            }
-                            askImagePollModel.setOptionSelectedByMe(i2);
-                            imagePollModelStack.add(askImagePollModel);
                         }
+
                     }
-                    if(task.getResult()!=null&&task.getResult().getDocuments().size()>0) {
-                        lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                        MainActivity.homeLastImagePollDocumentSnapshot=lastImagePollSnapshot;
-                    }
-                }
+                });
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -226,47 +291,53 @@ public class HomeFragment extends Fragment  {
         if(getActivity()!=null)
         query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    if(task.getResult()!=null)
-                    for(QueryDocumentSnapshot snapshot :task.getResult()){
-                        AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
-                        if(askSurveyModel.getSurveyId()!=null&&
-                                !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())){
+            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(task.isSuccessful()){
+                            if(task.getResult()!=null)
+                                for(QueryDocumentSnapshot snapshot :task.getResult()){
+                                    AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
+                                    if(askSurveyModel.getSurveyId()!=null&&
+                                            !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())){
 
-                            int i2=0;
-                            if(MainActivity.surveyParticipatedMap!=null){
+                                        int i2=0;
+                                        if(MainActivity.surveyParticipatedMap!=null){
 
-                                if (MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())) {
-                                    Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                    String s;
-                                    if(i1!=null){
-                                        s=i1.toString();
-                                        i2=Integer.parseInt(s);
+                                            if (MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())) {
+                                                Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                                String s;
+                                                if(i1!=null){
+                                                    s=i1.toString();
+                                                    i2=Integer.parseInt(s);
+                                                }
+                                            }
+
+                                        }else if(surveyParticipatedMapFromLocalDatabase!=null){
+
+                                            if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
+                                                Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                                String s;
+                                                if(i1!=null){
+                                                    s=i1.toString();
+                                                    i2=Integer.parseInt(s);
+                                                }
+                                            }
+
+                                        }
+                                        askSurveyModel.setOptionSelectedByMe(i2);
+                                        surveyModelStack.add(askSurveyModel);
                                     }
                                 }
-
-                            }else if(surveyParticipatedMapFromLocalDatabase!=null){
-
-                                if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
-                                    Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                    String s;
-                                    if(i1!=null){
-                                        s=i1.toString();
-                                        i2=Integer.parseInt(s);
-                                    }
-                                }
-
+                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                                lastSurveySnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
+                                MainActivity.homeLastSurveyDocumentSnapshot=lastSurveySnapshot;
                             }
-                            askSurveyModel.setOptionSelectedByMe(i2);
-                            surveyModelStack.add(askSurveyModel);
                         }
                     }
-                    if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                        lastSurveySnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
-                        MainActivity.homeLastSurveyDocumentSnapshot=lastSurveySnapshot;
-                    }
-                }
+                });
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -291,33 +362,40 @@ public class HomeFragment extends Fragment  {
         if(getActivity()!=null)
         query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    if(task.getResult()!=null)
-                    for(QueryDocumentSnapshot snapshot:task.getResult()){
-                        RootQuestionModel questionModel=snapshot.toObject(RootQuestionModel.class);
-                        questionModel.setLikedByMe(false);
-                        if(questionModel.getQuestionId()!=null&&
-                                !reportedQuestionFromLocalDatabase.contains(questionModel.getQuestionId())){
-                            if(MainActivity.answerLikeList!=null){
-                                if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
-                                    questionModel.setLikedByMe(true);
+            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(task.isSuccessful()){
+                            if(task.getResult()!=null)
+                                for(QueryDocumentSnapshot snapshot:task.getResult()){
+                                    RootQuestionModel questionModel=snapshot.toObject(RootQuestionModel.class);
+                                    questionModel.setLikedByMe(false);
+                                    if(questionModel.getQuestionId()!=null&&
+                                            !reportedQuestionFromLocalDatabase.contains(questionModel.getQuestionId())){
+                                        if(MainActivity.answerLikeList!=null){
+                                            if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
+                                                questionModel.setLikedByMe(true);
 
-                            }else if(answerLikeListFromLocalDatabase!=null){
-                                if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
-                                questionModel.setLikedByMe(true);
+                                        }else if(answerLikeListFromLocalDatabase!=null){
+                                            if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
+                                                questionModel.setLikedByMe(true);
+                                        }
+                                        questionModelStack.add(questionModel);
+                                    }
+                                }
+                            handleOrderingOfList();
+                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
+                                lastQuestionSnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
+                                MainActivity.homeLastQuestionDocumentSnapshot=lastQuestionSnapshot;
                             }
-                            questionModelStack.add(questionModel);
+                        }
+                        else {
+                            Log.i("TAG", "error occured in getting question documents from remote database");
                         }
                     }
-                    handleOrderingOfList();
-                    if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                        lastQuestionSnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
-                        MainActivity.homeLastQuestionDocumentSnapshot=lastQuestionSnapshot;
-                    }
-                }else {
-                    Log.i("TAG", "error occured in getting question documents from remote database");
-                }
+                });
+
             }
         }) .addOnFailureListener(new OnFailureListener() {
             @Override
@@ -331,25 +409,38 @@ public class HomeFragment extends Fragment  {
 
     private void handleOrderingOfList( ){
         list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
-        adapter.notifyDataSetChanged();
-        shimmerFrameLayout.setVisibility(View.GONE);
-        MainActivity.isFirstTimeHomeLoaded=false;
-        AsyncTask.execute(new Runnable() {
+        handler.post(new Runnable() {
             @Override
             public void run() {
-                if(getActivity()!=null) {
-                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-                    database.insertHomeObject(list);
-                }
+                adapter.notifyDataSetChanged();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                MainActivity.isFirstTimeHomeLoaded=false;
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(getActivity()!=null) {
+                            LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+                            database.insertHomeObject(list);
+                        }
+                    }
+                });
             }
         });
+
+
 
     }
 
     private void handleOnLoadingOrderingOfList(){
         list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
-        adapter.notifyDataSetChanged();
-        shimmerFrameLayout.setVisibility(View.GONE);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+                shimmerFrameLayout.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     //call this function after s1 retrived from remoteDatabase
@@ -384,64 +475,6 @@ public class HomeFragment extends Fragment  {
 
     }
 
-    private void initRecyclerView(){
-
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if(getActivity()!=null) {
-                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-                    if(database.getImagePollLikeModel()!=null)
-                        imagePollLikeMapFromLocalDatabase=database.getImagePollLikeModel();
-                    if(database.getSurveyParticipatedModel()!=null)
-                        surveyParticipatedMapFromLocalDatabase=database.getSurveyParticipatedModel();
-                    if(database.getAnswerLikeModel()!=null)
-                        answerLikeListFromLocalDatabase=database.getAnswerLikeModel();
-                }
-            }
-        });
-
-        Handler handler=new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<String> followingIdListFromLocalDatabase = new ArrayList<>();
-                adapter = new HomeRecyclerViewAdapter(getActivity(), list, followingIdListFromLocalDatabase);
-                recyclerView.setAdapter(adapter);
-                if(getActivity()!=null) {
-                    LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
-                    if (localDatabase.getFollowingIdList()!=null) {
-                        followingIdListFromLocalDatabase.addAll(localDatabase.getFollowingIdList());
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-        });
-        recyclerView.addOnScrollListener(onScrollListener);
-    }
-
-    private RecyclerView.OnScrollListener onScrollListener=new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
-
-        @Override
-        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            LinearLayoutManager manager= (LinearLayoutManager) recyclerView.getLayoutManager();
-            if(!isLoading){
-                if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
-                    list.add(list.size(),null);
-                    adapter.notifyItemInserted(list.size());
-                    isLoading=true;
-                    loadMoreItemFromRemoteDatabase();
-                }
-            }
-
-        }
-    };
-
     private void loadMoreItemFromRemoteDatabase(){
         onLoadingLoadQuestionFromRemoteDatabase();
         onLoadingLoadImagePollFromRemoteDatabase();
@@ -449,7 +482,7 @@ public class HomeFragment extends Fragment  {
 
     }
 
-    private void onLoadingLoadImagePollFromRemoteDatabase() {
+    private void onLoadingLoadImagePollFromRemoteDatabase(){
         rootRef = FirebaseFirestore.getInstance();
         final CollectionReference imagePollRef = rootRef.collection("imagePoll");
 
@@ -462,46 +495,50 @@ public class HomeFragment extends Fragment  {
             if (getActivity() != null)
                 query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
+                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if (task.getResult() != null)
-                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                    AskImagePollModel askImagePollModel = snapshot.toObject(AskImagePollModel.class);
-                                    if (askImagePollModel.getImagePollId() != null &&
-                                            !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (task.getResult() != null)
+                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                            AskImagePollModel askImagePollModel = snapshot.toObject(AskImagePollModel.class);
+                                            if (askImagePollModel.getImagePollId() != null &&
+                                                    !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
 
-                                        int i2 = 0;
-                                        if(MainActivity.imagePollLikeMap!=null) {
+                                                int i2 = 0;
+                                                if(MainActivity.imagePollLikeMap!=null) {
 
-                                            if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
-                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                                String s;
-                                                if (i1 != null) {
-                                                    s = i1.toString();
-                                                    i2 = Integer.parseInt(s);
+                                                    if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
+                                                        Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                        String s;
+                                                        if (i1 != null) {
+                                                            s = i1.toString();
+                                                            i2 = Integer.parseInt(s);
+                                                        }
+                                                    }
+
+                                                }else if(imagePollLikeMapFromLocalDatabase!=null){
+
+                                                    if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
+                                                        Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                        String s;
+                                                        if (i1 != null) {
+                                                            s = i1.toString();
+                                                            i2 = Integer.parseInt(s);
+                                                        }
+                                                    }
+
                                                 }
+                                                askImagePollModel.setOptionSelectedByMe(i2);
+                                                imagePollModelStack.add(askImagePollModel);
                                             }
-
-                                        }else if(imagePollLikeMapFromLocalDatabase!=null){
-
-                                            if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
-                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                                String s;
-                                                if (i1 != null) {
-                                                    s = i1.toString();
-                                                    i2 = Integer.parseInt(s);
-                                                }
-                                            }
-
                                         }
-                                        askImagePollModel.setOptionSelectedByMe(i2);
-                                        imagePollModelStack.add(askImagePollModel);
+                                    if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+                                        lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
                                     }
                                 }
-                            if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
-                                lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                            }
+                            });
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -521,50 +558,54 @@ public class HomeFragment extends Fragment  {
             Query query = surveyRef.orderBy("timeOfSurvey", Query.Direction.DESCENDING)
                     .startAfter(lastSurveySnapshot)
                     .limit(MAXIMUM_NO_OF_SURVEY_LOADED_AT_A_TIME);
-
             if (getActivity() != null)
                 query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if (task.getResult() != null)
-                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                    AskSurveyModel askSurveyModel = snapshot.toObject(AskSurveyModel.class);
-                                    if (askSurveyModel.getSurveyId() != null &&
-                                            !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())) {
-                                        int i2=0;
-                                        if(MainActivity.surveyParticipatedMap!=null){
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (task.getResult() != null)
+                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                            AskSurveyModel askSurveyModel = snapshot.toObject(AskSurveyModel.class);
+                                            if (askSurveyModel.getSurveyId() != null &&
+                                                    !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())) {
+                                                int i2=0;
+                                                if(MainActivity.surveyParticipatedMap!=null){
 
-                                            if(MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())){
-                                                Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                                String s;
-                                                if(i1!=null){
-                                                    s=i1.toString();
-                                                    i2=Integer.parseInt(s);
-                                                }
-                                            }
+                                                    if(MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())){
+                                                        Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                                        String s;
+                                                        if(i1!=null){
+                                                            s=i1.toString();
+                                                            i2=Integer.parseInt(s);
+                                                        }
+                                                    }
 
-                                        }else {
-                                            if(surveyParticipatedMapFromLocalDatabase!=null){
+                                                }else {
+                                                    if(surveyParticipatedMapFromLocalDatabase!=null){
 
-                                                if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
-                                                    Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                                    String s;
-                                                    if(i1!=null){
-                                                        s=i1.toString();
-                                                        i2=Integer.parseInt(s);
+                                                        if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
+                                                            Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                                            String s;
+                                                            if(i1!=null){
+                                                                s=i1.toString();
+                                                                i2=Integer.parseInt(s);
+                                                            }
+                                                        }
+
                                                     }
                                                 }
-
+                                                askSurveyModel.setOptionSelectedByMe(i2);
+                                                surveyModelStack.add(askSurveyModel);
                                             }
                                         }
-                                        askSurveyModel.setOptionSelectedByMe(i2);
-                                        surveyModelStack.add(askSurveyModel);
+                                    if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+                                        lastSurveySnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
                                     }
                                 }
-                            if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
-                                lastSurveySnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                            }
+                            });
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -591,36 +632,46 @@ public class HomeFragment extends Fragment  {
             if (getActivity() != null)
                 query.get().addOnCompleteListener(getActivity(), new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if (task.getResult() != null)
-                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                    RootQuestionModel questionModel = snapshot.toObject(RootQuestionModel.class);
-                                    questionModel.setLikedByMe(false);
-                                    if (questionModel.getQuestionId() != null &&
-                                            !reportedQuestionFromLocalDatabase.contains(questionModel.getRecentAnswerId())) {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (task.getResult() != null)
+                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                            RootQuestionModel questionModel = snapshot.toObject(RootQuestionModel.class);
+                                            questionModel.setLikedByMe(false);
+                                            if (questionModel.getQuestionId() != null &&
+                                                    !reportedQuestionFromLocalDatabase.contains(questionModel.getRecentAnswerId())) {
 
-                                        if(MainActivity.answerLikeList!=null){
-                                            if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
-                                                questionModel.setLikedByMe(true);
+                                                if(MainActivity.answerLikeList!=null){
+                                                    if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
+                                                        questionModel.setLikedByMe(true);
 
-                                        }else if(answerLikeListFromLocalDatabase!=null){
-                                            if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
-                                                questionModel.setLikedByMe(true);
+                                                }else if(answerLikeListFromLocalDatabase!=null){
+                                                    if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
+                                                        questionModel.setLikedByMe(true);
+                                                }
+                                                questionModelStack.add(questionModel);
+                                            }
                                         }
-                                        questionModelStack.add(questionModel);
+                                    if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+                                        lastQuestionSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                    } else if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
+                                        recyclerView.removeOnScrollListener(onScrollListener);
                                     }
+                                    final int scrollPosition = list.size() - 1;
+                                    list.remove(scrollPosition);
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyItemRemoved(scrollPosition);
+                                        }
+                                    });
+                                    isLoading = false;
+                                    handleOnLoadingOrderingOfList();
                                 }
-                            if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
-                                lastQuestionSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                            } else if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
-                                recyclerView.removeOnScrollListener(onScrollListener);
-                            }
-                            int scrollPosition = list.size() - 1;
-                            list.remove(scrollPosition);
-                            adapter.notifyItemRemoved(scrollPosition);
-                            isLoading = false;
-                            handleOnLoadingOrderingOfList();
+                            });
 
                         } else {
 

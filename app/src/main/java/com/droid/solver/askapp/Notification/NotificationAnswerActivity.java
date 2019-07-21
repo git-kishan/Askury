@@ -166,6 +166,7 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
         overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
 
     }
+
     private String getTimeDifferenceInWords(long diff){
         long yearInMillis=365*24*60*60*1000L;
         long dayInMillis=24*60*60*1000L;//86400000
