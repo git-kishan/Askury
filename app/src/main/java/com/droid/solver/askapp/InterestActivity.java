@@ -44,7 +44,7 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
     private ChipGroup chipGroupTop;
     private Chip chip;
     private ConstraintLayout rootLayout;
-    private Map<String,Integer> chipMap;//chip text and chip id
+    private Map<String,Integer> chipMap;//chip text and chip idgit ad
     private String activity;
     private  AlertDialog alertDialog;
 

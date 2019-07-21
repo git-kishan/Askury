@@ -1,0 +1,105 @@
+package com.droid.solver.askapp;
+
+public class Gradle_file {
+
+    //app level gradle file
+
+//    apply plugin: 'com.android.application'
+//    apply plugin: 'com.google.gms.google-services'
+//
+//    android {
+//        compileSdkVersion 28
+//        defaultConfig {
+//            applicationId "com.droid.solver.askapp"
+//            minSdkVersion 21
+//            targetSdkVersion 28
+//            versionCode 1
+//            versionName "1.0"
+//            testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        }
+//        buildTypes {
+//            release {
+//                minifyEnabled false
+//                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            }
+//        }
+//        sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
+//
+//        lintOptions {
+//            checkReleaseBuilds false
+//            abortOnError false
+//
+//
+//        }
+//    }
+//
+//
+//    dependencies {
+//        implementation fileTree(dir: 'libs', include: ['*.jar'])
+//        implementation 'androidx.appcompat:appcompat:1.0.2'
+//        implementation 'androidx.browser:browser:1.0.0'
+//        implementation 'androidx.exifinterface:exifinterface:1.0.0'
+//        implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+//        implementation 'com.google.android.material:material:1.0.0'
+//        implementation 'com.google.firebase:firebase-auth:18.0.0'
+//        implementation 'com.facebook.android:facebook-login:5.0.1'
+//        implementation 'com.google.firebase:firebase-auth:18.0.0'
+//        implementation 'de.hdodenhof:circleimageview:3.0.0'
+//        implementation "com.leinardi.android:speed-dial:2.0.1"
+//        implementation 'com.steelkiwi:dots-loader-view:1.0.0'
+//        implementation 'com.github.jd-alexander:LikeButton:0.2.3'
+//        implementation 'androidx.emoji:emoji:1.0.0'
+//        implementation 'com.facebook.shimmer:shimmer:0.4.0'
+//        implementation 'com.google.android.gms:play-services-auth:17.0.0'
+//        implementation 'com.google.firebase:firebase-firestore:20.1.0'
+//        implementation 'com.google.firebase:firebase-storage:18.0.0'
+//        implementation 'com.github.bumptech.glide:glide:4.9.0'
+//        annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+//        annotationProcessor 'androidx.annotation:annotation:1.1.0'
+//        implementation 'com.google.firebase:firebase-database:18.0.0'
+//        implementation 'com.firebaseui:firebase-ui-storage:4.3.1'
+//        implementation 'com.github.chrisbanes:PhotoView:1.3.0'
+//        implementation 'com.squareup.picasso:picasso:2.71828'
+//        implementation 'androidx.annotation:annotation:1.1.0'
+//        implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+//        implementation 'com.google.firebase:firebase-messaging:19.0.1'
+//        testImplementation 'junit:junit:4.12'
+//        androidTestImplementation 'androidx.test:runner:1.2.0'
+//        androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+//    }
+
+
+
+    // Top-level build file where you can add configuration options common to all sub-projects/modules.
+//
+//    buildscript {
+//        repositories {
+//            google()
+//            jcenter()
+//
+//        }
+//        dependencies {
+//            classpath 'com.android.tools.build:gradle:3.4.1'
+//            classpath 'com.google.gms:google-services:4.2.0'
+//
+//            // NOTE: Do not place your application dependencies here; they belong
+//            // in the individual module build.gradle files
+//        }
+//    }
+//
+//    allprojects {
+//        repositories {
+//            google()
+//            jcenter()
+//            maven { url "https://jitpack.io" }
+//
+//
+//        }
+//    }
+//
+//    task clean(type: Delete) {
+//        delete rootProject.buildDir
+//    }
+
+
+}
