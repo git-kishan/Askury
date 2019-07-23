@@ -89,6 +89,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         image1 = itemView.findViewById(R.id.imageView5);
         image2 = itemView.findViewById(R.id.imageView6);
         constraintLayout = itemView.findViewById(R.id.constraintLayout8);
+        constraintLayout.setVisibility(View.INVISIBLE);
     }
 
     void onImage1SingleClicked(final Context context, String imageUrl) {
@@ -127,17 +128,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
         batch.update(askerImagePollRef, rootImagePollMap);
         batch.set(userImagePollLikeRef, userImagePollLikeMap, SetOptions.merge());
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if(getAdapterPosition()<=7) {
-                    imagePollModel.setOptionSelectedByMe(1);
-                    imagePollModel.setImage1LikeNo(imagePollModel.getImage1LikeNo() + 1);
+        if(getAdapterPosition()<=7){
+            imagePollModel.setOptionSelectedByMe(1);
+            imagePollModel.setImage1LikeNo(imagePollModel.getImage1LikeNo() + 1);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
                     LocalDatabase database = new LocalDatabase(context.getApplicationContext());
                     database.updateImagePollModel(imagePollModel);
                 }
-            }
-        });
+            });
+        }
+
 
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -161,17 +163,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
             }
         });
 
-        constraintLayout.setVisibility(View.GONE);
-        leftRedHeart.setVisibility(View.GONE);
-        rightRedHeart.setVisibility(View.GONE);
-        leftWhiteHeart.setVisibility(View.GONE);
-        rightWhiteHeart.setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
         final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
         leftWhiteHeart.startAnimation(animation);
         constraintLayout.animate().translationY(40f).setDuration(0).start();
         leftWhiteHeart.setVisibility(View.VISIBLE);
-        final int totalLikeOfBothImages = imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1;//till now in addition to current user
+        final  int totalLikeOfBothImages =getAdapterPosition()<=7?(imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo()) :
+                (imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1);//till now in addition to current user
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -263,17 +261,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
         batch.update(askerImagePollRef, rootImagePollMap);
         batch.update(userImagePollLikeRef, userImagePollLikeMap);
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if(getAdapterPosition()<=7) {
-                    imagePollModel.setOptionSelectedByMe(2);
-                    imagePollModel.setImage1LikeNo(imagePollModel.getImage1LikeNo() + 1);
+        if(getAdapterPosition()<=7){
+            imagePollModel.setOptionSelectedByMe(2);
+            imagePollModel.setImage2LikeNo(imagePollModel.getImage2LikeNo() + 1);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
                     LocalDatabase database = new LocalDatabase(context.getApplicationContext());
                     database.updateImagePollModel(imagePollModel);
                 }
-            }
-        });
+            });
+        }
+
 
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -296,19 +295,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
                 }
             }
         });
-
-        constraintLayout.setVisibility(View.GONE);
-        leftRedHeart.setVisibility(View.GONE);
-        rightRedHeart.setVisibility(View.GONE);
-        leftWhiteHeart.setVisibility(View.GONE);
-        rightWhiteHeart.setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
         final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
         rightWhiteHeart.startAnimation(animation);
         constraintLayout.animate().translationY(40f).setDuration(0).start();
         rightWhiteHeart.setVisibility(View.VISIBLE);
         final Handler handler = new Handler();
-        final int totalLikeOfBothImages = imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1;//till now in addition to current user
+        final  int totalLikeOfBothImages =getAdapterPosition()<=7?(imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo()) :
+                (imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1);//till now in addition to current user
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -376,16 +370,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
     void showLike(final Context context, final int image1LikeNo, final int image2LikeNo, final int choice) {
                  final int totalLikeOfBothImages = image1LikeNo + image2LikeNo;//till now in addition to current user
                  if(choice!=0&&totalLikeOfBothImages!=0) {
-                     leftWhiteHeart.setVisibility(View.GONE);
-                     rightWhiteHeart.setVisibility(View.GONE);
                      image1.setLongClickable(false);
                      image2.setLongClickable(false);
-                     constraintLayout.setVisibility(View.VISIBLE);
-//                     constraintLayout.animate().translationY(0f).setDuration(0).start();
-                     Handler handler2 = new Handler();
-                     handler2.postDelayed(new Runnable() {
+                     leftRedHeart.setVisibility(View.GONE);
+                     rightRedHeart.setVisibility(View.GONE);
+                     Handler handler = new Handler();
+                     handler.post(new Runnable() {
                          @Override
                          public void run() {
+                             constraintLayout.setVisibility(View.VISIBLE);
                              int firstPercentage = image1LikeNo * 100 / (totalLikeOfBothImages);//white view1
                              int secondPercentage = 100 - firstPercentage;//black white
                              double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
@@ -429,7 +422,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
                              image1.setLongClickable(false);
                              image2.setLongClickable(false);
                          }
-                     }, 0);
+                     });
 
                  }
     }
@@ -530,7 +523,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
     }
 
     private void onReportClicked(String imagePollId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
-        @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.image_poll_report_dialog,
+        @SuppressLint("InflateParams")
+        View dialogView=LayoutInflater.from(context).inflate(R.layout.image_poll_report_dialog,
                 null,false);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setView(dialogView);

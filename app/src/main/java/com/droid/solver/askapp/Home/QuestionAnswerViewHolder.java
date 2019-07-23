@@ -80,8 +80,8 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-     void onWantToAnswer(Context context, RootQuestionModel model){
-         Activity activity= (Activity) context;
+    void onWantToAnswer(Context context, RootQuestionModel model){
+        Activity activity= (Activity) context;
         Intent intent=new Intent(context,AnswerActivity.class);
         intent.putExtra("askerUid", model.getAskerId());
         intent.putExtra("questionId", model.getQuestionId());
@@ -96,8 +96,8 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-     void onAnswerClicked(Context context,RootQuestionModel model){
-         Activity activity= (Activity) context;
+    void onAnswerClicked(Context context,RootQuestionModel model){
+        Activity activity= (Activity) context;
         Intent intent=new Intent(context, DetailAnswerActivity.class);
         intent.putExtra("askerId", model.getAskerId());
         intent.putExtra("answererId",model.getRecentAnswererId());
@@ -115,175 +115,176 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         intent.putExtra("likeCount", model.getRecentAnswerLikeCount());
         context.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-     }
+    }
 
-     void onLiked(final Context context, final RootQuestionModel model) {
+    void onLiked(final Context context, final RootQuestionModel model) {
 
-         SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-         final String likerId = preferences.getString(Constants.userId, null);
-         String likerName = preferences.getString(Constants.userName, null);
-         String likerImageUrl = preferences.getString(Constants.profilePicLowUrl, null);
-         String likerBio = preferences.getString(Constants.bio, null);
-         String questionId = model.getQuestionId();
-         String askerId = model.getAskerId();
-         String answerId = model.getRecentAnswerId();
-         String answererId = model.getRecentAnswererId();
+        SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+        final String likerId = preferences.getString(Constants.userId, null);
+        String likerName = preferences.getString(Constants.userName, null);
+        String likerImageUrl = preferences.getString(Constants.profilePicLowUrl, null);
+        String likerBio = preferences.getString(Constants.bio, null);
+        String questionId = model.getQuestionId();
+        String askerId = model.getAskerId();
+        String answerId = model.getRecentAnswerId();
+        String answererId = model.getRecentAnswererId();
 
-         AnswerLikeModel answerLikeModel = new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio, questionId, askerId, answerId, answererId);
+        AnswerLikeModel answerLikeModel = new AnswerLikeModel(likerId, likerName, likerImageUrl, likerBio, questionId, askerId, answerId, answererId);
 
-         if (likerId != null&&model.getAskerId()!=null&&model.getQuestionId()!=null&&model.getRecentAnswerId()!=null) {
+        if (likerId != null&&model.getAskerId()!=null&&model.getQuestionId()!=null&&model.getRecentAnswerId()!=null) {
 
-             Map<String, Object> likeMap = new HashMap<>();
-             likeMap.put("answerLikeCount", FieldValue.increment(1));
+            Map<String, Object> likeMap = new HashMap<>();
+            likeMap.put("answerLikeCount", FieldValue.increment(1));
 
-             Map<String, Object> rootLikeMap = new HashMap<>();
-             rootLikeMap.put("recentAnswerLikeCount", FieldValue.increment(1));
-
-
-             DocumentReference likerReference = firestoreRootRef.collection("user").document(model.getAskerId())
-                     .collection("question").document(model.getQuestionId()).collection("answer")
-                     .document(model.getRecentAnswerId()).collection("like").document(likerId);
-
-             DocumentReference questionAnswerModelRef = firestoreRootRef.collection("user").document(model.getAskerId())
-                     .collection("question").document(model.getQuestionId()).collection("answer")
-                     .document(model.getRecentAnswerId());
-
-             DocumentReference userAnswerModelRef = firestoreRootRef.collection("user").document(model.getRecentAnswererId())
-                     .collection("answer").document(model.getRecentAnswerId());
-
-             DocumentReference rootQuestionModelRef = firestoreRootRef.collection("question").document(model.getQuestionId());
-
-             DocumentReference userAnswerLikeRef = firestoreRootRef.collection("user").document(likerId).
-                     collection("answerLike").document("like");
-
-             Map<String, Object> userAnswerLikeMap = new HashMap<>();
-             userAnswerLikeMap.put("answerLikeId", FieldValue.arrayUnion(model.getRecentAnswerId()));
-
-             WriteBatch writeBatch = firestoreRootRef.batch();
-             writeBatch.set(likerReference, answerLikeModel);
-             writeBatch.update(questionAnswerModelRef, likeMap);
-             writeBatch.update(userAnswerModelRef, likeMap);
-             writeBatch.update(rootQuestionModelRef, rootLikeMap);
-             writeBatch.update(userAnswerLikeRef, userAnswerLikeMap);
-
-             writeBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                 @Override
-                 public void onComplete(@NonNull Task<Void> task) {
-
-                     if (likerId.equals(model.getAskerId())) {
-
-                     }
-                     Log.i("TAG", "successfully like");
-                 }
-             });
-             int count = Integer.parseInt(likeCount.getText().toString()) + 1;
-             likeCount.setText(String.valueOf(count));
-
-             model.setLikedByMe(true);
-             final LocalDatabase database = new LocalDatabase(context.getApplicationContext());
-             if (MainActivity.answerLikeList != null) {
-                 MainActivity.answerLikeList.add(model.getRecentAnswerId());
-             }
-             model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount() + 1);
-             database.insertSingleAnswerLikeModel(model.getRecentAnswerId());
-
-             AsyncTask.execute(new Runnable() {
-                 @Override
-                 public void run() {
-                     if (getAdapterPosition() <= 7) {
-                         database.updateRootQuestionModel(model);
-                     }
-                 }
-             });
-
-         }
-     }
-
-     void onDisliked ( final Context context, final RootQuestionModel model){
-             Log.i("TAG", "disliked triggered");
-             SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE);
-             String likerId = preferences.getString(Constants.userId, null);
-             if(likerId!=null&&model.getQuestionId()!=null&&model.getRecentAnswerId()!=null&&model.getAskerId()!=null) {
-                 Map<String, Object> likeMap = new HashMap<>();
-                 likeMap.put("answerLikeCount", FieldValue.increment(-1));
-
-                 Map<String, Object> rootLikeMap = new HashMap<>();
-                 rootLikeMap.put("recentAnswerLikeCount", FieldValue.increment(-1));
-
-                 DocumentReference likerReference = firestoreRootRef.collection("user").document(model.getAskerId())
-                         .collection("question").document(model.getQuestionId()).collection("answer")
-                         .document(model.getRecentAnswerId()).collection("like").document(likerId);
-
-                 DocumentReference questionAnswerModelRef = firestoreRootRef.collection("user").document(model.getAskerId())
-                         .collection("question").document(model.getQuestionId()).collection("answer")
-                         .document(model.getRecentAnswerId());
-
-                 DocumentReference userAnswerModelRef = firestoreRootRef.collection("user").document(model.getRecentAnswererId())
-                         .collection("answer").document(model.getRecentAnswerId());
-
-                 DocumentReference rootQuestionModelRef = firestoreRootRef.collection("question").document(model.getQuestionId());
-
-                 DocumentReference userAnswerLikeRef = firestoreRootRef.collection("user").document(likerId).
-                         collection("answerLike").document("like");
-
-                 Map<String, Object> userAnswerLikeMap = new HashMap<>();
-                 userAnswerLikeMap.put("answerLikeId", FieldValue.arrayRemove(model.getRecentAnswerId()));
-
-                 WriteBatch writeBatch = firestoreRootRef.batch();
-                 writeBatch.delete(likerReference);
-                 writeBatch.update(questionAnswerModelRef, likeMap);
-                 writeBatch.update(userAnswerModelRef, likeMap);
-                 writeBatch.update(rootQuestionModelRef, rootLikeMap);
-                 writeBatch.update(userAnswerLikeRef, userAnswerLikeMap);
-
-                 writeBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                     @Override
-                     public void onComplete(@NonNull Task<Void> task) {
-                         Log.i("TAG", "successfully dislike ");
-                     }
-                 });
-                 int count = Integer.parseInt(likeCount.getText().toString()) - 1;
-                 likeCount.setText(String.valueOf(count));
-
-                 final LocalDatabase database = new LocalDatabase(context.getApplicationContext());
-                 database.removeAnswerLikeModel(model.getRecentAnswerId());
-
-                 if (MainActivity.answerLikeList != null && MainActivity.answerLikeList.size() > 0) {
-                     MainActivity.answerLikeList.remove(model.getRecentAnswerId());
-
-                 }
-                 model.setLikedByMe(false);
-                 model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount() - 1);
-
-                 AsyncTask.execute(new Runnable() {
-                     @Override
-                     public void run() {
-                         if (getAdapterPosition() <= 7) {
-                             database.updateRootQuestionModel(model);
-                         }
-                     }
-                 });
-             }
-         }
-
-     void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
-         Activity activity= (Activity) context;
-         Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
-         intent.putExtra("askerImageUrl", rootQuestionModel.getAskerImageUrlLow());
-         intent.putExtra("timeOfAsking", rootQuestionModel.getTimeOfAsking());
-         intent.putExtra("askerName", rootQuestionModel.getAskerName());
-         intent.putExtra("askerBio", rootQuestionModel.getAskerBio());
-         intent.putExtra("questionId", rootQuestionModel.getQuestionId());
-         intent.putExtra("question", rootQuestionModel.getQuestion());
-         intent.putExtra("askerId", rootQuestionModel.getAskerId());
-         intent.putExtra("anonymous", rootQuestionModel.isAnonymous());
-         context.startActivity(intent);
-         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-
-     }
+            Map<String, Object> rootLikeMap = new HashMap<>();
+            rootLikeMap.put("recentAnswerLikeCount", FieldValue.increment(1));
 
 
-     void onAskerImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
+            DocumentReference likerReference = firestoreRootRef.collection("user").document(model.getAskerId())
+                    .collection("question").document(model.getQuestionId()).collection("answer")
+                    .document(model.getRecentAnswerId()).collection("like").document(likerId);
+
+            DocumentReference questionAnswerModelRef = firestoreRootRef.collection("user").document(model.getAskerId())
+                    .collection("question").document(model.getQuestionId()).collection("answer")
+                    .document(model.getRecentAnswerId());
+
+            DocumentReference userAnswerModelRef = firestoreRootRef.collection("user").document(model.getRecentAnswererId())
+                    .collection("answer").document(model.getRecentAnswerId());
+
+            DocumentReference rootQuestionModelRef = firestoreRootRef.collection("question").document(model.getQuestionId());
+
+            DocumentReference userAnswerLikeRef = firestoreRootRef.collection("user").document(likerId).
+                    collection("answerLike").document("like");
+
+            Map<String, Object> userAnswerLikeMap = new HashMap<>();
+            userAnswerLikeMap.put("answerLikeId", FieldValue.arrayUnion(model.getRecentAnswerId()));
+
+            WriteBatch writeBatch = firestoreRootRef.batch();
+            writeBatch.set(likerReference, answerLikeModel);
+            writeBatch.update(questionAnswerModelRef, likeMap);
+            writeBatch.update(userAnswerModelRef, likeMap);
+            writeBatch.update(rootQuestionModelRef, rootLikeMap);
+            writeBatch.update(userAnswerLikeRef, userAnswerLikeMap);
+
+            writeBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+
+                    if (likerId.equals(model.getAskerId())) {
+
+                    }
+                    Log.i("TAG", "successfully like");
+                }
+            });
+            int count = Integer.parseInt(likeCount.getText().toString()) + 1;
+            likeCount.setText(String.valueOf(count));
+
+            model.setLikedByMe(true);
+            if (MainActivity.answerLikeList != null) {
+                MainActivity.answerLikeList.add(model.getRecentAnswerId());
+            }
+            model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount() + 1);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                    database.insertSingleAnswerLikeModel(model.getRecentAnswerId());
+                    if (getAdapterPosition() <= 7) {
+                        database.updateRootQuestionModel(model);
+                    }
+                }
+            });
+
+        }
+    }
+
+    void onDisliked ( final Context context, final RootQuestionModel model){
+        Log.i("TAG", "disliked triggered");
+        SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE);
+        String likerId = preferences.getString(Constants.userId, null);
+        if(likerId!=null&&model.getQuestionId()!=null&&model.getRecentAnswerId()!=null&&model.getAskerId()!=null) {
+            Map<String, Object> likeMap = new HashMap<>();
+            likeMap.put("answerLikeCount", FieldValue.increment(-1));
+
+            Map<String, Object> rootLikeMap = new HashMap<>();
+            rootLikeMap.put("recentAnswerLikeCount", FieldValue.increment(-1));
+
+            DocumentReference likerReference = firestoreRootRef.collection("user").document(model.getAskerId())
+                    .collection("question").document(model.getQuestionId()).collection("answer")
+                    .document(model.getRecentAnswerId()).collection("like").document(likerId);
+
+            DocumentReference questionAnswerModelRef = firestoreRootRef.collection("user").document(model.getAskerId())
+                    .collection("question").document(model.getQuestionId()).collection("answer")
+                    .document(model.getRecentAnswerId());
+
+            DocumentReference userAnswerModelRef = firestoreRootRef.collection("user").document(model.getRecentAnswererId())
+                    .collection("answer").document(model.getRecentAnswerId());
+
+            DocumentReference rootQuestionModelRef = firestoreRootRef.collection("question").document(model.getQuestionId());
+
+            DocumentReference userAnswerLikeRef = firestoreRootRef.collection("user").document(likerId).
+                    collection("answerLike").document("like");
+
+            Map<String, Object> userAnswerLikeMap = new HashMap<>();
+            userAnswerLikeMap.put("answerLikeId", FieldValue.arrayRemove(model.getRecentAnswerId()));
+
+            WriteBatch writeBatch = firestoreRootRef.batch();
+            writeBatch.delete(likerReference);
+            writeBatch.update(questionAnswerModelRef, likeMap);
+            writeBatch.update(userAnswerModelRef, likeMap);
+            writeBatch.update(rootQuestionModelRef, rootLikeMap);
+            writeBatch.update(userAnswerLikeRef, userAnswerLikeMap);
+
+            writeBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.i("TAG", "successfully dislike ");
+                }
+            });
+            int count = Integer.parseInt(likeCount.getText().toString()) - 1;
+            likeCount.setText(String.valueOf(count));
+            Log.i("TAG", "list :- "+MainActivity.answerLikeList);
+
+            if (MainActivity.answerLikeList != null && MainActivity.answerLikeList.size() > 0) {
+                MainActivity.answerLikeList.remove(model.getRecentAnswerId());
+
+            }
+            Log.i("TAG", "list :- "+MainActivity.answerLikeList);
+
+            model.setLikedByMe(false);
+            model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount() - 1);
+
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                    database.removeAnswerLikeModel(model.getRecentAnswerId());
+                    if (getAdapterPosition() <= 7) {
+                        database.updateRootQuestionModel(model);
+                    }
+                }
+            });
+        }
+    }
+
+    void onNumberOfAnswerClicked(Context context,RootQuestionModel rootQuestionModel){
+        Activity activity= (Activity) context;
+        Intent intent =new Intent(context, com.droid.solver.askapp.homeAnswer.AnswerActivity.class);
+        intent.putExtra("askerImageUrl", rootQuestionModel.getAskerImageUrlLow());
+        intent.putExtra("timeOfAsking", rootQuestionModel.getTimeOfAsking());
+        intent.putExtra("askerName", rootQuestionModel.getAskerName());
+        intent.putExtra("askerBio", rootQuestionModel.getAskerBio());
+        intent.putExtra("questionId", rootQuestionModel.getQuestionId());
+        intent.putExtra("question", rootQuestionModel.getQuestion());
+        intent.putExtra("askerId", rootQuestionModel.getAskerId());
+        intent.putExtra("anonymous", rootQuestionModel.isAnonymous());
+        context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+    }
+
+
+    void onAskerImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
 
         if(rootQuestionModel.isAnonymous()){
             homeMessageListener.onSomeMessage("Anonymous user");
@@ -301,7 +302,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-     void onAnswererImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
+    void onAnswererImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
         if(rootQuestionModel.isAnonymous()){
             homeMessageListener.onSomeMessage("Anonymous user");
         }else {
@@ -317,8 +318,8 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         }
     }
 
-     void onThreeDotClicked(final Context context, final RootQuestionModel rootQuestionModel, ArrayList<Object> list,
-                                  HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
+    void onThreeDotClicked(final Context context, final RootQuestionModel rootQuestionModel, ArrayList<Object> list,
+                           HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
 
         @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog,
                 null, false);
@@ -340,8 +341,8 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
         if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
                 !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())){
-                  View view= dialogView.findViewById(R.id.delete_question_textview);
-                  view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
+            View view= dialogView.findViewById(R.id.delete_question_textview);
+            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
         }
 
         if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
@@ -360,7 +361,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
 
     }
 
-     private void handleDialogItemClicked(final View view,final AlertDialog dialog,final RootQuestionModel rootQuestionModel,
+    private void handleDialogItemClicked(final View view,final AlertDialog dialog,final RootQuestionModel rootQuestionModel,
                                          final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter,
                                          final ArrayList<String> followingIdListFromLocalDatabase){
 
@@ -417,7 +418,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
     }
 
-     private void onReportClicked(String questionId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
+    private void onReportClicked(String questionId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
         @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.question_report_dialog,
                 null,false);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
@@ -432,7 +433,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
 
 
-     private void onReportItemClicked(final View view, final AlertDialog dialog,
+    private void onReportItemClicked(final View view, final AlertDialog dialog,
                                      final String questionId,final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter){
 
         TextView spamTextView=view.findViewById(R.id.spam);
@@ -493,7 +494,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
     }
 
-     private void onDeleteClicked(final RootQuestionModel questionModel, final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
+    private void onDeleteClicked(final RootQuestionModel questionModel, final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
                 null,false );
@@ -545,7 +546,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
         });
     }
 
-     private boolean isNetworkAvailable(){
+    private boolean isNetworkAvailable(){
         ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if(manager!=null){
             NetworkInfo info=manager.getActiveNetworkInfo();
@@ -556,7 +557,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     }
 
 
-     private void onFollowClicked(final RootQuestionModel questionModel, int status,
+    private void onFollowClicked(final RootQuestionModel questionModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
         if(FirebaseAuth.getInstance().getCurrentUser()!=null){
 

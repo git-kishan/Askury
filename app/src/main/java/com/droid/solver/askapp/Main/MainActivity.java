@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements
     public static DocumentSnapshot homeLastImagePollDocumentSnapshot=null;
     public static DocumentSnapshot homeLastSurveyDocumentSnapshot=null;
     public static DocumentSnapshot questionLastDocumentSnapshot=null;
+    public static ArrayList<String> answerLikeList;
     private static final String HOME = "home";
     private static final String QUESTION = "ic_question";
     private static final String NOTIFICATION = "notification";
@@ -84,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements
     private FrameLayout progressFrameLayout;
     private BottomNavigationItemView itemView;
     private View notificationBadge;
-    public static ArrayList<String> answerLikeList;
-    public static HashMap<String,Integer> imagePollLikeMap;
-    public static HashMap<String,Integer> surveyParticipatedMap;
     private Handler handler;
 
     @Override
@@ -99,9 +97,6 @@ public class MainActivity extends AppCompatActivity implements
             progressFrameLayout.setVisibility(View.VISIBLE);
             clearDatabase();
         }
-        answerLikeList=new ArrayList<>();
-        imagePollLikeMap=new HashMap<>();
-        surveyParticipatedMap=new HashMap<>();
         uid = user.getUid();
         fetchUserInfo();
         fetchLikeDocumentsFromRemoteDatabase();
@@ -113,9 +108,11 @@ public class MainActivity extends AppCompatActivity implements
         messageFrameLayout=findViewById(R.id.message_frame_layout);
         progressFrameLayout=findViewById(R.id.progress_frame);
         progressFrameLayout.setVisibility(View.GONE);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+
+        Log.i("TAG", "Homefragment loaded");
         loadFragment(new HomeFragment(), HOME);
         changeToolbarFont(toolbar);
+        answerLikeList=new ArrayList<>();
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String lowProfilePicPath = preferences.getString(Constants.LOW_PROFILE_PIC_PATH, null);
         String highProfilePath = preferences.getString(Constants.HIGH_PROFILE_PIC_PATH, null);
@@ -336,40 +333,40 @@ public class MainActivity extends AppCompatActivity implements
                 .collection("answerLike");
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                if(task.isSuccessful()) {
-                    if(task.getResult()!=null)
-                    for (QueryDocumentSnapshot snapshots : task.getResult()) {
-
-                        AnswerLike answerLike = snapshots.toObject(AnswerLike.class);
-                        if (answerLike.getAnswerLikeId() != null)
-                            answerLikeList.addAll(answerLike.getAnswerLikeId());
-                    }
-                }
-                    else {
-                        Log.i("TAG", "error in fetching answer like documents ");
-                    }
-
-                if(answerLikeList!=null) {
+            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
+
+                            if(task.isSuccessful()) {
+                                if(task.getResult()!=null)
+                                    for (QueryDocumentSnapshot snapshots : task.getResult()) {
+
+                                        AnswerLike answerLike = snapshots.toObject(AnswerLike.class);
+                                        if (answerLike.getAnswerLikeId() != null)
+                                            answerLikeList.addAll(answerLike.getAnswerLikeId());
+                                    }
+                            }
+                            else {
+                                Log.i("TAG", "error in fetching answer like documents ");
+                            }
                             set.addAll(answerLikeList);
                             answerLikeList.clear();
                             answerLikeList.addAll(set);
                             LocalDatabase database = new LocalDatabase(getApplicationContext());
                             database.clearAnswerLikeModel();
                             database.insertAnswerLikeModel(answerLikeList);
+                            set.clear();
+
                         }
                     });
-                }
 
             }
         });
     }
 
     private void fetchImagePollLikeDocuments(){
+        final HashMap<String,Integer> imagePollLikeMap=new HashMap<>();
         final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
         Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
                 .collection("imagePollLike");
@@ -393,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements
                                 LocalDatabase localDatabase = new LocalDatabase(getApplicationContext());
                                 localDatabase.clearImagePollLikeModel();
                                 localDatabase.insertImagePollLikeModel(imagePollLikeMap);
+                                imagePollLikeMap.clear();
                             }catch (NullPointerException e){
                                 Log.i("TAG", "NullpointerException occurs in retrieving image poll like map ,"+e.getMessage());
                             }
@@ -408,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void fetchSurveyParticipatedDocuments(){
+        final HashMap<String,Integer> surveyParticipatedMap=new HashMap<>();
         final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
         Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
                 .collection("surveyParticipated");
@@ -430,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements
                             LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
                             localDatabase.clearSurveyParticipatedModel();
                             localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
+                            surveyParticipatedMap.clear();
                         }
                     });
 

@@ -7,10 +7,10 @@
     android:foreground="?android:selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="5dp"
     android:elevation="5dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
     android:layout_marginTop="8dp"
     android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -107,15 +107,14 @@
             android:id="@+id/textView27"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="8dp"
             android:layout_marginBottom="3dp"
-            tools:text="3 mon ago"
             android:textSize="8sp"
             app:layout_constraintBottom_toTopOf="@+id/textView1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/circleImageView2"
             tools:ignore="SmallSp"
-            />
+            tools:text="3 mon ago" />
 
         <ImageView
             android:id="@+id/imageView19"

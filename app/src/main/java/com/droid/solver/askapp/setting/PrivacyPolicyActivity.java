@@ -47,6 +47,7 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         privacyPolicyView.setWebViewClient(new WebViewClient(){
 
 
+            @Deprecated
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 proceedUrl(Uri.parse(url));

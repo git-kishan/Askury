@@ -24,7 +24,7 @@ import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
-import com.droid.solver.askapp.Survey.QuestionTakerActivity;
+import com.droid.solver.askapp.Survey.SurveyActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -111,13 +111,22 @@ public class QuestionFragment extends Fragment {
             public boolean onActionSelected(SpeedDialActionItem speedDialActionItem) {
                 switch (speedDialActionItem.getId()) {
                     case R.id.fab_action1:
-                        startActivity(new Intent(getActivity(), ImagePollActivity.class));
+                        if(getActivity()!=null) {
+                            startActivity(new Intent(getActivity(), ImagePollActivity.class));
+                            getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                        }
                         return false;
                     case R.id.fab_action2:
-                        startActivity(new Intent(getActivity(), QuestionTakerActivity.class));
+                        if(getActivity()!=null) {
+                            startActivity(new Intent(getActivity(), SurveyActivity.class));
+                            getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                        }
                         return false;
                     case R.id.fab_action3:
-                        startActivity(new Intent(getActivity(),QuestionActivity.class));
+                        if(getActivity()!=null) {
+                            startActivity(new Intent(getActivity(), QuestionActivity.class));
+                            getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                        }
                         return false; // true to keep the floating button Speed Dial open
                     default:
                         return false;

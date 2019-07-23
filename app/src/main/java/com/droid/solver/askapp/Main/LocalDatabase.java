@@ -24,6 +24,7 @@ import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -812,6 +813,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 values.put(answerCount, model.getAnswerCount());
                 values.put(recentAnswerLikeCount, model.getRecentAnswerLikeCount());
                 values.put(fontUsed, model.getFontUsed());
+                values.put(likedByMe, model.isLikedByMe() ? 1 : 0);
                 if (database.isOpen()) {
                     database.update(ROOT_QUESTION_MODEL, values, questionId + "=?", new String[]{model.getQuestionId()});
                     values.clear();
@@ -1140,7 +1142,8 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
         }catch (NullPointerException e){
             Log.i("TAG", "NullPointerException occurs in inserting home object,"+e.getMessage());
-
+        }catch (ConcurrentModificationException e){
+            Log.i("TAG", "ConcurrentModificationException occurs in inserting home object ,"+e.getMessage());
         }
      }
      private void clearObject(){
@@ -1271,9 +1274,10 @@ public class LocalDatabase extends SQLiteOpenHelper {
         public void removeAnswerLikeModel(String manswerId){
         try {
             SQLiteDatabase database = this.getWritableDatabase();
-            database.delete(ANSWER_LIKE_TABLE, answerId + "=?", new String[]{manswerId});
-            if (database.isOpen())
-                database.close();
+            if(database.isOpen()) {
+                database.delete(ANSWER_LIKE_TABLE, answerId + "=?", new String[]{manswerId});
+                    database.close();
+            }
         }catch(SQLiteException e){
             Log.i("TAG", "SqliteException occurs in removing answer like model ,"+e.getMessage());
         }
@@ -1334,15 +1338,16 @@ public class LocalDatabase extends SQLiteOpenHelper {
             return participatedMap;
         }
         return null;
-
     }
     public void removeSurveyParticipatedModel(String msurveyParticipatedId){
         try {
             assert msurveyParticipatedId != null;
             SQLiteDatabase database = this.getWritableDatabase();
-            database.delete(SURVEY_PARTICIPATED_TABLE, surveyParticipatedId + "+=?", new String[]{msurveyParticipatedId});
-            if (database.isOpen())
+            if(database.isOpen()) {
+                Log.i("TAG", "survey removed line no :- 1344 in LocalDatabase");
+                database.delete(SURVEY_PARTICIPATED_TABLE, surveyParticipatedId +"=?", new String[]{msurveyParticipatedId});
                 database.close();
+            }
         }catch(AssertionError e){
             Log.i("TAG", "Assertion error occurs in removing survey participated model ,"+e.getMessage());
         }catch(SQLiteException e){

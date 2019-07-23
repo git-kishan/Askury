@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Account;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.droid.solver.askapp.Main.Constants;
@@ -35,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         profileImage=itemView.findViewById(R.id.profile_image);
     }
     void onCardClicked(final UserQuestionModel model) {
-        Log.i("TAG","Card clicked in account");
+        Activity activity=(Activity)context;
         Intent intent = new Intent(context, AnswerActivity.class);
         SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         String userName = preferences.getString(Constants.userName, "Someone");
@@ -49,21 +49,29 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("askerId", model.getUserId());
         intent.putExtra("anonymous", model.isAnonymous());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
     void onProfileImageClicked(final Context context, final UserQuestionModel model){
+        Activity activity=(Activity)context;
         Intent intent=new Intent(context,OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getUserImageUrlLow());
         intent.putExtra("uid",model.getUserId());
         intent.putExtra("user_name",model.getUserName());
         intent.putExtra("bio",model.getUserBio());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
     void onAskerNameClicked(final Context context,final UserQuestionModel model){
+        Activity activity=(Activity)context;
         Intent intent=new Intent(context,OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getUserImageUrlLow());
         intent.putExtra("uid",model.getUserId());
         intent.putExtra("user_name",model.getUserName());
         intent.putExtra("bio",model.getUserBio());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
     }
 }

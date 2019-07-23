@@ -17,6 +17,7 @@
         android:name=".MyApplication"
         android:icon="@drawable/askury_logo"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -92,7 +93,7 @@
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".Survey.QuestionTakerActivity"
+            android:name=".Survey.SurveyActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator" />

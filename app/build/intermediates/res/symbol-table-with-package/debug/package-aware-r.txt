@@ -11,6 +11,7 @@ anim abc_slide_out_bottom
 anim abc_slide_out_top
 anim abc_tooltip_enter
 anim abc_tooltip_exit
+anim askury_scale_out
 anim bouncing_dialog
 anim chip_scale_in
 anim chip_scale_out
@@ -18,6 +19,7 @@ anim design_bottom_sheet_slide_in
 anim design_bottom_sheet_slide_out
 anim design_snackbar_in
 anim design_snackbar_out
+anim dialog_image
 anim dialog_scale_in
 anim dialog_scale_out
 anim error_dialog_scale_out
@@ -1407,13 +1409,13 @@ drawable round_corner_light_pink
 drawable round_relative_layout
 drawable shimmer_circle_image_view
 drawable shimmer_round_shaped
+drawable sign_in_activity
 drawable star_off
 drawable star_on
 drawable survey_outline_box
 drawable survey_outline_box_ripple
 drawable survey_outline_box_with_stroke
 drawable survey_view
-drawable temp1
 drawable thumb_off
 drawable thumb_on
 drawable tooltip_frame_dark
@@ -1489,7 +1491,6 @@ id auto
 id automatic
 id back_button
 id back_image
-id back_image_button
 id badge_image
 id barrier
 id beginning
@@ -1551,7 +1552,6 @@ id circleImageView6
 id clip_horizontal
 id clip_vertical
 id collapseActionView
-id collapsing_toolbar
 id com_facebook_body_frame
 id com_facebook_button_xout
 id com_facebook_device_auth_instructions
@@ -2090,10 +2090,10 @@ layout activity_privacy_policy
 layout activity_profile_image
 layout activity_profile_image_zoom
 layout activity_question
-layout activity_question_taker
 layout activity_report
 layout activity_setting
 layout activity_sign_in
+layout activity_survey
 layout activity_text_view_to_bitmap
 layout browser_actions_context_menu_page
 layout browser_actions_context_menu_row
@@ -2183,6 +2183,7 @@ layout select_dialog_singlechoice_material
 layout shimmer_home
 layout shimmer_notification
 layout shimmer_question
+layout starting_name
 layout successfully_answered_dialog
 layout support_simple_spinner_dropdown_item
 layout sure_to_delete_dialog
@@ -2272,6 +2273,8 @@ string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
 string about_you
 string add_interest
+string add_option
+string anonymous
 string answer_image_attached
 string app_name
 string appbar_scrolling_view_behavior
@@ -2280,6 +2283,7 @@ string b_percent
 string back
 string bottom_sheet_behavior
 string cancel
+string capture_image_from_camera
 string change_profile_picture
 string character_counter_content_description
 string character_counter_pattern
@@ -2383,6 +2387,8 @@ string number_of_answer
 string off
 string on
 string option
+string option1
+string option2
 string optionA
 string optionB
 string optionC
@@ -2412,6 +2418,7 @@ string retry
 string search_menu_title
 string second_image
 string second_percentage
+string select_image_from_gallery
 string self_promotion
 string set_image
 string setting
@@ -2427,8 +2434,10 @@ string speeddial_scrolling_view_snackbar_behavior
 string speeddial_snackbar_behavior
 string status_bar_notification_info_overflow
 string submit
+string survey
 string survey_accepted_failed
 string survey_accepted_successfull
+string t
 string thank_you
 string unfollow
 string unknown
@@ -2440,7 +2449,10 @@ string username_created_a_poll
 string version
 string vs
 string want_to_answer
+string write_your_answer
 string write_your_problem
+string write_your_survey_question
+string your_question
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style Animation_AppCompat_Dialog
@@ -2656,7 +2668,6 @@ style Platform_V21_AppCompat_Light
 style Platform_V25_AppCompat
 style Platform_V25_AppCompat_Light
 style Platform_Widget_AppCompat_Spinner
-style QuestionActivitytoolbarActionButton
 style RtlOverlay_DialogWindowTitle_AppCompat
 style RtlOverlay_Widget_AppCompat_ActionBar_TitleItem
 style RtlOverlay_Widget_AppCompat_DialogTitle_Icon
@@ -2763,6 +2774,7 @@ style TextAppearance_Widget_AppCompat_ExpandedMenu_Item
 style TextAppearance_Widget_AppCompat_Toolbar_Subtitle
 style TextAppearance_Widget_AppCompat_Toolbar_Title
 style TextInputEditText
+style TextInputLayoutStyle
 style Theme_AppCompat
 style Theme_AppCompat_CompactMenu
 style Theme_AppCompat_DayNight

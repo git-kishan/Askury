@@ -163,6 +163,9 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
             likeButton.setLiked(true);
         }
 
+        if(mtimeOfAnswering<mtimeOfAsking){
+         mtimeOfAnswering=mtimeOfAsking;
+        }
         String questionAskingTime=getTime(mtimeOfAsking,System.currentTimeMillis());
         String answeringTime=getTime(mtimeOfAnswering, System.currentTimeMillis());
 

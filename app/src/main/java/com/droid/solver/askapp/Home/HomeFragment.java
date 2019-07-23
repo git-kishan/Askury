@@ -1,6 +1,7 @@
 package com.droid.solver.askapp.Home;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +36,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 
@@ -58,8 +60,8 @@ public class HomeFragment extends Fragment  {
     private ArrayList<String> reportedImageListFromLocalDatabase;
     private ArrayList<String> reportedSurveyListFromLocalDatabase;
     private ArrayList<String> reportedQuestionFromLocalDatabase;
-    private HashMap<String, Integer> imagePollLikeMapFromLocalDatabase;
-    private HashMap<String, Integer> surveyParticipatedMapFromLocalDatabase;
+    private Map<String, Integer> imagePollLikeMapFromLocalDatabase;
+    private Map<String, Integer> surveyParticipatedMapFromLocalDatabase;
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private Handler handler;
 
@@ -92,6 +94,7 @@ public class HomeFragment extends Fragment  {
         imagePollLikeMapFromLocalDatabase=new HashMap<>();
         surveyParticipatedMapFromLocalDatabase=new HashMap<>();
         answerLikeListFromLocalDatabase=new ArrayList<>();
+        loadListFromLocalDatabase();
         return view;
     }
 
@@ -101,13 +104,42 @@ public class HomeFragment extends Fragment  {
             public void run() {
 
                 if(getActivity()!=null) {
-                    LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
-                    if(localDatabase.getImagePollReport()!=null)
-                        reportedImageListFromLocalDatabase.addAll(localDatabase.getImagePollReport());
-                    if(localDatabase.getReportedSurvey()!=null)
-                        reportedSurveyListFromLocalDatabase.addAll(localDatabase.getReportedSurvey());
-                    if(localDatabase.getReportedQuestion()!=null)
-                        reportedQuestionFromLocalDatabase.addAll(localDatabase.getReportedQuestion());
+                    try {
+                        LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
+                        if (localDatabase.getImagePollReport() != null)
+                            reportedImageListFromLocalDatabase.addAll(localDatabase.getImagePollReport());
+                        if (localDatabase.getReportedSurvey() != null)
+                            reportedSurveyListFromLocalDatabase.addAll(localDatabase.getReportedSurvey());
+                        if (localDatabase.getReportedQuestion() != null)
+                            reportedQuestionFromLocalDatabase.addAll(localDatabase.getReportedQuestion());
+                    }catch (NullPointerException e){
+                        Log.i("TAG", "NullPointerException occurs in retrieving list from local database ,"+e.getMessage());
+
+                    }catch (SQLiteException e){
+                        Log.i("TAG", "Sqlitexception occurs in retrieving list from local database ,"+e.getMessage());
+                    }
+                }
+            }
+        });
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getActivity()!=null) {
+                    try {
+                        LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
+                        if(localDatabase.getImagePollLikeModel()!=null)
+                            imagePollLikeMapFromLocalDatabase=localDatabase.getImagePollLikeModel();
+                        if(localDatabase.getSurveyParticipatedModel()!=null)
+                            surveyParticipatedMapFromLocalDatabase=localDatabase.getSurveyParticipatedModel();
+                        if(localDatabase.getAnswerLikeModel()!=null)
+                            answerLikeListFromLocalDatabase=localDatabase.getAnswerLikeModel();
+                    }catch (NullPointerException e){
+                        Log.i("TAG", "NullPointerException occurs in retrieving list from local database ,"+e.getMessage());
+
+                    }catch (SQLiteException e){
+                        Log.i("TAG", "Sqlitexception occurs in retrieving list from local database ,"+e.getMessage());
+                    }
                 }
             }
         });
@@ -116,7 +148,6 @@ public class HomeFragment extends Fragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadListFromLocalDatabase();
         initRecyclerView();
         if(MainActivity.isFirstTimeHomeLoaded){
             loadDataFromRemoteDatabase();
@@ -133,7 +164,6 @@ public class HomeFragment extends Fragment  {
         }
     }
 
-
     private void initRecyclerView(){
         final ArrayList<String> followingIdListFromLocalDatabase = new ArrayList<>();
         adapter = new HomeRecyclerViewAdapter(getActivity(), list, followingIdListFromLocalDatabase);
@@ -144,12 +174,6 @@ public class HomeFragment extends Fragment  {
             public void run() {
                 if(getActivity()!=null) {
                     LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-                    if(database.getImagePollLikeModel()!=null)
-                        imagePollLikeMapFromLocalDatabase=database.getImagePollLikeModel();
-                    if(database.getSurveyParticipatedModel()!=null)
-                        surveyParticipatedMapFromLocalDatabase=database.getSurveyParticipatedModel();
-                    if(database.getAnswerLikeModel()!=null)
-                        answerLikeListFromLocalDatabase=database.getAnswerLikeModel();
                     if (database.getFollowingIdList()!=null) {
                         followingIdListFromLocalDatabase.addAll(database.getFollowingIdList());
                         handler.post(new Runnable() {
@@ -237,21 +261,10 @@ public class HomeFragment extends Fragment  {
                                             !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
                                         int i2 = 0;
 
-                                        if(MainActivity.imagePollLikeMap!=null) {
-
-                                            if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
-                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                                String s;
-                                                if (i1 != null) {
-                                                    s = i1.toString();
-                                                    i2 = Integer.parseInt(s);
-                                                }
-                                            }
-                                        }
-                                        else if(imagePollLikeMapFromLocalDatabase!=null){
+                                      if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
 
                                             if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
-                                                Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                Integer i1 = imagePollLikeMapFromLocalDatabase.get(askImagePollModel.getImagePollId());
                                                 String s;
                                                 if (i1 != null) {
                                                     s = i1.toString();
@@ -303,28 +316,15 @@ public class HomeFragment extends Fragment  {
                                             !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())){
 
                                         int i2=0;
-                                        if(MainActivity.surveyParticipatedMap!=null){
-
-                                            if (MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())) {
-                                                Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                                String s;
-                                                if(i1!=null){
-                                                    s=i1.toString();
-                                                    i2=Integer.parseInt(s);
-                                                }
-                                            }
-
-                                        }else if(surveyParticipatedMapFromLocalDatabase!=null){
-
+                                      if(surveyParticipatedMapFromLocalDatabase!=null&&surveyParticipatedMapFromLocalDatabase.size()>0){
                                             if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
-                                                Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                                Integer i1=surveyParticipatedMapFromLocalDatabase.get(askSurveyModel.getSurveyId());
                                                 String s;
                                                 if(i1!=null){
                                                     s=i1.toString();
                                                     i2=Integer.parseInt(s);
                                                 }
                                             }
-
                                         }
                                         askSurveyModel.setOptionSelectedByMe(i2);
                                         surveyModelStack.add(askSurveyModel);
@@ -373,11 +373,12 @@ public class HomeFragment extends Fragment  {
                                     questionModel.setLikedByMe(false);
                                     if(questionModel.getQuestionId()!=null&&
                                             !reportedQuestionFromLocalDatabase.contains(questionModel.getQuestionId())){
-                                        if(MainActivity.answerLikeList!=null){
+
+                                        if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
                                             if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
                                                 questionModel.setLikedByMe(true);
 
-                                        }else if(answerLikeListFromLocalDatabase!=null){
+                                        }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0){
                                             if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
                                                 questionModel.setLikedByMe(true);
                                         }
@@ -507,21 +508,10 @@ public class HomeFragment extends Fragment  {
                                                     !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
 
                                                 int i2 = 0;
-                                                if(MainActivity.imagePollLikeMap!=null) {
-
-                                                    if(MainActivity.imagePollLikeMap.containsKey(askImagePollModel.getImagePollId())){
-                                                        Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
-                                                        String s;
-                                                        if (i1 != null) {
-                                                            s = i1.toString();
-                                                            i2 = Integer.parseInt(s);
-                                                        }
-                                                    }
-
-                                                }else if(imagePollLikeMapFromLocalDatabase!=null){
+                                              if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
 
                                                     if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
-                                                        Integer i1 = MainActivity.imagePollLikeMap.get(askImagePollModel.getImagePollId());
+                                                        Integer i1 = imagePollLikeMapFromLocalDatabase.get(askImagePollModel.getImagePollId());
                                                         String s;
                                                         if (i1 != null) {
                                                             s = i1.toString();
@@ -571,36 +561,26 @@ public class HomeFragment extends Fragment  {
                                             AskSurveyModel askSurveyModel = snapshot.toObject(AskSurveyModel.class);
                                             if (askSurveyModel.getSurveyId() != null &&
                                                     !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())) {
-                                                int i2=0;
-                                                if(MainActivity.surveyParticipatedMap!=null){
+                                                int i2 = 0;
 
-                                                    if(MainActivity.surveyParticipatedMap.containsKey(askSurveyModel.getSurveyId())){
-                                                        Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
+                                                if (surveyParticipatedMapFromLocalDatabase != null && surveyParticipatedMapFromLocalDatabase.size() > 0) {
+
+                                                    if (surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())) {
+                                                        Integer i1 = surveyParticipatedMapFromLocalDatabase.get(askSurveyModel.getSurveyId());
                                                         String s;
-                                                        if(i1!=null){
-                                                            s=i1.toString();
-                                                            i2=Integer.parseInt(s);
+                                                        if (i1 != null) {
+                                                            s = i1.toString();
+                                                            i2 = Integer.parseInt(s);
                                                         }
                                                     }
 
-                                                }else {
-                                                    if(surveyParticipatedMapFromLocalDatabase!=null){
-
-                                                        if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
-                                                            Integer i1=MainActivity.surveyParticipatedMap.get(askSurveyModel.getSurveyId());
-                                                            String s;
-                                                            if(i1!=null){
-                                                                s=i1.toString();
-                                                                i2=Integer.parseInt(s);
-                                                            }
-                                                        }
-
-                                                    }
                                                 }
                                                 askSurveyModel.setOptionSelectedByMe(i2);
                                                 surveyModelStack.add(askSurveyModel);
                                             }
                                         }
+
+
                                     if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                                         lastSurveySnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
                                     }
@@ -644,11 +624,11 @@ public class HomeFragment extends Fragment  {
                                             if (questionModel.getQuestionId() != null &&
                                                     !reportedQuestionFromLocalDatabase.contains(questionModel.getRecentAnswerId())) {
 
-                                                if(MainActivity.answerLikeList!=null){
+                                                if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
                                                     if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
                                                         questionModel.setLikedByMe(true);
 
-                                                }else if(answerLikeListFromLocalDatabase!=null){
+                                                }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0){
                                                     if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
                                                         questionModel.setLikedByMe(true);
                                                 }

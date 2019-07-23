@@ -7,12 +7,9 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.NonNull;
-import com.google.android.material.button.MaterialButton;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -23,12 +20,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
-import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Main.UserInfoModel;
 import com.droid.solver.askapp.R;
@@ -43,7 +37,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import java.util.ArrayList;
 import java.util.Objects;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -54,14 +47,15 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     private ViewPager viewPager;
     private CoordinatorLayout coordinatorLayout;
     private CircleImageView profileImage;
-    private MaterialButton followButton;
-    private static final String FOLLOW ="Follow";
-    private static final String UNFOLLOW="Unfollow";
-    private String STATUS=null;
+//    private MaterialButton followButton;
+//    private static final String FOLLOW ="Follow";
+//    private static final String UNFOLLOW="Unfollow";
+//    private String STATUS=null;
     private EmojiTextView profileName,about;
     private TextView followNum,followingNum,pointNum;
     private String imageUrl,uid,userName,bio;
     private boolean notification=false;
+//    private static String FOLLOWERNAME=null,FOLLOWERBIO=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +68,8 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         bio=intent.getStringExtra("bio");
         notification=intent.getBooleanExtra("notification",false);
 
-        followButton=findViewById(R.id.follow_button);
-        followButton.setVisibility(View.GONE);//starting state of follow button
+//        followButton=findViewById(R.id.follow_button);
+//        followButton.setVisibility(View.GONE);//starting state of follow button
         coordinatorLayout=findViewById(R.id.root_layout);
         profileImage=findViewById(R.id.circleImageView4);
         profileName=findViewById(R.id.profile_name);
@@ -94,7 +88,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         setTabLayout();
         profileImage.setOnClickListener(this);
         backImageButton.setOnClickListener(this);
-        followButton.setOnClickListener(this);
+//        followButton.setOnClickListener(this);
         checkUserAuth();
         checkConnection();
     }
@@ -104,7 +98,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
                 removeNotificationFromRemoteDatabase();
             }
             loadDataFromRemoteDatabase();
-            checkFollowerList();
+//            checkFollowerList();
         }else {
             Snackbar.make(coordinatorLayout, "No internet available", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Reload", new View.OnClickListener() {
@@ -119,27 +113,27 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    private void checkFollowerList(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null&&uid!=null){
-            String selfUid=user.getUid();
-            if(selfUid.equals(uid)){
-                followButton.setVisibility(View.GONE);
-                return;
-            }
-            LocalDatabase database=new LocalDatabase(getApplicationContext());
-            ArrayList<String> followingList=database.getFollowingIdList();
-            if(followingList!=null&&followingList.contains(uid)){
-                STATUS=FOLLOW;
-                followButton.setText(UNFOLLOW);
-                followButton.setVisibility(View.VISIBLE);
-            }else {
-                STATUS=UNFOLLOW;
-                followButton.setText(FOLLOW);
-                followButton.setVisibility(View.VISIBLE);
-            }
-        }
-    }
+//    private void checkFollowerList(){
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if(user!=null&&uid!=null){
+//            String selfUid=user.getUid();
+//            if(selfUid.equals(uid)){
+//                followButton.setVisibility(View.GONE);
+//                return;
+//            }
+//            LocalDatabase database=new LocalDatabase(getApplicationContext());
+//            ArrayList<String> followingList=database.getFollowingIdList();
+//            if(followingList!=null&&followingList.contains(uid)){
+//                STATUS=FOLLOW;
+//                followButton.setText(UNFOLLOW);
+//                followButton.setVisibility(View.VISIBLE);
+//            }else {
+//                STATUS=UNFOLLOW;
+//                followButton.setText(FOLLOW);
+//                followButton.setVisibility(View.VISIBLE);
+//            }
+//        }
+//    }
 
 
     private void setTabLayout(){
@@ -186,9 +180,8 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
             case R.id.back_button:
                 onBackPressed();
                 break;
-            case R.id.follow_button:
-                onFollowButtonClicked(STATUS);
-                break;
+//            case R.id.follow_button:
+//                break;
         }
     }
 
@@ -204,9 +197,91 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
     }
-    private void onFollowButtonClicked(String status){
 
-    }
+//    private void onFollowButtonClicked(String status){
+//        if(status.equals(FOLLOW)){
+//            if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+//                    try {
+//                        String followerUid=uid;
+//                        String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+//                        String selfName = preferences.getString(Constants.userName, null);
+//                        String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
+//                        String selfBio = preferences.getString(Constants.bio, null);
+//
+//                        DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+//                                .document(selfUid).collection("following")
+//                                .document(followerUid);
+//                        DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+//                                .document(followerUid).collection("follower")
+//                                .document(selfUid);
+//                        DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+//                                .document(selfUid);
+//                        DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+//                                .document(followerUid);
+//                        String followerImageUrl= Constants.PROFILE_PICTURE+"/"+followerUid+Constants.SMALL_THUMBNAIL;
+//
+//                        Map<String, Object> selfFollowingMap = new HashMap<>();
+//                        Map<String, Object> askerFollowerMap = new HashMap<>();
+//                        Map<String, Object> selfFollowingCountMap = new HashMap<>();
+//                        Map<String, Object> askerFollowerCountMap = new HashMap<>();
+//
+//                        selfFollowingMap.put("followingId", followerUid);
+//                        selfFollowingMap.put("followingName", FOLLOWERNAME);
+//                        selfFollowingMap.put("followingImageUrl", followerImageUrl);
+//                        selfFollowingMap.put("followingBio", FOLLOWERBIO);
+//                        selfFollowingMap.put("selfId", selfUid);
+//
+//                        askerFollowerMap.put("followerId", selfUid);
+//                        askerFollowerMap.put("followerName", Objects.requireNonNull(selfName));
+//                        askerFollowerMap.put("followerImageUrl", Objects.requireNonNull(selfImageUrl));
+//                        askerFollowerMap.put("followerBio", Objects.requireNonNull(selfBio));
+//                        askerFollowerMap.put("selfId",followerUid);
+//
+//                        selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+//                        askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+//
+//                        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+//                        batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
+//                        batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
+//                        batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+//                        batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
+//
+//
+//                        if (isNetworkAvailable()) {
+//                            followingListFromLocalDatabase.add(imagePollModel.getAskerId());
+//                            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    Log.i("TAG", "follower add successfully");
+//                                    final String followingId = imagePollModel.getAskerId();
+//                                    String followingName = imagePollModel.getAskerName();
+//                                    String followingImageUrl = imagePollModel.getAskerImageUrlLow();
+//                                    String followingBio = imagePollModel.getAskerBio();
+//                                    Following following = new Following(followingId, followingName, followingImageUrl
+//                                            , followingBio);
+//                                    final ArrayList<Following> followingsList = new ArrayList<>();
+//                                    followingsList.add(following);
+//                                    AsyncTask.execute(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            LocalDatabase database = new LocalDatabase(getApplicationContext());
+//                                            database.removeFollowingModel(followingId);
+//                                            database.insertFollowingModel(followingsList);
+//
+//                                        }
+//                                    });
+//                                }
+//                            });
+//                        }
+//                    } catch (AssertionError e) {
+//                        Log.i("TAG", "Assertion error occurs in following :- " + e.getMessage());
+//                    }
+//                }
+//        }else if(status.equals(UNFOLLOW)){
+//
+//        }
+//    }
 
     private void init(){
         imageUrl=imageUrl==null?"":imageUrl;
@@ -241,7 +316,9 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
                                     UserInfoModel model = task.getResult().toObject(UserInfoModel.class);
                                     if(model!=null) {
                                         String userName = model.getUserName();
+//                                        FOLLOWERNAME=userName;
                                         String mbio = model.getBio();
+//                                        FOLLOWERBIO=mbio;
                                         int followerCount=model.getFollowerCount();
                                         int followingCount=model.getFollowingCount();
                                         int point=model.getPoint();

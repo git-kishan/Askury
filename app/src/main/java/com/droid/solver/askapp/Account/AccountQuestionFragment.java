@@ -101,44 +101,7 @@ public class AccountQuestionFragment extends Fragment {
             }
         }
     };
-//    private void loadDataFromLocalDatabase(){
-//        final Handler handler=new Handler();
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                if(getActivity()!=null) {
-//                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-//
-//                    if(database.getUserQuestionModelList()!=null) {
-//                        list.addAll(database.getUserQuestionModelList());
-//                       handler.post(new Runnable() {
-//                           @Override
-//                           public void run() {
-//                               adapter.notifyDataSetChanged();
-//                           }
-//                       });
-//                    }
-//                    if(list!=null&&list.size()==0){
-//                       loadQuestionFromRemoteDatabase();
-//                    }else if(list==null){
-//                        loadQuestionFromRemoteDatabase();
-//                    }
-//                }
-//            }
-//        });
-//    }
-//    private void insertDataInLocalDatabase(){
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                if(getActivity()!=null) {
-//                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-//                    database.insertUserQuestionModel(list);
-//                }
-//
-//            }
-//        });
-//    }
+
     private void loadQuestionFromRemoteDatabase(){
 
         if(uid!=null) {

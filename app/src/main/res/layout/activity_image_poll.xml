@@ -21,10 +21,10 @@
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
-                    style="@style/QuestionActivitytoolbarActionButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:navigationIcon="@drawable/ic_cross_dark"
+                    app:titleTextColor="@color/colorAccent"
+                    app:navigationIcon="@drawable/ic_back_black"
                     app:title="Image poll" />
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
@@ -59,7 +59,7 @@
                         <androidx.emoji.widget.EmojiEditText
                             android:id="@+id/questionEditText"
                             android:layout_width="match_parent"
-                            android:hint="your question"
+                            android:hint="@string/your_question"
                             android:layout_height="match_parent"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
@@ -97,6 +97,7 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:scaleType="centerCrop"
+                                android:contentDescription="@string/first_image"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -118,6 +119,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:padding="20dp"
+                                    android:contentDescription="@string/first_image"
                                     android:src="@drawable/ic_camera_fader" />
                             </androidx.cardview.widget.CardView>
 
@@ -127,7 +129,7 @@
                                 android:layout_height="0dp"
                                 android:layout_marginTop="12dp"
                                 android:gravity="center"
-                                android:text="Option 1"
+                                android:text="@string/option1"
                                 android:textSize="18sp"
                                 app:layout_constraintEnd_toEndOf="@+id/cardView11"
                                 app:layout_constraintStart_toStartOf="@+id/cardView11"
@@ -160,6 +162,7 @@
                                 android:layout_height="match_parent"
                                 android:background="?android:selectableItemBackground"
                                 android:clickable="true"
+                                android:contentDescription="@string/second_image"
                                 android:focusable="true"
                                 android:scaleType="centerCrop"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -183,6 +186,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:padding="20dp"
+                                    android:contentDescription="@string/second_image"
                                     android:src="@drawable/ic_camera_fader" />
 
                             </androidx.cardview.widget.CardView>
@@ -193,7 +197,7 @@
                                 android:layout_height="0dp"
                                 android:layout_marginTop="12dp"
                                 android:gravity="center"
-                                android:text="Option 2"
+                                android:text="@string/option2"
                                 android:textSize="18sp"
                                 app:layout_constraintEnd_toEndOf="@+id/cardView4"
                                 app:layout_constraintStart_toStartOf="@+id/cardView4"
@@ -216,12 +220,13 @@
                             android:id="@+id/or_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:fontFamily="@font/aclonica"
                             android:gravity="center"
+                            android:fontFamily="@font/rochester"
+                            android:textStyle="bold"
                             android:clickable="true"
                             android:focusable="true"
                             android:textColor="@color/colorAccent"
-                            android:text="VS"
+                            android:text="@string/vs"
                             android:textSize="23sp" />
                     </androidx.cardview.widget.CardView>
 
@@ -232,7 +237,8 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="40dp"
                         android:textSize="12sp"
-                        android:text="Note :-Polling will be for 15 days"
+                        android:visibility="gone"
+                        tools:text="Note :-Polling will be for 15 days"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 

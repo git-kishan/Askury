@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.button.MaterialButton;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -45,7 +47,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 
-public class QuestionTakerActivity extends AppCompatActivity implements
+public class SurveyActivity extends AppCompatActivity implements
         View.OnClickListener, View.OnFocusChangeListener, TextWatcher {
 
     private CoordinatorLayout coordinatorLayout;
@@ -53,7 +55,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     private EmojiEditText questionInputEditText;
     private AppCompatButton doneButton;
     private CardView appbarCardView;
-    private ImageView backImageButton,addImageButton;
+    private ImageView addImageButton;
     private int numberOfTimesAddButtonClicked=0;
     private EmojiEditText option1EditText,option2EditText,option3EditText,option4EditText;
     private ConstraintLayout submitButtonConstraintLayout;
@@ -68,19 +70,20 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question_taker);
+        setContentView(R.layout.activity_survey);
 
         Intent intent=getIntent();
         languageIndex=intent.getIntExtra("languageIndex", 0);
         questionInputLayout=findViewById(R.id.textInputLayout);
         questionInputEditText=findViewById(R.id.input_edit_text);
         doneButton=findViewById(R.id.done_button);
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        changeToolbarFont(toolbar);
         appbarCardView=findViewById(R.id.toolbar_card_view);
         submitButtonConstraintLayout=findViewById(R.id.child_constraint_layout);
         progressBar=findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
         submitTextView=findViewById(R.id.submit_textview);
-        backImageButton=findViewById(R.id.back_image_button);
         addImageButton=findViewById(R.id.add_image_button);
         coordinatorLayout=findViewById(R.id.root);
         optionATextView=findViewById(R.id.textView20);
@@ -104,8 +107,8 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         questionInputEditText.setOnFocusChangeListener(this);
         questionInputEditText.addTextChangedListener(this);
         addImageButton.setOnClickListener(this);
-        backImageButton.setOnClickListener(this);
         submitButtonConstraintLayout.setOnClickListener(this);
+        toolbar.setNavigationOnClickListener(this);
         appbarCardView.requestFocus();
         hideSoftKeyboard(appbarCardView);
         questionInputEditText.setHint("What's your question");
@@ -117,7 +120,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(QuestionTakerActivity.this, SignInActivity.class));
+                    startActivity(new Intent(SurveyActivity.this, SignInActivity.class));
                     finish();
                 }
             }, 1000);
@@ -132,35 +135,38 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         if(imm!=null)
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.done_button:
-                if(questionInputEditText.hasFocus())
-                  questionInputEditText.clearFocus();
-                if(questionInputLayout.hasFocus())
-                  questionInputLayout.clearFocus();
-                doneButton.requestFocus();
-                hideSoftKeyboard(doneButton);
-                Handler handler=new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        doneButton.setTextColor(ResourcesCompat.getColor(getResources(),android.R.color.black, null));
-                        doneButton.setBackgroundTintList(ResourcesCompat.getColorStateList(getResources(),
-                                R.color.chip_fader_color, null));
-                    }
-                }, 300);
+                showCustomSuccessfullDialog();
+//                if(questionInputEditText.hasFocus())
+//                  questionInputEditText.clearFocus();
+//                if(questionInputLayout.hasFocus())
+//                  questionInputLayout.clearFocus();
+//                doneButton.requestFocus();
+//                hideSoftKeyboard(doneButton);
+//                Handler handler=new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        doneButton.setTextColor(ResourcesCompat.getColor(getResources(),android.R.color.black, null));
+//                        doneButton.setBackgroundTintList(ResourcesCompat.getColorStateList(getResources(),
+//                                R.color.chip_fader_color, null));
+//                    }
+//                }, 300);
             break;
             case R.id.toolbar_card_view:
                 questionInputEditText.clearFocus();
                 questionInputLayout.clearFocus();
                 appbarCardView.requestFocus();
                 hideSoftKeyboard(appbarCardView);
-                break;
-            case R.id.back_image_button:
-                onBackPressed();
                 break;
             case R.id.add_image_button:
                 numberOfTimesAddButtonClicked++;
@@ -169,7 +175,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
             case R.id.child_constraint_layout:
                 if(checkValidation()){
                     if(isNetworkAvailable()){
-
+                        hideSoftKeyboard(questionInputEditText);
                         submitButtonConstraintLayout.setEnabled(false);
                         submitTextView.setText(getString(R.string.uploading));
                         progressBar.setVisibility(View.VISIBLE);
@@ -177,7 +183,6 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                         questionInputLayout.setEnabled(false);
                         addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
                                 R.color.chip_fader_color, null));
-                        backImageButton.setEnabled(false);
                         uploadToRemoteDatabase();
 
                     }else {
@@ -185,6 +190,9 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                     }
                 }
                 break;
+                default:
+                    onBackPressed();
+                    break;
         }
     }
 
@@ -227,24 +235,39 @@ public class QuestionTakerActivity extends AppCompatActivity implements
         if(numberOfTimesAddButtonClicked==1){
             option1EditText.setVisibility(View.VISIBLE);
             optionATextView.setVisibility(View.VISIBLE);
+            option1EditText.startAnimation(scaleInAnimation);
             optionATextView.startAnimation(scaleInAnimation);
         }
         else if(numberOfTimesAddButtonClicked==2){
             option2EditText.setVisibility(View.VISIBLE);
             optionBTextView.setVisibility(View.VISIBLE);
+            option2EditText.startAnimation(scaleInAnimation);
             optionBTextView.startAnimation(scaleInAnimation);
         }else if(numberOfTimesAddButtonClicked==3){
             option3EditText.setVisibility(View.VISIBLE);
             optionCTextView.setVisibility(View.VISIBLE);
+            option3EditText.startAnimation(scaleInAnimation);
             optionCTextView.startAnimation(scaleInAnimation);
         }else if(numberOfTimesAddButtonClicked==4){
             option4EditText.setVisibility(View.VISIBLE);
             optionDTextView.setVisibility(View.VISIBLE);
+            option4EditText.startAnimation(scaleInAnimation);
             optionDTextView.startAnimation(scaleInAnimation);
         }else if(numberOfTimesAddButtonClicked>=5){
             showSnackBar("Maximum four option");
         }
 
+    }
+
+    private void changeToolbarFont(Toolbar toolbar){
+        for(int i=0;i<toolbar.getChildCount();i++){
+            View view=toolbar.getChildAt(i);
+            if(view instanceof TextView ){
+                TextView toolbarTitleView= (TextView) view;
+                Typeface typeface= ResourcesCompat.getFont(this, R.font.aclonica);
+                toolbarTitleView.setTypeface(typeface);
+            }
+        }
     }
 
     private void showSnackBar(String message){
@@ -260,7 +283,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         if(isuUploaded) {
-            Intent intent = new Intent(QuestionTakerActivity.this,
+            Intent intent = new Intent(SurveyActivity.this,
                     MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                     | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -378,7 +401,6 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                 questionInputLayout.setEnabled(true);
                 addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
                         R.color.chip_fader_color, null));
-                backImageButton.setEnabled(true);
                 questionInputEditText.setText("");
                 option1EditText.setText("");
                 option2EditText.setText("");
@@ -398,7 +420,6 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                 questionInputLayout.setEnabled(true);
                 addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
                         R.color.chip_fader_color, null));
-                backImageButton.setEnabled(true);
                 showCustomErrorDialog();
 
 
@@ -409,7 +430,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
 
     private void showCustomSuccessfullDialog() {
         final ViewGroup viewGroup = findViewById(R.id.root);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
+        final View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setView(dialogView);
         TextView textView=dialogView.findViewById(R.id.message_text_view);
@@ -440,7 +461,7 @@ public class QuestionTakerActivity extends AppCompatActivity implements
     private void showCustomErrorDialog(){
 
         final ViewGroup viewGroup = findViewById(R.id.root);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_failure_dialog, viewGroup, false);
+        final View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_failure_dialog, viewGroup, false);
         TextView textView=dialogView.findViewById(R.id.message_text_view);
         textView.setText(getString(R.string.survey_accepted_failed));
         MaterialButton retryButton=dialogView.findViewById(R.id.retry_button);
@@ -467,7 +488,6 @@ public class QuestionTakerActivity extends AppCompatActivity implements
                         questionInputLayout.setEnabled(false);
                         addImageButton.setBackgroundColor(ResourcesCompat.getColor(getResources(),
                                 R.color.chip_fader_color, null));
-                        backImageButton.setEnabled(false);
                         uploadToRemoteDatabase();
 
                     }else {

@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.Account;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,15 +36,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     }
      void onAskerImageClicked(final Context context, final UserAnswerModel model){
+         Activity activity= (Activity) context;
         Intent intent=new Intent(context,OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getAskerImageUrl());
         intent.putExtra("uid", model.getAskerId());
         intent.putExtra("user_name", model.getAskerName());
         intent.putExtra("bio", model.getAskerBio());
         context.startActivity(intent);
-    }
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+     }
 
      void onAnswererImageClicked(final Context context,final UserAnswerModel model){
+         Activity activity=(Activity)context;
          SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
          Intent intent=new Intent(context,OtherAccountActivity.class);
          intent.putExtra("profile_image", model.getAnswerId());
@@ -51,7 +56,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
          intent.putExtra("user_name", preferences.getString(Constants.userName, "Someone"));
          intent.putExtra("bio", preferences.getString(Constants.bio, ""));
          context.startActivity(intent);
-    }
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+     }
 
      void onQuestionClicked(final Context context,final UserAnswerModel model){
         goToHomeAnswerActivity(context, model);
@@ -62,24 +69,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
     }
 
      void onAskerNameClicked(final Context context ,final UserAnswerModel model){
+         Activity activity=(Activity)context;
          Intent intent=new Intent(context,OtherAccountActivity.class);
          intent.putExtra("profile_image", model.getAskerImageUrl());
          intent.putExtra("uid", model.getAskerId());
          intent.putExtra("user_name", model.getAskerName());
          intent.putExtra("bio", model.getAskerBio());
          context.startActivity(intent);
-    }
-//
-//     void onLikedClicked(final Context context,final UserAnswerModel model){
-//        onClicked("Like", context);
-//
-//    }
-//
-//     void onDislikedClicked(final Context context,final UserAnswerModel model){
-//        onClicked("Dislike", context);
-//    }
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
+     }
      private void goToHomeAnswerActivity(final Context context,final UserAnswerModel model){
+         Activity activity=(Activity)context;
         Intent intent=new Intent(context, AnswerActivity.class);
         intent.putExtra("askerImageUrl", model.getAskerImageUrl());
         intent.putExtra("timeOfAsking",model.getTimeOfAsking() );
@@ -90,10 +91,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("askerId",model.getAskerId());
         intent.putExtra("anonymous", model.isAnonymous());
         context.startActivity(intent);
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-    }
 
-//     private void onClicked(final String message,final Context context){
-//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-//    }
+     }
+
 }

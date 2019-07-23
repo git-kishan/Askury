@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.emoji.widget.EmojiEditText;
@@ -46,6 +49,10 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.TypeAdapterFactory;
+
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,6 +101,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         imageViewAdd.setOnClickListener(this);
         imageViewAdd.setVisibility(View.VISIBLE);
         rootView=findViewById(R.id.root);
+        changeToolbarFont(toolbar);
         loadProfilePicFromFile();
         setUserName();
         imageView.setOnClickListener(this);
@@ -118,6 +126,26 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+    }
+    private void changeToolbarFont(Toolbar toolbar){
+        for(int i=0;i<toolbar.getChildCount();i++){
+            View view=toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView titleView=(TextView) view;
+                Typeface typeface=ResourcesCompat.getFont(this, R.font.aclonica);
+                titleView.setTypeface(typeface);
+            }
+        }
+    }
+    private void hideSoftKeyboard(View view){
+        InputMethodManager imm= (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if(imm!=null)
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+    @Override
     public boolean onMenuItemClick(final MenuItem menuItem) {
 
         if(menuItem.getItemId()==R.id.ask){
@@ -125,7 +153,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
                 if(isNetworkAvailable()){
                     menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
-
+                    hideSoftKeyboard(questionInputEditText);
                     overlayFrameLayout.setVisibility(View.VISIBLE);
                     dotsLoaderView.show();
                     uploadQuestionToRemoteDatabase(menuItem);
@@ -179,6 +207,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
         }
     }
+
     private void resizeImageSelectedFromGallery(@Nullable Intent data){
         assert data!=null;
         final Uri imageUri = data.getData();
@@ -194,6 +223,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
         }
     }
+
     private  Bitmap decodeSelectedImageUri(Uri uri){
         try {
             final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -249,6 +279,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
             e.printStackTrace();
         }
     }
+
     private void setUserName(){
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String userName=preferences.getString(Constants.userName, null);
@@ -258,6 +289,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         }
 
     }
+
     private boolean checkQuestionLength( ){
 
         if(questionInputEditText.getText()==null){
@@ -393,7 +425,6 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
 
     }
 
-
     private boolean isNetworkAvailable(){
         ConnectivityManager comm= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         if(comm!=null){
@@ -403,6 +434,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         return false;
 
     }
+
     private void showSnackBar(String message){
         Snackbar snackbar=Snackbar.make(rootView,  message, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
@@ -416,6 +448,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
     private void noInternetConnectionMessage(){
         Snackbar.make(rootView, "No internet Connection Available",Snackbar.LENGTH_LONG).show();
     }
+
     private void showCustomSuccessfullDialog() {
         final ViewGroup viewGroup = findViewById(R.id.root);
         final View dialogView = LayoutInflater.from(this).inflate(R.layout.uploading_success_dialog, viewGroup, false);
@@ -433,10 +466,6 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                InputMethodManager imm= (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if(imm!=null){
-                    imm.hideSoftInputFromWindow(dialogView.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-                }
                 Handler handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override

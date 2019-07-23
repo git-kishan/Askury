@@ -49,7 +49,7 @@
                 android:layout_height="0dp">
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
                     <androidx.emoji.widget.EmojiEditText
                         android:id="@+id/answer_edit_text"
                         android:layout_width="0dp"
@@ -59,13 +59,14 @@
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/answer_question_dash"
                         android:gravity="start|center"
-                        android:hint="Write your answer"
+                        android:hint="@string/write_your_answer"
                         android:maxHeight="150dp"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
                         android:autoLink="all"
                         android:linksClickable="true"
                         android:textColorLink="@color/colorAccent"
                         android:minHeight="70dp"
-                        android:paddingStart="5dp"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         android:scrollbars="vertical"
@@ -101,6 +102,7 @@
                         android:layout_marginTop="12dp"
                         android:scaleType="centerCrop"
                         android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/answer_image_attached"
                         android:maxHeight="250dp"
                         android:minHeight="150dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -115,6 +117,7 @@
                         android:layout_marginEnd="8dp"
                         android:elevation="10dp"
                         android:clickable="true"
+                        android:contentDescription="@string/answer_image_attached"
                         android:background="@drawable/ripple_background"
                         android:focusable="true"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -142,7 +145,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="3dp"
                     android:gravity="center"
-                    android:text="T"
+                    android:text="@string/t"
                     android:textColor="@android:color/black"
                     android:textSize="20sp" />
             </androidx.cardview.widget.CardView>
@@ -164,6 +167,7 @@
                     android:padding="7dp"
                     android:src="@drawable/ic_upload"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/select_image_from_gallery"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
@@ -184,6 +188,7 @@
                     android:id="@+id/upload_image_from_camera"
                     android:layout_width="match_parent"
                     android:padding="5dp"
+                    android:contentDescription="@string/capture_image_from_camera"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_camera_black"
                     />
@@ -195,6 +200,7 @@
                 android:background="@drawable/ripple_background"
                 android:clickable="true"
                 android:focusable="true"
+                android:contentDescription="@string/Done"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"

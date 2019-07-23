@@ -32,6 +32,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -185,6 +186,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.imageView13:
                 if(checkValidation()){
                     if(isNetworkAvailable()){
+                        hideSoftKeyboard(answerEditText);
                         String uid=auth.getUid();
                         if(askerUid!=null&&uid!=null)
                         if (uid.equals(askerUid)) {
@@ -213,6 +215,12 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         Log.i("TAG","font selected position :- "+fontSelected);
         fontTextView.setTypeface(textViewFont);
 
+    }
+    private void hideSoftKeyboard(View view){
+        InputMethodManager manager=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        if(manager!=null){
+            manager.hideSoftInputFromWindow(view.getWindowToken(),0);
+        }
     }
 
     @Override
@@ -280,7 +288,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
+            File photoFile ;
             photoFile = createImageFile();
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
@@ -420,6 +428,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
         return inSampleSize;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

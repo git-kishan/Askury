@@ -38,10 +38,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="3dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:cardCornerRadius="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -65,13 +65,15 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView15"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
                         android:background="?android:selectableItemBackground"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/circleImageView2"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/circleImageView2"
                         app:layout_constraintTop_toTopOf="@+id/circleImageView2"
@@ -80,7 +82,7 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView16"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:textSize="12sp"
@@ -113,7 +115,7 @@
                         android:id="@+id/textView28"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="8dp"
                         android:textSize="8sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/circleImageView2"
@@ -125,9 +127,10 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:clickable="true"
                 android:elevation="5dp"
                 android:focusable="true"
@@ -154,7 +157,7 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView20"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="8dp"
@@ -171,7 +174,7 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/textView21"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:textSize="12sp"
@@ -229,7 +232,7 @@
                         android:id="@+id/textView27"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginBottom="3dp"
                         android:textSize="8sp"
                         app:layout_constraintBottom_toTopOf="@+id/textView1"

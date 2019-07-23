@@ -3,6 +3,7 @@ package com.droid.solver.askapp.homeAnswer;
 import android.app.Activity;
 import android.content.Intent;
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.AsyncTask;
@@ -20,6 +21,7 @@ import com.droid.solver.askapp.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -109,6 +111,10 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
     }
+    private void showSnackbar(){
+        CoordinatorLayout rootLayout=findViewById(R.id.root);
+        Snackbar.make(rootLayout, "Error occured in getting answers of question", Snackbar.LENGTH_LONG).show();
+    }
 
     public  void applyFont(TextView textView, Activity context) {
         textView.setTypeface(ResourcesCompat.getFont(context, R.font.aclonica));
@@ -129,13 +135,10 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
             super.onScrolled(recyclerView, dx, dy);
             LinearLayoutManager linearLayoutManager= (LinearLayoutManager) recyclerView.getLayoutManager();
             if(!isLoading){
-                if(linearLayoutManager!=null)
-                Log.i("TAG", "position :- "+linearLayoutManager.findLastVisibleItemPosition());
                 if(linearLayoutManager!=null&&linearLayoutManager.findLastVisibleItemPosition()==objectArrayList.size()-1){
                     objectArrayList.add(objectArrayList.size(),null);
                     adapter.notifyItemInserted(objectArrayList.size());
                     fetchMoreAnswerFromRemoteDatabase();
-                    Log.i("TAG", "is Loading :- "+isLoading);
                     isLoading=true;
                 }
             }
@@ -176,8 +179,43 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         shimmerFrameLayout.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         recyclerView.addOnScrollListener(scrollListener);
+                        try {
+                            if (objectArrayList != null && objectArrayList.size() > 0) {
+                                Object o = objectArrayList.get(objectArrayList.size() - 1);
+                                if (o == null) {
+                                    objectArrayList.remove(objectArrayList.size() - 1);
+                                    adapter.notifyItemRemoved(objectArrayList.size() - 1);
+                                    isLoading = false;
+                                    recyclerView.removeOnScrollListener(scrollListener);
+                                }
+                            }
+                        }catch (ArrayIndexOutOfBoundsException e){
+                            Log.i("TAG", "ArrayIndexOutOfBoundsException occurs in retrieving answer in AnsweActivity "+e.getMessage());
+                        }catch (NullPointerException e){
+                            Log.i("TAG", "NullPointerException occurs in retrieving answer in AnsweActivity "+e.getMessage());
+
+                        }
                     }else {
                         Log.i("TAG", "fetching answer documents fail");
+                        showSnackbar();
+                        try {
+                            if (objectArrayList != null && objectArrayList.size() > 0) {
+                                Object o = objectArrayList.get(objectArrayList.size() - 1);
+                                if (o == null) {
+                                    objectArrayList.remove(objectArrayList.size() - 1);
+                                    adapter.notifyItemRemoved(objectArrayList.size() - 1);
+                                    isLoading = false;
+                                }
+                            }
+
+                            Log.i("TAG", "fetching answer documents fail");
+                        }catch (ArrayIndexOutOfBoundsException e){
+                            Log.i("TAG", "ArrayIndexOutOfBoundsException occurs in retrieving answer in AnsweActivity "+e.getMessage());
+                        }catch (NullPointerException e){
+                            Log.i("TAG", "NullPointerException occurs in retrieving answer in AnsweActivity "+e.getMessage());
+
+                        }
+
                     }
                 }
             })  ;
@@ -186,7 +224,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void fetchMoreAnswerFromRemoteDatabase(){
 
-        if(lastSnapshot!=null) {
+        if(lastSnapshot!=null&&questionId!=null&&askerId!=null) {
             Query query = firestoreRootRef.collection("user").document(askerId).collection("question")
                     .document(questionId).collection("answer");
             query.orderBy("timeOfAnswering", Query.Direction.DESCENDING)
@@ -223,7 +261,24 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
                         }
 
                     } else {
-                        Log.i("TAG", "fetching answer documents fail");
+                        showSnackbar();
+                        try {
+                            if (objectArrayList != null && objectArrayList.size() > 0) {
+                                Object o = objectArrayList.get(objectArrayList.size() - 1);
+                                if (o == null) {
+                                    objectArrayList.remove(objectArrayList.size() - 1);
+                                    adapter.notifyItemRemoved(objectArrayList.size() - 1);
+                                    isLoading = false;
+                                }
+                            }
+
+                            Log.i("TAG", "fetching answer documents fail");
+                        }catch (ArrayIndexOutOfBoundsException e){
+                            Log.i("TAG", "ArrayIndexOutOfBoundsException occurs in retrieving answer in AnsweActivity "+e.getMessage());
+                        }catch (NullPointerException e){
+                            Log.i("TAG", "NullPointerException occurs in retrieving answer in AnsweActivity "+e.getMessage());
+
+                        }
                     }
                 }
             });

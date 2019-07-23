@@ -15,16 +15,16 @@
     <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">
         <item name="android:textSize">10sp</item>
     </style>
-    <style name="QuestionActivitytoolbarActionButton" parent="Widget.AppCompat.ActionButton">
-        <item name="android:layout_marginRight">10dp</item>
-    </style>
 
     <style name="TextInputEditText" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorControlActivated">@color/colorPrimaryDark</item>
         <item name="colorControlNormal">@color/colorPrimaryDark</item>
         <item name="colorControlHighlight">@color/colorPrimaryDark</item>
     </style>
-
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">#82003D</item>
+        <item name="boxStrokeWidth">0.5dp</item>
+    </style>
     <style name="AppBottomSheetDialogTheme"
         parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>

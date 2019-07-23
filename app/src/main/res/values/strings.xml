@@ -75,7 +75,7 @@
     <string name="login_with_facebook" translatable="false">Log in with facebook</string>
     <string name="login_with_google" translatable="false">Log in with google</string>
     <string name="got_it" translatable="false">Got it</string>
-    <string name="thank_you" translatable="false">Thank you !!!</string>
+    <string name="thank_you" translatable="false">Thank you</string>
     <string name="image_poll_uploaded" translatable="false">Image poll uploaded successfully</string>
     <string name="error_occured" translatable="false">Error Occured</string>
     <string name="its_spam" translatable="false">it\'s spam</string>
@@ -88,6 +88,17 @@
     <string name="version" translatable="false">Version 1.0.0</string>
     <string name="write_your_problem" translatable="false">Write your problem</string>
     <string name="profile_image" translatable="false">Profile image</string>
+    <string name="anonymous" translatable="false">Anonymous</string>
+    <string name="your_question" translatable="false">your question</string>
+    <string name="option1" translatable="false">Option 1</string>
+    <string name="option2" translatable="false">Option 2</string>
+    <string name="add_option" translatable="false">Add option</string>
+    <string name="write_your_answer" translatable="false">Write your answer</string>
+    <string name="t" translatable="false">T</string>
+    <string name="select_image_from_gallery" translatable="false">Select image from gallery</string>
+    <string name="capture_image_from_camera" translatable="false">Capture image from camera</string>
+    <string name="survey" translatable="false">Survey</string>
+    <string name="write_your_survey_question" translatable="false">Write your survey question</string>
 
 
     <string name="Painting">Painting</string>

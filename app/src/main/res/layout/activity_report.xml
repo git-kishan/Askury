@@ -41,7 +41,7 @@
             android:focusableInTouchMode="true"
             android:gravity="top|start"
             android:textColorHint="@color/colorAccent"
-            android:layout_height="match_parent" />
+            android:layout_height="90dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton

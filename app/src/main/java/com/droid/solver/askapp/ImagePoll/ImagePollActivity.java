@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -120,6 +121,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         dialogFragment=new ImageSelectionFragment();
         orTextVeiw.requestFocus();
         hideSoftKeyboard(orTextVeiw);
+        changeToolbarFont(toolbar);
         FirebaseAuth auth=FirebaseAuth.getInstance();
         user=auth.getCurrentUser();
         if(user==null){
@@ -138,6 +140,21 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
+    }
+    private void changeToolbarFont(Toolbar toolbar){
+        for(int i=0;i<toolbar.getChildCount();i++){
+            View view=toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView titleView=(TextView) view;
+                Typeface typeface=ResourcesCompat.getFont(this, R.font.aclonica);
+                titleView.setTypeface(typeface);
+            }
+        }
+    }
     @Override
     public void onClick(View view) {
         Bundle bundle=new Bundle();
@@ -176,6 +193,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
                 if(isInternetAvailable()){
                         menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_next_dark, null));
+                        hideSoftKeyboard(questionInputEditText);
                         overLayFrameLayout.setVisibility(View.VISIBLE);
                         dotsLoaderView.show();
                         uploadFirstImageToStorage(menuItem);
@@ -196,9 +214,10 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private void hideSoftKeyboard(View view){
         InputMethodManager inputMethodManager= (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if(inputMethodManager!=null){
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),InputMethodManager.HIDE_IMPLICIT_ONLY);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
         }
     }
+
     @Override
     public void passDataFromFragmentToActivity(boolean isImage1Clicked, boolean isImage2Clicked,
                                                boolean isGalleryClicked, boolean isCameraClicked) {
@@ -209,6 +228,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             checkReadExternalStoragePermission( isImage1Clicked,  isImage2Clicked,  isGalleryClicked,  isCameraClicked);
         }
     }
+
     private void onGalleryClicked(boolean isImage1Clicked, boolean isImage2Clicked,
                                   boolean isGalleryClicked, boolean isCameraClicked){
 
@@ -222,6 +242,7 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
 
 
     }
+
     private void onCameraClicked(){
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -349,7 +370,6 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
             byte [] uploderByteArray=uploaderStream.toByteArray();
 
-
             if (isImage1Clicked) {
                 image1.setImageBitmap(bitmap);
                 image1CardView.setVisibility(View.GONE);
@@ -438,13 +458,10 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
         options.inSampleSize = scaleFactor;
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
         if(bitmap!=null) {
-//            Bitmap uploaderBitmap=Bitmap.createScaledBitmap(bitmap, 250, 300, false);
 
             ByteArrayOutputStream uploaderStream=new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, uploaderStream);
             byte [] uploderByteArray=uploaderStream.toByteArray();
-            Log.i("TAG", "bitmap size :- "+bitmap.getByteCount());
-            Log.i("TAG", "bitmap :- width :- "+bitmap.getWidth()+", bitmap height :- "+bitmap.getHeight());
 
             if (isImage1Clicked) {
                 image1.setImageBitmap(bitmap);

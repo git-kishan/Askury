@@ -40,34 +40,36 @@
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/profile_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
+                        android:textIsSelectable="true"
                         android:layout_marginEnd="8dp"
-                        tools:text="Sahil Sekhawat"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/circleImageView4"
-                        app:layout_constraintTop_toTopOf="@+id/circleImageView4" />
+                        app:layout_constraintTop_toTopOf="@+id/circleImageView4"
+                        tools:text="Sahil Sekhawat" />
 
                     <androidx.emoji.widget.EmojiTextView
                         android:id="@+id/about"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="8dp"
+                        android:textIsSelectable="true"
                         android:alpha="0.6"
-                        tools:text="Author | Writer | Dancer | Actor"
                         android:textColor="@android:color/black"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/circleImageView4"
-                        app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+                        app:layout_constraintTop_toBottomOf="@+id/profile_name"
+                        tools:text="Author | Writer | Dancer | Actor" />
 
                     <TextView
                         android:id="@+id/textView36"
@@ -136,7 +138,8 @@
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
+                        android:visibility="gone"
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="8dp"
                         android:text="@string/follow"

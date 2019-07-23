@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/root"
-    android:background="@drawable/temp1"
+    android:background="@drawable/sign_in_activity"
     tools:context=".InterestActivity">
 
     <com.google.android.material.chip.ChipGroup

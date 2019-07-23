@@ -11,9 +11,13 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.MainActivity;
@@ -59,46 +63,63 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        MaterialButton googleButton=findViewById(R.id.google_button);
-        MaterialButton facebookButton=findViewById(R.id.facebook_button);
-        rootLayout=findViewById(R.id.root_layout);
-        progressCard=findViewById(R.id.progress_card);
         SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-        callbackManager = CallbackManager.Factory.create();
-        loginButton = findViewById(R.id.login_button);
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         boolean genderSelection=sharedPreferences.getBoolean(Constants.GENDER_SELECTION, false);
         boolean interestSelection=sharedPreferences.getBoolean(Constants.INTEREST_SELECTION, false);
+        if(genderSelection && interestSelection) {
+            setContentView(R.layout.starting_name);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            TextView name=findViewById(R.id.textView33);
+            Animation animation=AnimationUtils.loadAnimation(this, R.anim.askury_scale_out);
+            name.startAnimation(animation);
+            Handler handler=new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(SignInActivity.this,MainActivity.class));
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                    finish();
 
-        auth=FirebaseAuth.getInstance();
-        FirebaseUser user=auth.getCurrentUser();
-        if(user!=null){
-            if(!genderSelection) {
-                startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                finish();
-            }
-           else  if(!interestSelection){
-                startActivity(new Intent(SignInActivity.this, InterestActivity.class));
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                finish();
-            }
-           else {
-                startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                finish();
-            }
+                }
+            }, 1000);
 
         }
-        callbackRegistration();
-        facebookButton.setOnClickListener(this);
-        googleButton.setOnClickListener(this);
+        else {
+            setContentView(R.layout.activity_sign_in);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            MaterialButton googleButton=findViewById(R.id.google_button);
+            MaterialButton facebookButton=findViewById(R.id.facebook_button);
+            rootLayout=findViewById(R.id.root_layout);
+            progressCard=findViewById(R.id.progress_card);
+            callbackManager = CallbackManager.Factory.create();
+            loginButton = findViewById(R.id.login_button);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+            auth=FirebaseAuth.getInstance();
+            FirebaseUser user=auth.getCurrentUser();
+            if(user!=null){
+                if(!genderSelection) {
+                    startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                    finish();
+                }
+                else {
+                    startActivity(new Intent(SignInActivity.this, InterestActivity.class));
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                    finish();
+                }
+
+
+            }
+            callbackRegistration();
+            facebookButton.setOnClickListener(this);
+            googleButton.setOnClickListener(this);
+        }
+
     }
     @Override
     public void onClick(View view) {

@@ -259,8 +259,6 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
                 surveyMap.put("option4Count", FieldValue.increment(1));
                 surveyModel.setOption4Count(surveyModel.getOption4Count()+1);
                 showSelectionPercentage(surveyModel);
-
-
             }
 
             final Map<String,Object> selectionMap=new HashMap<>();
@@ -278,7 +276,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
               @Override
               public void run() {
                   if(getAdapterPosition()<=7) {
-                      surveyModel.setOptionSelectedByMe(1);
+                      surveyModel.setOptionSelectedByMe(selection);
                       LocalDatabase database = new LocalDatabase(context.getApplicationContext());
                       database.updateSurveyAskedModel(surveyModel);
                   }
@@ -520,7 +518,7 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
             Log.i("TAG", "survey selection :- "+selection);
         }
 
-            makeContainerUnClickable();
+        makeContainerUnClickable();
          changeBackGroundOfLinearLayout();
         }
 

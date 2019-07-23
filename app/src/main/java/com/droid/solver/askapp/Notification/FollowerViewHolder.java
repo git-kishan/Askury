@@ -34,7 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
             model.setStoredLocally(true);
             saveNotificationToLocalDatabase(model.getFollowerId(), model, context);
         }
-        Activity activity =new Activity();
+        Activity activity = (Activity) context;
         Intent intent=new Intent(context, OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getFollowerImageUrl());
         intent.putExtra("uid", model.getFollowerId());

@@ -40,7 +40,8 @@
         android:elevation="8dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="8dp"
+        android:background="@drawable/round_corner_frame_layout"
+        android:layout_marginBottom="0dp"
         android:layout_height="45dp">
         <TextView
             android:id="@+id/message_text"
@@ -53,7 +54,6 @@
             tools:text="No internet connection"
             android:gravity="center|start"
             android:textSize="14sp"
-            android:background="@drawable/round_corner_frame_layout"
             />
 
     </FrameLayout>
