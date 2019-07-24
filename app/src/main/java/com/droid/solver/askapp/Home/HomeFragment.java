@@ -23,6 +23,10 @@ import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -36,6 +40,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
@@ -64,6 +70,10 @@ public class HomeFragment extends Fragment  {
     private Map<String, Integer> surveyParticipatedMapFromLocalDatabase;
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private Handler handler;
+    private final int NUMBER_OF_ADS =2;
+    private int AD_COUNTER=0;
+    private AdLoader adLoader;
+    private List<UnifiedNativeAd> mNativeAds ;
 
     public HomeFragment() {}
 
@@ -84,6 +94,7 @@ public class HomeFragment extends Fragment  {
             if(getActivity()!=null)
             getActivity().finish();
         }
+        mNativeAds=new ArrayList<>();
         handler=new Handler();
         questionModelStack=new Stack<>();
         imagePollModelStack=new Stack<>();
@@ -94,6 +105,12 @@ public class HomeFragment extends Fragment  {
         imagePollLikeMapFromLocalDatabase=new HashMap<>();
         surveyParticipatedMapFromLocalDatabase=new HashMap<>();
         answerLikeListFromLocalDatabase=new ArrayList<>();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                loadNativeAds();
+            }
+        });
         loadListFromLocalDatabase();
         return view;
     }
@@ -186,7 +203,6 @@ public class HomeFragment extends Fragment  {
                 }
             }
         });
-
     }
 
     private RecyclerView.OnScrollListener onScrollListener=new RecyclerView.OnScrollListener() {
@@ -410,6 +426,7 @@ public class HomeFragment extends Fragment  {
 
     private void handleOrderingOfList( ){
         list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
+        insertAdItem();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -422,18 +439,15 @@ public class HomeFragment extends Fragment  {
                         if(getActivity()!=null) {
                             LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
                             database.insertHomeObject(list);
-                        }
-                    }
+                        }}
                 });
             }
         });
-
-
-
     }
 
     private void handleOnLoadingOrderingOfList(){
         list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
+        insertAdItem();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -464,10 +478,12 @@ public class HomeFragment extends Fragment  {
                 tempList.add(randomNumber,s3.pop());
             }
         }
-        if(s1.isEmpty()) s1.clear();
-        if(s2.isEmpty()) s2.clear();
-        if(s3.isEmpty()) s3.clear();
+        if(!s1.isEmpty()) s1.clear();
+        if(!s2.isEmpty()) s2.clear();
+        if(!s3.isEmpty()) s3.clear();
+
         return tempList;
+
     }
 
     private int generateRandomNumber(int highRange){
@@ -640,7 +656,8 @@ public class HomeFragment extends Fragment  {
                                     } else if (task.getResult() != null && task.getResult().getDocuments().size() == 0) {
                                         recyclerView.removeOnScrollListener(onScrollListener);
                                     }
-                                    final int scrollPosition = list.size() - 1;
+
+                                    final int scrollPosition=list.size()-1;
                                     list.remove(scrollPosition);
                                     handler.post(new Runnable() {
                                         @Override
@@ -648,8 +665,8 @@ public class HomeFragment extends Fragment  {
                                             adapter.notifyItemRemoved(scrollPosition);
                                         }
                                     });
-                                    isLoading = false;
                                     handleOnLoadingOrderingOfList();
+
                                 }
                             });
 
@@ -665,6 +682,46 @@ public class HomeFragment extends Fragment  {
                     }
                 });
         }
+    }
+
+    private void loadNativeAds() {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(getActivity()!=null) {
+                    AdLoader.Builder builder = new AdLoader.Builder(getActivity(), getString(R.string.ad_unit_id));
+                    adLoader = builder.forUnifiedNativeAd(
+                            new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                                @Override
+                                public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                                    mNativeAds.add(unifiedNativeAd);
+                                    if (!adLoader.isLoading()) {
+                                        Log.i("TAG", "Ad Loaded successfully");
+                                    }
+                                }
+                            }).withAdListener(
+                            new AdListener() {
+                                @Override
+                                public void onAdFailedToLoad(int errorCode) {
+                                    Log.e("TAG", "Ad is loading");
+                                }
+                            })
+                            .build();
+                }
+                if(adLoader!=null)
+                adLoader.loadAds(new AdRequest.Builder().build(), NUMBER_OF_ADS);
+            }
+        });
+
+    }
+
+    private void insertAdItem() {
+        if (list==null||mNativeAds.size() <= 0||list.size()==0||recyclerView==null&&adapter==null) {
+            return;
+        }
+        int listSize=list.size();
+        list.add(mNativeAds.get(0));
+        list.add(listSize-4,mNativeAds.get(1));
     }
 
 }

@@ -94,6 +94,9 @@ attr actionOverflowMenuStyle
 attr actionProviderClass
 attr actionViewClass
 attr activityChooserViewStyle
+attr adSize
+attr adSizes
+attr adUnitId
 attr alertDialogButtonGroupStyle
 attr alertDialogCenterButtons
 attr alertDialogStyle
@@ -1064,6 +1067,23 @@ dimen disabled_alpha_material_light
 dimen fastscroll_default_thickness
 dimen fastscroll_margin
 dimen fastscroll_minimum_range
+dimen gnt_ad_indicator_bar_height
+dimen gnt_ad_indicator_bottom_margin
+dimen gnt_ad_indicator_height
+dimen gnt_ad_indicator_text_size
+dimen gnt_ad_indicator_top_margin
+dimen gnt_ad_indicator_width
+dimen gnt_default_margin
+dimen gnt_media_view_weight
+dimen gnt_medium_cta_button_height
+dimen gnt_medium_template_bottom_weight
+dimen gnt_medium_template_top_weight
+dimen gnt_no_margin
+dimen gnt_no_size
+dimen gnt_small_cta_button_height
+dimen gnt_text_row_weight
+dimen gnt_text_size_large
+dimen gnt_text_size_small
 dimen highlight_alpha_material_colored
 dimen highlight_alpha_material_dark
 dimen highlight_alpha_material_light
@@ -1470,6 +1490,19 @@ id action_mode_close_button
 id action_text
 id actions
 id activity_chooser_view_content
+id ad_advertiser
+id ad_attribution
+id ad_body
+id ad_call_to_action
+id ad_choices_container
+id ad_headline
+id ad_icon
+id ad_media
+id ad_price
+id ad_stars
+id ad_store
+id ad_unit
+id ad_view
 id add
 id add_image_button
 id adjust_height
@@ -1752,6 +1785,16 @@ id mtrl_child_content_container
 id mtrl_internal_children_alpha_tag
 id multiply
 id music
+id native_ad_body
+id native_ad_call_to_action
+id native_ad_container
+id native_ad_icon
+id native_ad_media
+id native_ad_social_context
+id native_ad_sponsored_label
+id native_ad_title
+id native_banner_ad_container
+id native_icon_view
 id navigation_header_container
 id never
 id never_display
@@ -2121,6 +2164,8 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_password_icon
 layout errorr_occured_dialog
+layout fb_native_ad_item
+layout fb_native_ad_item_layout
 layout follower_item
 layout following_item
 layout fragment_account
@@ -2136,6 +2181,7 @@ layout fragment_question
 layout fragment_successfully_upload_dialog
 layout home_answer_answer_item
 layout home_answer_question_item
+layout home_fragment_ad
 layout home_image_poll
 layout home_question_answer_card_item
 layout home_question_answer_image_item
@@ -2173,6 +2219,8 @@ layout notification_template_media_custom
 layout notification_template_part_chronometer
 layout notification_template_part_time
 layout question_answer_overflow_dialog
+layout question_banner_native_ad
+layout question_fragment_ad
 layout question_question_item
 layout question_question_item_with_image
 layout question_report_dialog
@@ -2272,8 +2320,11 @@ string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
 string about_you
+string ad
+string ad_unit_id
 string add_interest
 string add_option
+string admob_app_id
 string anonymous
 string answer_image_attached
 string app_name
@@ -2401,6 +2452,7 @@ string path_password_eye_mask_visible
 string path_password_strike_through
 string percentage_likes
 string pick_image_intent_chooser_title
+string placement_id
 string please_wait
 string points
 string privacy_policy
@@ -2415,6 +2467,13 @@ string question_uploading_successfully
 string report
 string report_error
 string retry
+string s1
+string s2
+string s3
+string s4
+string s5
+string s6
+string s7
 string search_menu_title
 string second_image
 string second_percentage
@@ -2802,6 +2861,7 @@ style Theme_Design_Light
 style Theme_Design_Light_BottomSheetDialog
 style Theme_Design_Light_NoActionBar
 style Theme_Design_NoActionBar
+style Theme_IAPTheme
 style Theme_MaterialComponents
 style Theme_MaterialComponents_BottomSheetDialog
 style Theme_MaterialComponents_Bridge
@@ -2982,6 +3042,7 @@ styleable ActionMenuItemView android_minWidth
 styleable ActionMenuView
 styleable ActionMode background backgroundSplit closeItemLayout height subtitleTextStyle titleTextStyle
 styleable ActivityChooserView expandActivityOverflowButtonDrawable initialActivityCount
+styleable AdsAttrs adSize adSizes adUnitId
 styleable AlertDialog android_layout buttonIconDimen buttonPanelSideLayout listItemLayout listLayout multiChoiceItemLayout showTitle singleChoiceItemLayout
 styleable AnimatedStateListDrawableCompat android_dither android_visible android_variablePadding android_constantSize android_enterFadeDuration android_exitFadeDuration
 styleable AnimatedStateListDrawableItem android_id android_drawable

@@ -782,21 +782,16 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
                     Map<String, Object> selfFollowingCountMap = new HashMap<>();
                     Map<String, Object> askerFollowerCountMap = new HashMap<>();
 
-                    assert surveyModel.getAskerId() != null;
                     selfFollowingMap.put("followingId", surveyModel.getAskerId());
-                    assert surveyModel.getAskerName() != null;
                     selfFollowingMap.put("followingName", surveyModel.getAskerName());
                     selfFollowingMap.put("followingImageUrl", surveyModel.getAskerImageUrlLow());
                     selfFollowingMap.put("followingBio", surveyModel.getAskerBio());
                     selfFollowingMap.put("selfId", selfUid);
 
                     askerFollowerMap.put("followerId", selfUid);
-                    assert selfName != null;
                     askerFollowerMap.put("followerName", selfName);
-                    assert selfImageUrl != null;
                     askerFollowerMap.put("followerImageUrl", selfImageUrl);
                     askerFollowerMap.put("followerBio", Objects.requireNonNull(selfBio));
-                    assert surveyModel.getAskerId() != null;
                     askerFollowerMap.put("selfId", surveyModel.getAskerId());
 
                     selfFollowingCountMap.put("followingCount", FieldValue.increment(1));

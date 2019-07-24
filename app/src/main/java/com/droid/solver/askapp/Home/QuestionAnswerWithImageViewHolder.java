@@ -174,12 +174,26 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         writeBatch.commit().addOnCompleteListener( new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
                 Log.i("TAG", "successfully like");
             }
         });
+        if (likerId.equals(model.getAskerId())) {
+            DocumentReference answerRef=firestoreRootRef.collection("user").document(model.getRecentAnswererId());
+            Map<String,Object> pointMap=new HashMap<>();
+            pointMap.put("point", FieldValue.increment(1));
+            WriteBatch pointBatch=firestoreRootRef.batch();
+            pointBatch.update(answerRef, pointMap);
+            pointBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.i("TAG","you award one point to answerer");
+                }
+            });
+
+        }
 
         int count=Integer.parseInt(likeCount.getText().toString())+1;
+        count=count<0?0:count;
         likeCount.setText(String.valueOf(count));
         final LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         model.setLikedByMe(true);
@@ -187,7 +201,6 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
             MainActivity.answerLikeList.add(model.getRecentAnswerId());
         }
         database.insertSingleAnswerLikeModel(model.getRecentAnswerId());
-
         model.setRecentAnswerLikeCount(model.getRecentAnswerLikeCount()+1);
         AsyncTask.execute(new Runnable() {
             @Override
@@ -240,7 +253,22 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                 Log.i("TAG", "successfully dislike ");
             }
         });
+        if (likerId.equals(model.getAskerId())) {
+            DocumentReference answerRef=firestoreRootRef.collection("user").document(model.getRecentAnswererId());
+            Map<String,Object> pointMap=new HashMap<>();
+            pointMap.put("point", FieldValue.increment(-1));
+            WriteBatch pointBatch=firestoreRootRef.batch();
+            pointBatch.update(answerRef, pointMap);
+            pointBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.i("TAG","you removed one point from answerer");
+                }
+            });
+
+        }
         int count=Integer.parseInt(likeCount.getText().toString())-1;
+        count=count<0?0:count;
         likeCount.setText(String.valueOf(count));
         final LocalDatabase database=new LocalDatabase(context.getApplicationContext());
         database.removeAnswerLikeModel(model.getRecentAnswerId());
@@ -577,16 +605,13 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
                     Map<String ,Object> selfFollowingCountMap=new HashMap<>();
                     Map<String,Object> askerFollowerCountMap=new HashMap<>();
 
-                    assert questionModel.getAskerId()!=null;
                     selfFollowingMap.put("followingId", questionModel.getAskerId());
-                    assert questionModel.getAskerName()!=null;
                     selfFollowingMap.put("followingName",questionModel.getAskerName());
                     selfFollowingMap.put("followingImageUrl", questionModel.getAskerImageUrlLow());
                     selfFollowingMap.put("followingBio",questionModel.getAskerBio());
                     selfFollowingMap.put("selfId", selfUid);
 
                     askerFollowerMap.put("followerId", selfUid);
-                    assert selfName != null;
                     askerFollowerMap.put("followerName", selfName);
                     if (selfImageUrl != null) {
                         askerFollowerMap.put("followerImageUrl", selfImageUrl);

@@ -1,22 +1,23 @@
 package com.droid.solver.askapp.Account;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.NativeAdListener;
+import com.facebook.ads.NativeBannerAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -27,9 +28,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class AccountQuestionFragment extends Fragment {
-
+public class AccountQuestionFragment extends Fragment implements NativeAdListener {
 
     private RecyclerView recyclerView;
     private ArrayList<Object> list;
@@ -40,6 +41,7 @@ public class AccountQuestionFragment extends Fragment {
     private String uid=null;
     private ImageView questionImage;
     private TextView questionText;
+    private NativeBannerAd nativeBannerAd;
     public AccountQuestionFragment() {
     }
 
@@ -48,6 +50,11 @@ public class AccountQuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_account_question, container, false);
+        if(getActivity()!=null) {
+            nativeBannerAd = new NativeBannerAd(getActivity(), getString(R.string.placement_id));
+            nativeBannerAd.loadAd();
+        }
+        nativeBannerAd.setAdListener(this);
         UidPasserListener uidPasserListener= (UidPasserListener) getActivity();
         if(uidPasserListener!=null)
             uid=uidPasserListener.passUid();
@@ -198,4 +205,46 @@ public class AccountQuestionFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onMediaDownloaded(Ad ad) {
+        if(list!=null) {
+            int listSize = list.size();
+            Random random = new Random();
+            if (!ad.isAdInvalidated()&&listSize>0){
+                list.add(random.nextInt(listSize),ad);
+                adapter.notifyDataSetChanged();
+                Log.i("TAG", "Medial load downloaded ");
+            }
+
+        }
+    }
+
+    @Override
+    public void onError(Ad ad, AdError adError) {
+
+    }
+
+    @Override
+    public void onAdLoaded(Ad ad) {
+        if(list!=null) {
+            int listSize = list.size();
+            Random random = new Random();
+            if (!ad.isAdInvalidated()&&listSize>0){
+                list.add(random.nextInt(listSize),ad);
+                adapter.notifyDataSetChanged();
+                Log.i("TAG","Ad loaded from facebook ");
+            }
+
+        }
+    }
+
+    @Override
+    public void onAdClicked(Ad ad) {
+
+    }
+
+    @Override
+    public void onLoggingImpression(Ad ad) {
+
+    }
 }

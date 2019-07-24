@@ -8,12 +8,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Question.RootQuestionModel;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.Survey.AskSurveyModel;
+import com.google.android.gms.ads.formats.NativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.like.LikeButton;
@@ -25,11 +32,12 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     private Context context;
     private ArrayList<Object> list;
     private LayoutInflater inflater;
-    private static final int QUESTION_ANSWER=0;
-    private static final int QUESTION_ANSWER_WITH_IMAGE=1;
-    private static final int SURVEY=2;
-    private static final int IMAGE_POLL=3;
-    private static final int LOADING=4;
+    private  final int QUESTION_ANSWER=0;
+    private final int QUESTION_ANSWER_WITH_IMAGE=1;
+    private final int SURVEY=2;
+    private final int IMAGE_POLL=3;
+    private final int LOADING=4;
+    private final int NATIVE_AD=5;
     static final String FOLLOW="Follow";
     static final String UNFOLLOW="Unfollow";
     private ArrayList<String> followingIdListFromLocalDatabase;
@@ -67,6 +75,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             case IMAGE_POLL:
                 view=inflater.inflate(R.layout.home_image_poll, viewGroup,false);
                 viewHolder= new ImagePollViewHolder(view,context);
+                break;
+            case NATIVE_AD:
+                view=inflater.inflate(R.layout.home_fragment_ad, viewGroup,false);
+                viewHolder=new HomeFragmentAdViewHolder(view);
                 break;
             case LOADING:
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
@@ -325,6 +337,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     ((SurveyViewHolder) holder).container4.setVisibility(View.VISIBLE);
                 }
             }
+        } if(holder instanceof HomeFragmentAdViewHolder){
+            UnifiedNativeAd nativeAd = (UnifiedNativeAd) list.get(i);
+            populateNativeAdView(nativeAd, ((HomeFragmentAdViewHolder) holder).getAdView());
         }
 
     }
@@ -332,6 +347,11 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return list==null?0:list.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -344,7 +364,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             return IMAGE_POLL;
         }else if(list.get(position) instanceof AskSurveyModel){
             return SURVEY;
-        } else if(list.get(position) == null){
+        }else if(list.get(position) instanceof UnifiedNativeAd){
+            return NATIVE_AD;
+        }else if(list.get(position) == null){
             return LOADING;
         }
         return -1;
@@ -623,6 +645,54 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
             }
         });
 
+    }
+
+    private void populateNativeAdView(UnifiedNativeAd nativeAd,
+                                      UnifiedNativeAdView adView) {
+        ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
+        ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
+        ((Button) adView.getCallToActionView()).setText(nativeAd.getCallToAction());
+
+        NativeAd.Image icon = nativeAd.getIcon();
+
+        if (icon == null) {
+            adView.getIconView().setVisibility(View.INVISIBLE);
+        } else {
+            ((ImageView) adView.getIconView()).setImageDrawable(icon.getDrawable());
+            adView.getIconView().setVisibility(View.VISIBLE);
+        }
+
+        if (nativeAd.getPrice() == null) {
+            adView.getPriceView().setVisibility(View.INVISIBLE);
+        } else {
+            adView.getPriceView().setVisibility(View.VISIBLE);
+            ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
+        }
+
+        if (nativeAd.getStore() == null) {
+            adView.getStoreView().setVisibility(View.INVISIBLE);
+        } else {
+            adView.getStoreView().setVisibility(View.VISIBLE);
+            ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
+        }
+
+        if (nativeAd.getStarRating() == null) {
+            adView.getStarRatingView().setVisibility(View.INVISIBLE);
+        } else {
+            ((RatingBar) adView.getStarRatingView())
+                    .setRating(nativeAd.getStarRating().floatValue());
+            adView.getStarRatingView().setVisibility(View.VISIBLE);
+        }
+
+        if (nativeAd.getAdvertiser() == null) {
+            adView.getAdvertiserView().setVisibility(View.INVISIBLE);
+        } else {
+            ((TextView) adView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
+            adView.getAdvertiserView().setVisibility(View.VISIBLE);
+        }
+
+        // Assign native ad object to the native view.
+        adView.setNativeAd(nativeAd);
     }
 
 }

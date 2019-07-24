@@ -1,7 +1,11 @@
 #Internal package file, do not edit.
-#Sun Jul 21 10:37:56 IST 2019
+#Thu Jul 25 01:50:07 IST 2019
+1.base=/home/notebook/projects/AskApp/app/build/intermediates/merged_assets/debug/out
 0.baseType=DIRECTORY
-0.base=/home/notebook/projects/AskApp/app/build/intermediates/merged_assets/debug/out
+1.baseType=DIRECTORY
+count=2
+1.set=ASSET
 0.path=PrivacyPolicy.html
 0.set=ASSET
-count=1
+0.base=/home/notebook/projects/AskApp/app/build/intermediates/merged_assets/debug/out
+1.path=audience_network.dex

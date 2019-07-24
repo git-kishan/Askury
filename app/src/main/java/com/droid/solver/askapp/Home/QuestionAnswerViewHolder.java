@@ -136,7 +136,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
             Map<String, Object> likeMap = new HashMap<>();
             likeMap.put("answerLikeCount", FieldValue.increment(1));
 
-            Map<String, Object> rootLikeMap = new HashMap<>();
+            final Map<String, Object> rootLikeMap = new HashMap<>();
             rootLikeMap.put("recentAnswerLikeCount", FieldValue.increment(1));
 
 
@@ -169,14 +169,31 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
             writeBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-
-                    if (likerId.equals(model.getAskerId())) {
-
-                    }
                     Log.i("TAG", "successfully like");
                 }
             });
+            if (likerId.equals(model.getAskerId())) {
+                DocumentReference answerRef=firestoreRootRef.collection("user").document(model.getRecentAnswererId());
+                Map<String,Object> pointMap=new HashMap<>();
+                pointMap.put("point", FieldValue.increment(1));
+                WriteBatch pointBatch=firestoreRootRef.batch();
+                pointBatch.update(answerRef, pointMap);
+                pointBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.i("TAG", "likerId :- "+likerId);
+                            Log.i("TAG", "recentAnswererId :- "+model.getRecentAnswererId());
+                            Log.i("TAG","you award one point to answerer");
+                        }else {
+                            Log.i("TAG", "task exception in question answer :- "+task.getException());
+                        }
+
+                    }
+                });
+            }
             int count = Integer.parseInt(likeCount.getText().toString()) + 1;
+            count=count<0?0:count;
             likeCount.setText(String.valueOf(count));
 
             model.setLikedByMe(true);
@@ -201,7 +218,7 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
     void onDisliked ( final Context context, final RootQuestionModel model){
         Log.i("TAG", "disliked triggered");
         SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE);
-        String likerId = preferences.getString(Constants.userId, null);
+        final String likerId = preferences.getString(Constants.userId, null);
         if(likerId!=null&&model.getQuestionId()!=null&&model.getRecentAnswerId()!=null&&model.getAskerId()!=null) {
             Map<String, Object> likeMap = new HashMap<>();
             likeMap.put("answerLikeCount", FieldValue.increment(-1));
@@ -241,7 +258,22 @@ class QuestionAnswerViewHolder  extends RecyclerView.ViewHolder {
                     Log.i("TAG", "successfully dislike ");
                 }
             });
+            if (likerId.equals(model.getAskerId())) {
+                DocumentReference answerRef=firestoreRootRef.collection("user").document(model.getRecentAnswererId());
+                Map<String,Object> pointMap=new HashMap<>();
+                pointMap.put("point", FieldValue.increment(-1));
+                WriteBatch pointBatch=firestoreRootRef.batch();
+                pointBatch.update(answerRef, pointMap);
+                pointBatch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.i("TAG","you removed one point from answerer");
+                    }
+                });
+
+            }
             int count = Integer.parseInt(likeCount.getText().toString()) - 1;
+            count=count<0?0:count;
             likeCount.setText(String.valueOf(count));
             Log.i("TAG", "list :- "+MainActivity.answerLikeList);
 

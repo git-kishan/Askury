@@ -8,6 +8,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.NonNull;
+
+import com.facebook.ads.AudienceNetworkAds;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -91,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        AudienceNetworkAds.initialize(this);
         firestoreRoot = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -108,8 +113,6 @@ public class MainActivity extends AppCompatActivity implements
         messageFrameLayout=findViewById(R.id.message_frame_layout);
         progressFrameLayout=findViewById(R.id.progress_frame);
         progressFrameLayout.setVisibility(View.GONE);
-
-        Log.i("TAG", "Homefragment loaded");
         loadFragment(new HomeFragment(), HOME);
         changeToolbarFont(toolbar);
         answerLikeList=new ArrayList<>();
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements
                 notificationBadge= LayoutInflater.from(MainActivity.this).inflate(R.layout.notification_badge_view,menuView,false);
             }
         });
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {

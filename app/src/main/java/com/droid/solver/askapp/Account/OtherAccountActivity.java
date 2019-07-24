@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import androidx.emoji.widget.EmojiTextView;
@@ -59,6 +61,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AudienceNetworkAds.initialize(this);
         setContentView(R.layout.activity_other_account);
         Intent intent=getIntent();
 

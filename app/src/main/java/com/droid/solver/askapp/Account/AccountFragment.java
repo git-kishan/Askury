@@ -216,6 +216,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
             int mfollowingCount = preferences.getInt(Constants.followingCount, 0);
             int mfollowerCount = preferences.getInt(Constants.followerCount, 0);
             int mpoint = preferences.getInt(Constants.point, 0);
+            mpoint=mpoint<0?0:mpoint;
 
             followerCount.setText(String.valueOf(mfollowerCount));
             followingCount.setText(String.valueOf(mfollowingCount));
@@ -223,7 +224,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
         }
     }
-
     private void loadCount(){
         if(getActivity()!=null) {
             SharedPreferences preferences = getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);

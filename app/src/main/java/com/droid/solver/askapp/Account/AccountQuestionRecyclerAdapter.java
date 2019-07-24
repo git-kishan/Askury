@@ -11,12 +11,15 @@ import android.view.ViewGroup;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
 import com.droid.solver.askapp.Main.Constants;
+import com.droid.solver.askapp.Question.QuestionAdViewHolder;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
+import com.facebook.ads.NativeBannerAd;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
@@ -25,6 +28,7 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
     private LayoutInflater inflater;
     private static final int LOADING=0;
     private static final int QUESTION=1;
+    private final int NATIVE_AD=2;
     AccountQuestionRecyclerAdapter(Context context, ArrayList<Object> list){
         if(context!=null){
             this.context=context;
@@ -48,7 +52,10 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
                 view=inflater.inflate(R.layout.loading,viewGroup,false);
                 viewHolder =new LoadingViewHolderVertically(view);
                 break;
-
+            case NATIVE_AD:
+                view=inflater.inflate(R.layout.question_fragment_ad, viewGroup,false);
+                viewHolder=new QuestionAdViewHolder(view,context);
+                break;
                 default:
                     view=inflater.inflate(R.layout.loading,viewGroup,false);
                     viewHolder=new LoadingViewHolderVertically(view);
@@ -91,6 +98,23 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
         }
 
+        else if(holder instanceof QuestionAdViewHolder){
+
+            NativeBannerAd nativeBannerAd= (NativeBannerAd) list.get(i);
+            nativeBannerAd.unregisterView();
+            ((QuestionAdViewHolder) holder).nativeAdCallToAction.setText(nativeBannerAd.getAdCallToAction());
+            ((QuestionAdViewHolder) holder).nativeAdCallToAction.setVisibility(
+                    nativeBannerAd.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);
+            ((QuestionAdViewHolder) holder).nativeAdTitle.setText(nativeBannerAd.getAdvertiserName());
+            ((QuestionAdViewHolder) holder).nativeAdSocialContext.setText(nativeBannerAd.getAdSocialContext());
+            ((QuestionAdViewHolder) holder).sponsoredLabel.setText(nativeBannerAd.getSponsoredTranslation());
+            List<View> clickableViews = new ArrayList<>();
+            clickableViews.add(((QuestionAdViewHolder) holder).nativeAdTitle);
+            clickableViews.add(((QuestionAdViewHolder) holder).nativeAdCallToAction);
+            nativeBannerAd.registerViewForInteraction(((QuestionAdViewHolder) holder).adView,
+                    ((QuestionAdViewHolder) holder).nativeAdIconView, clickableViews);
+        }
+
     }
 
     @Override
@@ -103,6 +127,8 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
         if(list.get(position) instanceof UserQuestionModel){
             return QUESTION;
+        }else if(list.get(position) instanceof NativeBannerAd){
+            return NATIVE_AD;
         }
         else if(list.get(position) ==null){
             return LOADING;

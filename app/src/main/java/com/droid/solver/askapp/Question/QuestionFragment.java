@@ -10,7 +10,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +24,10 @@ import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
 import com.droid.solver.askapp.SignInActivity;
 import com.droid.solver.askapp.Survey.SurveyActivity;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.NativeAdListener;
+import com.facebook.ads.NativeBannerAd;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,9 +41,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 import java.util.ArrayList;
+import java.util.Random;
 
 
-public class QuestionFragment extends Fragment {
+public class QuestionFragment extends Fragment implements NativeAdListener {
 
     private SpeedDialView speedDialView;
     private RecyclerView recyclerView;
@@ -54,9 +58,16 @@ public class QuestionFragment extends Fragment {
     private boolean isLoading=false;
     private DocumentSnapshot lastVisibleSnapshot=null;
     private Handler handler;
+    private NativeBannerAd nativeBannerAd;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_question, container, false);
+        if(getActivity()!=null) {
+            nativeBannerAd = new NativeBannerAd(getActivity(), getString(R.string.placement_id));
+            nativeBannerAd.loadAd();
+        }
+        nativeBannerAd.setAdListener(this);
         speedDialView=view.findViewById(R.id.speedDial);
         Animation scaleInAnimation= AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_in);
         speedDialView.startAnimation(scaleInAnimation);
@@ -87,13 +98,7 @@ public class QuestionFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         if(MainActivity.isFirstTimeQuestionLoaded){
             loadDataFromRemoteDatabase();
-//            swipeRefreshLayout.setEnabled(true);
-//            swipeRefreshLayout.setRefreshing(true);
-
         }else{
-//            swipeRefreshLayout.setEnabled(true);
-//            swipeRefreshLayout.setRefreshing(true);
-
             if(MainActivity.questionLastDocumentSnapshot!=null){
                 lastVisibleSnapshot=MainActivity.questionLastDocumentSnapshot;
                 loadDataFromLocalDatabase();
@@ -325,6 +330,52 @@ public class QuestionFragment extends Fragment {
                 }
             }
         });
+
+    }
+
+    @Override
+    public void onMediaDownloaded(Ad ad) {
+        if(list!=null) {
+            int listSize = list.size();
+            Random random = new Random();
+            if (!ad.isAdInvalidated()&&listSize>0){
+                list.add(random.nextInt(listSize),ad);
+                adapter.notifyDataSetChanged();
+                Log.i("TAG", "Medial load downloaded ");
+            }
+
+        }
+    }
+
+    @Override
+    public void onError(Ad ad, AdError adError) {
+        Log.i("TAG","Error occured in loading ad");
+
+    }
+
+    @Override
+    public void onAdLoaded(Ad ad) {
+        if(list!=null) {
+            int listSize = list.size();
+            Random random = new Random();
+            if (!ad.isAdInvalidated()&&listSize>0){
+                list.add(random.nextInt(listSize),ad);
+                adapter.notifyDataSetChanged();
+                Log.i("TAG","Ad loaded from facebook ");
+            }
+
+        }
+
+    }
+
+    @Override
+    public void onAdClicked(Ad ad) {
+        Log.i("TAG","Ad clicked from facebook ");
+
+    }
+
+    @Override
+    public void onLoggingImpression(Ad ad) {
 
     }
 }

@@ -691,20 +691,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
                     Map<String, Object> selfFollowingCountMap = new HashMap<>();
                     Map<String, Object> askerFollowerCountMap = new HashMap<>();
 
-                    assert imagePollModel.getAskerId()!=null;
                     selfFollowingMap.put("followingId", imagePollModel.getAskerId());
-                    assert imagePollModel.getAskerName()!=null;
                     selfFollowingMap.put("followingName", imagePollModel.getAskerName());
                     selfFollowingMap.put("followingImageUrl", imagePollModel.getAskerImageUrlLow());
                     selfFollowingMap.put("followingBio", imagePollModel.getAskerBio());
                     selfFollowingMap.put("selfId", selfUid);
 
                     askerFollowerMap.put("followerId", selfUid);
-                    assert selfName != null;
                     askerFollowerMap.put("followerName", selfName);
                     askerFollowerMap.put("followerImageUrl", Objects.requireNonNull(selfImageUrl));
                     askerFollowerMap.put("followerBio", Objects.requireNonNull(selfBio));
-                    assert imagePollModel.getAskerId()!=null;
                     askerFollowerMap.put("selfId", imagePollModel.getAskerId());
 
                     selfFollowingCountMap.put("followingCount", FieldValue.increment(1));

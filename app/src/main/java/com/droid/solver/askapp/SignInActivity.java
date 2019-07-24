@@ -81,7 +81,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     finish();
 
                 }
-            }, 1000);
+            }, 500);
 
         }
         else {
@@ -183,6 +183,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                 if(userName!=null)
                                 userDetail.put("userName", userName);
                                 userDetail.put("userId", userId);
+                                userDetail.put("point", 0);
                                 db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -255,6 +256,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                 if(userName!=null)
                                 userDetail.put("userName", userName);
                                 userDetail.put("userId", userId);
+                                userDetail.put("point", 0);
                                 db.collection("user").document(userId).set(userDetail, SetOptions.merge())
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

@@ -6,23 +6,35 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
 import com.droid.solver.askapp.Account.ProfileImageActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
+import com.facebook.ads.NativeAd;
+import com.facebook.ads.NativeBannerAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.lang.annotation.Native;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
 
     private Context context;
     private ArrayList<Object> questionModelArrayList;
     private LayoutInflater inflater;
-    private static final int LOADING=1;
-    private static final int QUESTION=2;
-
+    private final int LOADING=1;
+    private final int QUESTION=2;
+    private final int NATIVE_AD=3;
     AskQuestionRecyclerAdapter(Context context, ArrayList<Object> questionModelArrayList){
      this.context=context;
      this.questionModelArrayList=questionModelArrayList;
@@ -45,6 +57,10 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
             case LOADING:
                 view=inflater.inflate(R.layout.loading, viewGroup,false);
                 viewHolder=new LoadingViewHolderVertically(view);
+                break;
+            case NATIVE_AD:
+                view=inflater.inflate(R.layout.question_fragment_ad, viewGroup,false);
+                viewHolder=new QuestionAdViewHolder(view,context);
                 break;
                 default:
                     view=inflater.inflate(R.layout.loading,viewGroup,false);
@@ -108,6 +124,23 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
             handleClickListener((AskQuestionViewHolderWithoutImage) holder, model);
         }
 
+        else if(holder instanceof QuestionAdViewHolder){
+
+            NativeBannerAd nativeBannerAd= (NativeBannerAd) questionModelArrayList.get(i);
+            nativeBannerAd.unregisterView();
+            ((QuestionAdViewHolder) holder).nativeAdCallToAction.setText(nativeBannerAd.getAdCallToAction());
+            ((QuestionAdViewHolder) holder).nativeAdCallToAction.setVisibility(
+                    nativeBannerAd.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);
+            ((QuestionAdViewHolder) holder).nativeAdTitle.setText(nativeBannerAd.getAdvertiserName());
+            ((QuestionAdViewHolder) holder).nativeAdSocialContext.setText(nativeBannerAd.getAdSocialContext());
+            ((QuestionAdViewHolder) holder).sponsoredLabel.setText(nativeBannerAd.getSponsoredTranslation());
+            List<View> clickableViews = new ArrayList<>();
+            clickableViews.add(((QuestionAdViewHolder) holder).nativeAdTitle);
+            clickableViews.add(((QuestionAdViewHolder) holder).nativeAdCallToAction);
+            nativeBannerAd.registerViewForInteraction(((QuestionAdViewHolder) holder).adView,
+                    ((QuestionAdViewHolder) holder).nativeAdIconView, clickableViews);
+        }
+
     }
     @Override
     public int getItemCount() {
@@ -118,6 +151,9 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         if(questionModelArrayList.get(position) instanceof RootQuestionModel){
             return QUESTION;
+        }
+        else if(questionModelArrayList .get(position) instanceof NativeBannerAd){
+            return NATIVE_AD;
         }
         else if(questionModelArrayList.get(position)==null){
             return LOADING;
@@ -182,4 +218,6 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
             }
         });
     }
+
+
 }

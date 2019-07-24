@@ -100,6 +100,11 @@
     <string name="survey" translatable="false">Survey</string>
     <string name="write_your_survey_question" translatable="false">Write your survey question</string>
 
+    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="ad_unit_id" translatable="false">ca-app-pub-3940256099942544/8135179316</string>
+    <string name="placement_id" translatable="false">395972514579548_432196284290504</string>
+
+
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>
@@ -141,6 +146,7 @@
     <string name="delete_question">Delete question</string>
     <string name="delete_survey">Delete survey</string>
     <string name="delete_poll">Delete poll</string>
+    <string name="ad">Ad</string>
 
 
 </resources>
