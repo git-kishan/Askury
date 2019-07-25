@@ -145,22 +145,16 @@ public class SurveyActivity extends AppCompatActivity implements
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.done_button:
-                showCustomSuccessfullDialog();
-//                if(questionInputEditText.hasFocus())
-//                  questionInputEditText.clearFocus();
-//                if(questionInputLayout.hasFocus())
-//                  questionInputLayout.clearFocus();
-//                doneButton.requestFocus();
-//                hideSoftKeyboard(doneButton);
-//                Handler handler=new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        doneButton.setTextColor(ResourcesCompat.getColor(getResources(),android.R.color.black, null));
-//                        doneButton.setBackgroundTintList(ResourcesCompat.getColorStateList(getResources(),
-//                                R.color.chip_fader_color, null));
-//                    }
-//                }, 300);
+                hideSoftKeyboard(questionInputEditText);
+                Handler handler=new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doneButton.setTextColor(ResourcesCompat.getColor(getResources(),android.R.color.black, null));
+                        doneButton.setBackgroundTintList(ResourcesCompat.getColorStateList(getResources(),
+                                R.color.chip_fader_color, null));
+                    }
+                }, 300);
             break;
             case R.id.toolbar_card_view:
                 questionInputEditText.clearFocus();
@@ -272,11 +266,11 @@ public class SurveyActivity extends AppCompatActivity implements
 
     private void showSnackBar(String message){
         Snackbar snackbar=Snackbar.make(coordinatorLayout,  message, Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
-        View view=snackbar.getView();
-        TextView tv =view.findViewById(R.id.snackbar_text);
-        tv.setTextColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null));
-        view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
+//        snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+//        View view=snackbar.getView();
+//        TextView tv =view.findViewById(R.id.snackbar_text);
+//        tv.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+//        view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.progress_bar_overlay_color, null));
         snackbar.show();
     }
 
@@ -299,6 +293,9 @@ public class SurveyActivity extends AppCompatActivity implements
         checkOptionsEntered();
         if(questionInputEditText.getText().toString().trim().length()==0){
             showSnackBar("Enter your survey question");
+            return false;
+        }else if(questionInputEditText.getText().toString().trim().length()>200){
+            showSnackBar("Survey question must be less than 200 character");
             return false;
         }
         return validateOptions();

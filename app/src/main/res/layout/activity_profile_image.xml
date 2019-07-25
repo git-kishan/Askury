@@ -9,62 +9,80 @@
     android:layout_height="match_parent"
     tools:context=".Account.ProfileImageActivity">
 
-    <ImageView
-        android:id="@+id/image_edit"
-        android:layout_width="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="@string/change_profile_picture"
-        android:background="@drawable/white_ripple"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+    <FrameLayout
+        android:id="@+id/frameLayout4"
+        android:layout_width="match_parent"
+        android:elevation="8dp"
+        android:layout_height="?android:actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_edit_profile_image" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/white_ripple"
+                android:clickable="true"
+                android:contentDescription="@string/change_profile_picture"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_edit_profile_image" />
+
+            <ImageView
+                android:id="@+id/tick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:alpha="0.8"
+                android:visibility="gone"
+                android:background="@drawable/white_ripple"
+                android:clickable="true"
+                android:contentDescription="@string/set_image"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="@+id/image_edit"
+                app:layout_constraintEnd_toStartOf="@+id/image_edit"
+                app:layout_constraintTop_toTopOf="@+id/image_edit"
+                app:srcCompat="@drawable/ic_check_white" />
+
+            <ImageView
+                android:id="@+id/back_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/white_ripple"
+                android:clickable="true"
+                android:contentDescription="@string/back"
+                android:focusable="true"
+                android:padding="5dp"
+                android:src="@drawable/ic_back_white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+
         android:contentDescription="@string/profile_image"
-        android:elevation="5dp"
-        android:src="@drawable/ic_placeholder_large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back_image" />
-
-    <ImageView
-        android:id="@+id/tick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:clickable="true"
-        android:alpha="0.8"
-        android:contentDescription="@string/set_image"
-        android:focusable="true"
-        android:background="@drawable/white_ripple"
-        app:layout_constraintBottom_toBottomOf="@+id/image_edit"
-        app:layout_constraintEnd_toStartOf="@+id/image_edit"
-        app:layout_constraintTop_toTopOf="@+id/image_edit"
-        app:srcCompat="@drawable/ic_check_white" />
-
-    <ImageView
-        android:id="@+id/back_image"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/white_ripple"
-        android:clickable="true"
-        android:contentDescription="@string/back"
-        android:focusable="true"
-        android:padding="5dp"
-        android:src="@drawable/ic_back_white"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/progress_card"

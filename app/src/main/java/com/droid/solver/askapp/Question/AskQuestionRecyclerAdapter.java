@@ -98,7 +98,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                 bio=bio==null?"":bio;
 
 
-                String url = Constants.PROFILE_PICTURE + "/" + model.getAskerId() + ProfileImageActivity.SMALL_THUMBNAIL;
+                String url = Constants.PROFILE_PICTURE + "/" + model.getAskerId() + Constants.SMALL_THUMBNAIL;
                 StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
 
                 GlideApp.with(context).load(reference)

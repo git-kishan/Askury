@@ -1,22 +1,21 @@
 <resources>
-    <string name="app_name" translatable="false">Askury</string>
+    <string name="app_name">Askury</string>
     <string name="facebook_app_id" translatable="false">395972514579548</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb395972514579548</string>
     <string name="optionsNum">options %1$d</string>
     <string name="user_name_asked">%1$s Asked </string>
-    <string name="hi_user" translatable="false">Hi %1$s,</string>
+    <string name="hi_user">Hi %1$s,</string>
     <string name="someoneasked">Someone Asked</string>
     <string name="private_info">Don\'t include private info</string>
-    <string name="provide_option_limit">Provide atleast two or atmost four options</string>
     <string name="Done" translatable="false">Done</string>
     <string name="optionB">Option B</string>
     <string name="optionC">Option C</string>
     <string name="optionD">Option D</string>
-    <string name="submit" translatable="false">Submit</string>
+    <string name="submit">Submit</string>
     <string name="optionA">Option A</string>
     <string name="username_created_a_poll">%1$s created a poll</string>
     <string name="some_one_is_doing_a_survey">%1$s is doing a survey</string>
-    <string name="image_poll_uploading_failed" translatable="false">Image uploading failed,try again !</string>
+    <string name="image_poll_uploading_failed">Image uploading failed,try again !</string>
     <string name="image_poll_uploaded_successfully">Image poll uploaded successfully</string>
     <string name="question_uploading_successfully">Your question uploaded successfully </string>
     <string name="question_uploading_failed">Question uploading failed,try again !</string>
@@ -25,81 +24,74 @@
     <string name="first_percentage" translatable="false">%1$d</string>
     <string name="second_percentage" translatable="false">%1$d </string>
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="count_answer" translatable="false">%1$d answer</string>
-    <string name="a_percent" translatable="false">A :- %1$d</string>
-    <string name="b_percent" translatable="false">B :- %1$d</string>
-    <string name="someone_likes_your_answer" translatable="false">%1$s likes your answer</string>
+    <string name="a_percent">A :- %1$d</string>
+    <string name="b_percent">B :- %1$d</string>
+    <string name="someone_likes_your_answer">%1$s likes your answer</string>
     <string name="percentage_likes" translatable="false">%1$d</string>
-    <string name="likes" translatable="false">likes</string>
-    <string name="someone_answer_your_question" translatable="false">%1$s answer your question</string>
-    <string name="some_one_start_following_you" translatable="false">%1$s started following you</string>
-    <string name="no_notification" translatable="false">No notification</string>
-    <string name="number_of_answer" translatable="false">No. of answer</string>
-    <string name="option" translatable="false">Option</string>
-    <string name="first_image" translatable="false">First image</string>
-    <string name="second_image" translatable="false">Second image</string>
-    <string name="vs" translatable="false">VS</string>
-    <string name="heart_image" translatable="false">Heart</string>
-    <string name="some_one_wants_to_know" translatable="false">Someone wants to know</string>
-    <string name="some_one_not_asked_question" translatable="false">You haven\'t asked any question</string>
-    <string name="some_one_donot_answer_question" translatable="false">You haven\'t answer any question</string>
-    <string name="question" translatable="false">Question</string>
-    <string name="question_answer" translatable="false">Question answer</string>
-    <string name="answer_image_attached" translatable="false">Attached image</string>
-    <string name="no_internet" translatable="false">No internet</string>
-    <string name="check_your_internet_connection" translatable="false">Please check your internet connection</string>
-    <string name="retry" translatable="false">Retry</string>
-    <string name="unknown" translatable="false">Unknown</string>
-    <string name="uploading" translatable="false">Uploading ...</string>
-    <string name="want_to_answer" translatable="false">Want to answer</string>
-    <string name="follower" translatable="false">Follower</string>
-    <string name="following" translatable="false">Following</string>
-    <string name="gender" translatable="false">Gender</string>
-    <string name="setting" translatable="false">Setting</string>
-    <string name="points" translatable="false">Points</string>
-    <string name="expand" translatable="false">Expand</string>
-    <string name="back" translatable="false">back</string>
-    <string name="edit_profile" translatable="false">Edit profile</string>
-    <string name="username" translatable="false">Username</string>
-    <string name="about_you" translatable="false">About you</string>
-    <string name="interest" translatable="false">Interests</string>
-    <string name="update_profile" translatable="false">Update profile</string>
-    <string name="add_interest" translatable="false">Add interests</string>
+    <string name="someone_answer_your_question">%1$s answered your question</string>
+    <string name="some_one_start_following_you">%1$s started following you</string>
+    <string name="no_notification">No notification</string>
+    <string name="number_of_answer">No. of answer</string>
+    <string name="option">Option</string>
+    <string name="first_image">First image</string>
+    <string name="second_image">Second picture</string>
+    <string name="vs">VS</string>
+    <string name="heart_image">Heart</string>
+    <string name="some_one_wants_to_know">Someone wants to know</string>
+    <string name="some_one_not_asked_question">You haven\'t asked any question yet</string>
+    <string name="some_one_donot_answer_question">You haven\'t answer any question</string>
+    <string name="question">Question</string>
+    <string name="question_answer">Question answer</string>
+    <string name="answer_image_attached">Attached image</string>
+    <string name="no_internet">No internet</string>
+    <string name="check_your_internet_connection">Please check your internet connection</string>
+    <string name="retry">Retry</string>
+    <string name="unknown">Unknown</string>
+    <string name="uploading">Uploading …</string>
+    <string name="want_to_answer">Want to answer</string>
+    <string name="follower">Follower</string>
+    <string name="following">Following</string>
+    <string name="gender">Gender</string>
+    <string name="setting">Setting</string>
+    <string name="points">Points</string>
+    <string name="expand">Expand</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="username">Username</string>
+    <string name="about_you">About you</string>
+    <string name="interest">Your Interests</string>
+    <string name="update_profile">Update profile</string>
+    <string name="add_interest">Add interests</string>
     <string name="Notification" translatable="false">Notification</string>
-    <string name="off" translatable="false">Off</string>
-    <string name="on" translatable="false">On</string>
-    <string name="privacy_policy" translatable="false">Privacy policy</string>
-    <string name="report_error" translatable="false">Report error</string>
-    <string name="set_image" translatable="false">Set image as profile picture</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="report_error">Report error</string>
+    <string name="set_image">Set image as profile picture</string>
     <string name="change_profile_picture" translatable="false">Change profile picture</string>
-    <string name="login_with_facebook" translatable="false">Log in with facebook</string>
-    <string name="login_with_google" translatable="false">Log in with google</string>
-    <string name="got_it" translatable="false">Got it</string>
-    <string name="thank_you" translatable="false">Thank you</string>
-    <string name="image_poll_uploaded" translatable="false">Image poll uploaded successfully</string>
-    <string name="error_occured" translatable="false">Error Occured</string>
-    <string name="its_spam" translatable="false">it\'s spam</string>
-    <string name="self_promotion" translatable="false">Self promotion</string>
-    <string name="contain_violent_words" translatable="false">Contains violent words</string>
-    <string name="i_dont_like_survey" translatable="false">I don\'t like the survey</string>
-    <string name="are_you_sure_to_delete" translatable="false">Are you sure to delete ?</string>
-    <string name="i_dont_like_question" translatable="false">I don\'t like the question</string>
-    <string name="please_wait" translatable="false">Please wait ...</string>
+    <string name="login_with_google">Log in with google</string>
+    <string name="got_it">Got it</string>
+    <string name="thank_you">Thank you</string>
+    <string name="image_poll_uploaded">Image poll uploaded successfully</string>
+    <string name="error_occured">Error Occurred</string>
+    <string name="its_spam">it\'s spam</string>
+    <string name="self_promotion">Self promotion</string>
+    <string name="contain_violent_words">Contains violent words</string>
+    <string name="are_you_sure_to_delete">Are you sure to delete ?</string>
+    <string name="i_dont_like_question">I don\'t like the question</string>
+    <string name="please_wait">Please wait …</string>
     <string name="version" translatable="false">Version 1.0.0</string>
-    <string name="write_your_problem" translatable="false">Write your problem</string>
-    <string name="profile_image" translatable="false">Profile image</string>
-    <string name="anonymous" translatable="false">Anonymous</string>
-    <string name="your_question" translatable="false">your question</string>
-    <string name="option1" translatable="false">Option 1</string>
-    <string name="option2" translatable="false">Option 2</string>
-    <string name="add_option" translatable="false">Add option</string>
-    <string name="write_your_answer" translatable="false">Write your answer</string>
+    <string name="write_your_problem">Write your problem</string>
+    <string name="profile_image">Profile image</string>
+    <string name="your_question">your question</string>
+    <string name="option1">Option 1</string>
+    <string name="option2">Option 2</string>
+    <string name="write_your_answer">Write your answer</string>
     <string name="t" translatable="false">T</string>
-    <string name="select_image_from_gallery" translatable="false">Select image from gallery</string>
-    <string name="capture_image_from_camera" translatable="false">Capture image from camera</string>
-    <string name="survey" translatable="false">Survey</string>
-    <string name="write_your_survey_question" translatable="false">Write your survey question</string>
-
+    <string name="select_image_from_gallery">Select image from gallery</string>
+    <string name="capture_image_from_camera">Capture image from camera</string>
+    <string name="survey">Survey</string>
+    <string name="write_your_survey_question">Write your survey question</string>
+    <string name="promote_nudity">Promote nudity or pornography</string>
+    <string name="i_dont_like_imagepoll">I don\'t like the image poll</string>
     <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="ad_unit_id" translatable="false">ca-app-pub-3940256099942544/8135179316</string>
     <string name="placement_id" translatable="false">395972514579548_432196284290504</string>
@@ -123,8 +115,8 @@
     <string name="Marketing">Marketing</string>
     <string name="Medical">Medical</string>
     <string name="Management">Management</string>
-    <string name="delete" translatable="false">Delete</string>
-    <string name="cancel" translatable="false">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 
 
     <string name="English" translatable="false">English</string>
@@ -147,6 +139,15 @@
     <string name="delete_survey">Delete survey</string>
     <string name="delete_poll">Delete poll</string>
     <string name="ad">Ad</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="i_dont_like_survey">I don\'t like the survey</string>
+    <string name="back">back</string>
+    <string name="count_answer">%1$d answer</string>
+    <string name="add_option">Add option</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="likes">likes</string>
+    <string name="login_with_facebook">Log in with facebook</string>
+    <string name="provide_option_limit">Provide atleast two or atmost four options</string>
 
 
 </resources>

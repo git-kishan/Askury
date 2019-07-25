@@ -69,10 +69,15 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         if(genderSelection && interestSelection) {
             setContentView(R.layout.starting_name);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            TextView name=findViewById(R.id.textView33);
-            Animation animation=AnimationUtils.loadAnimation(this, R.anim.askury_scale_out);
-            name.startAnimation(animation);
+           final  TextView name=findViewById(R.id.textView33);
+            final Animation animation=AnimationUtils.loadAnimation(this, R.anim.askury_scale_out);
             Handler handler=new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    name.startAnimation(animation);
+                }
+            }, 200);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -81,7 +86,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     finish();
 
                 }
-            }, 500);
+            }, 700);
 
         }
         else {

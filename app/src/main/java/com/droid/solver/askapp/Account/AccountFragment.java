@@ -197,8 +197,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 profileImage.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    String url = ProfileImageActivity.PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()
-                            + ProfileImageActivity.THUMBNAIL;
+                    String url = Constants.PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()
+                            + Constants.THUMBNAIL;
                     StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
                     GlideApp.with(getActivity()).load(reference)
                             .error(R.drawable.round_account)

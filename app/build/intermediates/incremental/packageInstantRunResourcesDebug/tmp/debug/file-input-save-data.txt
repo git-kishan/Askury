@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Thu Jul 25 01:50:07 IST 2019
+#Thu Jul 25 12:51:10 IST 2019
 1.base=/home/notebook/projects/AskApp/app/build/intermediates/merged_assets/debug/out
 0.baseType=DIRECTORY
 1.baseType=DIRECTORY

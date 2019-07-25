@@ -89,7 +89,6 @@ public class ImagePollActivity extends AppCompatActivity implements View.OnClick
     private FirebaseFirestore root;
     private StorageReference rootStorageRef;
     private UploadTask uploadTask;
-//    private static AlertDialog errorDialog;
 
 
     @Override

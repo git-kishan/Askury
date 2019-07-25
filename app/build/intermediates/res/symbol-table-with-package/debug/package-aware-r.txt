@@ -39,8 +39,10 @@ anim setting_rotate_left
 anim setting_rotate_right
 anim slide_in_down
 anim slide_in_up
+anim slide_left
 anim slide_out_down
 anim slide_out_up
+anim slide_right
 anim status_scale_in
 anim status_scale_out
 anim survey_rectangle_scalein
@@ -1558,6 +1560,7 @@ id cardView4
 id cardView5
 id cardView6
 id cardView7
+id cardView8
 id cardView9
 id card_top
 id card_view
@@ -1679,6 +1682,7 @@ id fragment_container
 id frameLayout
 id frameLayout2
 id frameLayout3
+id frameLayout4
 id french_chip
 id galleryLayout
 id gaming
@@ -1717,6 +1721,7 @@ id imageView21
 id imageView22
 id imageView23
 id imageView24
+id imageView25
 id imageView3
 id imageView4
 id imageView5
@@ -1902,6 +1907,7 @@ id search_voice_btn
 id select_dialog_listview
 id selected
 id self_promotion
+id self_promotion_view
 id setting_image
 id share_image_view
 id shimmer
@@ -2218,6 +2224,7 @@ layout notification_template_media
 layout notification_template_media_custom
 layout notification_template_part_chronometer
 layout notification_template_part_time
+layout profile_image_change_dialog
 layout question_answer_overflow_dialog
 layout question_banner_native_ad
 layout question_fragment_ad
@@ -2420,6 +2427,7 @@ string heart_image
 string hello_blank_fragment
 string hi_user
 string hide_bottom_view_on_scroll_behavior
+string i_dont_like_imagepoll
 string i_dont_like_question
 string i_dont_like_survey
 string image_poll_uploaded
@@ -2459,6 +2467,7 @@ string privacy_policy
 string private_info
 string profile_image
 string project_id
+string promote_nudity
 string provide_option_limit
 string question
 string question_answer

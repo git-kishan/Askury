@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.bumptech.glide.Glide;
@@ -22,12 +23,14 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -60,6 +63,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import uk.co.senab.photoview.PhotoViewAttacher;
+import static com.droid.solver.askapp.Main.Constants.PROFILE_PICTURE;
 
 public class ProfileImageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -75,10 +79,9 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
     private byte [] largeBitmapByteArray=null;
     private  byte [] smallBitmapByteArray=null;
     private Bitmap thumbnail=null,smallThumbnail=null;
+    private Handler handler;
 
-    public static final String PROFILE_PICTURE="profilePicture";
-    public static final String SMALL_THUMBNAIL="@smallThumbnail";
-    public static final String THUMBNAIL="@thumbnail";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +94,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         tickImage=findViewById(R.id.tick);
         rootView=findViewById(R.id.root);
         tickImage.setVisibility(View.GONE);
+        handler = new Handler();
         progressCard=findViewById(R.id.progress_card);
         progressCard.setVisibility(View.VISIBLE);
         tickImage.setOnClickListener(this);
@@ -110,6 +114,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             }, 1500);
         }
     }
+
 
     @Override
     public void finish() {
@@ -133,26 +138,27 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
 
             if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
                 Log.i("TAG", "load from remote url");
-                String url = ProfileImageActivity.PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()
-                        +ProfileImageActivity.THUMBNAIL;
+                String url = PROFILE_PICTURE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()
+                        +Constants.THUMBNAIL;
                 StorageReference reference = FirebaseStorage.getInstance().getReference().child(url);
                 GlideApp.with(this).load(reference)
                         .error(R.drawable.ic_placeholder_large)
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                progressCard.setVisibility(View.GONE);
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
+                                progressCard.setVisibility(View.GONE);
                                 attacher.update();
                                 return false;
                             }
                         })
                         .into(imageView);
-                progressCard.setVisibility(View.GONE);
                 e.printStackTrace();
             }
         }
@@ -182,11 +188,9 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                       Snackbar.make(rootView, "No internet connection", Snackbar.LENGTH_SHORT).show();
                   }
               }
-
               break;
       }
     }
-
     private void checkRuntimePermission(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -218,14 +222,38 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void loadImageFromGallery(){
-        Intent photoPickerIntent=new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
+        Intent photoPickerIntent=new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        photoPickerIntent.setType("image/*");
         if(photoPickerIntent.resolveActivity(getPackageManager())!=null){
             startActivityForResult(photoPickerIntent, IMAGE_PICKER);
         }else {
 
             Toast.makeText(this, "No camera app present", Toast.LENGTH_SHORT).show();
         }
+    }
+    private void showProfileUploadedDialog(Bitmap bitmap){
+        ConstraintLayout root=findViewById(R.id.root);
+        View dialogView= LayoutInflater.from(this).inflate(R.layout.profile_image_change_dialog, root,false);
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        final AlertDialog dialog=builder.create();
+        if(dialog.getWindow()!=null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+        }
+        builder.setCancelable(false);
+        ImageView profileImageView=dialogView.findViewById(R.id.imageView25);
+        profileImageView.setImageBitmap(bitmap);
+        MaterialButton button = dialogView.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tickImage.performClick();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 
     @Override
@@ -235,34 +263,43 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                 Uri uri=data.getData();
                 CropImage.activity(uri)
                         .start(this);
-            } }
+            }
+        }
 
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+           final  CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                if(result!=null)
-                cropImageUri = result.getUri();
-                if(cropImageUri!=null){
-                    tickImage.setVisibility(View.VISIBLE);
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            thumbnail=decodeSelectedImageUri(cropImageUri, 400, 500);
-                            smallThumbnail=decodeSelectedImageUri(cropImageUri, 50, 50);
-                            ByteArrayOutputStream s1=new ByteArrayOutputStream();
-                            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, s1);
-                            largeBitmapByteArray=s1.toByteArray();
-                            ByteArrayOutputStream s2=new ByteArrayOutputStream();
-                            smallThumbnail.compress(Bitmap.CompressFormat.JPEG, 100,s2 );
-                            smallBitmapByteArray=s2.toByteArray();
-
+                        if(result!=null)
+                            cropImageUri = result.getUri();
+                        if(cropImageUri!=null){
+                            tickImage.setVisibility(View.GONE);
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    thumbnail=decodeSelectedImageUri(cropImageUri, 400, 500);
+                                    smallThumbnail=decodeSelectedImageUri(cropImageUri, 50, 50);
+                                    ByteArrayOutputStream s1=new ByteArrayOutputStream();
+                                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, s1);
+                                    largeBitmapByteArray=s1.toByteArray();
+                                    ByteArrayOutputStream s2=new ByteArrayOutputStream();
+                                    smallThumbnail.compress(Bitmap.CompressFormat.JPEG, 100,s2 );
+                                    smallBitmapByteArray=s2.toByteArray();
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if(thumbnail!=null) {
+//                                                imageView.setImageBitmap(thumbnail);
+                                                showProfileUploadedDialog(thumbnail);
+                                                Log.i("TAG", "cropimage uri :- "+cropImageUri);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }else {
+                            Snackbar.make(rootView, "Error occured ,try again!", Snackbar.LENGTH_SHORT).show();
                         }
-                    });
-                    imageView.setImageURI(cropImageUri);
-                }else {
-                    Snackbar.make(rootView, "Error occured ,try again!", Snackbar.LENGTH_SHORT).show();
-                }
+
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 try {
                     if(result!=null) {
@@ -271,7 +308,10 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
                         Toast.makeText(ProfileImageActivity.this, "Error occurs,try again !", Toast.LENGTH_SHORT).show();
                     }
                 }catch (NullPointerException e){
-                    Log.i("TAG","error occured in getting error");
+                    Log.i("TAG","error occured in getting error,"+e.getMessage());
+                }catch (Exception e){
+                    Log.i("TAG","error occured in getting error,"+e.getMessage());
+
                 }
 
             }
@@ -288,13 +328,14 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
             options.inJustDecodeBounds=false;
             return BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
         }catch (FileNotFoundException e){
-
+            Snackbar.make(rootView, "Unknown error", Snackbar.LENGTH_SHORT).show();
+        }catch (Exception e){
             Snackbar.make(rootView, "Unknown error", Snackbar.LENGTH_SHORT).show();
         }
         return null;
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
@@ -318,7 +359,7 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
 
         progressCard.setVisibility(View.VISIBLE);
         final String uid=user.getUid();
-        String thumbnailName=uid+THUMBNAIL;
+        String thumbnailName=uid+Constants.THUMBNAIL;
         final StorageReference thumbnailRef= FirebaseStorage.getInstance().getReference().child(PROFILE_PICTURE)
                 .child(thumbnailName);
         uploadTask=thumbnailRef.putBytes(thumbnailByteArray);
@@ -351,8 +392,8 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
 
     private void uploadSmallThumbnailToRemoteDatabase(byte[] smallThumbnailArray){
         final String uid=user.getUid();
-        String smallThumbnailName=uid+SMALL_THUMBNAIL;
-        final StorageReference smallThumbnailRef= FirebaseStorage.getInstance().getReference().child(PROFILE_PICTURE)
+        String smallThumbnailName=uid+Constants.SMALL_THUMBNAIL;
+        final StorageReference smallThumbnailRef= FirebaseStorage.getInstance().getReference().child(Constants.PROFILE_PICTURE)
                 .child(smallThumbnailName);
         uploadTask=smallThumbnailRef.putBytes(smallThumbnailArray);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -376,8 +417,8 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         DocumentReference userRef= FirebaseFirestore.getInstance().collection("user").document(uid);
 
         Map<String,Object> userMap=new HashMap<>();
-        String thumbnailPath=PROFILE_PICTURE+"/"+uid+THUMBNAIL;
-        String smallThumbnailPath=PROFILE_PICTURE+"/"+uid+SMALL_THUMBNAIL;
+        String thumbnailPath=PROFILE_PICTURE+"/"+uid+Constants.THUMBNAIL;
+        String smallThumbnailPath=PROFILE_PICTURE+"/"+uid+Constants.SMALL_THUMBNAIL;
         userMap.put("profilePicUrlLow",smallThumbnailPath);
         userMap.put("profilePicUrlHigh",thumbnailPath);
 
@@ -404,7 +445,6 @@ public class ProfileImageActivity extends AppCompatActivity implements View.OnCl
         });
 
     }
-
 
     private boolean isNetworkAvailable(){
         ConnectivityManager connectivityManager= (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

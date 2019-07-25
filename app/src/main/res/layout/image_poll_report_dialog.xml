@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="8dp"
@@ -19,7 +18,7 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:text="It's spam"
+            android:text="@string/its_spam"
             android:textColor="@android:color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,13 +41,14 @@
             android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:text="Self promotion"
+            android:text="@string/self_promotion"
             android:textColor="@android:color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spam_view" />
         <View
+            android:id="@+id/self_promotion_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/chip_fader_color"
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:gravity="center"
-            android:text="Promote Nudity or pornography "
+            android:text="@string/promote_nudity"
             android:textColor="@android:color/black"
             android:textSize="12sp"
             android:focusable="true"
@@ -69,7 +69,7 @@
             android:background="?android:selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/self_promotion" />
+            app:layout_constraintTop_toBottomOf="@id/self_promotion_view" />
         <View
             android:id="@+id/pornography_view"
             android:layout_width="match_parent"
@@ -85,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:gravity="center"
-            android:text="I don't like the image poll"
+            android:text="@string/i_dont_like_imagepoll"
             android:background="?android:selectableItemBackground"
             android:focusable="true"
             android:clickable="true"

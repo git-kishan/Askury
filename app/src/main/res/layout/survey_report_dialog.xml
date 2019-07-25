@@ -48,7 +48,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spam_view" />
         <View
+            android:id="@+id/self_promotion_view"
             android:layout_width="match_parent"
+            android:background="@color/chip_fader_color"
             android:layout_height="1dp"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"

@@ -48,8 +48,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spam_view" />
         <View
+            android:id="@+id/self_promotion_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:background="@color/chip_fader_color"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
             app:layout_constraintTop_toBottomOf="@+id/self_promotion"/>
@@ -67,7 +69,7 @@
             android:background="?android:selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/self_promotion" />
+            app:layout_constraintTop_toBottomOf="@id/self_promotion_view" />
         <View
             android:id="@+id/pornography_view"
             android:layout_width="match_parent"

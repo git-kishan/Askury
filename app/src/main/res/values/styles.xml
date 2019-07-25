@@ -40,6 +40,7 @@
         <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
 
     </style>
+
     <style name="customAnimations.error" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/error_dialog_scale_out</item>
         <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
