@@ -1,5 +1,6 @@
 package com.droid.solver.askapp.homeAnswer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
@@ -8,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.R;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
  class QuestionViewHolder extends RecyclerView.ViewHolder {
@@ -32,7 +33,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     }
     void onWantToAnswerClicked(final Context context, final QuestionModel model){
-
+        Activity activity=(Activity) context;
         Intent intent=new Intent(context, AnswerActivity.class);
         intent.putExtra("askerUid", model.getAskerId());
         intent.putExtra("questionId", model.getQuestionId());
@@ -41,6 +42,23 @@ import de.hdodenhof.circleimageview.CircleImageView;
         intent.putExtra("askerName", model.getAskerName());
         intent.putExtra("askerBio", model.getAskerBio());
         context.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+    }
+
+    void onProfilePicClicked(final Context context,final QuestionModel model){
+         Activity activity=(Activity)context;
+         if(model.isAnonymous()){
+             Toast.makeText(context, "Anonymous user",Toast.LENGTH_LONG).show();
+         }else {
+             Intent intent=new Intent(context, OtherAccountActivity.class);
+             intent.putExtra("profile_image",model.getAskerImageUrlLow());
+             intent.putExtra("uid", model.getAskerId());
+             intent.putExtra("user_name", model.getAskerName());
+             intent.putExtra("bio", model.getAskerBio());
+             context.startActivity(intent);
+             activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+         }
 
     }
 }

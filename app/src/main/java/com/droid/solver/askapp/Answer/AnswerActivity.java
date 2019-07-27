@@ -149,6 +149,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onBackPressed() {
+        hideSoftKeyboard(answerEditText);
         super.onBackPressed();
     }
 
@@ -252,7 +253,6 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
                 //show permission rationale
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA},
@@ -567,7 +567,7 @@ public class AnswerActivity extends AppCompatActivity implements View.OnClickLis
         SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         String answererName=preferences.getString(Constants.userName, null);
         String answererImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
-        String answer=answerEditText.getText().toString();
+        String answer=answerEditText.getText().toString().trim();
         String answererBio=preferences.getString(Constants.bio, null);
         final boolean imageAttached=compressedByteArray!=null;
         String questionId=this.questionId;

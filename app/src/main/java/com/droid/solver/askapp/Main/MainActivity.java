@@ -1,6 +1,5 @@
 package com.droid.solver.askapp.Main;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -8,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.NonNull;
-
 import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
@@ -27,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
 import com.droid.solver.askapp.Account.AccountFragment;
 import com.droid.solver.askapp.Notification.NotificationFragment;
 import com.droid.solver.askapp.Home.HomeFragment;
@@ -38,8 +35,6 @@ import com.droid.solver.askapp.Question.ImagePollLike;
 import com.droid.solver.askapp.Question.QuestionFragment;
 import com.droid.solver.askapp.Question.SurveyParticipated;
 import com.droid.solver.askapp.R;
-import com.droid.solver.askapp.SignInActivity;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -88,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements
     private FrameLayout progressFrameLayout;
     private BottomNavigationItemView itemView;
     private View notificationBadge;
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements
         fetchUserInfo();
         fetchLikeDocumentsFromRemoteDatabase();
         toolbar = findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.toolbar_menu_main);
+//        toolbar.inflateMenu(R.menu.toolbar_menu_main);
         frameLayout = findViewById(R.id.fragment_container);
         messageText=findViewById(R.id.message_text);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -122,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements
         if (lowProfilePicPath == null && highProfilePath == null) {
             getProfilePicUrlFromRemoteDatabase();
         }
-        handler=new Handler();
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -132,36 +125,38 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                if(menuItem.getItemId()==R.id.log_out){
-                    progressFrameLayout.setVisibility(View.VISIBLE);
-                    FirebaseAuth.getInstance().signOut();
-                    SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
-                    editor.clear();
-                    editor.apply();
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            clearDatabase();
-                            Glide.get(MainActivity.this)
-                                    .clearDiskCache();
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    LoginManager.getInstance().logOut();
-                                    signInAgain();
-                                }
-                            });
-                        }
-                    });
-                    return true;
-                }
-                return false;
-            }
-        });
+
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem menuItem) {
+//                if(menuItem.getItemId()==R.id.log_out){
+//                    progressFrameLayout.setVisibility(View.VISIBLE);
+//                    FirebaseAuth.getInstance().signOut();
+//                    SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+//                    SharedPreferences.Editor editor=sharedPreferences.edit();
+//                    editor.clear();
+//                    editor.apply();
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            clearDatabase();
+//                            Glide.get(MainActivity.this)
+//                                    .clearDiskCache();
+//                            handler.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    LoginManager.getInstance().logOut();
+//                                    signInAgain();
+//                                }
+//                            });
+//                        }
+//                    });
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+
         checkNotification();
     }
     @Override
@@ -202,12 +197,12 @@ public class MainActivity extends AppCompatActivity implements
                 fragment = new AccountFragment();
                 loadFragment(fragment, ACCOUNT);
                 return true;
-
         }
         return true;
     }
 
     private void loadFragment(Fragment fragment, String tag) {
+
         if(!isNetworkAvailable()){
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,new NoInternetFragment(),NO_INTERNET)
                     .addToBackStack(null).commit();
@@ -222,23 +217,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if(isNetworkAvailable()){
+        Log.i("TAG", "onBackPressed()");
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(HOME);
             if (fragment != null && fragment.isVisible()) {
                 super.onBackPressed();
             } else {
-                loadFragment(new HomeFragment(), HOME);
                 bottomNavigationView.setSelectedItemId(R.id.home);
-                bottomNavigationView.setSelected(true);
             }
-        }
-        else {
-            Fragment fragment=getSupportFragmentManager().findFragmentByTag(NO_INTERNET);
-            if(fragment!=null&& fragment.isVisible()){
-                finish();
-            }
-        }
-
     }
 
     private void checkNotification(){
@@ -347,20 +332,21 @@ public class MainActivity extends AppCompatActivity implements
                                     for (QueryDocumentSnapshot snapshots : task.getResult()) {
 
                                         AnswerLike answerLike = snapshots.toObject(AnswerLike.class);
-                                        if (answerLike.getAnswerLikeId() != null)
-                                            answerLikeList.addAll(answerLike.getAnswerLikeId());
+                                            answerLikeList=answerLike.getAnswerLikeId();
                                     }
                             }
                             else {
                                 Log.i("TAG", "error in fetching answer like documents ");
                             }
-                            set.addAll(answerLikeList);
-                            answerLikeList.clear();
-                            answerLikeList.addAll(set);
-                            LocalDatabase database = new LocalDatabase(getApplicationContext());
-                            database.clearAnswerLikeModel();
-                            database.insertAnswerLikeModel(answerLikeList);
-                            set.clear();
+                            if(answerLikeList!=null) {
+                                set.addAll(answerLikeList);
+                                answerLikeList.clear();
+                                answerLikeList.addAll(set);
+                                LocalDatabase database = new LocalDatabase(getApplicationContext());
+                                database.clearAnswerLikeModel();
+                                database.insertAnswerLikeModel(answerLikeList);
+                                set.clear();
+                            }
 
                         }
                     });
@@ -450,12 +436,12 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void signInAgain(){
-        progressFrameLayout.setVisibility(View.GONE);
-        startActivity(new Intent(this, SignInActivity.class));
-        finish();
-
-    }
+//    private void signInAgain(){
+//        progressFrameLayout.setVisibility(View.GONE);
+//        startActivity(new Intent(this, SignInActivity.class));
+//        finish();
+//
+//    }
 
     @Override
     public void onImagePollImageClicked(String imageUrl,View view) {

@@ -194,6 +194,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
                 Snackbar.make(rootView, "No camera app present", Snackbar.LENGTH_SHORT).show();
             }
         }else {
+            hideSoftKeyboard(questionInputEditText);
             onBackPressed();
 
         }
@@ -372,7 +373,7 @@ public class QuestionActivity extends AppCompatActivity implements Toolbar.OnMen
         String userName=preferences.getString(Constants.userName, null);
         String userId=user.getUid();
         long timeOfAsking=System.currentTimeMillis();
-        final String question=String.valueOf(questionInputEditText.getText());
+        final String question=String.valueOf(questionInputEditText.getText()).trim();
         String userImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
         String bio=preferences.getString(Constants.bio, null);
         isImageAttached=compressedByteArray!=null;

@@ -10,6 +10,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
@@ -36,25 +39,31 @@ import de.hdodenhof.circleimageview.CircleImageView;
     }
     void onCardClicked(final UserQuestionModel model) {
         Activity activity=(Activity)context;
-        Intent intent = new Intent(context, AnswerActivity.class);
-        SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        String userName = preferences.getString(Constants.userName, "Someone");
-        String bio = preferences.getString(Constants.bio, "");
-        intent.putExtra("askerImageUrl", model.getUserImageUrlLow());
-        intent.putExtra("timeOfAsking", model.getTimeOfAsking());
-        intent.putExtra("askerName", userName);
-        intent.putExtra("askerBio", bio);
-        intent.putExtra("questionId", model.getQuestionId());
-        intent.putExtra("question", model.getQuestion());
-        intent.putExtra("askerId", model.getUserId());
-        intent.putExtra("anonymous", model.isAnonymous());
-        context.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+        int answerCount=model.getAnswerCount();
+        if(answerCount<=0){
+            Toast.makeText(context, "Zero answer available to this question", Toast.LENGTH_SHORT).show();
+        }else {
+            Intent intent = new Intent(context, AnswerActivity.class);
+            SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+            String userName = preferences.getString(Constants.userName, "Someone");
+            String bio = preferences.getString(Constants.bio, "");
+            intent.putExtra("askerImageUrl", model.getUserImageUrlLow());
+            intent.putExtra("timeOfAsking", model.getTimeOfAsking());
+            intent.putExtra("askerName", userName);
+            intent.putExtra("askerBio", bio);
+            intent.putExtra("questionId", model.getQuestionId());
+            intent.putExtra("question", model.getQuestion());
+            intent.putExtra("askerId", model.getUserId());
+            intent.putExtra("anonymous", model.isAnonymous());
+            context.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+        }
+
 
     }
     void onProfileImageClicked(final Context context, final UserQuestionModel model){
         Activity activity=(Activity)context;
-        Intent intent=new Intent(context,OtherAccountActivity.class);
+        Intent intent=new Intent(context, OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getUserImageUrlLow());
         intent.putExtra("uid",model.getUserId());
         intent.putExtra("user_name",model.getUserName());
@@ -63,15 +72,5 @@ import de.hdodenhof.circleimageview.CircleImageView;
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
     }
-    void onAskerNameClicked(final Context context,final UserQuestionModel model){
-        Activity activity=(Activity)context;
-        Intent intent=new Intent(context,OtherAccountActivity.class);
-        intent.putExtra("profile_image", model.getUserImageUrlLow());
-        intent.putExtra("uid",model.getUserId());
-        intent.putExtra("user_name",model.getUserName());
-        intent.putExtra("bio",model.getUserBio());
-        context.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-    }
 }

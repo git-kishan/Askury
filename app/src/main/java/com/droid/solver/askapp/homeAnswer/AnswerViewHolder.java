@@ -3,9 +3,13 @@ package com.droid.solver.askapp.homeAnswer;
 import androidx.annotation.NonNull;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.recyclerview.widget.RecyclerView;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.R;
 import com.like.LikeButton;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -27,6 +31,41 @@ class AnswerViewHolder extends RecyclerView.ViewHolder {
         timeAgo=itemView.findViewById(R.id.textView27);
         likeButton=itemView.findViewById(R.id.likeButton);
         answerImage=itemView.findViewById(R.id.imageView19);
+
+    }
+     void onProfilePicClicked(final AnswerModel model, final Context context){
+         Activity activity=(Activity)context;
+         Intent intent=new Intent(context, OtherAccountActivity.class);
+         intent.putExtra("profile_image", model.getAnswererImageUrl());
+         intent.putExtra("uid", model.getAnswererId());
+         intent.putExtra("user_name", model.getAnswererName());
+         intent.putExtra("bio", model.getAnswererBio());
+         context.startActivity(intent);
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+     }
+    void onAnswerClicked(final AnswerModel answerModel, final QuestionModel questionModel,final Context context){
+         Activity activity=(Activity)context;
+         Intent intent=new Intent(context,DetailAnswerActivity.class);
+         intent.putExtra("askerId", questionModel.getAskerId());
+         intent.putExtra("answererId", answerModel.getAnswererId());
+         intent.putExtra("askerName",questionModel.getAskerName());
+         intent.putExtra("askerBio", questionModel.getAskerBio());
+         intent.putExtra("answererName", answerModel.getAnswererName());
+         intent.putExtra("answererBio", answerModel.getAnswererBio());
+         intent.putExtra("timeOfAsking", questionModel.getTimeOfAsking());
+         intent.putExtra("timeOfAnswering",answerModel.getTimeOfAnswering());
+         intent.putExtra("question", questionModel.getQuestion());
+         intent.putExtra("answer", answerModel.getAnswer());
+         intent.putExtra("anonymous", questionModel.isAnonymous());
+         intent.putExtra("fontUsed", answerModel.getFontUsed());
+         intent.putExtra("isLikedByMe", answerModel.isLikedByMe());
+         intent.putExtra("likeCount", answerModel.getAnswerLikeCount());
+         intent.putExtra("imageAttached", answerModel.isImageAttached());
+         intent.putExtra("imageAttachedUrl", answerModel.getImageAttachedUrl());
+         context.startActivity(intent);
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
 
     }
 //    void onLikeClicked(final Context context,final AnswerModel model){

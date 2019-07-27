@@ -23,7 +23,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.droid.solver.askapp.Account.OtherAccountActivity;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Question.Following;
@@ -41,8 +41,6 @@ import com.google.firebase.firestore.WriteBatch;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 class SurveyViewHolder extends RecyclerView.ViewHolder {
@@ -96,67 +94,98 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     }
     void onContainer1Clicked(final AskSurveyModel surveyModel){
-         new Handler().post(new Runnable() {
-             @Override
-             public void run() {
-                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-                 animation.setDuration(500);
-                 container1.startAnimation(animation);
-                 changeColor(container1.getId());
+         try {
+             new Handler().post(new Runnable() {
+                 @Override
+                 public void run() {
+                     animation = AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                     animation.setDuration(500);
+                     container1.startAnimation(animation);
+                     changeColor(container1.getId());
 
-             }
-         });
-        changeBackGroundOfLinearLayout();
-        makeContainerUnClickable();
-        updateSelectionInRemoteDatabase(1, surveyModel);
+                 }
+             });
+             changeBackGroundOfLinearLayout();
+             makeContainerUnClickable();
+             updateSelectionInRemoteDatabase(1, surveyModel);
+         }catch (NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
 
     }
     void onContainer2Clicked(final AskSurveyModel surveyModel){
-         new Handler().post(new Runnable() {
-             @Override
-             public void run() {
-                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-                 animation.setDuration(500);
-                 container2.startAnimation(animation);
-                 changeColor(container2.getId());
+         try {
+             new Handler().post(new Runnable() {
+                 @Override
+                 public void run() {
+                     animation = AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                     animation.setDuration(500);
+                     container2.startAnimation(animation);
+                     changeColor(container2.getId());
 
-             }
-         });
-        changeBackGroundOfLinearLayout();
-        makeContainerUnClickable();
-        updateSelectionInRemoteDatabase(2, surveyModel);
+                 }
+             });
+             changeBackGroundOfLinearLayout();
+             makeContainerUnClickable();
+             updateSelectionInRemoteDatabase(2, surveyModel);
 
+         }catch(NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
     }
     void onContainer3Clicked(final AskSurveyModel surveyModel){
-         new Handler().post(new Runnable() {
-             @Override
-             public void run() {
-                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-                 animation.setDuration(500);
-                 container3.startAnimation(animation);
-                 changeColor(container3.getId());
+         try {
+             new Handler().post(new Runnable() {
+                 @Override
+                 public void run() {
+                     animation = AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                     animation.setDuration(500);
+                     container3.startAnimation(animation);
+                     changeColor(container3.getId());
 
-             }
-         });
-        changeBackGroundOfLinearLayout();
-        makeContainerUnClickable();
-        updateSelectionInRemoteDatabase(3, surveyModel);
+                 }
+             });
+             changeBackGroundOfLinearLayout();
+             makeContainerUnClickable();
+             updateSelectionInRemoteDatabase(3, surveyModel);
+         }catch(NullPointerException e ){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch(Exception e ){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
 
     }
     void onContainer4Clicked(final AskSurveyModel surveyModel){
-         new Handler().post(new Runnable() {
-             @Override
-             public void run() {
-                 animation=AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
-                 animation.setDuration(500);
-                 container4.startAnimation(animation);
-                 changeColor(container4.getId());
+         try {
+             new Handler().post(new Runnable() {
+                 @Override
+                 public void run() {
+                     animation = AnimationUtils.loadAnimation(context, R.anim.survey_rectangle_scalein);
+                     animation.setDuration(500);
+                     container4.startAnimation(animation);
+                     changeColor(container4.getId());
 
-             }
-         });
-        changeBackGroundOfLinearLayout();
-        makeContainerUnClickable();
-        updateSelectionInRemoteDatabase(4, surveyModel);
+                 }
+             });
+             changeBackGroundOfLinearLayout();
+             makeContainerUnClickable();
+             updateSelectionInRemoteDatabase(4, surveyModel);
+         }catch (NullPointerException e ){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
 
     }
 
@@ -231,237 +260,246 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
 
         private   void updateSelectionInRemoteDatabase(final int selection, final AskSurveyModel surveyModel){
 
-            DocumentReference rootSurveyRef=firestoreRootRef.collection("survey").document(surveyModel.getSurveyId());
-            DocumentReference askerSurveyRef=firestoreRootRef.collection("user").document(surveyModel.getAskerId())
-                    .collection("survey").document(surveyModel.getSurveyId());
+         try {
+             DocumentReference rootSurveyRef = firestoreRootRef.collection("survey").document(surveyModel.getSurveyId());
+             DocumentReference askerSurveyRef = firestoreRootRef.collection("user").document(surveyModel.getAskerId())
+                     .collection("survey").document(surveyModel.getSurveyId());
 
-            DocumentReference userSurveyLikeRef=firestoreRootRef.collection("user").document(user.getUid())
-                    .collection("surveyParticipated").document("participated");
+             DocumentReference userSurveyLikeRef = firestoreRootRef.collection("user").document(user.getUid())
+                     .collection("surveyParticipated").document("participated");
 
-            final Map<String,Object > surveyMap=new HashMap<>();
-            if(selection==1) {
-                surveyMap.put("option1Count", FieldValue.increment(1));
-                surveyModel.setOption1Count(surveyModel.getOption1Count()+1);
-                showSelectionPercentage(surveyModel);
-            }
-            else if(selection==2) {
-                surveyMap.put("option2Count", FieldValue.increment(1));
-                surveyModel.setOption2Count(surveyModel.getOption2Count()+1);
-                showSelectionPercentage(surveyModel);
-            }
-            else if(selection==3) {
-                surveyMap.put("option3Count", FieldValue.increment(1));
-                surveyModel.setOption3Count(surveyModel.getOption3Count()+1);
-                showSelectionPercentage(surveyModel);
+             final Map<String, Object> surveyMap = new HashMap<>();
+             if (selection == 1) {
+                 surveyMap.put("option1Count", FieldValue.increment(1));
+                 surveyModel.setOption1Count(surveyModel.getOption1Count() + 1);
+                 showSelectionPercentage(surveyModel);
+             } else if (selection == 2) {
+                 surveyMap.put("option2Count", FieldValue.increment(1));
+                 surveyModel.setOption2Count(surveyModel.getOption2Count() + 1);
+                 showSelectionPercentage(surveyModel);
+             } else if (selection == 3) {
+                 surveyMap.put("option3Count", FieldValue.increment(1));
+                 surveyModel.setOption3Count(surveyModel.getOption3Count() + 1);
+                 showSelectionPercentage(surveyModel);
 
-            }
-            else if(selection==4) {
-                surveyMap.put("option4Count", FieldValue.increment(1));
-                surveyModel.setOption4Count(surveyModel.getOption4Count()+1);
-                showSelectionPercentage(surveyModel);
-            }
+             } else if (selection == 4) {
+                 surveyMap.put("option4Count", FieldValue.increment(1));
+                 surveyModel.setOption4Count(surveyModel.getOption4Count() + 1);
+                 showSelectionPercentage(surveyModel);
+             }
 
-            final Map<String,Object> selectionMap=new HashMap<>();
-            selectionMap.put(surveyModel.getSurveyId(), selection);
+             final Map<String, Object> selectionMap = new HashMap<>();
+             selectionMap.put(surveyModel.getSurveyId(), selection);
 
-            final Map<String,Object> selectionLikeMap=new HashMap<>();
-            selectionLikeMap.put("surveyMapList",FieldValue.arrayUnion(selectionMap));
+             final Map<String, Object> selectionLikeMap = new HashMap<>();
+             selectionLikeMap.put("surveyMapList", FieldValue.arrayUnion(selectionMap));
 
-            WriteBatch batch=firestoreRootRef.batch();
-            batch.update(rootSurveyRef, surveyMap);
-            batch.update(askerSurveyRef, surveyMap);
-            batch.set(userSurveyLikeRef, selectionLikeMap, SetOptions.merge());
+             WriteBatch batch = firestoreRootRef.batch();
+             batch.update(rootSurveyRef, surveyMap);
+             batch.update(askerSurveyRef, surveyMap);
+             batch.set(userSurveyLikeRef, selectionLikeMap, SetOptions.merge());
 
-          AsyncTask.execute(new Runnable() {
-              @Override
-              public void run() {
-                  if(getAdapterPosition()<=7) {
-                      surveyModel.setOptionSelectedByMe(selection);
-                      LocalDatabase database = new LocalDatabase(context.getApplicationContext());
-                      database.updateSurveyAskedModel(surveyModel);
-                  }
-              }
-          });
+             AsyncTask.execute(new Runnable() {
+                 @Override
+                 public void run() {
+                     if (getAdapterPosition() <= 7) {
+                         surveyModel.setOptionSelectedByMe(selection);
+                         LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                         database.updateSurveyAskedModel(surveyModel);
+                     }
+                 }
+             });
 
 
-            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    selectionMap.clear();
-                    selectionLikeMap.clear();
-                    Log.i("TAG", "survey  batch written complete");
-                    final HashMap<String,Integer> participatedMap=new HashMap<>();
-                    participatedMap.put(surveyModel.getSurveyId(),selection);
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            LocalDatabase localDatabase=new LocalDatabase(context.getApplicationContext());
-                            localDatabase.removeSurveyParticipatedModel(surveyModel.getSurveyId());
-                            localDatabase.insertSurveyParticipatedModel(participatedMap);
-                        }
-                    });
-                }
-            });
+             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                 @Override
+                 public void onComplete(@NonNull Task<Void> task) {
+                     selectionMap.clear();
+                     selectionLikeMap.clear();
+                     Log.i("TAG", "survey  batch written complete");
+                     final HashMap<String, Integer> participatedMap = new HashMap<>();
+                     participatedMap.put(surveyModel.getSurveyId(), selection);
+                     AsyncTask.execute(new Runnable() {
+                         @Override
+                         public void run() {
+                             LocalDatabase localDatabase = new LocalDatabase(context.getApplicationContext());
+                             localDatabase.removeSurveyParticipatedModel(surveyModel.getSurveyId());
+                             localDatabase.insertSurveyParticipatedModel(participatedMap);
+                         }
+                     });
+                 }
+             });
+         }catch(NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (ArithmeticException e){
+             Log.i("TAG", "Arithmetic Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
 
         }
 
         private void showSelectionPercentage(final AskSurveyModel surveyModel){
 
-        boolean isOption1=surveyModel.isOption1();
-        boolean isOption2=surveyModel.isOption2();
-        boolean isOption3=surveyModel.isOption3();
-        boolean isOption4=surveyModel.isOption4();
-        percent1.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
-        percent2.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
-        percent3.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
-        percent4.setTextColor(ResourcesCompat.getColor(context.getResources(),android.R.color.black,null));
+         try {
+             boolean isOption1 = surveyModel.isOption1();
+             boolean isOption2 = surveyModel.isOption2();
+             boolean isOption3 = surveyModel.isOption3();
+             boolean isOption4 = surveyModel.isOption4();
+             percent1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+             percent2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+             percent3.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+             percent4.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
 
-        if(isOption1&&isOption2&&isOption3&&isOption4) {
-            int option1Count=surveyModel.getOption1Count();
-            int option2Count=surveyModel.getOption2Count();
-            int option3Count=surveyModel.getOption3Count();
-            int option4Count=surveyModel.getOption4Count();
-            int total=option1Count+option2Count+option3Count+option4Count;
-            int firstPercentage=(option1Count*100)/total;
-            int secondPercentage=(option2Count*100)/total;
-            int thirdPercentage=(option3Count*100)/total;
-            int fourthPercentage=100-(firstPercentage+secondPercentage+thirdPercentage);
-            String a=firstPercentage+"%";
-            String b=secondPercentage+"%";
-            String c=thirdPercentage+"%";
-            String d=fourthPercentage+"%";
-            percent1.setText(a);
-            percent2.setText(b);
-            percent3.setText(c);
-            percent4.setText(d);
+             if (isOption1 && isOption2 && isOption3 && isOption4) {
+                 int option1Count = surveyModel.getOption1Count();
+                 int option2Count = surveyModel.getOption2Count();
+                 int option3Count = surveyModel.getOption3Count();
+                 int option4Count = surveyModel.getOption4Count();
+                 int total = option1Count + option2Count + option3Count + option4Count;
+                 int firstPercentage = (option1Count * 100) / total;
+                 int secondPercentage = (option2Count * 100) / total;
+                 int thirdPercentage = (option3Count * 100) / total;
+                 int fourthPercentage = 100 - (firstPercentage + secondPercentage + thirdPercentage);
+                 String a = firstPercentage + "%";
+                 String b = secondPercentage + "%";
+                 String c = thirdPercentage + "%";
+                 String d = fourthPercentage + "%";
+                 percent1.setText(a);
+                 percent2.setText(b);
+                 percent3.setText(c);
+                 percent4.setText(d);
 
-        }
-        else if(isOption1&&isOption2&&isOption3){
-            int option1Count=surveyModel.getOption1Count();
-            int option2Count=surveyModel.getOption2Count();
-            int option3Count=surveyModel.getOption3Count();
-            int total=option1Count+option2Count+option3Count;
-            int firstPercentage=(option1Count*100)/total;
-            int secondPercentage=(option2Count*100)/total;
-            int thirdPercentage=100-(firstPercentage+secondPercentage);
-            String a=firstPercentage+"%";
-            String b=secondPercentage+"%";
-            String c=thirdPercentage+"%";
-            percent1.setText(a);
-            percent2.setText(b);
-            percent3.setText(c);
-        }
-        else if(isOption2&&isOption3&&isOption4){
-            int option2Count=surveyModel.getOption2Count();
-            int option3Count=surveyModel.getOption3Count();
-            int option4Count=surveyModel.getOption4Count();
-            int total=option2Count+option3Count+option4Count;
-            int secondPercentage=(option2Count*100)/total;
-            int thirdPercentage=(option3Count*100)/total;
-            int fourthPercentage=100-(secondPercentage+thirdPercentage);
-            String b=secondPercentage+"%";
-            String c=thirdPercentage+"%";
-            String d=fourthPercentage+"%";
-            percent2.setText(b);
-            percent3.setText(c);
-            percent4.setText(d);
-        }
-        else if(isOption3&&isOption4&&isOption1){
-            int option1Count=surveyModel.getOption1Count();
-            int option3Count=surveyModel.getOption3Count();
-            int option4Count=surveyModel.getOption4Count();
-            int total=option1Count+option3Count+option4Count;
-            int firstPercentage=(option1Count*100)/total;
-            int thirdPercentage=(option3Count*100)/total;
-            int fourthPercentage=100-(firstPercentage+thirdPercentage);
-            String a=firstPercentage+"%";
-            String c=thirdPercentage+"%";
-            String d=fourthPercentage+"%";
-            percent1.setText(a);
-            percent3.setText(c);
-            percent4.setText(d);
-        }
-        else if(isOption4&&isOption1&&isOption2){
-            int option1Count=surveyModel.getOption1Count();
-            int option2Count=surveyModel.getOption2Count();
-            int option4Count=surveyModel.getOption4Count();
-            int total=option1Count+option2Count+option4Count;
-            int firstPercentage=(option1Count*100)/total;
-            int secondPercentage=(option2Count*100)/total;
-            int fourthPercentage=100-(firstPercentage+secondPercentage);
-            String a=firstPercentage+"%";
-            String b=secondPercentage+"%";
-            String d=fourthPercentage+"%";
-            percent1.setText(a);
-            percent2.setText(b);
-            percent4.setText(d);
-        }
-        else if(isOption1&&isOption2){
-            int option1Count=surveyModel.getOption1Count();
-            int option2Count=surveyModel.getOption2Count();
-            int total=option1Count+option2Count;
-            int firstPercentage=(option1Count*100)/total;
-            int secondPercentage=100-(firstPercentage);
-            String a=firstPercentage+"%";
-            String b=secondPercentage+"%";
-            percent1.setText(a);
-            percent2.setText(b);
-        }
-        else if(isOption1&&isOption3){
-            int option1Count=surveyModel.getOption1Count();
-            int option3Count=surveyModel.getOption3Count();
-            int total=option1Count+option3Count;
-            int firstPercentage=(option1Count*100)/total;
-            int thirdPercentage=100-(firstPercentage);
-            String a=firstPercentage+"%";
-            String c=thirdPercentage+"%";
-            percent1.setText(a);
-            percent3.setText(c);
-        }
-        else if(isOption1&&isOption4){
-            int option1Count=surveyModel.getOption1Count();
-            int option4Count=surveyModel.getOption4Count();
-            int total=option1Count+option4Count;
-            int firstPercentage=(option1Count*100)/total;
-            int fourthPercentage=100-(firstPercentage);
-            String a=firstPercentage+"%";
-            String d=fourthPercentage+"%";
-            percent1.setText(a);
-            percent4.setText(d);
-        }
-        else if(isOption2&&isOption3){
-            int option2Count=surveyModel.getOption2Count();
-            int option3Count=surveyModel.getOption3Count();
-            int total=option2Count+option3Count;
-            int thirdPercentage=(option3Count*100)/total;
-            int secondPercentage=100-(thirdPercentage);
-            String b=secondPercentage+"%";
-            String c=thirdPercentage+"%";
-            percent3.setText(c);
-            percent2.setText(b);
-        }
-        else if(isOption2&&isOption4){
-            int option4Count=surveyModel.getOption4Count();
-            int option2Count=surveyModel.getOption2Count();
-            int total=option4Count+option2Count;
-            int fourthPercentage=(option4Count*100)/total;
-            int secondPercentage=100-(fourthPercentage);
-            String b=secondPercentage+"%";
-            String d=fourthPercentage+"%";
-            percent4.setText(d);
-            percent2.setText(b);
-        }
-        else if(isOption3&&isOption4){
-            int option3Count=surveyModel.getOption3Count();
-            int option4Count=surveyModel.getOption4Count();
-            int total=option3Count+option4Count;
-            int thirdPercentage=(option3Count*100)/total;
-            int fourthPercentage=100-(thirdPercentage);
-            String c=thirdPercentage+"%";
-            String d=fourthPercentage+"%";
-            percent3.setText(c);
-            percent4.setText(d);
-        }
+             } else if (isOption1 && isOption2 && isOption3) {
+                 int option1Count = surveyModel.getOption1Count();
+                 int option2Count = surveyModel.getOption2Count();
+                 int option3Count = surveyModel.getOption3Count();
+                 int total = option1Count + option2Count + option3Count;
+                 int firstPercentage = (option1Count * 100) / total;
+                 int secondPercentage = (option2Count * 100) / total;
+                 int thirdPercentage = 100 - (firstPercentage + secondPercentage);
+                 String a = firstPercentage + "%";
+                 String b = secondPercentage + "%";
+                 String c = thirdPercentage + "%";
+                 percent1.setText(a);
+                 percent2.setText(b);
+                 percent3.setText(c);
+             } else if (isOption2 && isOption3 && isOption4) {
+                 int option2Count = surveyModel.getOption2Count();
+                 int option3Count = surveyModel.getOption3Count();
+                 int option4Count = surveyModel.getOption4Count();
+                 int total = option2Count + option3Count + option4Count;
+                 int secondPercentage = (option2Count * 100) / total;
+                 int thirdPercentage = (option3Count * 100) / total;
+                 int fourthPercentage = 100 - (secondPercentage + thirdPercentage);
+                 String b = secondPercentage + "%";
+                 String c = thirdPercentage + "%";
+                 String d = fourthPercentage + "%";
+                 percent2.setText(b);
+                 percent3.setText(c);
+                 percent4.setText(d);
+             } else if (isOption3 && isOption4 && isOption1) {
+                 int option1Count = surveyModel.getOption1Count();
+                 int option3Count = surveyModel.getOption3Count();
+                 int option4Count = surveyModel.getOption4Count();
+                 int total = option1Count + option3Count + option4Count;
+                 int firstPercentage = (option1Count * 100) / total;
+                 int thirdPercentage = (option3Count * 100) / total;
+                 int fourthPercentage = 100 - (firstPercentage + thirdPercentage);
+                 String a = firstPercentage + "%";
+                 String c = thirdPercentage + "%";
+                 String d = fourthPercentage + "%";
+                 percent1.setText(a);
+                 percent3.setText(c);
+                 percent4.setText(d);
+             } else if (isOption4 && isOption1 && isOption2) {
+                 int option1Count = surveyModel.getOption1Count();
+                 int option2Count = surveyModel.getOption2Count();
+                 int option4Count = surveyModel.getOption4Count();
+                 int total = option1Count + option2Count + option4Count;
+                 int firstPercentage = (option1Count * 100) / total;
+                 int secondPercentage = (option2Count * 100) / total;
+                 int fourthPercentage = 100 - (firstPercentage + secondPercentage);
+                 String a = firstPercentage + "%";
+                 String b = secondPercentage + "%";
+                 String d = fourthPercentage + "%";
+                 percent1.setText(a);
+                 percent2.setText(b);
+                 percent4.setText(d);
+             } else if (isOption1 && isOption2) {
+                 int option1Count = surveyModel.getOption1Count();
+                 int option2Count = surveyModel.getOption2Count();
+                 int total = option1Count + option2Count;
+                 int firstPercentage = (option1Count * 100) / total;
+                 int secondPercentage = 100 - (firstPercentage);
+                 String a = firstPercentage + "%";
+                 String b = secondPercentage + "%";
+                 percent1.setText(a);
+                 percent2.setText(b);
+             } else if (isOption1 && isOption3) {
+                 int option1Count = surveyModel.getOption1Count();
+                 int option3Count = surveyModel.getOption3Count();
+                 int total = option1Count + option3Count;
+                 int firstPercentage = (option1Count * 100) / total;
+                 int thirdPercentage = 100 - (firstPercentage);
+                 String a = firstPercentage + "%";
+                 String c = thirdPercentage + "%";
+                 percent1.setText(a);
+                 percent3.setText(c);
+             } else if (isOption1 && isOption4) {
+                 int option1Count = surveyModel.getOption1Count();
+                 int option4Count = surveyModel.getOption4Count();
+                 int total = option1Count + option4Count;
+                 int firstPercentage = (option1Count * 100) / total;
+                 int fourthPercentage = 100 - (firstPercentage);
+                 String a = firstPercentage + "%";
+                 String d = fourthPercentage + "%";
+                 percent1.setText(a);
+                 percent4.setText(d);
+             } else if (isOption2 && isOption3) {
+                 int option2Count = surveyModel.getOption2Count();
+                 int option3Count = surveyModel.getOption3Count();
+                 int total = option2Count + option3Count;
+                 int thirdPercentage = (option3Count * 100) / total;
+                 int secondPercentage = 100 - (thirdPercentage);
+                 String b = secondPercentage + "%";
+                 String c = thirdPercentage + "%";
+                 percent3.setText(c);
+                 percent2.setText(b);
+             } else if (isOption2 && isOption4) {
+                 int option4Count = surveyModel.getOption4Count();
+                 int option2Count = surveyModel.getOption2Count();
+                 int total = option4Count + option2Count;
+                 int fourthPercentage = (option4Count * 100) / total;
+                 int secondPercentage = 100 - (fourthPercentage);
+                 String b = secondPercentage + "%";
+                 String d = fourthPercentage + "%";
+                 percent4.setText(d);
+                 percent2.setText(b);
+             } else if (isOption3 && isOption4) {
+                 int option3Count = surveyModel.getOption3Count();
+                 int option4Count = surveyModel.getOption4Count();
+                 int total = option3Count + option4Count;
+                 int thirdPercentage = (option3Count * 100) / total;
+                 int fourthPercentage = 100 - (thirdPercentage);
+                 String c = thirdPercentage + "%";
+                 String d = fourthPercentage + "%";
+                 percent3.setText(c);
+                 percent4.setText(d);
+             }
+         }catch (NullPointerException e ){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (ArithmeticException e){
+             Log.i("TAG", "Arithmetic Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
 
         }
 
@@ -536,39 +574,53 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     void onThreeDotClicked(final Context context, final AskSurveyModel surveyModel, ArrayList<Object> list,
                            HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
+try {
+    @SuppressLint("InflateParams")
+    View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog,
+            null, false);
+    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    builder.setView(dialogView);
+    final AlertDialog alertDialog = builder.create();
+    if (alertDialog.getWindow() != null) {
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+    }
 
-        @SuppressLint("InflateParams")
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_overflow_dialog,
-                null, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        if(alertDialog.getWindow()!=null) {
-            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
-        }
+    TextView statusView = dialogView.findViewById(R.id.follow_text_view);
+    if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
+        statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+    } else {
+        statusView.setText(HomeRecyclerViewAdapter.FOLLOW);
+    }
 
-        TextView statusView=dialogView.findViewById(R.id.follow_text_view);
-        if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
-            statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
-        }else {
-            statusView.setText(HomeRecyclerViewAdapter.FOLLOW); }
+    if (FirebaseAuth.getInstance().getCurrentUser() != null &&
+            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())) {
+        View view = dialogView.findViewById(R.id.delete_survey_textview);
+        view.setEnabled(false);
+        view.setClickable(false);
+        view.setAlpha(0.3f);
+    }
+    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())) {
+        View view = dialogView.findViewById(R.id.report_text_view);
+        view.setEnabled(false);
+        view.setClickable(false);
+        view.setAlpha(0.3f);
+    }
+    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())) {
+        statusView.setEnabled(false);
+        statusView.setClickable(false);
+        statusView.setAlpha(0.3f);
+    }
 
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
-                !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
-            View view=dialogView.findViewById(R.id.delete_survey_textview);
-            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
-        }
-        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
-            View view=dialogView.findViewById(R.id.report_text_view);
-            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
-        }if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(surveyModel.getAskerId())){
-            statusView.setEnabled(false);statusView.setClickable(false);statusView.setAlpha(0.3f);
-        }
+    alertDialog.show();
+    handleDialogItemClicked(dialogView, alertDialog, surveyModel, list, adapter, followingIdListFromLocalDatabase);
+}catch(NullPointerException e){
+    Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
 
-        alertDialog.show();
-        handleDialogItemClicked(dialogView,alertDialog,surveyModel,list,adapter,followingIdListFromLocalDatabase);
+}catch (Exception e){
+    Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
 
+}
     }
 
     private void handleDialogItemClicked(final View view,final AlertDialog dialog,final AskSurveyModel surveyModel,
@@ -616,17 +668,25 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onReportClicked(String surveyId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
-        @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.survey_report_dialog,
-                null,false);
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog dialog=builder.create();
-        if(dialog.getWindow()!=null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
-        }
-        dialog.show();
-        onReportItemClicked(dialogView,dialog,surveyId,list,adapter);
+         try {
+             @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.survey_report_dialog,
+                     null, false);
+             AlertDialog.Builder builder = new AlertDialog.Builder(context);
+             builder.setView(dialogView);
+             final AlertDialog dialog = builder.create();
+             if (dialog.getWindow() != null) {
+                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                 dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+             }
+             dialog.show();
+             onReportItemClicked(dialogView, dialog, surveyId, list, adapter);
+         }catch (NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
     }
 
     private void onReportItemClicked(final View view, final AlertDialog dialog,
@@ -693,55 +753,63 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onDeleteClicked(final AskSurveyModel surveyModel,final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
-                null,false );
-        builder.setView(rootview);
-        final AlertDialog alertDialog = builder.create();
-        if(alertDialog.getWindow()!=null) {
-            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
-        }
-        alertDialog.show();
+         try {
+             AlertDialog.Builder builder = new AlertDialog.Builder(context);
+             @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
+                     null, false);
+             builder.setView(rootview);
+             final AlertDialog alertDialog = builder.create();
+             if (alertDialog.getWindow() != null) {
+                 alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                 alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+             }
+             alertDialog.show();
 
-        View cancelButton=rootview.findViewById(R.id.cancel_button);
-        View deleteButton=rootview.findViewById(R.id.delete_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                DocumentReference rootReference=FirebaseFirestore.getInstance().collection("survey").
-                        document(surveyModel.getSurveyId());
-                DocumentReference uploaderReference=FirebaseFirestore.getInstance().collection("user")
-                        .document(surveyModel.getAskerId()).collection("survey")
-                        .document(surveyModel.getSurveyId());
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.delete(rootReference);
-                batch.delete(uploaderReference);
+             View cancelButton = rootview.findViewById(R.id.cancel_button);
+             View deleteButton = rootview.findViewById(R.id.delete_button);
+             cancelButton.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     alertDialog.dismiss();
+                 }
+             });
+             deleteButton.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     alertDialog.dismiss();
+                     DocumentReference rootReference = FirebaseFirestore.getInstance().collection("survey").
+                             document(surveyModel.getSurveyId());
+                     DocumentReference uploaderReference = FirebaseFirestore.getInstance().collection("user")
+                             .document(surveyModel.getAskerId()).collection("survey")
+                             .document(surveyModel.getSurveyId());
+                     WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                     batch.delete(rootReference);
+                     batch.delete(uploaderReference);
 
-                if(isNetworkAvailable()){
+                     if (isNetworkAvailable()) {
 
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            homeMessageListener.onSomeMessage("Survey deleted");
-                            Log.d("TAG","survey  successfully deleted");
-                        }
-                    });
-                    list.remove(getAdapterPosition());
-                    adapter.notifyItemRemoved(getAdapterPosition());
+                         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                             @Override
+                             public void onComplete(@NonNull Task<Void> task) {
+                                 homeMessageListener.onSomeMessage("Survey deleted");
+                                 Log.d("TAG", "survey  successfully deleted");
+                             }
+                         });
+                         list.remove(getAdapterPosition());
+                         adapter.notifyItemRemoved(getAdapterPosition());
 
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
-                }
-            }
-        });
+                     } else {
+                         homeMessageListener.onSomeMessage("No internet connection");
+                     }
+                 }
+             });
+         }catch (NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+
+         }
     }
 
     private boolean isNetworkAvailable(){
@@ -756,134 +824,144 @@ class SurveyViewHolder extends RecyclerView.ViewHolder {
 
     private void onFollowClicked(final AskSurveyModel surveyModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
-            if(status==FOLLOW) {
+         try {
+             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                 if (status == FOLLOW) {
 
-                try {
-                    String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
-                    String selfName = preferences.getString(Constants.userName, null);
-                    String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
-                    String selfBio = preferences.getString(Constants.bio, null);
+                     try {
+                         String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                         SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+                         String selfName = preferences.getString(Constants.userName, null);
+                         String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
+                         String selfBio = preferences.getString(Constants.bio, null);
 
-                    DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(selfUid).collection("following")
-                            .document(surveyModel.getAskerId());
-                    DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(surveyModel.getAskerId()).collection("follower")
-                            .document(selfUid);
-                    DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(selfUid);
-                    DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(surveyModel.getAskerId());
+                         DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(selfUid).collection("following")
+                                 .document(surveyModel.getAskerId());
+                         DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(surveyModel.getAskerId()).collection("follower")
+                                 .document(selfUid);
+                         DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(selfUid);
+                         DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(surveyModel.getAskerId());
 
-                    Map<String, Object> selfFollowingMap = new HashMap<>();
-                    Map<String, Object> askerFollowerMap = new HashMap<>();
-                    Map<String, Object> selfFollowingCountMap = new HashMap<>();
-                    Map<String, Object> askerFollowerCountMap = new HashMap<>();
+                         Map<String, Object> selfFollowingMap = new HashMap<>();
+                         Map<String, Object> askerFollowerMap = new HashMap<>();
+                         Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                         Map<String, Object> askerFollowerCountMap = new HashMap<>();
 
-                    selfFollowingMap.put("followingId", surveyModel.getAskerId());
-                    selfFollowingMap.put("followingName", surveyModel.getAskerName());
-                    selfFollowingMap.put("followingImageUrl", surveyModel.getAskerImageUrlLow());
-                    selfFollowingMap.put("followingBio", surveyModel.getAskerBio());
-                    selfFollowingMap.put("selfId", selfUid);
+                         selfFollowingMap.put("followingId", surveyModel.getAskerId());
+                         selfFollowingMap.put("followingName", surveyModel.getAskerName());
+                         selfFollowingMap.put("followingImageUrl", surveyModel.getAskerImageUrlLow());
+                         selfFollowingMap.put("followingBio", surveyModel.getAskerBio());
+                         selfFollowingMap.put("selfId", selfUid);
 
-                    askerFollowerMap.put("followerId", selfUid);
-                    askerFollowerMap.put("followerName", selfName);
-                    askerFollowerMap.put("followerImageUrl", selfImageUrl);
-                    askerFollowerMap.put("followerBio", Objects.requireNonNull(selfBio));
-                    askerFollowerMap.put("selfId", surveyModel.getAskerId());
+                         askerFollowerMap.put("followerId", selfUid);
+                         if (selfName != null) {
+                             askerFollowerMap.put("followerName", selfName);
+                         }
+                         if (selfImageUrl != null) {
+                             askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                         }
+                         if (selfBio != null) {
+                             askerFollowerMap.put("followerBio", selfBio);
+                         }
+                         askerFollowerMap.put("selfId", surveyModel.getAskerId());
 
-                    selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
-                    askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+                         selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+                         askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
 
-                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
-                    batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
-                    batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
-                    batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
-                    batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
-
-
-                    if (isNetworkAvailable()) {
-                        followingListFromLocalDatabase.add(surveyModel.getAskerId());
-                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.i("TAG", "follower add successfully");
-                                final String followingId = surveyModel.getAskerId();
-                                String followingName = surveyModel.getAskerName();
-                                String followingImageUrl = surveyModel.getAskerImageUrlLow();
-                                String followingBio = surveyModel.getAskerBio();
-                                Following following = new Following(followingId, followingName, followingImageUrl
-                                        , followingBio);
-                                final ArrayList<Following> followingsList = new ArrayList<>();
-                                followingsList.add(following);
-                                AsyncTask.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        LocalDatabase database = new LocalDatabase(context.getApplicationContext());
-                                        database.removeFollowingModel(followingId);
-                                        database.insertFollowingModel(followingsList);
-
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        homeMessageListener.onSomeMessage("No internet connection");
-
-                    }
-                }catch (AssertionError e){
-                    Log.i("TAG", "Assertion error occurs in following :- "+e.getMessage());
-                }
-            }
-            else if (status == UNFOLLOW) {
-
-                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid).collection("following")
-                        .document(surveyModel.getAskerId());
-                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(surveyModel.getAskerId()).collection("follower")
-                        .document(selfUid);
-                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid);
-                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(surveyModel.getAskerId());
-
-                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
-                Map<String,Object> askerFollowerCountMap=new HashMap<>();
-
-                selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
-                askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
-
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.delete(selfFollowingRef);
-                batch.delete(askerFollowerRef);
-                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
-                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+                         WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                         batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
+                         batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
+                         batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                         batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
 
 
-                if(isNetworkAvailable()){
-                    followingListFromLocalDatabase.remove(surveyModel.getAskerId());
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.i("TAG","unfollow successfully");
-                            LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
-                            database.removeFollowingModel(surveyModel.getAskerId());
+                         if (isNetworkAvailable()) {
+                             followingListFromLocalDatabase.add(surveyModel.getAskerId());
+                             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                 @Override
+                                 public void onComplete(@NonNull Task<Void> task) {
+                                     Log.i("TAG", "follower add successfully");
+                                     final String followingId = surveyModel.getAskerId();
+                                     String followingName = surveyModel.getAskerName();
+                                     String followingImageUrl = surveyModel.getAskerImageUrlLow();
+                                     String followingBio = surveyModel.getAskerBio();
+                                     Following following = new Following(followingId, followingName, followingImageUrl
+                                             , followingBio);
+                                     final ArrayList<Following> followingsList = new ArrayList<>();
+                                     followingsList.add(following);
+                                     AsyncTask.execute(new Runnable() {
+                                         @Override
+                                         public void run() {
+                                             LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                             database.removeFollowingModel(followingId);
+                                             database.insertFollowingModel(followingsList);
 
-                        }
-                    });
+                                         }
+                                     });
+                                 }
+                             });
+                         } else {
+                             homeMessageListener.onSomeMessage("No internet connection");
 
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
-                }
-            }
-        }
-        else {
+                         }
+                     } catch (AssertionError e) {
+                         Log.i("TAG", "Assertion error occurs in following :- " + e.getMessage());
+                     }
+                 } else if (status == UNFOLLOW) {
 
-            //sign in again
-        }
+                     String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                     DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(selfUid).collection("following")
+                             .document(surveyModel.getAskerId());
+                     DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(surveyModel.getAskerId()).collection("follower")
+                             .document(selfUid);
+                     DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(selfUid);
+                     DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(surveyModel.getAskerId());
+
+                     Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                     Map<String, Object> askerFollowerCountMap = new HashMap<>();
+
+                     selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
+                     askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
+
+                     WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                     batch.delete(selfFollowingRef);
+                     batch.delete(askerFollowerRef);
+                     batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                     batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
+
+
+                     if (isNetworkAvailable()) {
+                         followingListFromLocalDatabase.remove(surveyModel.getAskerId());
+                         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                             @Override
+                             public void onComplete(@NonNull Task<Void> task) {
+                                 Log.i("TAG", "unfollow successfully");
+                                 LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                 database.removeFollowingModel(surveyModel.getAskerId());
+
+                             }
+                         });
+
+                     } else {
+                         homeMessageListener.onSomeMessage("No internet connection");
+                     }
+                 }
+             } else {
+                 //sign in again
+             }
+         }catch(NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in surveyViewHolder ,"+e.getMessage());
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in surveyViewHolder ,"+e.getMessage());
+         }
+
     }
 }

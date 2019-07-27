@@ -8,6 +8,8 @@ import androidx.emoji.widget.EmojiTextView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.UserAnswerModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
@@ -37,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
     }
      void onAskerImageClicked(final Context context, final UserAnswerModel model){
          Activity activity= (Activity) context;
-        Intent intent=new Intent(context,OtherAccountActivity.class);
+        Intent intent=new Intent(context, OtherAccountActivity.class);
         intent.putExtra("profile_image", model.getAskerImageUrl());
         intent.putExtra("uid", model.getAskerId());
         intent.putExtra("user_name", model.getAskerName());

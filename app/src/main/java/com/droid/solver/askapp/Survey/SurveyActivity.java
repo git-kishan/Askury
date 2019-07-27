@@ -185,6 +185,7 @@ public class SurveyActivity extends AppCompatActivity implements
                 }
                 break;
                 default:
+                    hideSoftKeyboard(questionInputEditText);
                     onBackPressed();
                     break;
         }
@@ -355,7 +356,7 @@ public class SurveyActivity extends AppCompatActivity implements
         String askerName=preferences.getString(Constants.userName, null);
         String askerImageUrlLow=preferences.getString(Constants.LOW_IMAGE_URL, null);
         String askerBio=preferences.getString(Constants.bio, null);
-        final String question=questionInputEditText.getText().toString();
+        final String question=questionInputEditText.getText().toString().trim();
         long timeOfSurvey=System.currentTimeMillis();
         boolean option1=isOption1Available;
         boolean option2=isOption2Available;

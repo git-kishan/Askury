@@ -39,7 +39,9 @@
     <string name="heart_image">Heart</string>
     <string name="some_one_wants_to_know">Someone wants to know</string>
     <string name="some_one_not_asked_question">You haven\'t asked any question yet</string>
-    <string name="some_one_donot_answer_question">You haven\'t answer any question</string>
+    <string name="some_one_donot_answer_question">You haven\'t answer any question yet</string>
+    <string name="user_not_asked_question" translatable="false">User haven\'t asked any question yet</string>
+    <string name="user_donot_answer_question" translatable="false">User haven\'t answer any question yet</string>
     <string name="question">Question</string>
     <string name="question_answer">Question answer</string>
     <string name="answer_image_attached">Attached image</string>
@@ -66,7 +68,7 @@
     <string name="on">On</string>
     <string name="report_error">Report error</string>
     <string name="set_image">Set image as profile picture</string>
-    <string name="change_profile_picture" translatable="false">Change profile picture</string>
+    <string name="change_profile_picture" translatable="false">Set as profile picture</string>
     <string name="login_with_google">Log in with google</string>
     <string name="got_it">Got it</string>
     <string name="thank_you">Thank you</string>
@@ -95,7 +97,6 @@
     <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="ad_unit_id" translatable="false">ca-app-pub-3940256099942544/8135179316</string>
     <string name="placement_id" translatable="false">395972514579548_432196284290504</string>
-
 
 
     <string name="Painting">Painting</string>

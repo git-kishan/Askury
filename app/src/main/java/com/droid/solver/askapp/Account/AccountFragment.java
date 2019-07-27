@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.cardview.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_account, container, false);
         if(getActivity()!=null)
-        toolbarCardViewActivity=getActivity().findViewById(R.id.toolbar_card_view);
+           toolbarCardViewActivity=getActivity().findViewById(R.id.toolbar_card_view);
         profileImage=view.findViewById(R.id.profile_image);
         ImageView settingimage = view.findViewById(R.id.setting_image);
         EmojiTextView profileName=view.findViewById(R.id.user_name_text_view);
@@ -102,22 +103,28 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setTabLayout(View view){
-        TabLayout tabLayout=view.findViewById(R.id.tabLayout);
-        tabLayout.setupWithViewPager(viewPager);
+        try {
+            TabLayout tabLayout = view.findViewById(R.id.tabLayout);
+            tabLayout.setupWithViewPager(viewPager);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if(getActivity()!=null) {
-                Window window = getActivity().getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-                window.setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (getActivity() != null) {
+                    Window window = getActivity().getWindow();
+                    window.setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
+                }
             }
-        }
             Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(),
                     R.drawable.ic_questions_black, null));
             Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(),
                     R.drawable.ic_qa_black, null));
+        }catch(NullPointerException e){
+            Toast.makeText(getActivity(), "Facing some issue, restart your app", Toast.LENGTH_LONG).show();
+        }catch (Exception e){
+            Toast.makeText(getActivity(), "Facing some issue, restart your app", Toast.LENGTH_LONG).show();
+        }
 
     }
+
     private void setViewPager(){
         AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getChildFragmentManager());
         pagerAdapter.addFragment(new AccountQuestionFragment());
@@ -136,6 +143,10 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
+    }
+    @Override
+    public void onDestroyView() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if(getActivity()!=null){
                 Window window = getActivity().getWindow();
@@ -144,8 +155,10 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
             }
         }
         toolbarCardViewActivity.setVisibility(View.VISIBLE);
-        super.onDestroy();
+        super.onStop();
+        super.onDestroyView();
     }
+
     @Override
     public void onClick(final View view) {
         switch (view.getId()){
@@ -206,6 +219,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                             .into(profileImage);
                     e.printStackTrace();
                 }
+            }catch (Exception e){
+             Log.i("TAG", "Exception occurs in accountFragment ,"+e.getMessage());
             }
         }
     }
@@ -224,6 +239,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
         }
     }
+
     private void loadCount(){
         if(getActivity()!=null) {
             SharedPreferences preferences = getActivity().getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);

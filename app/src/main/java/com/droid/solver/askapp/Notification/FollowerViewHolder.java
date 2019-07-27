@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import com.droid.solver.askapp.Account.OtherAccountActivity;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -45,6 +45,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
         context.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
+    }
+    void onProfilePicClicked(final Context context,final FollowerModel model){
+         onCardClicked(context, model);
     }
     private void saveNotificationToLocalDatabase(final String notificationId, final FollowerModel model, final Context context){
 

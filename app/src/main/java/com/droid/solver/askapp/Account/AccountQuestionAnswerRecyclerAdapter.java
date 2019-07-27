@@ -73,11 +73,11 @@ public class AccountQuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             String question=model.getQuestion();
             String answer=model.getAnswer();
             int likeCount=model.getAnswerLikeCount();
+            question=question==null?"Question not available":question.trim();
 
             askerName=askerName==null?"Someone":askerName;
             askerBio=askerBio==null?"":askerBio;
-            question=question==null?"Question not available":question;
-            answer=answer==null?"Answer not available":answer;
+            answer=answer==null?"Answer not available":answer.trim();
 
             String askerUrl= Constants.PROFILE_PICTURE+"/"+askserId+Constants.SMALL_THUMBNAIL;
             String answererUrl=Constants.PROFILE_PICTURE+"/"+answererId+Constants.SMALL_THUMBNAIL;

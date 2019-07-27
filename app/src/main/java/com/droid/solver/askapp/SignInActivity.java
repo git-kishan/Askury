@@ -11,13 +11,12 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.MainActivity;
@@ -69,24 +68,28 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         if(genderSelection && interestSelection) {
             setContentView(R.layout.starting_name);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-           final  TextView name=findViewById(R.id.textView33);
-            final Animation animation=AnimationUtils.loadAnimation(this, R.anim.askury_scale_out);
-            Handler handler=new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    name.startAnimation(animation);
-                }
-            }, 200);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(SignInActivity.this,MainActivity.class));
-                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                    finish();
+            ConstraintLayout root=findViewById(R.id.root);
+           Animation fadeIn=new AlphaAnimation(0.2f, 1);
+           fadeIn.setInterpolator(new AccelerateInterpolator());
+           fadeIn.setDuration(1500);
+           fadeIn.setAnimationListener(new Animation.AnimationListener() {
+               @Override
+               public void onAnimationStart(Animation animation) {
 
-                }
-            }, 700);
+               }
+
+               @Override
+               public void onAnimationEnd(Animation animation) {
+                   startActivity(new Intent(SignInActivity.this,MainActivity.class));
+                   overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                   finish();
+               }
+               @Override
+               public void onAnimationRepeat(Animation animation) {
+
+               }
+           });
+           root.startAnimation(fadeIn);
 
         }
         else {

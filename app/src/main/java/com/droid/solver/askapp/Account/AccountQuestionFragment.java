@@ -2,6 +2,7 @@ package com.droid.solver.askapp.Account;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.Question.UserQuestionModel;
 import com.droid.solver.askapp.R;
@@ -42,6 +45,7 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
     private ImageView questionImage;
     private TextView questionText;
     private NativeBannerAd nativeBannerAd;
+    private CardView progressCard;
     public AccountQuestionFragment() {
     }
 
@@ -66,18 +70,19 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
             if(FirebaseAuth.getInstance().getCurrentUser()!=null)
                 uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
+        progressCard = view.findViewById(R.id.progress_card);
         initRecyclerView();
         return view;
     }
-    private void checkFollowerList(){
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&uid!=null) {
-            String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            if(selfUid.equals(uid)){
-
-            }
-
-        }
-    }
+//    private void checkFollowerList(){
+//        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&uid!=null) {
+//            String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//            if(selfUid.equals(uid)){
+//
+//            }
+//
+//        }
+//    }
     private void initRecyclerView(){
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
@@ -85,6 +90,7 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
         adapter=new AccountQuestionRecyclerAdapter(getActivity(), list);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(scrollListener);
+        progressCard.setVisibility(View.VISIBLE);
         loadQuestionFromRemoteDatabase();
 
     }
@@ -110,7 +116,6 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
     };
 
     private void loadQuestionFromRemoteDatabase(){
-
         if(uid!=null) {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             Query query = rootRef.collection("user").document(uid)
@@ -129,8 +134,13 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
                         if(list!=null&&list.size()==0){
                             questionImage.setVisibility(View.VISIBLE);
                             questionText.setVisibility(View.VISIBLE);
+                            progressCard.setVisibility(View.GONE);
+                            String status=getString(R.string.some_one_not_asked_question);
+                            questionText.setText(status);
+
                         }else {
                             adapter.notifyDataSetChanged();
+                            progressCard.setVisibility(View.GONE);
                             if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                                 lastVisibleQuestionItem = task.getResult().getDocuments().get(task.getResult().size() - 1);
                             }
@@ -144,7 +154,8 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-
+                    progressCard.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "Error occurred ,try after some time ", Toast.LENGTH_SHORT).show();
                     //error occurs ..
                 }
             });
@@ -152,13 +163,9 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
             //uid null
             Log.i("TAG", "uid is null in accountQuestionFragment");
         }
-
-
-
-
     }
     private void loadMoreQuestionFromRemoteDatabase(){
-
+        progressCard.setVisibility(View.VISIBLE);
         FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
         if(lastVisibleQuestionItem==null){
             recyclerView.removeOnScrollListener(scrollListener);
@@ -185,6 +192,7 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
                                 UserQuestionModel model = snapshot.toObject(UserQuestionModel.class);
                                 list.add(model);
                             }
+                        progressCard.setVisibility(View.GONE);
                         adapter.notifyDataSetChanged();
                         if(task.getResult()!=null&&task.getResult().getDocuments().size()>0)
                             lastVisibleQuestionItem=task.getResult().getDocuments().get(task.getResult().size()-1);
@@ -197,7 +205,8 @@ public class AccountQuestionFragment extends Fragment implements NativeAdListene
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-
+                    progressCard.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "Error occurred ,try after some time ", Toast.LENGTH_SHORT).show();
                     //error occurs ...
                 }
             });

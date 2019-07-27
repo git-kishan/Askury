@@ -1,6 +1,8 @@
 package com.droid.solver.askapp.Account;
 
 import android.graphics.Typeface;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -9,11 +11,8 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-
-
 import com.droid.solver.askapp.Main.UidPasserListener;
 import com.droid.solver.askapp.R;
-
 import java.util.Objects;
 
 public class ExpandedViewPagerActivity extends AppCompatActivity implements View.OnClickListener,
@@ -35,13 +34,19 @@ public class ExpandedViewPagerActivity extends AppCompatActivity implements View
     }
 
     private void setTabLayout(){
-        TabLayout tabLayout=findViewById(R.id.tabLayout);
-        tabLayout.setupWithViewPager(viewPager);
+        try {
+            TabLayout tabLayout = findViewById(R.id.tabLayout);
+            tabLayout.setupWithViewPager(viewPager);
 
-        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(),
-                R.drawable.ic_questions_black, null));
-        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(),
-                R.drawable.ic_qa_black, null));
+            Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_questions_black, null));
+            Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_qa_black, null));
+        }catch(NullPointerException e){
+            Snackbar.make(findViewById(R.id.root), "Facing some issue ,restart your app", Snackbar.LENGTH_LONG).show();
+        }catch (Exception e){
+            Snackbar.make(findViewById(R.id.root), "Facing some issue ,restart your app", Snackbar.LENGTH_LONG).show();
+        }
 
     }
     @Override
@@ -50,6 +55,7 @@ public class ExpandedViewPagerActivity extends AppCompatActivity implements View
         overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
 
     }
+
     private void changeToolbarFont(Toolbar toolbar){
         for(int i=0;i<toolbar.getChildCount();i++){
             View view=toolbar.getChildAt(i);

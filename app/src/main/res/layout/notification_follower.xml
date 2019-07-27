@@ -24,6 +24,7 @@
             android:layout_height="34dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:background="@drawable/ripple_background"
             android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"
@@ -46,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/liker_image"
             app:layout_constraintTop_toBottomOf="@+id/time_ago"
-            tools:text="Kishan gupta start following you " />
+            tools:text="Kishan gupta started following you " />
 
         <TextView
             android:id="@+id/time_ago"

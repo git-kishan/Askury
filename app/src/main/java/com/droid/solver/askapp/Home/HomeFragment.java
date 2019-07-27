@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,9 +42,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Stack;
 
@@ -71,7 +73,7 @@ public class HomeFragment extends Fragment  {
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private Handler handler;
     private final int NUMBER_OF_ADS =2;
-    private int AD_COUNTER=0;
+//    private int AD_COUNTER=0;
     private AdLoader adLoader;
     private List<UnifiedNativeAd> mNativeAds ;
 
@@ -123,17 +125,16 @@ public class HomeFragment extends Fragment  {
                 if(getActivity()!=null) {
                     try {
                         LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
-                        if (localDatabase.getImagePollReport() != null)
-                            reportedImageListFromLocalDatabase.addAll(localDatabase.getImagePollReport());
-                        if (localDatabase.getReportedSurvey() != null)
-                            reportedSurveyListFromLocalDatabase.addAll(localDatabase.getReportedSurvey());
-                        if (localDatabase.getReportedQuestion() != null)
-                            reportedQuestionFromLocalDatabase.addAll(localDatabase.getReportedQuestion());
+                            reportedImageListFromLocalDatabase=localDatabase.getImagePollReport();
+                            reportedSurveyListFromLocalDatabase=localDatabase.getReportedSurvey();
+                            reportedQuestionFromLocalDatabase=localDatabase.getReportedQuestion();
                     }catch (NullPointerException e){
                         Log.i("TAG", "NullPointerException occurs in retrieving list from local database ,"+e.getMessage());
 
                     }catch (SQLiteException e){
                         Log.i("TAG", "Sqlitexception occurs in retrieving list from local database ,"+e.getMessage());
+                    }catch (Exception e){
+                        Log.i("TAG", "Exception occurs in HomeFragment,"+e.getMessage());
                     }
                 }
             }
@@ -145,17 +146,16 @@ public class HomeFragment extends Fragment  {
                 if(getActivity()!=null) {
                     try {
                         LocalDatabase localDatabase = new LocalDatabase(getActivity().getApplicationContext());
-                        if(localDatabase.getImagePollLikeModel()!=null)
                             imagePollLikeMapFromLocalDatabase=localDatabase.getImagePollLikeModel();
-                        if(localDatabase.getSurveyParticipatedModel()!=null)
                             surveyParticipatedMapFromLocalDatabase=localDatabase.getSurveyParticipatedModel();
-                        if(localDatabase.getAnswerLikeModel()!=null)
                             answerLikeListFromLocalDatabase=localDatabase.getAnswerLikeModel();
                     }catch (NullPointerException e){
                         Log.i("TAG", "NullPointerException occurs in retrieving list from local database ,"+e.getMessage());
 
                     }catch (SQLiteException e){
                         Log.i("TAG", "Sqlitexception occurs in retrieving list from local database ,"+e.getMessage());
+                    }catch (Exception e){
+                        Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
                     }
                 }
             }
@@ -189,17 +189,24 @@ public class HomeFragment extends Fragment  {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                if(getActivity()!=null) {
-                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-                    if (database.getFollowingIdList()!=null) {
-                        followingIdListFromLocalDatabase.addAll(database.getFollowingIdList());
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
+                try {
+                    if (getActivity() != null) {
+                        LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+                        if (database.getFollowingIdList() != null) {
+                            followingIdListFromLocalDatabase.addAll(database.getFollowingIdList());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
                     }
+                }catch (NullPointerException e){
+                    Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+                }catch(Exception e){
+                    Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
+
                 }
             }
         });
@@ -216,7 +223,7 @@ public class HomeFragment extends Fragment  {
             super.onScrolled(recyclerView, dx, dy);
             LinearLayoutManager manager= (LinearLayoutManager) recyclerView.getLayoutManager();
             if(!isLoading){
-                if(manager!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
+                if(manager!=null&&list!=null&&manager.findLastVisibleItemPosition()==list.size()-1){
                     list.add(list.size(),null);
                     adapter.notifyItemInserted(list.size());
                     isLoading=true;
@@ -228,20 +235,32 @@ public class HomeFragment extends Fragment  {
     };
 
     private void loadDataFromLocalDatabase(){
+
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                if(getActivity()!=null) {
-                    LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-                    if(database.getHomeObject()!=null)
-                    list.addAll(database.getHomeObject());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
-                            shimmerFrameLayout.setVisibility(View.GONE);
-                        }
-                    });
+                try {
+                    if (getActivity() != null) {
+                        LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+                        if (database.getHomeObject() != null)
+                            list.addAll(database.getHomeObject());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (list == null || list.size() == 0) {
+                                    loadQuestionFromRemoteDatabase();
+                                } else {
+                                    adapter.notifyDataSetChanged();
+                                    shimmerFrameLayout.setVisibility(View.GONE);
+                                }
+
+                            }
+                        });
+                    }
+                }catch (NullPointerException e){
+                    Log.i("TAG","NullpointerException occurs in home fragment ,"+e.getMessage());
+                }catch (Exception e){
+                    Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
                 }
             }
         });
@@ -269,35 +288,42 @@ public class HomeFragment extends Fragment  {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if(task.isSuccessful()){
-                            if(task.getResult()!=null)
-                                for(QueryDocumentSnapshot snapshot :task.getResult()){
-                                    AskImagePollModel askImagePollModel=snapshot.toObject(AskImagePollModel.class);
-                                    if(askImagePollModel.getImagePollId()!=null&&
-                                            !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
-                                        int i2 = 0;
+                        try {
+                            if (task.isSuccessful()) {
+                                if (task.getResult() != null)
+                                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                        AskImagePollModel askImagePollModel = snapshot.toObject(AskImagePollModel.class);
+                                        if (askImagePollModel.getImagePollId() != null && (reportedImageListFromLocalDatabase == null ||
+                                                !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId()))) {
+                                            int i2 = 0;
 
-                                      if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
+                                            if (imagePollLikeMapFromLocalDatabase != null && imagePollLikeMapFromLocalDatabase.size() > 0) {
 
-                                            if(imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())){
-                                                Integer i1 = imagePollLikeMapFromLocalDatabase.get(askImagePollModel.getImagePollId());
-                                                String s;
-                                                if (i1 != null) {
-                                                    s = i1.toString();
-                                                    i2 = Integer.parseInt(s);
+                                                if (imagePollLikeMapFromLocalDatabase.containsKey(askImagePollModel.getImagePollId())) {
+                                                    Integer i1 = imagePollLikeMapFromLocalDatabase.get(askImagePollModel.getImagePollId());
+                                                    String s;
+                                                    if (i1 != null) {
+                                                        s = i1.toString();
+                                                        i2 = Integer.parseInt(s);
+                                                    }
                                                 }
-                                            }
 
+                                            }
+                                            askImagePollModel.setOptionSelectedByMe(i2);
+                                            imagePollModelStack.add(askImagePollModel);
                                         }
-                                        askImagePollModel.setOptionSelectedByMe(i2);
-                                        imagePollModelStack.add(askImagePollModel);
                                     }
+                                if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+                                    lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                    MainActivity.homeLastImagePollDocumentSnapshot = lastImagePollSnapshot;
                                 }
-                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0) {
-                                lastImagePollSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                                MainActivity.homeLastImagePollDocumentSnapshot=lastImagePollSnapshot;
                             }
+                        }catch (NullPointerException e){
+                            Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+                        }catch(Exception e){
+                            Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
                         }
+
 
                     }
                 });
@@ -324,32 +350,38 @@ public class HomeFragment extends Fragment  {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if(task.isSuccessful()){
-                            if(task.getResult()!=null)
-                                for(QueryDocumentSnapshot snapshot :task.getResult()){
-                                    AskSurveyModel askSurveyModel=snapshot.toObject(AskSurveyModel.class);
-                                    if(askSurveyModel.getSurveyId()!=null&&
-                                            !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())){
+                        try {
+                            if (task.isSuccessful()) {
+                                if (task.getResult() != null)
+                                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                        AskSurveyModel askSurveyModel = snapshot.toObject(AskSurveyModel.class);
+                                        if (askSurveyModel.getSurveyId() != null && (reportedSurveyListFromLocalDatabase == null ||
+                                                !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId()))) {
 
-                                        int i2=0;
-                                      if(surveyParticipatedMapFromLocalDatabase!=null&&surveyParticipatedMapFromLocalDatabase.size()>0){
-                                            if(surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())){
-                                                Integer i1=surveyParticipatedMapFromLocalDatabase.get(askSurveyModel.getSurveyId());
-                                                String s;
-                                                if(i1!=null){
-                                                    s=i1.toString();
-                                                    i2=Integer.parseInt(s);
+                                            int i2 = 0;
+                                            if (surveyParticipatedMapFromLocalDatabase != null && surveyParticipatedMapFromLocalDatabase.size() > 0) {
+                                                if (surveyParticipatedMapFromLocalDatabase.containsKey(askSurveyModel.getSurveyId())) {
+                                                    Integer i1 = surveyParticipatedMapFromLocalDatabase.get(askSurveyModel.getSurveyId());
+                                                    String s;
+                                                    if (i1 != null) {
+                                                        s = i1.toString();
+                                                        i2 = Integer.parseInt(s);
+                                                    }
                                                 }
                                             }
+                                            askSurveyModel.setOptionSelectedByMe(i2);
+                                            surveyModelStack.add(askSurveyModel);
                                         }
-                                        askSurveyModel.setOptionSelectedByMe(i2);
-                                        surveyModelStack.add(askSurveyModel);
                                     }
+                                if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+                                    lastSurveySnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                    MainActivity.homeLastSurveyDocumentSnapshot = lastSurveySnapshot;
                                 }
-                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                                lastSurveySnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
-                                MainActivity.homeLastSurveyDocumentSnapshot=lastSurveySnapshot;
                             }
+                        }catch(NullPointerException e){
+                            Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+                        }catch (Exception e){
+                            Log.i("TAG","Exception occurs in home fragement,"+e.getMessage());
                         }
                     }
                 });
@@ -382,33 +414,39 @@ public class HomeFragment extends Fragment  {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if(task.isSuccessful()){
-                            if(task.getResult()!=null)
-                                for(QueryDocumentSnapshot snapshot:task.getResult()){
-                                    RootQuestionModel questionModel=snapshot.toObject(RootQuestionModel.class);
-                                    questionModel.setLikedByMe(false);
-                                    if(questionModel.getQuestionId()!=null&&
-                                            !reportedQuestionFromLocalDatabase.contains(questionModel.getQuestionId())){
+                        try {
 
-                                        if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
-                                            if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
-                                                questionModel.setLikedByMe(true);
+                            if (task.isSuccessful()) {
+                                if (task.getResult() != null)
+                                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                        RootQuestionModel questionModel = snapshot.toObject(RootQuestionModel.class);
+                                        questionModel.setLikedByMe(false);
+                                        if (questionModel.getQuestionId() != null && (reportedQuestionFromLocalDatabase == null ||
+                                                !reportedQuestionFromLocalDatabase.contains(questionModel.getQuestionId()))) {
 
-                                        }else if(answerLikeListFromLocalDatabase!=null&&answerLikeListFromLocalDatabase.size()>0){
-                                            if(answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
-                                                questionModel.setLikedByMe(true);
+                                            if (MainActivity.answerLikeList != null && MainActivity.answerLikeList.size() > 0) {
+                                                if (MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
+                                                    questionModel.setLikedByMe(true);
+
+                                            } else if (answerLikeListFromLocalDatabase != null && answerLikeListFromLocalDatabase.size() > 0) {
+                                                if (answerLikeListFromLocalDatabase.contains(questionModel.getRecentAnswerId()))
+                                                    questionModel.setLikedByMe(true);
+                                            }
+                                            questionModelStack.add(questionModel);
                                         }
-                                        questionModelStack.add(questionModel);
                                     }
+                                handleOrderingOfList();
+                                if (task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+                                    lastQuestionSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                    MainActivity.homeLastQuestionDocumentSnapshot = lastQuestionSnapshot;
                                 }
-                            handleOrderingOfList();
-                            if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
-                                lastQuestionSnapshot=task.getResult().getDocuments().get(task.getResult().size()-1);
-                                MainActivity.homeLastQuestionDocumentSnapshot=lastQuestionSnapshot;
+                            } else {
+                                Log.i("TAG", "error occured in getting question documents from remote database");
                             }
-                        }
-                        else {
-                            Log.i("TAG", "error occured in getting question documents from remote database");
+                        }catch (NullPointerException e){
+                            Log.i("TAG","NullPointerException occurs in home fragment ,"+e.getMessage());
+                        }catch(Exception e){
+                            Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
                         }
                     }
                 });
@@ -425,42 +463,58 @@ public class HomeFragment extends Fragment  {
     }
 
     private void handleOrderingOfList( ){
-        list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
+        list.addAll(Objects.requireNonNull(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack)));
         insertAdItem();
         handler.post(new Runnable() {
             @Override
             public void run() {
-                adapter.notifyDataSetChanged();
-                shimmerFrameLayout.setVisibility(View.GONE);
-                MainActivity.isFirstTimeHomeLoaded=false;
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(getActivity()!=null) {
-                            LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
-                            database.insertHomeObject(list);
-                        }}
-                });
+                try {
+                    adapter.notifyDataSetChanged();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    MainActivity.isFirstTimeHomeLoaded = false;
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (getActivity() != null) {
+                                LocalDatabase database = new LocalDatabase(getActivity().getApplicationContext());
+                                database.insertHomeObject(list);
+                            }
+                        }
+                    });
+                }catch (NullPointerException e){
+                    Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+                }catch (Exception e){
+                    Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
+                }
             }
         });
     }
 
     private void handleOnLoadingOrderingOfList(){
-        list.addAll(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack));
-        insertAdItem();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-                shimmerFrameLayout.setVisibility(View.GONE);
-            }
-        });
+        try {
+            list.addAll(Objects.requireNonNull(makeAHomogenousList(questionModelStack, imagePollModelStack, surveyModelStack)));
+            insertAdItem();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                }
+            });
+        }catch (NullPointerException e){
+            Log.i("TAG","NullPointerException occurs in home fragment ,"+e.getMessage());
+        }catch (Exception e){
+            Log.i("TAG","Exception occurs in home fragment ,"+e.getMessage());
+        }
 
     }
 
     //call this function after s1 retrived from remoteDatabase
     private ArrayList<Object> makeAHomogenousList(Stack<RootQuestionModel> s1,Stack<AskImagePollModel> s2,Stack<AskSurveyModel> s3){
         ArrayList<Object> tempList=new ArrayList<>();
+        if(s1==null||s2==null||s3==null){
+            return null;
+        }
         int s1Size=s1.size();
         int s2Size=s2.size();
         int s3Size=s3.size();
@@ -493,9 +547,29 @@ public class HomeFragment extends Fragment  {
     }
 
     private void loadMoreItemFromRemoteDatabase(){
-        onLoadingLoadQuestionFromRemoteDatabase();
-        onLoadingLoadImagePollFromRemoteDatabase();
+        try {
+            onLoadingLoadQuestionFromRemoteDatabase();
+        }catch (NullPointerException e){
+            Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
+        }
+        try {
+            onLoadingLoadImagePollFromRemoteDatabase();
+        }catch (NullPointerException e){
+            Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
+        }
+        try{
         onLoadingLoadSurveyFromRemoteDatabase();
+        }catch (NullPointerException e){
+            Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
+
+        }
 
     }
 
@@ -520,9 +594,8 @@ public class HomeFragment extends Fragment  {
                                     if (task.getResult() != null)
                                         for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                             AskImagePollModel askImagePollModel = snapshot.toObject(AskImagePollModel.class);
-                                            if (askImagePollModel.getImagePollId() != null &&
-                                                    !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId())) {
-
+                                            if (askImagePollModel.getImagePollId() != null &&(reportedImageListFromLocalDatabase==null||
+                                                    !reportedImageListFromLocalDatabase.contains(askImagePollModel.getImagePollId()))) {
                                                 int i2 = 0;
                                               if(imagePollLikeMapFromLocalDatabase!=null&&imagePollLikeMapFromLocalDatabase.size()>0){
 
@@ -575,8 +648,8 @@ public class HomeFragment extends Fragment  {
                                     if (task.getResult() != null)
                                         for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                             AskSurveyModel askSurveyModel = snapshot.toObject(AskSurveyModel.class);
-                                            if (askSurveyModel.getSurveyId() != null &&
-                                                    !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId())) {
+                                            if (askSurveyModel.getSurveyId() != null &&(reportedSurveyListFromLocalDatabase==null||
+                                                    !reportedSurveyListFromLocalDatabase.contains(askSurveyModel.getSurveyId()))) {
                                                 int i2 = 0;
 
                                                 if (surveyParticipatedMapFromLocalDatabase != null && surveyParticipatedMapFromLocalDatabase.size() > 0) {
@@ -637,8 +710,8 @@ public class HomeFragment extends Fragment  {
                                         for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                             RootQuestionModel questionModel = snapshot.toObject(RootQuestionModel.class);
                                             questionModel.setLikedByMe(false);
-                                            if (questionModel.getQuestionId() != null &&
-                                                    !reportedQuestionFromLocalDatabase.contains(questionModel.getRecentAnswerId())) {
+                                            if (questionModel.getQuestionId() != null &&(reportedQuestionFromLocalDatabase==null||
+                                                    !reportedQuestionFromLocalDatabase.contains(questionModel.getRecentAnswerId()))) {
 
                                                 if(MainActivity.answerLikeList!=null&&MainActivity.answerLikeList.size()>0){
                                                     if(MainActivity.answerLikeList.contains(questionModel.getRecentAnswerId()))
@@ -719,9 +792,20 @@ public class HomeFragment extends Fragment  {
         if (list==null||mNativeAds.size() <= 0||list.size()==0||recyclerView==null&&adapter==null) {
             return;
         }
-        int listSize=list.size();
-        list.add(mNativeAds.get(0));
-        list.add(listSize-4,mNativeAds.get(1));
+        try {
+            int listSize = list.size();
+            list.add(mNativeAds.get(0));
+            list.add(listSize - 4, mNativeAds.get(1));
+        }catch (NullPointerException e){
+            Log.i("TAG", "NullPointerException occurs in home fragment ,"+e.getMessage());
+        }catch (ArrayIndexOutOfBoundsException e){
+            Log.i("TAG", "ArrayIndexOutOfBoundException occurs in home fragment ,"+e.getMessage());
+        }catch (IndexOutOfBoundsException e){
+            Log.i("TAG", "IndexOutOfBoundException occurs in home fragment ,"+e.getMessage());
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in home fragment ,"+e.getMessage());
+
+        }
     }
 
 }

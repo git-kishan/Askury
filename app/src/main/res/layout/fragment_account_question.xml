@@ -42,10 +42,37 @@
         android:gravity="center"
         android:alpha="0.7"
         android:visibility="gone"
-        android:text="@string/some_one_not_asked_question"
+        tools:text="@string/user_not_asked_question"
         android:textSize="18sp"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView23" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/progress_card"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="5dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recycler_view"
+        app:layout_constraintTop_toTopOf="parent">
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="24dp"
+            android:layout_gravity="center"
+            android:layout_height="24dp"
+            android:interpolator="@android:anim/anticipate_overshoot_interpolator"
+            android:indeterminateTint="@android:color/black"
+            android:layout_centerInParent="true"
+
+            />
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

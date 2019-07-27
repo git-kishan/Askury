@@ -72,71 +72,74 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
     public void onCheckedChanged(final ChipGroup chipGroup, int checkedId) {
         switch (chipGroup.getId()){
             case R.id.chipGroupTop:
-
                 break;
             case R.id.chipGroupBottom:
-                chip=chipGroup.findViewById(checkedId);
-                if(chip!=null) {
+                try {
+                    chip = chipGroup.findViewById(checkedId);
+                    if (chip != null) {
 
-                    final Animation fadeIn=AnimationUtils.loadAnimation(this, R.anim.chip_scale_in);
-                    final Animation fadeOut=AnimationUtils.loadAnimation(this, R.anim.chip_scale_out);
-                    if(chipMap!=null&&chipMap.size()==5){
-                        chip.setChecked(false);
-                        Snackbar.make(rootLayout, "Atmost five interest", Snackbar.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if(chipMap!=null)
-                    chipMap.put(chip.getText().toString(), checkedId);
-                    chip.startAnimation(fadeOut);
-                    Handler handler=new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            chip.setVisibility(View.GONE);
+                        final Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.chip_scale_in);
+                        final Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.chip_scale_out);
+                        if (chipMap != null && chipMap.size() == 5) {
+                            chip.setChecked(false);
+                            Snackbar.make(rootLayout, "Atmost five interest", Snackbar.LENGTH_SHORT).show();
+                            return;
                         }
-                    }, 200);
-                    Log.i("TAG", "checked Id :- " + chip.getText());
-                    Chip newChip = new Chip(this);
-                    newChip.setTextColor(chip.getTextColors());
-                    newChip.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    newChip.setText(chip.getText());
-                    ChipGroup.LayoutParams params = new ChipGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    newChip.setLayoutParams(params);
-                    newChip.setCloseIconVisible(true);
-                    chipGroupTop.addView(newChip);
-                    newChip.startAnimation(fadeIn);
+                        if (chipMap != null)
+                            chipMap.put(chip.getText().toString(), checkedId);
+                        chip.startAnimation(fadeOut);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                chip.setVisibility(View.GONE);
+                            }
+                        }, 200);
+                        Log.i("TAG", "checked Id :- " + chip.getText());
+                        Chip newChip = new Chip(this);
+                        newChip.setTextColor(chip.getTextColors());
+                        newChip.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        newChip.setText(chip.getText());
+                        ChipGroup.LayoutParams params = new ChipGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        newChip.setLayoutParams(params);
+                        newChip.setCloseIconVisible(true);
+                        chipGroupTop.addView(newChip);
+                        newChip.startAnimation(fadeIn);
 
-                    newChip.setOnCloseIconClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                           final  Chip chip=(Chip)view;
-                            if(chip!=null) {
-                                chip.startAnimation(fadeOut);
-                                Handler handler1=new Handler();
-                                handler1.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        chipGroupTop.removeView(chip);
+                        newChip.setOnCloseIconClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                final Chip chip = (Chip) view;
+                                if (chip != null) {
+                                    chip.startAnimation(fadeOut);
+                                    Handler handler1 = new Handler();
+                                    handler1.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            chipGroupTop.removeView(chip);
 
+                                        }
+                                    }, 300);
+                                    try {
+                                        String chipText = chip.getText().toString();
+                                        Integer chipId = chipMap.get(chipText);
+                                        if (chipId != null) {
+                                            chipMap.remove(chipText);
+                                            Chip bottomChip = chipGroup.findViewById(chipId);
+                                            bottomChip.startAnimation(fadeIn);
+                                            bottomChip.setVisibility(View.VISIBLE);
+                                            bottomChip.setChecked(false);
+                                        }
+                                    } catch (NullPointerException e) {
+                                        Log.i("TAG", "NullPointerException occurs in unboxing chip text ,Interest Activity ," + e.getMessage());
                                     }
-                                }, 300);
-                                try {
-                                    String chipText = chip.getText().toString();
-                                    Integer chipId = chipMap.get(chipText);
-                                    if(chipId!=null) {
-                                        chipMap.remove(chipText);
-                                        Chip bottomChip = chipGroup.findViewById(chipId);
-                                        bottomChip.startAnimation(fadeIn);
-                                        bottomChip.setVisibility(View.VISIBLE);
-                                        bottomChip.setChecked(false);
-                                    }
-                                }catch (NullPointerException e){
-                                    Log.i("TAG", "NullPointerException occurs in unboxing chip text ,Interest Activity ,"+e.getMessage());
                                 }
                             }
-                        }
-                    });
+                        });
 
+                    }
+                }catch (NullPointerException e){
+                    Log.i("TAG","Nullpointer Exception occurs in selecting interest");
                 }
                 break;
         }
@@ -199,8 +202,8 @@ public class InterestActivity extends AppCompatActivity implements ChipGroup.OnC
                                         editor.apply();
                                         alertDialog.dismiss();
                                         startActivity(new Intent(InterestActivity.this, MainActivity.class));
-                                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                                         finish();
+                                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override

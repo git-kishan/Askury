@@ -8,7 +8,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
-import com.droid.solver.askapp.Account.OtherAccountActivity;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.R;
 import java.util.ArrayList;

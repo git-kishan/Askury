@@ -43,7 +43,7 @@
     <string name="delete_question">删除问题</string>
     <string name="delete_survey">删除调查</string>
     <string name="delete_poll">删除投票</string>
-    <string name="a_percent">答： - ％1$d</string>
+    <string name="a_percent">答： - %1$d</string>
     <string name="about_you">关于你</string>
     <string name="ad">Ad</string>
     <string name="add_interest">增加兴趣</string>
@@ -59,7 +59,7 @@
     <string name="change_profile_picture">更改个人资料图片</string>
     <string name="check_your_internet_connection">请检查您的互联网连接</string>
     <string name="contain_violent_words">包含暴力词</string>
-    <string name="count_answer">％1$d 答案</string>
+    <string name="count_answer">%1$d 答案</string>
     <string name="delete">删除</string>
     <string name="edit_profile">编辑个人资料</string>
     <string name="error_occured">发生了错误</string>
@@ -70,7 +70,7 @@
     <string name="gender">性别</string>
     <string name="got_it">得到它了</string>
     <string name="heart_image">心</string>
-    <string name="hi_user">嗨 ％1$s，</string>
+    <string name="hi_user">嗨 %1$s，</string>
     <string name="i_dont_like_imagepoll">我不喜欢照片调查</string>
     <string name="i_dont_like_question">我不喜欢这个问题</string>
     <string name="i_dont_like_survey">我不喜欢这项调查</string>
@@ -88,7 +88,7 @@
     <string name="option">选项</string>
     <string name="option1">选项1</string>
     <string name="option2">选项2</string>
-    <string name="please_wait">请耐心等待 ...</string>
+    <string name="please_wait">请耐心等待 …</string>
     <string name="points">Points</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="profile_image">头像照片</string>
@@ -104,10 +104,10 @@
     <string name="setting">Setting</string>
     <string name="some_one_donot_answer_question">你没有回答任何问题</string>
     <string name="some_one_not_asked_question">你还没有问过任何问题</string>
-    <string name="some_one_start_following_you">％1$s 开始关注你</string>
+    <string name="some_one_start_following_you">%1$s 开始关注你</string>
     <string name="some_one_wants_to_know">有人想知道</string>
-    <string name="someone_answer_your_question">％1$s 回答了你的问题</string>
-    <string name="someone_likes_your_answer">％1$s 喜欢你的回答</string>
+    <string name="someone_answer_your_question">%1$s 回答了你的问题</string>
+    <string name="someone_likes_your_answer">%1$s 喜欢你的回答</string>
     <string name="survey">调查</string>
     <string name="thank_you">谢谢</string>
     <string name="unknown">未知</string>

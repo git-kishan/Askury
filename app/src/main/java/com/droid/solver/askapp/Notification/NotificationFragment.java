@@ -73,6 +73,7 @@ public class NotificationFragment extends Fragment {
 
         }
     }
+
     private ValueEventListener  listener=new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {

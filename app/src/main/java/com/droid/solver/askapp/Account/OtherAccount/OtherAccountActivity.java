@@ -1,4 +1,4 @@
-package com.droid.solver.askapp.Account;
+package com.droid.solver.askapp.Account.OtherAccount;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,7 +8,8 @@ import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
+import com.droid.solver.askapp.Account.AccountFragmentPagerAdapter;
+import com.droid.solver.askapp.Account.ProfileImageZoomActivity;
 import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -145,16 +146,18 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
         tabLayout.newTab();
         tabLayout.newTab();
         try {
-            Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_questions_black, null));
-            Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_qa_black, null));
+            Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_questions_black, null));
+            Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_qa_black, null));
         }catch (NullPointerException e){
             Log.i("TAG","exception occurs in otherAccountActivity :- "+e.getMessage());
         }
     }
     private void setViewPager(){
         AccountFragmentPagerAdapter pagerAdapter=new AccountFragmentPagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragment(new AccountQuestionFragment());
-        pagerAdapter.addFragment(new AccountQuestionAnswerFragment());
+        pagerAdapter.addFragment(new QuestionFragment());
+        pagerAdapter.addFragment(new QuestionAnswerFragment());
         viewPager.setAdapter(pagerAdapter);
     }
     private void checkUserAuth(){
@@ -195,7 +198,7 @@ public class OtherAccountActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void onProfileImageClicked(){
-        Intent intent=new Intent(this,ProfileImageZoomActivity.class);
+        Intent intent=new Intent(this, ProfileImageZoomActivity.class);
         intent.putExtra("uid", uid);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);

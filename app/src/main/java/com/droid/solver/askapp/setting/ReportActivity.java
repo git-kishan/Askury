@@ -82,6 +82,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             cardView.setVisibility(View.VISIBLE);
             uploadReportToRemoteDatabase();
         }else {
+            hideSoftKeyboard();
             onBackPressed();
         }
     }

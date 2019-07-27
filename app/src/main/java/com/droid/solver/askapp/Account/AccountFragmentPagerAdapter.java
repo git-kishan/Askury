@@ -9,13 +9,13 @@ public class AccountFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Fragment> fragmentArrayList;
 
-     AccountFragmentPagerAdapter(FragmentManager fm) {
+     public AccountFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
         fragmentArrayList=new ArrayList<>();
 
     }
 
-     void addFragment(Fragment fragment){
+     public void addFragment(Fragment fragment){
         fragmentArrayList.add(fragment);
     }
     @Override

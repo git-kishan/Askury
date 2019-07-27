@@ -24,7 +24,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.droid.solver.askapp.Account.OtherAccountActivity;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.ImagePoll.AskImagePollModel;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.ImagePollClickListener;
@@ -43,8 +43,6 @@ import com.google.firebase.firestore.WriteBatch;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
  class ImagePollViewHolder extends RecyclerView.ViewHolder {
@@ -108,323 +106,356 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     void onImage1LongClicked(final Context context, final AskImagePollModel imagePollModel) {
 
-        DocumentReference rootImagePollRef = firestoreRootRef.collection("imagePoll").document(imagePollModel.getImagePollId());
-        DocumentReference askerImagePollRef = firestoreRootRef.collection("user").document(imagePollModel.getAskerId())
-                .collection("imagePoll").document(imagePollModel.getImagePollId());
-        DocumentReference userImagePollLikeRef = firestoreRootRef.collection("user").document(user.getUid()).
-                collection("imagePollLike").document("like");
+         try {
+             DocumentReference rootImagePollRef = firestoreRootRef.collection("imagePoll").document(imagePollModel.getImagePollId());
+             DocumentReference askerImagePollRef = firestoreRootRef.collection("user").document(imagePollModel.getAskerId())
+                     .collection("imagePoll").document(imagePollModel.getImagePollId());
+             DocumentReference userImagePollLikeRef = firestoreRootRef.collection("user").document(user.getUid()).
+                     collection("imagePollLike").document("like");
 
-        Map<String, Object> rootImagePollMap = new HashMap<>();
-        rootImagePollMap.put("image1LikeNo", FieldValue.increment(1));
+             Map<String, Object> rootImagePollMap = new HashMap<>();
+             rootImagePollMap.put("image1LikeNo", FieldValue.increment(1));
 
-        Map<String,Object> imagePollLikeMap=new HashMap<>();
-        imagePollLikeMap.put(imagePollModel.getImagePollId(), 1);
+             final Map<String, Object> imagePollLikeMap = new HashMap<>();
+             imagePollLikeMap.put(imagePollModel.getImagePollId(), 1);
 
-        Map<String, Object> userImagePollLikeMap = new HashMap<>();
-        userImagePollLikeMap.put("imagePollMapList", FieldValue.arrayUnion(imagePollLikeMap));
+             Map<String, Object> userImagePollLikeMap = new HashMap<>();
+             userImagePollLikeMap.put("imagePollMapList", FieldValue.arrayUnion(imagePollLikeMap));
 
-        WriteBatch batch = firestoreRootRef.batch();
-        batch.update(rootImagePollRef, rootImagePollMap);
-        batch.update(askerImagePollRef, rootImagePollMap);
-        batch.set(userImagePollLikeRef, userImagePollLikeMap, SetOptions.merge());
-
-        if(getAdapterPosition()<=7){
-            imagePollModel.setOptionSelectedByMe(1);
-            imagePollModel.setImage1LikeNo(imagePollModel.getImage1LikeNo() + 1);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LocalDatabase database = new LocalDatabase(context.getApplicationContext());
-                    database.updateImagePollModel(imagePollModel);
-                }
-            });
-        }
+             WriteBatch batch = firestoreRootRef.batch();
+             batch.update(rootImagePollRef, rootImagePollMap);
+             batch.update(askerImagePollRef, rootImagePollMap);
+             batch.set(userImagePollLikeRef, userImagePollLikeMap, SetOptions.merge());
 
 
-        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                   final  HashMap<String,Integer> map=new HashMap<>();
-                    map.put(imagePollModel.getImagePollId(), 1);
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            LocalDatabase localDatabase=new LocalDatabase(context.getApplicationContext());
-                            localDatabase.removeImagePollLikeModel(imagePollModel.getImagePollId());
-                            localDatabase.insertImagePollLikeModel(map);
-                        }
-                    });
+             Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
+             final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
+             leftWhiteHeart.startAnimation(animation);
+             constraintLayout.animate().translationY(40f).setDuration(0).start();
+             leftWhiteHeart.setVisibility(View.VISIBLE);
+             final int totalLikeOfBothImages = (imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1);//till now in addition to current user
 
-                    Log.i("TAG", "image poll batch write successfull");
-                }else {
-                    Log.i("TAG", "image poll batch write fails");
-                }
-            }
-        });
+             final Handler handler = new Handler();
+             handler.postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                     leftWhiteHeart.startAnimation(fadeOut);
+                     Handler handler1 = new Handler();
+                     handler1.postDelayed(new Runnable() {
+                         @Override
+                         public void run() {
+                             leftWhiteHeart.setVisibility(View.GONE);
+                             constraintLayout.setVisibility(View.VISIBLE);
+                             constraintLayout.animate().translationY(0f).setDuration(300).start();
+                             Handler handler2 = new Handler();
+                             handler2.postDelayed(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     int firstPercentage = ((imagePollModel.getImage1LikeNo() + 1) * 100 / totalLikeOfBothImages);//white view1
+                                     int secondPercentage = 100 - firstPercentage;//black white
+                                     double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
+                                     ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
+                                     layoutParams.width = (int) view1Width;
+                                     if (firstPercentage == 100) {
+                                         view2.setVisibility(View.GONE);
+                                         Log.i("TAG", "first percentage match parent");
+                                     }
+                                     view1.setLayoutParams(layoutParams);
+                                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                                             view2.getHeight());
+                                     (params).setMarginStart((int) view1Width);
+                                     text2.setLayoutParams(params);
+                                     if (firstPercentage > secondPercentage) {
+                                         view1.setBackground(context.getDrawable(R.drawable.view1_background));
+                                         view2.setBackground(context.getDrawable(R.drawable.view2_background));
+                                         text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                         text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                     } else {
+                                         view1.setBackground(context.getDrawable(R.drawable.view2_background));
+                                         view2.setBackground(context.getDrawable(R.drawable.view1_background));
+                                         text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                         text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                     }
+                                     String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
+                                     String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
 
-        Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
-        final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
-        leftWhiteHeart.startAnimation(animation);
-        constraintLayout.animate().translationY(40f).setDuration(0).start();
-        leftWhiteHeart.setVisibility(View.VISIBLE);
-        final  int totalLikeOfBothImages =getAdapterPosition()<=7?(imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo()) :
-                (imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1);//till now in addition to current user
+                                     if (firstPercentage < 20)
+                                         text1.setVisibility(View.GONE);
+                                     if (secondPercentage < 20)
+                                         text2.setVisibility(View.GONE);
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                leftWhiteHeart.startAnimation(fadeOut);
-                Handler handler1 = new Handler();
-                handler1.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        leftWhiteHeart.setVisibility(View.GONE);
-                        constraintLayout.setVisibility(View.VISIBLE);
-                        constraintLayout.animate().translationY(0f).setDuration(300).start();
-                        Handler handler2 = new Handler();
-                        handler2.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                int firstPercentage =((imagePollModel.getImage1LikeNo()+1)*100/totalLikeOfBothImages);//white view1
-                                int secondPercentage = 100 - firstPercentage;//black white
-                                double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
-                                ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
-                                layoutParams.width = (int) view1Width;
-                                if(firstPercentage==100) {
-                                    view2.setVisibility(View.GONE);
-                                    Log.i("TAG", "first percentage match parent");
-                                }
-                                view1.setLayoutParams(layoutParams);
-                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
-                                        view2.getHeight());
-                                (params).setMarginStart((int) view1Width);
-                                text2.setLayoutParams(params);
-                                if(firstPercentage>secondPercentage){
-                                    view1.setBackground(context.getDrawable(R.drawable.view1_background));
-                                    view2.setBackground(context.getDrawable(R.drawable.view2_background));
-                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                                }else {
-                                    view1.setBackground(context.getDrawable(R.drawable.view2_background));
-                                    view2.setBackground(context.getDrawable(R.drawable.view1_background));
-                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                                }
-                                String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
-                                String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
+                                     text1.setText(String.format("%s%%", mfirstPercentage));
+                                     text2.setText(String.format("%s%%", msecondPercentage));
+                                     Animation redHeartFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.red_heart_fade_in);
+                                     leftRedHeart.setVisibility(View.VISIBLE);
+                                     leftRedHeart.startAnimation(redHeartFadeInAnimation);
+                                 }
+                             }, 0);
 
-                                if (firstPercentage < 20)
-                                    text1.setVisibility(View.GONE);
-                                if (secondPercentage < 20)
-                                    text2.setVisibility(View.GONE);
+                         }
+                     }, 300);
+                 }
+             }, 1000);
 
-                                text1.setText(String.format("%s%%", mfirstPercentage));
-                                text2.setText(String.format("%s%%", msecondPercentage));
-                                Animation redHeartFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.red_heart_fade_in);
-                                leftRedHeart.setVisibility(View.VISIBLE);
-                                leftRedHeart.startAnimation(redHeartFadeInAnimation);
-                            }
-                        }, 0);
+             image1.setLongClickable(false);
+             image2.setLongClickable(false);
 
-                    }
-                }, 300);
-            }
-        }, 1000);
+             if (getAdapterPosition() <= 7) {
+                 imagePollModel.setOptionSelectedByMe(1);
+                 imagePollModel.setImage1LikeNo(imagePollModel.getImage1LikeNo() + 1);
+                 AsyncTask.execute(new Runnable() {
+                     @Override
+                     public void run() {
+                         LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                         database.updateImagePollModel(imagePollModel);
+                     }
+                 });
+             }
 
-        image1.setLongClickable(false);
-        image2.setLongClickable(false);
+
+             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                 @Override
+                 public void onComplete(@NonNull Task<Void> task) {
+                     if (task.isSuccessful()) {
+                         final HashMap<String, Integer> map = new HashMap<>();
+                         map.put(imagePollModel.getImagePollId(), 1);
+                         AsyncTask.execute(new Runnable() {
+                             @Override
+                             public void run() {
+                                 LocalDatabase localDatabase = new LocalDatabase(context.getApplicationContext());
+                                 localDatabase.removeImagePollLikeModel(imagePollModel.getImagePollId());
+                                 localDatabase.insertImagePollLikeModel(map);
+                             }
+                         });
+
+                         Log.i("TAG", "image poll batch write successfull");
+                     } else {
+                         Log.i("TAG", "image poll batch write fails");
+                     }
+                 }
+             });
+         }catch (ArithmeticException e){
+             Log.i("TAG", "ArithmeticException occurs in imagePollViewHolder ,"+e.getMessage());
+
+         }catch (NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in imagePollViewHolder ,"+e.getMessage());
+
+         }catch (Exception e ){
+             Log.i("TAG", "Exception occurs in imagePollViewHolder ,"+e.getMessage());
+
+         }
 
 
     }
 
     void onImage2LongClicked(final Context context, final AskImagePollModel imagePollModel) {
 
-        DocumentReference rootImagePollRef = firestoreRootRef.collection("imagePoll").document(imagePollModel.getImagePollId());
-        DocumentReference askerImagePollRef = firestoreRootRef.collection("user").document(imagePollModel.getAskerId())
-                .collection("imagePoll").document(imagePollModel.getImagePollId());
-        DocumentReference userImagePollLikeRef = firestoreRootRef.collection("user").document(user.getUid()).
-                collection("imagePollLike").document("like");
+         try {
+             DocumentReference rootImagePollRef = firestoreRootRef.collection("imagePoll").document(imagePollModel.getImagePollId());
+             DocumentReference askerImagePollRef = firestoreRootRef.collection("user").document(imagePollModel.getAskerId())
+                     .collection("imagePoll").document(imagePollModel.getImagePollId());
+             DocumentReference userImagePollLikeRef = firestoreRootRef.collection("user").document(user.getUid()).
+                     collection("imagePollLike").document("like");
 
-        Map<String, Object> rootImagePollMap = new HashMap<>();
-        rootImagePollMap.put("image2LikeNo", FieldValue.increment(1));
+             Map<String, Object> rootImagePollMap = new HashMap<>();
+             rootImagePollMap.put("image2LikeNo", FieldValue.increment(1));
 
-        Map<String,Object> imagePollLikeMap=new HashMap<>();
-        imagePollLikeMap.put(imagePollModel.getImagePollId(), 2);
+             Map<String, Object> imagePollLikeMap = new HashMap<>();
+             imagePollLikeMap.put(imagePollModel.getImagePollId(), 2);
 
-        Map<String, Object> userImagePollLikeMap = new HashMap<>();
-        userImagePollLikeMap.put("imagePollMapList", FieldValue.arrayUnion(imagePollLikeMap));
+             Map<String, Object> userImagePollLikeMap = new HashMap<>();
+             userImagePollLikeMap.put("imagePollMapList", FieldValue.arrayUnion(imagePollLikeMap));
 
-        WriteBatch batch = firestoreRootRef.batch();
-        batch.update(rootImagePollRef, rootImagePollMap);
-        batch.update(askerImagePollRef, rootImagePollMap);
-        batch.update(userImagePollLikeRef, userImagePollLikeMap);
+             WriteBatch batch = firestoreRootRef.batch();
+             batch.update(rootImagePollRef, rootImagePollMap);
+             batch.update(askerImagePollRef, rootImagePollMap);
+             batch.update(userImagePollLikeRef, userImagePollLikeMap);
 
-        if(getAdapterPosition()<=7){
-            imagePollModel.setOptionSelectedByMe(2);
-            imagePollModel.setImage2LikeNo(imagePollModel.getImage2LikeNo() + 1);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LocalDatabase database = new LocalDatabase(context.getApplicationContext());
-                    database.updateImagePollModel(imagePollModel);
-                }
-            });
-        }
+             Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
+             final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
+             rightWhiteHeart.startAnimation(animation);
+             constraintLayout.animate().translationY(40f).setDuration(0).start();
+             rightWhiteHeart.setVisibility(View.VISIBLE);
+             final Handler handler = new Handler();
+             final int totalLikeOfBothImages = (imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1);//till now in addition to current user
+             handler.postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                     rightWhiteHeart.startAnimation(fadeOut);
+                     Handler handler1 = new Handler();
+                     handler1.postDelayed(new Runnable() {
+                         @Override
+                         public void run() {
+                             rightWhiteHeart.setVisibility(View.GONE);
+                             constraintLayout.setVisibility(View.VISIBLE);
+                             constraintLayout.animate().translationY(0f).setDuration(400).start();
+                             Handler handler2 = new Handler();
+                             handler2.postDelayed(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     int secondPercentage = (((imagePollModel.getImage2LikeNo() + 1) * 100) / totalLikeOfBothImages);
+                                     int firstPercentage = 100 - secondPercentage;
+                                     double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
+                                     ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
+                                     layoutParams.width = (int) view1Width;
+                                     if (firstPercentage == 100) {
+                                         view2.setVisibility(View.GONE);
+                                         Log.i("TAG", "first percentage match parent");
+                                     }
+                                     view1.setLayoutParams(layoutParams);
+                                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                                             view2.getHeight());
+                                     (params).setMarginStart((int) view1Width);
+                                     text2.setLayoutParams(params);
+                                     if (firstPercentage > secondPercentage) {
+                                         view1.setBackground(context.getDrawable(R.drawable.view1_background));
+                                         view2.setBackground(context.getDrawable(R.drawable.view2_background));
+                                         text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                         text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                     } else {
+                                         view1.setBackground(context.getDrawable(R.drawable.view2_background));
+                                         view2.setBackground(context.getDrawable(R.drawable.view1_background));
+                                         text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                                         text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                                     }
+                                     if (firstPercentage < 20)
+                                         text1.setVisibility(View.GONE);
+                                     if (secondPercentage < 20)
+                                         text2.setVisibility(View.GONE);
+                                     String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
+                                     String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
+                                     text1.setText(String.format("%s%%", mfirstPercentage));
+                                     text2.setText(String.format("%s%%", msecondPercentage));
+                                     Animation redHeartFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.red_heart_fade_in);
+                                     rightRedHeart.setVisibility(View.VISIBLE);
+                                     rightRedHeart.startAnimation(redHeartFadeInAnimation);
+                                 }
+                             }, 0);
+
+                         }
+                     }, 500);
+                 }
+             }, 1000);
+
+             image1.setLongClickable(false);
+             image2.setLongClickable(false);
 
 
-        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    final HashMap<String,Integer> map=new HashMap<>();
-                    map.put(imagePollModel.getImagePollId(), 2);
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            LocalDatabase localDatabase=new LocalDatabase(context.getApplicationContext());
-                            localDatabase.removeImagePollLikeModel(imagePollModel.getImagePollId());
-                            localDatabase.insertImagePollLikeModel(map);
+             if (getAdapterPosition() <= 7) {
+                 imagePollModel.setOptionSelectedByMe(2);
+                 imagePollModel.setImage2LikeNo(imagePollModel.getImage2LikeNo() + 1);
+                 AsyncTask.execute(new Runnable() {
+                     @Override
+                     public void run() {
+                         LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                         database.updateImagePollModel(imagePollModel);
+                     }
+                 });
+             }
 
-                        }
-                    });
-                    Log.i("TAG", "batch operation of image poll successfull");
-                }else {
-                    Log.i("TAG", "batch operation of image poll fails");
-                }
-            }
-        });
-        Animation animation = AnimationUtils.loadAnimation(context, R.anim.heart_bouncing_animation_scalein);
-        final Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.heart_fade_out);
-        rightWhiteHeart.startAnimation(animation);
-        constraintLayout.animate().translationY(40f).setDuration(0).start();
-        rightWhiteHeart.setVisibility(View.VISIBLE);
-        final Handler handler = new Handler();
-        final  int totalLikeOfBothImages =getAdapterPosition()<=7?(imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo()) :
-                (imagePollModel.getImage1LikeNo() + imagePollModel.getImage2LikeNo() + 1);//till now in addition to current user
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rightWhiteHeart.startAnimation(fadeOut);
-                Handler handler1 = new Handler();
-                handler1.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rightWhiteHeart.setVisibility(View.GONE);
-                        constraintLayout.setVisibility(View.VISIBLE);
-                        constraintLayout.animate().translationY(0f).setDuration(400).start();
-                        Handler handler2 = new Handler();
-                        handler2.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                int firstPercentage = ((imagePollModel.getImage1LikeNo()*100)/totalLikeOfBothImages);//white view1
-                                int secondPercentage = 100 - firstPercentage;//black white
-                                double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
-                                ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
-                                layoutParams.width = (int) view1Width;
-                                if(firstPercentage==100) {
-                                    view2.setVisibility(View.GONE);
-                                    Log.i("TAG", "first percentage match parent");
-                                }
-                                view1.setLayoutParams(layoutParams);
-                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
-                                        view2.getHeight());
-                                (params).setMarginStart((int) view1Width);
-                                text2.setLayoutParams(params);
-                                if(firstPercentage>secondPercentage){
-                                    view1.setBackground(context.getDrawable(R.drawable.view1_background));
-                                    view2.setBackground(context.getDrawable(R.drawable.view2_background));
-                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                                }else {
-                                    view1.setBackground(context.getDrawable(R.drawable.view2_background));
-                                    view2.setBackground(context.getDrawable(R.drawable.view1_background));
-                                    text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                                    text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                                }
-                                if (firstPercentage < 20)
-                                    text1.setVisibility(View.GONE);
-                                if (secondPercentage < 20)
-                                    text2.setVisibility(View.GONE);
-                                String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
-                                String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
-                                text1.setText(String.format("%s%%", mfirstPercentage));
-                                text2.setText(String.format("%s%%", msecondPercentage));
-                                Animation redHeartFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.red_heart_fade_in);
-                                rightRedHeart.setVisibility(View.VISIBLE);
-                                rightRedHeart.startAnimation(redHeartFadeInAnimation);
-                            }
-                        }, 0);
 
-                    }
-                }, 500);
-            }
-        }, 1000);
+             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                 @Override
+                 public void onComplete(@NonNull Task<Void> task) {
+                     if (task.isSuccessful()) {
+                         final HashMap<String, Integer> map = new HashMap<>();
+                         map.put(imagePollModel.getImagePollId(), 2);
+                         AsyncTask.execute(new Runnable() {
+                             @Override
+                             public void run() {
+                                 LocalDatabase localDatabase = new LocalDatabase(context.getApplicationContext());
+                                 localDatabase.removeImagePollLikeModel(imagePollModel.getImagePollId());
+                                 localDatabase.insertImagePollLikeModel(map);
 
-        image1.setLongClickable(false);
-        image2.setLongClickable(false);
+                             }
+                         });
+                         Log.i("TAG", "batch operation of image poll successfull");
+                     } else {
+                         Log.i("TAG", "batch operation of image poll fails");
+                     }
+                 }
+             });
+         }catch (ArithmeticException e){
+             Log.i("TAG", "ArithmeticException occurs in imagePollViewHolder ,"+e.getMessage());
+
+         }catch (NullPointerException e ){
+             Log.i("TAG", "NullPointerException occurs in imagePollViewHolder ,"+e.getMessage());
+
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in imagePollViewHolder ,"+e.getMessage());
+
+         }
 
     }
 
     void showLike(final Context context, final int image1LikeNo, final int image2LikeNo, final int choice) {
                  final int totalLikeOfBothImages = image1LikeNo + image2LikeNo;//till now in addition to current user
-                 if(choice!=0&&totalLikeOfBothImages!=0) {
-                     image1.setLongClickable(false);
-                     image2.setLongClickable(false);
-                     leftRedHeart.setVisibility(View.GONE);
-                     rightRedHeart.setVisibility(View.GONE);
-                     Handler handler = new Handler();
-                     handler.post(new Runnable() {
-                         @Override
-                         public void run() {
-                             constraintLayout.setVisibility(View.VISIBLE);
-                             int firstPercentage = image1LikeNo * 100 / (totalLikeOfBothImages);//white view1
-                             int secondPercentage = 100 - firstPercentage;//black white
-                             double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
-                             ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
-                             layoutParams.width = (int) view1Width;
-                             if (firstPercentage == 100) {
-                                 view2.setVisibility(View.GONE);
-                                 Log.i("TAG", "first percentage match parent");
-                             }
-                             view1.setLayoutParams(layoutParams);
-                             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
-                                     view2.getHeight());
-                             (params).setMarginStart((int) view1Width);
-                             text2.setLayoutParams(params);
-                             if(firstPercentage>secondPercentage){
-                                 view1.setBackground(context.getDrawable(R.drawable.view1_background));
-                                 view2.setBackground(context.getDrawable(R.drawable.view2_background));
-                                 text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                                 text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                             }else {
-                                 view1.setBackground(context.getDrawable(R.drawable.view2_background));
-                                 view2.setBackground(context.getDrawable(R.drawable.view1_background));
-                                 text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
-                                 text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
-                             }
-                             if (firstPercentage < 20)
-                                 text1.setVisibility(View.GONE);
-                             if (secondPercentage < 20)
-                                 text2.setVisibility(View.GONE);
-                             String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
-                             String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
-                             text1.setText(String.format("%s%%", mfirstPercentage));
-                             text2.setText(String.format("%s%%", msecondPercentage));
-                             if (choice == 1) {
-                                 leftRedHeart.setVisibility(View.VISIBLE);
-                                 rightRedHeart.setVisibility(View.GONE);
-                             } else if (choice == 2) {
-                                 rightRedHeart.setVisibility(View.VISIBLE);
-                                 leftRedHeart.setVisibility(View.GONE);
-                             }
-                             image1.setLongClickable(false);
-                             image2.setLongClickable(false);
-                         }
-                     });
+        try {
+            if (choice != 0 && totalLikeOfBothImages != 0) {
+                image1.setLongClickable(false);
+                image2.setLongClickable(false);
+                leftRedHeart.setVisibility(View.GONE);
+                rightRedHeart.setVisibility(View.GONE);
+                Handler handler = new Handler();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        constraintLayout.setVisibility(View.VISIBLE);
+                        int firstPercentage = image1LikeNo * 100 / (totalLikeOfBothImages);//white view1
+                        int secondPercentage = 100 - firstPercentage;//black white
+                        double view1Width = (double) (constraintLayout.getWidth()) * firstPercentage / 100;
+                        ViewGroup.LayoutParams layoutParams = view1.getLayoutParams();
+                        layoutParams.width = (int) view1Width;
+                        if (firstPercentage == 100) {
+                            view2.setVisibility(View.GONE);
+                            Log.i("TAG", "first percentage match parent");
+                        }
+                        view1.setLayoutParams(layoutParams);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view2.getWidth(),
+                                view2.getHeight());
+                        (params).setMarginStart((int) view1Width);
+                        text2.setLayoutParams(params);
+                        if (firstPercentage > secondPercentage) {
+                            view1.setBackground(context.getDrawable(R.drawable.view1_background));
+                            view2.setBackground(context.getDrawable(R.drawable.view2_background));
+                            text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                            text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                        } else {
+                            view1.setBackground(context.getDrawable(R.drawable.view2_background));
+                            view2.setBackground(context.getDrawable(R.drawable.view1_background));
+                            text1.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.white, null));
+                            text2.setTextColor(ResourcesCompat.getColor(context.getResources(), android.R.color.black, null));
+                        }
+                        if (firstPercentage < 20)
+                            text1.setVisibility(View.GONE);
+                        if (secondPercentage < 20)
+                            text2.setVisibility(View.GONE);
+                        String mfirstPercentage = String.format(context.getString(R.string.first_percentage), firstPercentage);
+                        String msecondPercentage = String.format(context.getString(R.string.second_percentage), secondPercentage);
+                        text1.setText(String.format("%s%%", mfirstPercentage));
+                        text2.setText(String.format("%s%%", msecondPercentage));
+                        if (choice == 1) {
+                            leftRedHeart.setVisibility(View.VISIBLE);
+                            rightRedHeart.setVisibility(View.GONE);
+                        } else if (choice == 2) {
+                            rightRedHeart.setVisibility(View.VISIBLE);
+                            leftRedHeart.setVisibility(View.GONE);
+                        }
+                        image1.setLongClickable(false);
+                        image2.setLongClickable(false);
+                    }
+                });
 
-                 }
+            }
+        }catch (ArithmeticException e){
+            Log.i("TAG", "ArithmeticException occurs in imagePollViewHolder ,"+e.getMessage());
+
+        }catch (NullPointerException e){
+            Log.i("TAG", "NullPointerException occurs in imagePollViewHolder ,"+e.getMessage());
+
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in imagePollViewHolder ,"+e.getMessage());
+        }
     }
 
     void onProfileImageClicked(final Context context,final AskImagePollModel imagePollModel){
@@ -441,85 +472,104 @@ import de.hdodenhof.circleimageview.CircleImageView;
     void onThreeDotClicked(final Context context, final AskImagePollModel imagePollModel,
                            final ArrayList<Object> list, HomeRecyclerViewAdapter adapter,String status,
                            final ArrayList<String> followingListFromLocalDatabase) {
+         try {
 
-       @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog,
-               null, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        if(alertDialog.getWindow()!=null) {
-            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
-        }
+             @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.image_poll_overflow_dialog,
+                     null, false);
+             AlertDialog.Builder builder = new AlertDialog.Builder(context);
+             builder.setView(dialogView);
+             final AlertDialog alertDialog = builder.create();
+             if (alertDialog.getWindow() != null) {
+                 alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                 alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+             }
 
-        TextView statusView=dialogView.findViewById(R.id.follow_text_view);
-        if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
-            statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
-        }else {
-            statusView.setText(HomeRecyclerViewAdapter.FOLLOW); }
+             TextView statusView = dialogView.findViewById(R.id.follow_text_view);
+             if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
+                 statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+             } else {
+                 statusView.setText(HomeRecyclerViewAdapter.FOLLOW);
+             }
 
 
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
-                !imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-            View view = dialogView.findViewById(R.id.delete_poll_text_view);
-            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
-        }
-        if(imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-            View view=dialogView.findViewById(R.id.report_text_view);
-            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
-        }
-        if(imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-            statusView.setEnabled(false);statusView.setClickable(false);statusView.setAlpha(0.3f);
-        }
-        alertDialog.show();
-        handleDialogItemClicked(dialogView,alertDialog,imagePollModel,list,adapter,followingListFromLocalDatabase);
+             if (FirebaseAuth.getInstance().getCurrentUser() != null &&
+                     !imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                 View view = dialogView.findViewById(R.id.delete_poll_text_view);
+                 view.setEnabled(false);
+                 view.setClickable(false);
+                 view.setAlpha(0.3f);
+             }
+             if (imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                 View view = dialogView.findViewById(R.id.report_text_view);
+                 view.setEnabled(false);
+                 view.setClickable(false);
+                 view.setAlpha(0.3f);
+             }
+             if (imagePollModel.getAskerId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                 statusView.setEnabled(false);
+                 statusView.setClickable(false);
+                 statusView.setAlpha(0.3f);
+             }
+             alertDialog.show();
+             handleDialogItemClicked(dialogView, alertDialog, imagePollModel, list, adapter, followingListFromLocalDatabase);
+         }catch (NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in imageViewHolder ,"+e.getMessage());
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in imageViewHolder ,"+e.getMessage());
+
+         }
     }
 
     private void handleDialogItemClicked(View view, final AlertDialog dialog, final AskImagePollModel imagePollModel,
                                          final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter,
                                          final ArrayList<String> followingListFromLocalDatabase){
 
-        TextView reportTextView=view.findViewById(R.id.report_text_view);
-        TextView followTextView =view.findViewById(R.id.follow_text_view);
-        final TextView deleteTextView =view.findViewById(R.id.delete_poll_text_view);
+         try {
+             TextView reportTextView = view.findViewById(R.id.report_text_view);
+             TextView followTextView = view.findViewById(R.id.follow_text_view);
+             final TextView deleteTextView = view.findViewById(R.id.delete_poll_text_view);
 
-        reportTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                onReportClicked(imagePollModel.getImagePollId(),list,adapter);
-            }
-        });
-        followTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TextView textView= (TextView) view;
-                String textViewText=textView.getText().toString();
-                int  status;
-                if(textViewText.equals(HomeRecyclerViewAdapter.FOLLOW)){
-                    status=FOLLOW;
-                    textView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
-                }else if(textViewText.equals(HomeRecyclerViewAdapter.UNFOLLOW)){
-                    status=UNFOLLOW;
-                    textView.setText(HomeRecyclerViewAdapter.FOLLOW);
-                }else
-                    status=0;
+             reportTextView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     dialog.dismiss();
+                     onReportClicked(imagePollModel.getImagePollId(), list, adapter);
+                 }
+             });
+             followTextView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     TextView textView = (TextView) view;
+                     String textViewText = textView.getText().toString();
+                     int status;
+                     if (textViewText.equals(HomeRecyclerViewAdapter.FOLLOW)) {
+                         status = FOLLOW;
+                         textView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+                     } else if (textViewText.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
+                         status = UNFOLLOW;
+                         textView.setText(HomeRecyclerViewAdapter.FOLLOW);
+                     } else
+                         status = 0;
 
-                onFollowClicked(imagePollModel,status,followingListFromLocalDatabase);
-                dialog.dismiss();
+                     onFollowClicked(imagePollModel, status, followingListFromLocalDatabase);
+                     dialog.dismiss();
 
-            }
-        });
+                 }
+             });
 
-        deleteTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                onDeleteClicked(imagePollModel,list,adapter);
+             deleteTextView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     dialog.dismiss();
+                     onDeleteClicked(imagePollModel, list, adapter);
 
-            }
-        });
-
+                 }
+             });
+         }catch (NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in imageViewHolder ,"+e.getMessage());
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in imageviewHolder ,"+e.getMessage());
+         }
     }
 
     private void onReportClicked(String imagePollId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
@@ -541,117 +591,130 @@ import de.hdodenhof.circleimageview.CircleImageView;
     private void onReportItemClicked(final View view, final AlertDialog dialog,
                                      final String imagePollId,final ArrayList<Object> list,final HomeRecyclerViewAdapter adapter){
 
-        TextView spamTextView=view.findViewById(R.id.spam);
-        TextView selfPromotionTextView=view.findViewById(R.id.self_promotion);
-        TextView pornoGraphyTextView=view.findViewById(R.id.pornography);
-        TextView dontLikeTextView=view.findViewById(R.id.dontlike);
+         try {
 
-        spamTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                database.insertReportedImagePoll(imagePollId);
-                list.remove(getAdapterPosition());
-                dialog.dismiss();
-                adapter.notifyItemRemoved(getAdapterPosition());
-                homeMessageListener.onSomeMessage("We'll try to not show such poll");
+             TextView spamTextView = view.findViewById(R.id.spam);
+             TextView selfPromotionTextView = view.findViewById(R.id.self_promotion);
+             TextView pornoGraphyTextView = view.findViewById(R.id.pornography);
+             TextView dontLikeTextView = view.findViewById(R.id.dontlike);
 
-
-
-            }
-        });
-        selfPromotionTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                database.insertReportedImagePoll(imagePollId);
-                list.remove(getAdapterPosition());
-                dialog.dismiss();
-                adapter.notifyItemRemoved(getAdapterPosition());
-                homeMessageListener.onSomeMessage("We'll try to not show such poll");
-
-            }
-        });
-        pornoGraphyTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                database.insertReportedImagePoll(imagePollId);
-                list.remove(getAdapterPosition());
-                dialog.dismiss();
-                adapter.notifyItemRemoved(getAdapterPosition());
-                homeMessageListener.onSomeMessage("We'll try to not show such poll");
+             spamTextView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                     database.insertReportedImagePoll(imagePollId);
+                     list.remove(getAdapterPosition());
+                     dialog.dismiss();
+                     adapter.notifyItemRemoved(getAdapterPosition());
+                     homeMessageListener.onSomeMessage("We'll try to not show such poll");
 
 
-            }
-        });
-        dontLikeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                database.insertReportedImagePoll(imagePollId);
-                list.remove(getAdapterPosition());
-                dialog.dismiss();
-                adapter.notifyItemRemoved(getAdapterPosition());
-                homeMessageListener.onSomeMessage("We'll try to not show such poll");
+                 }
+             });
+             selfPromotionTextView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                     database.insertReportedImagePoll(imagePollId);
+                     list.remove(getAdapterPosition());
+                     dialog.dismiss();
+                     adapter.notifyItemRemoved(getAdapterPosition());
+                     homeMessageListener.onSomeMessage("We'll try to not show such poll");
+
+                 }
+             });
+             pornoGraphyTextView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                     database.insertReportedImagePoll(imagePollId);
+                     list.remove(getAdapterPosition());
+                     dialog.dismiss();
+                     adapter.notifyItemRemoved(getAdapterPosition());
+                     homeMessageListener.onSomeMessage("We'll try to not show such poll");
 
 
-            }
-        });
+                 }
+             });
+             dontLikeTextView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                     database.insertReportedImagePoll(imagePollId);
+                     list.remove(getAdapterPosition());
+                     dialog.dismiss();
+                     adapter.notifyItemRemoved(getAdapterPosition());
+                     homeMessageListener.onSomeMessage("We'll try to not show such poll");
+
+
+                 }
+             });
+         }catch (NullPointerException e ){
+             Log.i("TAG", "NullPointerExxception occurs in imagePollViewHolder ,"+e.getMessage());
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in imagePollViewHolder ,"+e.getMessage());
+         }
     }
 
     private void onDeleteClicked(final AskImagePollModel imagePollModel,final ArrayList<Object> list,
                                  final HomeRecyclerViewAdapter adapter){
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
-                null,false );
-        builder.setView(rootview);
-        final AlertDialog alertDialog = builder.create();
-        if(alertDialog.getWindow()!=null) {
-            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
-        }
-        alertDialog.show();
+         try {
+             AlertDialog.Builder builder = new AlertDialog.Builder(context);
+             @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
+                     null, false);
+             builder.setView(rootview);
+             final AlertDialog alertDialog = builder.create();
+             if (alertDialog.getWindow() != null) {
+                 alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                 alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+             }
+             alertDialog.show();
 
-        View cancelButton=rootview.findViewById(R.id.cancel_button);
-        View deleteButton=rootview.findViewById(R.id.delete_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+             View cancelButton = rootview.findViewById(R.id.cancel_button);
+             View deleteButton = rootview.findViewById(R.id.delete_button);
+             cancelButton.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
 
-                alertDialog.dismiss();
-            }
-        });
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                DocumentReference rootReference=FirebaseFirestore.getInstance().collection("imagePoll").
-                        document(imagePollModel.getImagePollId());
-                DocumentReference uploaderReference=FirebaseFirestore.getInstance().collection("user")
-                        .document(imagePollModel.getAskerId()).collection("imagePoll")
-                        .document(imagePollModel.getImagePollId());
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.delete(rootReference);
-                batch.delete(uploaderReference);
+                     alertDialog.dismiss();
+                 }
+             });
+             deleteButton.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     alertDialog.dismiss();
+                     DocumentReference rootReference = FirebaseFirestore.getInstance().collection("imagePoll").
+                             document(imagePollModel.getImagePollId());
+                     DocumentReference uploaderReference = FirebaseFirestore.getInstance().collection("user")
+                             .document(imagePollModel.getAskerId()).collection("imagePoll")
+                             .document(imagePollModel.getImagePollId());
+                     WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                     batch.delete(rootReference);
+                     batch.delete(uploaderReference);
 
-                if(isNetworkAvailable()){
+                     if (isNetworkAvailable()) {
 
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.d("TAG","image poll successfully deleted");
-                            homeMessageListener.onSomeMessage("Image poll deleted");
-                        }
-                    });
-                    list.remove(getAdapterPosition());
-                    adapter.notifyItemRemoved(getAdapterPosition());
+                         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                             @Override
+                             public void onComplete(@NonNull Task<Void> task) {
+                                 Log.d("TAG", "image poll successfully deleted");
+                                 homeMessageListener.onSomeMessage("Image poll deleted");
+                             }
+                         });
+                         list.remove(getAdapterPosition());
+                         adapter.notifyItemRemoved(getAdapterPosition());
 
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
-                }
-            }
-        });
+                     } else {
+                         homeMessageListener.onSomeMessage("No internet connection");
+                     }
+                 }
+             });
+         }catch (NullPointerException e){
+             Log.i("TAG", "NullPointerException occurs in imageViewHolder ,"+e.getMessage());
+        }catch (Exception e){
+             Log.i("TAG", "Exception occurs in imageViewHolder ,"+e.getMessage());
+
+         }
     }
 
     private boolean isNetworkAvailable(){
@@ -665,136 +728,146 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     private void onFollowClicked(final AskImagePollModel imagePollModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
-            if(status==FOLLOW){
+         try {
+             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                 if (status == FOLLOW) {
 
-                try {
-                    String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
-                    String selfName = preferences.getString(Constants.userName, null);
-                    String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
-                    String selfBio = preferences.getString(Constants.bio, null);
+                     try {
+                         String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                         SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+                         String selfName = preferences.getString(Constants.userName, null);
+                         String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
+                         String selfBio = preferences.getString(Constants.bio, null);
 
-                    DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(selfUid).collection("following")
-                            .document(imagePollModel.getAskerId());
-                    DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(imagePollModel.getAskerId()).collection("follower")
-                            .document(selfUid);
-                    DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(selfUid);
-                    DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
-                            .document(imagePollModel.getAskerId());
+                         DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(selfUid).collection("following")
+                                 .document(imagePollModel.getAskerId());
+                         DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(imagePollModel.getAskerId()).collection("follower")
+                                 .document(selfUid);
+                         DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(selfUid);
+                         DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+                                 .document(imagePollModel.getAskerId());
 
-                    Map<String, Object> selfFollowingMap = new HashMap<>();
-                    Map<String, Object> askerFollowerMap = new HashMap<>();
-                    Map<String, Object> selfFollowingCountMap = new HashMap<>();
-                    Map<String, Object> askerFollowerCountMap = new HashMap<>();
+                         Map<String, Object> selfFollowingMap = new HashMap<>();
+                         Map<String, Object> askerFollowerMap = new HashMap<>();
+                         Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                         Map<String, Object> askerFollowerCountMap = new HashMap<>();
 
-                    selfFollowingMap.put("followingId", imagePollModel.getAskerId());
-                    selfFollowingMap.put("followingName", imagePollModel.getAskerName());
-                    selfFollowingMap.put("followingImageUrl", imagePollModel.getAskerImageUrlLow());
-                    selfFollowingMap.put("followingBio", imagePollModel.getAskerBio());
-                    selfFollowingMap.put("selfId", selfUid);
+                         selfFollowingMap.put("followingId", imagePollModel.getAskerId());
+                         selfFollowingMap.put("followingName", imagePollModel.getAskerName());
+                         selfFollowingMap.put("followingImageUrl", imagePollModel.getAskerImageUrlLow());
+                         selfFollowingMap.put("followingBio", imagePollModel.getAskerBio());
+                         selfFollowingMap.put("selfId", selfUid);
 
-                    askerFollowerMap.put("followerId", selfUid);
-                    askerFollowerMap.put("followerName", selfName);
-                    askerFollowerMap.put("followerImageUrl", Objects.requireNonNull(selfImageUrl));
-                    askerFollowerMap.put("followerBio", Objects.requireNonNull(selfBio));
-                    askerFollowerMap.put("selfId", imagePollModel.getAskerId());
+                         askerFollowerMap.put("followerId", selfUid);
+                         if(selfName!=null){
+                             askerFollowerMap.put("followerName", selfName);
+                         }
+                         if(selfImageUrl!=null){
+                         askerFollowerMap.put("followerImageUrl",selfImageUrl);}
+                         if(selfBio!=null){
+                         askerFollowerMap.put("followerBio", selfBio);}
+                         askerFollowerMap.put("selfId", imagePollModel.getAskerId());
 
-                    selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
-                    askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+                         selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+                         askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
 
-                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
-                    batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
-                    batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
-                    batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
-                    batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
-
-
-                    if (isNetworkAvailable()) {
-                        followingListFromLocalDatabase.add(imagePollModel.getAskerId());
-                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.i("TAG", "follower add successfully");
-                                final String followingId = imagePollModel.getAskerId();
-                                String followingName = imagePollModel.getAskerName();
-                                String followingImageUrl = imagePollModel.getAskerImageUrlLow();
-                                String followingBio = imagePollModel.getAskerBio();
-                                Following following = new Following(followingId, followingName, followingImageUrl
-                                        , followingBio);
-                                final ArrayList<Following> followingsList = new ArrayList<>();
-                                followingsList.add(following);
-                                AsyncTask.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        LocalDatabase database = new LocalDatabase(context.getApplicationContext());
-                                        database.removeFollowingModel(followingId);
-                                        database.insertFollowingModel(followingsList);
-
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        homeMessageListener.onSomeMessage("No internet connection");
-
-                    }
-                }catch (AssertionError e){
-                    Log.i("TAG","Assertion error occurs in following :- "+e.getMessage());
-                }
-            }
-            else if (status == UNFOLLOW) {
-
-                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid).collection("following")
-                        .document(imagePollModel.getAskerId());
-                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(imagePollModel.getAskerId()).collection("follower")
-                        .document(selfUid);
-                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid);
-                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(imagePollModel.getAskerId());
-
-                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
-                Map<String,Object> askerFollowerCountMap=new HashMap<>();
-
-                selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
-                askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
-
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.delete(selfFollowingRef);
-                batch.delete(askerFollowerRef);
-                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
-                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+                         WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                         batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
+                         batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
+                         batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                         batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
 
 
-                if(isNetworkAvailable()){
-                    followingListFromLocalDatabase.remove(imagePollModel.getAskerId());
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.i("TAG","unfollow successfully");
-                            LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
-                            database.removeFollowingModel(imagePollModel.getAskerId());
+                         if (isNetworkAvailable()) {
+                             followingListFromLocalDatabase.add(imagePollModel.getAskerId());
+                             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                 @Override
+                                 public void onComplete(@NonNull Task<Void> task) {
+                                     Log.i("TAG", "follower add successfully");
+                                     final String followingId = imagePollModel.getAskerId();
+                                     String followingName = imagePollModel.getAskerName();
+                                     String followingImageUrl = imagePollModel.getAskerImageUrlLow();
+                                     String followingBio = imagePollModel.getAskerBio();
+                                     Following following = new Following(followingId, followingName, followingImageUrl
+                                             , followingBio);
+                                     final ArrayList<Following> followingsList = new ArrayList<>();
+                                     followingsList.add(following);
+                                     AsyncTask.execute(new Runnable() {
+                                         @Override
+                                         public void run() {
+                                             LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                             database.removeFollowingModel(followingId);
+                                             database.insertFollowingModel(followingsList);
 
-                        }
-                    });
+                                         }
+                                     });
+                                 }
+                             });
+                         } else {
+                             homeMessageListener.onSomeMessage("No internet connection");
 
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
+                         }
+                     } catch (AssertionError e) {
+                         Log.i("TAG", "Assertion error occurs in following :- " + e.getMessage());
+                     }
+                 } else if (status == UNFOLLOW) {
 
-                }
-            }
-        }
-        else {
-            Log.i("TAG", "Sign in again");
-            //sign in again
-        }
+                     String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                     DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(selfUid).collection("following")
+                             .document(imagePollModel.getAskerId());
+                     DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(imagePollModel.getAskerId()).collection("follower")
+                             .document(selfUid);
+                     DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(selfUid);
+                     DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+                             .document(imagePollModel.getAskerId());
+
+                     Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                     Map<String, Object> askerFollowerCountMap = new HashMap<>();
+
+                     selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
+                     askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
+
+                     WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                     batch.delete(selfFollowingRef);
+                     batch.delete(askerFollowerRef);
+                     batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                     batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
+
+
+                     if (isNetworkAvailable()) {
+                         followingListFromLocalDatabase.remove(imagePollModel.getAskerId());
+                         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                             @Override
+                             public void onComplete(@NonNull Task<Void> task) {
+                                 Log.i("TAG", "unfollow successfully");
+                                 LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                 database.removeFollowingModel(imagePollModel.getAskerId());
+
+                             }
+                         });
+
+                     } else {
+                         homeMessageListener.onSomeMessage("No internet connection");
+
+                     }
+                 }
+             } else {
+                 Log.i("TAG", "Sign in again");
+                 //sign in again
+             }
+         }catch(NullPointerException e ){
+             Log.i("TAG", "NullPointerException occurs in imagePollViewHolder ,"+e.getMessage());
+         } catch (ArithmeticException e){
+             Log.i("TAG", "ArithmeticException occurs in imagePollViewHolder ,"+e.getMessage());
+         }catch (Exception e){
+             Log.i("TAG", "Exception occurs in imagePollViewHolder ,"+e.getMessage());
+         }
     }
 
 }

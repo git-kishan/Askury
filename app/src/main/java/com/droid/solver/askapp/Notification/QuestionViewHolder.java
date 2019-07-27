@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -20,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
     CardView rootCardView;
     CircleImageView likerImage;
-    TextView timeAgo,statusTextView,likes;
+    TextView timeAgo,statusTextView;
     FrameLayout frameLayout;
      QuestionViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -28,7 +29,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
         likerImage=itemView.findViewById(R.id.liker_image);
         timeAgo=itemView.findViewById(R.id.time_ago);
         statusTextView=itemView.findViewById(R.id.text_view1);
-        likes=itemView.findViewById(R.id.text_view2);
         frameLayout=itemView.findViewById(R.id.frameLayout);
     }
 
@@ -51,6 +51,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
          intent.putExtra("type", model.getType());
          intent.putExtra("notifiedTime", model.getNotifiedTime());
          frameLayout.setVisibility(View.GONE);
+         context.startActivity(intent);
+         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+     }
+     void onProfilePicClicked(Context context,QuestionModel model){
+         Activity activity=(Activity)context;
+         Intent intent=new Intent(context, OtherAccountActivity.class);
+         intent.putExtra("profile_image", model.getLikerImageUrl());
+         intent.putExtra("uid", model.getLikerId());
+         intent.putExtra("user_name", model.getLikerName());
+         intent.putExtra("bio", model.getLikerBio());
          context.startActivity(intent);
          activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginStart="3dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="5dp"
+    android:layout_marginStart="5dp"
     android:clickable="true"
     android:focusable="true"
+    app:cardCornerRadius="5dp"
     android:foreground="?android:selectableItemBackground"
-    android:layout_marginEnd="3dp"
+    android:layout_marginEnd="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -39,6 +41,7 @@
             android:background="@drawable/shimmer_round_shaped"
             android:maxLines="1"
             android:textSize="8sp"
+            tools:ignore="smallsp"
             app:layout_constraintStart_toStartOf="@+id/asker_name"
             app:layout_constraintTop_toBottomOf="@+id/asker_name" />
 

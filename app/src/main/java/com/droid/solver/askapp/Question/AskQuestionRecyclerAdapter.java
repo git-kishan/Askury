@@ -6,24 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
-
-import com.droid.solver.askapp.Account.ProfileImageActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Home.LoadingViewHolderVertically;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
-import com.facebook.ads.NativeAd;
 import com.facebook.ads.NativeBannerAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.lang.annotation.Native;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +95,7 @@ public class AskQuestionRecyclerAdapter extends RecyclerView.Adapter {
                         into(((AskQuestionViewHolderWithoutImage) holder).profilePicture);
             }
             ((AskQuestionViewHolderWithoutImage) holder).profileName.setText(profileNameAsked);
-            mquestion = mquestion == null ? "Question not available" : mquestion;
+            mquestion = mquestion == null ? "Question not available" : mquestion.trim();
             ((AskQuestionViewHolderWithoutImage) holder).question.setText(mquestion);
             ((AskQuestionViewHolderWithoutImage) holder).about.setText(bio);
             mtime = mtime == 0 ? System.currentTimeMillis() : mtime;

@@ -144,7 +144,7 @@ public class QuestionFragment extends Fragment implements NativeAdListener {
 
         speedDialView.addActionItem(
                 new SpeedDialActionItem.Builder(R.id.fab_action1, R.drawable.ic_imagepoll)
-                        .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent,null))
+                        .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), android.R.color.holo_red_dark,null))
                         .setLabel("Image poll")
                         .setLabelColor(ResourcesCompat.getColor(getResources(), android.R.color.black, null))
                         .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), android.R.color.white,null))

@@ -10,8 +10,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.droid.solver.askapp.Account.OtherAccountActivity;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
@@ -79,13 +80,7 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
         setData();
         askerImage.setOnClickListener(this);
         answererImage.setOnClickListener(this);
-        askerName.setOnClickListener(this);
-        answererName.setOnClickListener(this);
-        likeButton.setOnLikeListener(this);
-        askerImage.setOnClickListener(this);
-        askerName.setOnClickListener(this);
-        answererImage.setOnClickListener(this);
-        answererName.setOnClickListener(this);
+
 
 
     }
@@ -152,7 +147,9 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
 
         answererName.setText(manswererName);
         answererBio.setText(manswererBio);
+        mquestion=mquestion==null?"":mquestion.trim();
         question.setText(mquestion);
+        manswer=manswer==null?"":manswer.trim();
         answer.setText(manswer);
         fontUsed=fontUsed>fontId.length-1?0:fontUsed;
         Typeface typeface=ResourcesCompat.getFont(this, fontId[fontUsed]);
@@ -219,33 +216,40 @@ public class DetailAnswerActivity extends AppCompatActivity implements View.OnCl
 
         switch (view.getId()){
             case R.id.circleImageView2://on asker image clicked
-                intent.putExtra("profile_image", maskerId);
-                intent.putExtra("uid",maskerId);
-                intent.putExtra("user_name",maskerName);
-                intent.putExtra("bio",maskerBio);
-                startActivity(intent);
+                if(anonymous){
+                    Toast.makeText(DetailAnswerActivity.this, "Anonymous user", Toast.LENGTH_LONG).show();
+                }else {
+                    intent.putExtra("profile_image", maskerId);
+                    intent.putExtra("uid",maskerId);
+                    intent.putExtra("user_name",maskerName);
+                    intent.putExtra("bio",maskerBio);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }
+
                 break;
-            case R.id.textView15://on asker name clicked
-                intent.putExtra("profile_image", maskerId);
-                intent.putExtra("uid",maskerId);
-                intent.putExtra("user_name",maskerName);
-                intent.putExtra("bio",maskerBio);
-                startActivity(intent);
-                break;
+//            case R.id.textView15://on asker name clicked
+//                intent.putExtra("profile_image", maskerId);
+//                intent.putExtra("uid",maskerId);
+//                intent.putExtra("user_name",maskerName);
+//                intent.putExtra("bio",maskerBio);
+//                startActivity(intent);
+//                break;
             case R.id.circleImageView3://on answerer image clicked
                 intent.putExtra("profile_image", manswererId);
                 intent.putExtra("uid",manswererId);
                 intent.putExtra("user_name",manswererName);
                 intent.putExtra("bio",manswererBio);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 break;
-            case R.id.textView20://on answerer name clicked
-                intent.putExtra("profile_image", manswererId);
-                intent.putExtra("uid",manswererId);
-                intent.putExtra("user_name",manswererName);
-                intent.putExtra("bio",manswererBio);
-                startActivity(intent);
-                break;
+//            case R.id.textView20://on answerer name clicked
+//                intent.putExtra("profile_image", manswererId);
+//                intent.putExtra("uid",manswererId);
+//                intent.putExtra("user_name",manswererName);
+//                intent.putExtra("bio",manswererBio);
+//                startActivity(intent);
+//                break;
                 default:
                     onBackPressed();
                     break;

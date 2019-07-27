@@ -1276,6 +1276,7 @@ drawable bottom_navigation_title_colorlist
 drawable bottom_sheet_image_poll
 drawable chip_state
 drawable circle_background
+drawable circular_logo
 drawable circular_text_view
 drawable com_facebook_auth_dialog_background
 drawable com_facebook_auth_dialog_cancel_background
@@ -2178,12 +2179,14 @@ layout fragment_account
 layout fragment_account_like
 layout fragment_account_question
 layout fragment_account_question_answer
+layout fragment_answer
 layout fragment_home
 layout fragment_image_poll_open
 layout fragment_image_selection
 layout fragment_no_internet
 layout fragment_notification
 layout fragment_question
+layout fragment_question2
 layout fragment_successfully_upload_dialog
 layout home_answer_answer_item
 layout home_answer_question_item
@@ -2511,7 +2514,9 @@ string unfollow
 string unknown
 string update_profile
 string uploading
+string user_donot_answer_question
 string user_name_asked
+string user_not_asked_question
 string username
 string username_created_a_poll
 string version

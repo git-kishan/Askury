@@ -8,8 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import com.droid.solver.askapp.Account.OtherAccountActivity;
+import android.widget.Toast;
+
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.R;
@@ -20,6 +23,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,6 +35,7 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
     private EmojiTextView question,answer;
     private LikeButton likeButton;
     private TextView likeCountTextView;
+    private ImageView answerImage;
 
     private String maskerId,manswererId;
     private String maskerName,maskerBio,manswererName,manswererBio;
@@ -78,17 +83,12 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
         answer=findViewById(R.id.textView1);
         likeButton=findViewById(R.id.likeButton);
         likeCountTextView=findViewById(R.id.textView25);
+        answerImage=findViewById(R.id.imageView19);
         setData();
         removeNotificationFromRemoteDatabase();
         askerImage.setOnClickListener(this);
         answererImage.setOnClickListener(this);
-        askerName.setOnClickListener(this);
-        answererName.setOnClickListener(this);
-        likeButton.setOnLikeListener(this);
-        askerImage.setOnClickListener(this);
-        askerName.setOnClickListener(this);
-        answererImage.setOnClickListener(this);
-        answererName.setOnClickListener(this);
+
 
 
     }
@@ -140,8 +140,10 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
 
         answererName.setText(manswererName);
         answererBio.setText(manswererBio);
-        question.setText(mquestion);
-        answer.setText(manswer);
+        if(mquestion!=null)
+        question.setText(mquestion.trim());
+        if(manswer!=null)
+        answer.setText(manswer.trim());
         fontUsed=fontUsed>fontId.length-1?0:fontUsed;
         Typeface typeface=ResourcesCompat.getFont(this, fontId[fontUsed]);
         answer.setTypeface(typeface);
@@ -149,6 +151,12 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
         likeCountTextView.setText(String.valueOf(likeCount));
         if(isLikedByMe){
             likeButton.setLiked(true);
+
+        }
+        if(imageAttached){
+            answerImage.setVisibility(View.VISIBLE);
+            Picasso.get().load(imageAttachedUrl)
+                    .into(answerImage);
         }
 
         String questionAskingTime=getTime(mtimeOfAsking,System.currentTimeMillis());
@@ -223,27 +231,17 @@ public class NotificationAnswerActivity extends AppCompatActivity implements Vie
 
         switch (view.getId()){
             case R.id.circleImageView2://on asker image clicked
-                intent.putExtra("profile_image", maskerId);
-                intent.putExtra("uid",maskerId);
-                intent.putExtra("user_name",maskerName);
-                intent.putExtra("bio",maskerBio);
-                startActivity(intent);
-                break;
-            case R.id.textView15://on asker name clicked
-                intent.putExtra("profile_image", maskerId);
-                intent.putExtra("uid",maskerId);
-                intent.putExtra("user_name",maskerName);
-                intent.putExtra("bio",maskerBio);
-                startActivity(intent);
+                if(anonymous){
+                    Toast.makeText(NotificationAnswerActivity.this, "Anonymous user ", Toast.LENGTH_LONG).show();
+                }else {
+                    intent.putExtra("profile_image", maskerId);
+                    intent.putExtra("uid",maskerId);
+                    intent.putExtra("user_name",maskerName);
+                    intent.putExtra("bio",maskerBio);
+                    startActivity(intent);
+                }
                 break;
             case R.id.circleImageView3://on answerer image clicked
-                intent.putExtra("profile_image", manswererId);
-                intent.putExtra("uid",manswererId);
-                intent.putExtra("user_name",manswererName);
-                intent.putExtra("bio",manswererBio);
-                startActivity(intent);
-                break;
-            case R.id.textView20://on answerer name clicked
                 intent.putExtra("profile_image", manswererId);
                 intent.putExtra("uid",manswererId);
                 intent.putExtra("user_name",manswererName);

@@ -134,6 +134,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     askerBio=askerBio!=null?askerBio:"";
                     ((QuestionAnswerViewHolder) holder).askerBio.setText(askerBio);
                 }
+                question=question==null?"":question.trim();
                 ((QuestionAnswerViewHolder) holder).question.setText(question);
 
                 String url = Constants.PROFILE_PICTURE + "/" +model.getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
@@ -145,7 +146,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 recentAnswererName=recentAnswererName!=null?recentAnswererName:"Unknown";
                 ((QuestionAnswerViewHolder) holder).answererName.setText(recentAnswererName);
 
-                answer=answer!=null?answer : "";
+                answer=answer!=null?answer.trim(): "";
                 ((QuestionAnswerViewHolder) holder).answer.setText(answer);
 
                 Typeface typeface= ResourcesCompat.getFont(context, fontId[fontUsed]);
@@ -206,7 +207,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                     askerBio=askerBio!=null?askerBio:"";
                     ((QuestionAnswerWithImageViewHolder) holder).askerBio.setText(askerBio);
                 }
-
+                question=question==null?"":question.trim();
                 ((QuestionAnswerWithImageViewHolder) holder).question.setText(question);
 
                 String url = Constants.PROFILE_PICTURE+"/"+model.getRecentAnswererId()+Constants.SMALL_THUMBNAIL;
@@ -219,7 +220,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 recentAnswererName=recentAnswererName!=null?recentAnswererName:"Unknown";
                 ((QuestionAnswerWithImageViewHolder) holder).answererName.setText(recentAnswererName);
 
-                answer=answer!=null?answer:"";
+                answer=answer!=null?answer.trim():"";
                 ((QuestionAnswerWithImageViewHolder) holder).answer.setText(answer);
 
                 Typeface typeface= ResourcesCompat.getFont(context, fontId[fontUsed]);
@@ -245,6 +246,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String askerName=model.getAskerName();
                 String askerBio=model.getAskerBio();
                 String askerQuestion=model.getQuestion();
+                askerQuestion=askerQuestion==null?"":askerQuestion.trim();
                 String image1Url=model.getImage1Url();
                 String image2Url=model.getImage2Url();
                 long timeOfPolling=model.getTimeOfPolling();
@@ -258,7 +260,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
                 askerName=askerName==null?"Unknown":askerName;
                 askerBio=askerBio==null?"":askerBio;
-                askerQuestion=askerQuestion==null?"":askerQuestion;
                 image1Url=image1Url==null?"":image1Url;
                 image2Url=image2Url==null?"":image2Url;
                 timeOfPolling=timeOfPolling==0?System.currentTimeMillis():timeOfPolling;
@@ -295,6 +296,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 String askerName=model.getAskerName();
                 String askerBio=model.getAskerBio();
                 String question=model.getQuestion();
+                question=question==null?"":question.trim();
                 final boolean option1=model.isOption1();
                 final boolean option2=model.isOption2();
                 final boolean option3=model.isOption3();
@@ -310,7 +312,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
                 askerName=askerName==null?"Someone":askerName;
                 askerBio=askerBio==null?"":askerBio;
-                question=question==null?"":question;
 
                 String url = Constants.PROFILE_PICTURE + "/" +askerId+Constants.SMALL_THUMBNAIL;
                 StorageReference reference= FirebaseStorage.getInstance().getReference().child(url);

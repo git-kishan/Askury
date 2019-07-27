@@ -27,8 +27,9 @@ MERGED from [com.google.firebase:firebase-firestore:20.1.0] /home/notebook/.grad
 MERGED from [com.firebaseui:firebase-ui-storage:4.3.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/e3c7a1342d037d697ab6245c7ec4b297/AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.firebase:firebase-storage:18.1.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/06ff93a6154c2eaf3eabfa12b09ee33f/AndroidManifest.xml:15:1-39:12
 MERGED from [com.github.bumptech.glide:glide:4.9.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/973ca56fba1645a17e724530e4aa3e1d/AndroidManifest.xml:2:1-12:12
-MERGED from [com.google.firebase:firebase-database:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/9ce716b2f542b24d9e2b1ec72d0c2a98/AndroidManifest.xml:15:1-36:12
 MERGED from [com.github.chrisbanes:PhotoView:1.3.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/57510ff6d470d9dcb5cfed30fa110665/AndroidManifest.xml:2:1-12:12
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8859c6af42fb46c0c11820e0b36d545d/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.firebase:firebase-database:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/9ce716b2f542b24d9e2b1ec72d0c2a98/AndroidManifest.xml:15:1-36:12
 MERGED from [com.google.firebase:firebase-messaging:19.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/8a556e8695416f874c79a6035eb24ea5/AndroidManifest.xml:17:1-37:12
 MERGED from [com.google.firebase:firebase-auth-interop:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e9abfb13565f0e3763cd7c9e7692e359/AndroidManifest.xml:2:1-10:12
 MERGED from [com.google.android.gms:play-services-auth-api-phone:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/9ae03d64c37882efea84e38075c05ae9/AndroidManifest.xml:2:1-7:12
@@ -52,7 +53,6 @@ MERGED from [com.google.android.gms:play-services-gass:18.1.0] /home/notebook/.g
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/80ac5eac19f8e3fe5fb339e5760274cc/AndroidManifest.xml:17:1-40:12
 MERGED from [com.google.android.gms:play-services-measurement-base:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/c2acd6f37ab1dbe1813ae1fbe85e80d6/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-basement:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/1fcba6b46cbb5b319e306f3fca698c78/AndroidManifest.xml:17:1-28:12
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8859c6af42fb46c0c11820e0b36d545d/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.fragment:fragment:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/77ba1fcf4ca61650adf1f24593a1d01d/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.vectordrawable:vectordrawable-animated:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8ced4f3abf5d3031ab42041632adeeb9/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.recyclerview:recyclerview:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/1a3dd42acf2f5ff0cd55df7606a4d663/AndroidManifest.xml:17:1-22:12
@@ -62,6 +62,7 @@ MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/notebook/.gr
 MERGED from [androidx.vectordrawable:vectordrawable:1.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/e283752290872335aa82f79b58006cb5/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.transition:transition:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/beb44c3bfc2369e4842025e3e3d171af/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.loader:loader:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e5b006e47fc77be995897f92e0b17883/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.media:media:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/f4ff19e019fe0287dc454212b648952e/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.viewpager:viewpager:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/2c65d5bba8bf806beb76811df8d26be6/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/0f49d4e14a807f6f59343f1da7312011/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/715b993f10657685282ff7df858fbea1/AndroidManifest.xml:17:1-22:12
@@ -69,7 +70,6 @@ MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/notebook/
 MERGED from [androidx.customview:customview:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/0712e147da79e3b8d19c0032a306c5fc/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e193e4929090c097e728f22a9365ca0f/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/bc5e1787fb980be5f2124060d62fc180/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media:media:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/f4ff19e019fe0287dc454212b648952e/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.core:core:1.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/0c94f53dbea8558483422cca450bfba0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/5588bf2550b32a83d75ee0d5b5d1cd64/AndroidManifest.xml:17:1-25:12
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e462602a7057713ee49fc5dff167ed5d/AndroidManifest.xml:17:1-22:12
@@ -274,7 +274,7 @@ MERGED from [com.google.android.gms:play-services-ads-base:18.1.0] /home/noteboo
 	tools:ignore
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:25:9-35
 	android:roundIcon
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:22:9-54
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:22:9-52
 	android:allowBackup
 		ADDED from [com.steelkiwi:dots-loader-view:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/2b74df40e70806354fe222ee82cc72a7/AndroidManifest.xml:12:9-35
 	android:largeHeap
@@ -375,7 +375,7 @@ ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:59:9-
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:61:13-73
 	android:name
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:59:19-64
-activity#com.droid.solver.askapp.Account.OtherAccountActivity
+activity#com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity
 ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:63:9-66:50
 	android:screenOrientation
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:64:13-49
@@ -384,7 +384,7 @@ ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:63:9-
 	tools:ignore
 		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:66:13-47
 	android:name
-		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:63:19-63
+		ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:63:19-76
 activity#com.droid.solver.askapp.Account.ProfileImageActivity
 ADDED from /home/notebook/projects/AskApp/app/src/main/AndroidManifest.xml:67:9-70:50
 	android:screenOrientation
@@ -639,10 +639,12 @@ MERGED from [com.google.firebase:firebase-storage:18.1.0] /home/notebook/.gradle
 MERGED from [com.google.firebase:firebase-storage:18.1.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/06ff93a6154c2eaf3eabfa12b09ee33f/AndroidManifest.xml:20:5-22:41
 MERGED from [com.github.bumptech.glide:glide:4.9.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/973ca56fba1645a17e724530e4aa3e1d/AndroidManifest.xml:6:5-8:41
 MERGED from [com.github.bumptech.glide:glide:4.9.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/973ca56fba1645a17e724530e4aa3e1d/AndroidManifest.xml:6:5-8:41
-MERGED from [com.google.firebase:firebase-database:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/9ce716b2f542b24d9e2b1ec72d0c2a98/AndroidManifest.xml:19:5-21:41
-MERGED from [com.google.firebase:firebase-database:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/9ce716b2f542b24d9e2b1ec72d0c2a98/AndroidManifest.xml:19:5-21:41
 MERGED from [com.github.chrisbanes:PhotoView:1.3.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/57510ff6d470d9dcb5cfed30fa110665/AndroidManifest.xml:8:5-10:41
 MERGED from [com.github.chrisbanes:PhotoView:1.3.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/57510ff6d470d9dcb5cfed30fa110665/AndroidManifest.xml:8:5-10:41
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8859c6af42fb46c0c11820e0b36d545d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8859c6af42fb46c0c11820e0b36d545d/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-database:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/9ce716b2f542b24d9e2b1ec72d0c2a98/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-database:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/9ce716b2f542b24d9e2b1ec72d0c2a98/AndroidManifest.xml:19:5-21:41
 MERGED from [com.google.firebase:firebase-messaging:19.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/8a556e8695416f874c79a6035eb24ea5/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-messaging:19.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/8a556e8695416f874c79a6035eb24ea5/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-auth-interop:18.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e9abfb13565f0e3763cd7c9e7692e359/AndroidManifest.xml:5:5-44
@@ -689,8 +691,6 @@ MERGED from [com.google.android.gms:play-services-measurement-base:17.0.0] /home
 MERGED from [com.google.android.gms:play-services-measurement-base:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/c2acd6f37ab1dbe1813ae1fbe85e80d6/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-basement:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/1fcba6b46cbb5b319e306f3fca698c78/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-basement:17.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/1fcba6b46cbb5b319e306f3fca698c78/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8859c6af42fb46c0c11820e0b36d545d/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8859c6af42fb46c0c11820e0b36d545d/AndroidManifest.xml:20:5-44
 MERGED from [androidx.fragment:fragment:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/77ba1fcf4ca61650adf1f24593a1d01d/AndroidManifest.xml:20:5-44
 MERGED from [androidx.fragment:fragment:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/77ba1fcf4ca61650adf1f24593a1d01d/AndroidManifest.xml:20:5-44
 MERGED from [androidx.vectordrawable:vectordrawable-animated:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/8ced4f3abf5d3031ab42041632adeeb9/AndroidManifest.xml:20:5-44
@@ -709,6 +709,8 @@ MERGED from [androidx.transition:transition:1.0.0] /home/notebook/.gradle/caches
 MERGED from [androidx.transition:transition:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/beb44c3bfc2369e4842025e3e3d171af/AndroidManifest.xml:20:5-44
 MERGED from [androidx.loader:loader:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e5b006e47fc77be995897f92e0b17883/AndroidManifest.xml:20:5-44
 MERGED from [androidx.loader:loader:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e5b006e47fc77be995897f92e0b17883/AndroidManifest.xml:20:5-44
+MERGED from [androidx.media:media:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/f4ff19e019fe0287dc454212b648952e/AndroidManifest.xml:20:5-44
+MERGED from [androidx.media:media:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/f4ff19e019fe0287dc454212b648952e/AndroidManifest.xml:20:5-44
 MERGED from [androidx.viewpager:viewpager:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/2c65d5bba8bf806beb76811df8d26be6/AndroidManifest.xml:20:5-44
 MERGED from [androidx.viewpager:viewpager:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/2c65d5bba8bf806beb76811df8d26be6/AndroidManifest.xml:20:5-44
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/0f49d4e14a807f6f59343f1da7312011/AndroidManifest.xml:20:5-44
@@ -723,8 +725,6 @@ MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/noteboo
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/e193e4929090c097e728f22a9365ca0f/AndroidManifest.xml:20:5-44
 MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/bc5e1787fb980be5f2124060d62fc180/AndroidManifest.xml:20:5-44
 MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/bc5e1787fb980be5f2124060d62fc180/AndroidManifest.xml:20:5-44
-MERGED from [androidx.media:media:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/f4ff19e019fe0287dc454212b648952e/AndroidManifest.xml:20:5-44
-MERGED from [androidx.media:media:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/f4ff19e019fe0287dc454212b648952e/AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core:1.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/0c94f53dbea8558483422cca450bfba0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core:1.0.1] /home/notebook/.gradle/caches/transforms-2/files-2.1/0c94f53dbea8558483422cca450bfba0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.0.0] /home/notebook/.gradle/caches/transforms-2/files-2.1/5588bf2550b32a83d75ee0d5b5d1cd64/AndroidManifest.xml:20:5-44

@@ -72,6 +72,7 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
             String userName=model.getUserName();
             String userBio=model.getUserBio();
             String uid=model.getUserId();
+            question=question==null?"":question.trim();
             String profileUrl= Constants.PROFILE_PICTURE+"/"+uid+Constants.SMALL_THUMBNAIL;
             StorageReference reference= FirebaseStorage.getInstance().getReference().child(profileUrl);
             GlideApp.with(context).load(reference).placeholder(R.drawable.ic_placeholder)
@@ -185,12 +186,6 @@ public class AccountQuestionRecyclerAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 holder.onProfileImageClicked(context, model);
-            }
-        });
-        holder.askerName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.onAskerNameClicked(context,model);
             }
         });
 

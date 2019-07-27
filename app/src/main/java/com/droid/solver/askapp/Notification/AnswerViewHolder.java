@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Main.LocalDatabase;
 import com.droid.solver.askapp.Main.MainActivity;
 import com.droid.solver.askapp.R;
@@ -68,6 +69,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
         frameLayout.setVisibility(View.GONE);
         context.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+
+    }
+
+    void onProfilePicClicked(final Context context,final AnswerModel model){
+         Activity activity=(Activity)context;
+         Intent intent=new Intent(context, OtherAccountActivity.class);
+         intent.putExtra("profile_image", model.getAnswererId());
+         intent.putExtra("uid", model.getAnswererId());
+         intent.putExtra("user_name", model.getAnswererName());
+         intent.putExtra("bio", model.getAnswererBio());
+         context.startActivity(intent);
+         activity.overridePendingTransition(R.anim.slide_in_up,R.anim.slide_out_up);
+
 
 
     }

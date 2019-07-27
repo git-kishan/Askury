@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +48,7 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
     private ImageView qaImage;
     private TextView qaText;
     private NativeAd nativeAd;
+    private CardView progressCard;
     public AccountQuestionAnswerFragment() {
     }
 
@@ -74,6 +76,7 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
             if (FirebaseAuth.getInstance().getCurrentUser() != null)
                 uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
+        progressCard=view.findViewById(R.id.progress_card);
         return view;
     }
 
@@ -82,6 +85,7 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
         super.onActivityCreated(savedInstanceState);
         if(isNetworkAvailable()){
             if(uid!=null){
+                progressCard.setVisibility(View.VISIBLE);
                 adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list,uid);
                 recyclerView.setAdapter(adapter);
                 adapter=new AccountQuestionAnswerRecyclerAdapter(getActivity(), list,uid);
@@ -91,6 +95,7 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
 
             }
         }else {
+            progressCard.setVisibility(View.GONE);
             frameLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -135,8 +140,12 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
                         if(list!=null&&list.size()==0){
                             qaImage.setVisibility(View.VISIBLE);
                             qaText.setVisibility(View.VISIBLE);
+                            String status=getString(R.string.some_one_donot_answer_question);
+                            qaText.setText(status);
                             recyclerView.setVisibility(View.GONE);
+                            progressCard.setVisibility(View.GONE);
                         }else {
+                            progressCard.setVisibility(View.GONE);
                             adapter.notifyDataSetChanged();
                             if(task.getResult()!=null&&task.getResult().getDocuments().size()>0){
                                 lastVisibleSnapshot=task.getResult().getDocuments().get(task.getResult().getDocuments().size()-1);
@@ -150,6 +159,7 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    progressCard.setVisibility(View.GONE);
                     Log.d("TAG", "failed to fetch answer in account fragment ");
                 }
             });
@@ -160,7 +170,7 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
     }
 
     private void loadMoreAnswerFromRemoteDatabase(){
-
+        progressCard.setVisibility(View.VISIBLE);
         if(uid!=null&&lastVisibleSnapshot!=null) {
             Query query = FirebaseFirestore.getInstance()
                     .collection("user").document(uid)
@@ -188,12 +198,14 @@ public class AccountQuestionAnswerFragment extends Fragment implements NativeAdL
                         }if(task.getResult()!=null&&task.getResult().getDocuments().size()==0){
                             recyclerView.removeOnScrollListener(scrollListener);
                         }
+                        progressCard.setVisibility(View.GONE);
                         adapter.notifyDataSetChanged();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    progressCard.setVisibility(View.GONE);
                     Log.d("TAG", "failed to fetch answer in account fragment ");
                 }
             });

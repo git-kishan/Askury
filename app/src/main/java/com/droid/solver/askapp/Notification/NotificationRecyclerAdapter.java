@@ -306,6 +306,12 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
                 viewHolder.onCardClicked(context, model);
             }
         });
+        viewHolder.likerImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.onProfilePicClicked(context, model);
+            }
+        });
     }
     private void handleClickListenerOfImagePoll(final ImagePollViewHolder viewHolder, final ImagePollModel model){
         viewHolder.rootCardView.setOnClickListener(new View.OnClickListener() {
@@ -330,12 +336,24 @@ public class NotificationRecyclerAdapter  extends RecyclerView .Adapter{
                 viewHolder.onCardClicked(context,model);
             }
         });
+        viewHolder.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.onProfilePicClicked(context, model);
+            }
+        });
     }
     private void handleClickListenerOfFollower(final FollowerViewHolder viewHolder , final FollowerModel model){
         viewHolder.rootCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viewHolder.onCardClicked(context, model);
+            }
+        });
+        viewHolder.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.onProfilePicClicked(context, model);
             }
         });
     }

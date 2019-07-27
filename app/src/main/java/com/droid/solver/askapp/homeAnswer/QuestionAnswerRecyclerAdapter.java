@@ -70,11 +70,8 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
            boolean anonymous=model.isAnonymous();
            long timeOfAsking=model.getTimeOfAsking();
            askerName=askerName==null?"Someone":askerName;
+           question=question==null?"":question.trim();
            bio=bio==null?"":bio;
-           if(question==null){
-               list.remove(i);
-               return;
-           }
            timeOfAsking=timeOfAsking==0?System.currentTimeMillis():timeOfAsking;
            String timeAgoText=getTime(timeOfAsking, System.currentTimeMillis());
            if(anonymous){
@@ -106,6 +103,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             long timeAgo=model.getTimeOfAnswering();
             String answerImageUrl=model.getImageAttachedUrl();
             int fontUsed=model.getFontUsed();
+            answer=answer==null?"":answer.trim();
             if(model.isLikedByMe()){
                 ((AnswerViewHolder) holder).likeButton.setLiked(true);
             }else{
@@ -115,10 +113,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             fontUsed=fontUsed<=fontId.length?fontUsed:0;
             answererName=answererName==null?"Someone":answererName;
             answererBio=answererBio==null?"":answererBio;
-            if(answer==null){
-                list.remove(i);
-                return;
-            }
+
             ((AnswerViewHolder) holder).answerImage.setVisibility(View.GONE);
             if(answerImageUrl!=null){
                 ((AnswerViewHolder) holder).answerImage.setVisibility(View.VISIBLE);
@@ -137,7 +132,7 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
             ((AnswerViewHolder) holder).likeCount.setText(String.valueOf(likeCount));
             ((AnswerViewHolder) holder).timeAgo.setText(timeAgoText);
 
-//            onAnswerLikeClickListener((AnswerViewHolder) holder,model);
+            onAnswerLikeClickListener((AnswerViewHolder) holder,model);
         }
     }
 
@@ -204,19 +199,30 @@ public class QuestionAnswerRecyclerAdapter extends RecyclerView.Adapter {
                 holder.onWantToAnswerClicked(context,model);
             }
         });
+        holder.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onProfilePicClicked(context, model);
+            }
+        });
     }
-//    private void onAnswerLikeClickListener(final AnswerViewHolder holder,final AnswerModel model){
-////        holder.likeButton.setOnLikeListener(new OnLikeListener() {
-////            @Override
-////            public void liked(LikeButton likeButton) {
-////                holder.onLikeClicked(context,model);
-////            }
-////
-////            @Override
-////            public void unLiked(LikeButton likeButton) {
-////                holder.onDislikedClicked(context,model);
-////            }
-////        });
-//    }
+
+    private void onAnswerLikeClickListener(final AnswerViewHolder holder,final AnswerModel model){
+        holder.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onProfilePicClicked(model, context);
+            }
+        });
+        holder.answer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(list.get(0) instanceof QuestionModel){
+                    QuestionModel model1=(QuestionModel) list.get(0);
+                    holder.onAnswerClicked(model, model1, context);
+                }
+            }
+        });
+    }
 
 }

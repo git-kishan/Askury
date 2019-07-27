@@ -14,6 +14,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.QuestionAnswerModel;
 import com.droid.solver.askapp.GlideApp;
 import com.droid.solver.askapp.Main.Constants;
@@ -40,7 +43,7 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
     private ImageView answerImage;
     private String askerId,answererId,answerId,questionId;
     private boolean isStoredLocally;
-
+    private boolean isAnonymous;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +76,8 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
         answer=findViewById(R.id.textView1);
         answerImage=findViewById(R.id.imageView19);
         toolbar.setNavigationOnClickListener(this);
+        answererImage.setOnClickListener(this);
+        askerImage.setOnClickListener(this);
     }
 
     private void changeToolbarFont(){
@@ -89,9 +94,7 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up);
-
-    }
+        overridePendingTransition(R.anim.slide_out_down, R.anim.slide_out_up); }
 
     private void loadProfileImage(boolean isAnonymous){
 
@@ -138,7 +141,9 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
                                         String manswer=model.getAnswer();
                                         boolean imageAttached=model.isImageAttached();
                                         String imageAttachedUrl=model.getImageAttachedUrl();
-                                        boolean isAnonymous=model.isAnonymous();
+                                        isAnonymous=model.isAnonymous();
+                                        mquestion=mquestion==null?"":mquestion.trim();
+                                        manswer=manswer==null?"":manswer.trim();
 
                                         if(isAnonymous){
                                             maskerName="Someone";
@@ -176,6 +181,7 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
                 }
             });
         }else {
+            Toast.makeText(NotificationQuestionActivity.this, "Something went wrong,try after some time",Toast.LENGTH_LONG).show();
             //can't proceed at this time
         }
     }
@@ -194,7 +200,27 @@ public class NotificationQuestionActivity extends AppCompatActivity implements V
     }
     @Override
     public void onClick(View view) {
-        onBackPressed();
+        Intent intent=new Intent(NotificationQuestionActivity.this, OtherAccountActivity.class);
+        switch (view.getId()){
+            case R.id.circleImageView2://asker image
+                if(isAnonymous){
+                    Toast.makeText(NotificationQuestionActivity.this, "Anonymous user", Toast.LENGTH_LONG).show();
+                }else {
+                    intent.putExtra("uid", askerId);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }
+                break;
+            case R.id.circleImageView3://answerer image
+                intent.putExtra("uid", answererId);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                break;
+                default:
+                    onBackPressed();
+                    break;
+        }
+
     }
 
     private boolean isNetworkAvailble(){

@@ -19,7 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.droid.solver.askapp.Account.OtherAccountActivity;
+import com.droid.solver.askapp.Account.OtherAccount.OtherAccountActivity;
 import com.droid.solver.askapp.Answer.AnswerActivity;
 import com.droid.solver.askapp.Main.Constants;
 import com.droid.solver.askapp.Main.LocalDatabase;
@@ -325,10 +325,6 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     void onAnswererImageViewClicked(final Context context,final RootQuestionModel rootQuestionModel){
-        if (rootQuestionModel.isAnonymous()) {
-            homeMessageListener.onSomeMessage("Anonymous user");
-
-        }else {
             Activity activity=(Activity)context;
             Intent intent=new Intent(context, OtherAccountActivity.class);
             intent.putExtra("profile_image", rootQuestionModel.getRecentAnswererImageUrlLow());
@@ -338,50 +334,68 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
             context.startActivity(intent);
             activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_in_down);
 
-        }
-
     }
 
     void onThreeDotClicked(final Context context, final RootQuestionModel rootQuestionModel, ArrayList<Object> list,
                            HomeRecyclerViewAdapter adapter, String status, ArrayList<String> followingIdListFromLocalDatabase){
 
-        @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog,
-                null, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        if(alertDialog.getWindow()!=null) {
-            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
-        }
-        TextView statusView=dialogView.findViewById(R.id.follow_text_view);
-        TextView inAppropriateQuestionView=dialogView.findViewById(R.id.inappropriate_question);
-        if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
-            statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
-        }else {
-            statusView.setText(HomeRecyclerViewAdapter.FOLLOW); }
+        try {
+            @SuppressLint("InflateParams")
+            View dialogView = LayoutInflater.from(context).inflate(R.layout.question_answer_overflow_dialog,
+                    null, false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setView(dialogView);
+            final AlertDialog alertDialog = builder.create();
+            if (alertDialog.getWindow() != null) {
+                alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_successfull;
+            }
+            TextView statusView = dialogView.findViewById(R.id.follow_text_view);
+            TextView inAppropriateQuestionView = dialogView.findViewById(R.id.inappropriate_question);
+            if (status.equals(HomeRecyclerViewAdapter.UNFOLLOW)) {
+                statusView.setText(HomeRecyclerViewAdapter.UNFOLLOW);
+            } else {
+                statusView.setText(HomeRecyclerViewAdapter.FOLLOW);
+            }
 
 
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
-                !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())){
-            View view= dialogView.findViewById(R.id.delete_question_textview);
-            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
-        }
+            if (FirebaseAuth.getInstance().getCurrentUser() != null &&
+                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())) {
+                View view = dialogView.findViewById(R.id.delete_question_textview);
+                view.setEnabled(false);
+                view.setClickable(false);
+                view.setAlpha(0.3f);
+            }
 
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&
-                FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())){
-            View view=dialogView.findViewById(R.id.report_text_view);
-            view.setEnabled(false);view.setClickable(false);view.setAlpha(0.3f);
-        }
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null&&FirebaseAuth.getInstance().getCurrentUser().getUid()
-                .equals(rootQuestionModel.getAskerId())){
-            statusView.setEnabled(false);statusView.setClickable(false);statusView.setAlpha(0.3f);
-            inAppropriateQuestionView.setEnabled(false);inAppropriateQuestionView.setClickable(false);
-            inAppropriateQuestionView.setAlpha(0.3f);
-        }
-        alertDialog.show();
-        handleDialogItemClicked(dialogView, alertDialog,rootQuestionModel,list,adapter,followingIdListFromLocalDatabase);
+            if (FirebaseAuth.getInstance().getCurrentUser() != null &&
+                    FirebaseAuth.getInstance().getCurrentUser().getUid().equals(rootQuestionModel.getAskerId())) {
+                View view = dialogView.findViewById(R.id.report_text_view);
+                view.setEnabled(false);
+                view.setClickable(false);
+                view.setAlpha(0.3f);
+            }
+            if (rootQuestionModel.isAnonymous()) {
+                statusView.setEnabled(false);
+                statusView.setClickable(false);
+                statusView.setAlpha(0.3f);
+            }
+            if (FirebaseAuth.getInstance().getCurrentUser() != null && FirebaseAuth.getInstance().getCurrentUser().getUid()
+                    .equals(rootQuestionModel.getAskerId())) {
+                statusView.setEnabled(false);
+                statusView.setClickable(false);
+                statusView.setAlpha(0.3f);
+                inAppropriateQuestionView.setEnabled(false);
+                inAppropriateQuestionView.setClickable(false);
+                inAppropriateQuestionView.setAlpha(0.3f);
+            }
+            alertDialog.show();
+            handleDialogItemClicked(dialogView, alertDialog, rootQuestionModel, list, adapter, followingIdListFromLocalDatabase);
+        }catch(NullPointerException e ){
+            Log.i("TAG", "NullPointerException occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
 
+        }
     }
 
     private void handleDialogItemClicked(final View view,final AlertDialog dialog,final RootQuestionModel rootQuestionModel,
@@ -441,18 +455,25 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private void onReportClicked(String questionId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter){
-        @SuppressLint("InflateParams") View dialogView=LayoutInflater.from(context).inflate(R.layout.question_report_dialog,
-                null,false);
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        builder.setView(dialogView);
-        final AlertDialog dialog=builder.create();
-        if(dialog.getWindow()!=null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+    private void onReportClicked(String questionId,ArrayList<Object> list,HomeRecyclerViewAdapter adapter) {
+        try {
+            @SuppressLint("InflateParams") View dialogView = LayoutInflater.from(context).inflate(R.layout.question_report_dialog,
+                    null, false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setView(dialogView);
+            final AlertDialog dialog = builder.create();
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+            }
+            dialog.show();
+            onReportItemClicked(dialogView, dialog, questionId, list, adapter);
+        }catch (NullPointerException e){
+            Log.i("TAG", "NullPointerException occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
+
+        }catch(Exception e){
+            Log.i("TAG", "Exception occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
         }
-        dialog.show();
-        onReportItemClicked(dialogView,dialog,questionId,list,adapter);
     }
 
 
@@ -518,55 +539,62 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onDeleteClicked(final RootQuestionModel questionModel, final ArrayList<Object> list, final HomeRecyclerViewAdapter adapter){
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
-                null,false );
-        builder.setView(rootview);
-        final AlertDialog alertDialog = builder.create();
-        if(alertDialog.getWindow()!=null) {
-            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
-        }
-        alertDialog.show();
+       try {
+           AlertDialog.Builder builder = new AlertDialog.Builder(context);
+           @SuppressLint("InflateParams") View rootview = LayoutInflater.from(context).inflate(R.layout.sure_to_delete_dialog,
+                   null, false);
+           builder.setView(rootview);
+           final AlertDialog alertDialog = builder.create();
+           if (alertDialog.getWindow() != null) {
+               alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+               alertDialog.getWindow().getAttributes().windowAnimations = R.style.customAnimations_bounce;
+           }
+           alertDialog.show();
 
-        View cancelButton=rootview.findViewById(R.id.cancel_button);
-        View deleteButton=rootview.findViewById(R.id.delete_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                DocumentReference rootReference=FirebaseFirestore.getInstance().collection("question").
-                        document(questionModel.getQuestionId());
-                DocumentReference uploaderReference=FirebaseFirestore.getInstance().collection("user")
-                        .document(questionModel.getAskerId()).collection("question")
-                        .document(questionModel.getQuestionId());
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.delete(rootReference);
-                batch.delete(uploaderReference);
+           View cancelButton = rootview.findViewById(R.id.cancel_button);
+           View deleteButton = rootview.findViewById(R.id.delete_button);
+           cancelButton.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   alertDialog.dismiss();
+               }
+           });
+           deleteButton.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   alertDialog.dismiss();
+                   DocumentReference rootReference = FirebaseFirestore.getInstance().collection("question").
+                           document(questionModel.getQuestionId());
+                   DocumentReference uploaderReference = FirebaseFirestore.getInstance().collection("user")
+                           .document(questionModel.getAskerId()).collection("question")
+                           .document(questionModel.getQuestionId());
+                   WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                   batch.delete(rootReference);
+                   batch.delete(uploaderReference);
 
-                if(isNetworkAvailable()){
+                   if (isNetworkAvailable()) {
 
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.d("TAG","image poll successfully deleted");
-                            homeMessageListener.onSomeMessage("Question deleted successfully");
-                        }
-                    });
-                    list.remove(getAdapterPosition());
-                    adapter.notifyItemRemoved(getAdapterPosition());
+                       batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                           @Override
+                           public void onComplete(@NonNull Task<Void> task) {
+                               Log.d("TAG", "image poll successfully deleted");
+                               homeMessageListener.onSomeMessage("Question deleted successfully");
+                           }
+                       });
+                       list.remove(getAdapterPosition());
+                       adapter.notifyItemRemoved(getAdapterPosition());
 
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
-                }
-            }
-        });
+                   } else {
+                       homeMessageListener.onSomeMessage("No internet connection");
+                   }
+               }
+           });
+       }catch(NullPointerException e){
+           Log.i("TAG", "NullPointerException occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
+       }catch (Exception e){
+           Log.i("TAG", "Exception occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
+
+       }
     }
 
     private boolean isNetworkAvailable(){
@@ -580,148 +608,153 @@ class QuestionAnswerWithImageViewHolder extends RecyclerView.ViewHolder {
 
     private void onFollowClicked(final RootQuestionModel questionModel, int status,
                                  final ArrayList<String> followingListFromLocalDatabase){
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
-            if(status==FOLLOW){
-                try{
-                    String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    SharedPreferences preferences=context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE);
-                    String selfName=preferences.getString(Constants.userName, null);
-                    String selfImageUrl=preferences.getString(Constants.LOW_IMAGE_URL, null);
-                    String selfBio=preferences.getString(Constants.bio, null);
+        try {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                if (status == FOLLOW) {
+                    try {
+                        String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+                        String selfName = preferences.getString(Constants.userName, null);
+                        String selfImageUrl = preferences.getString(Constants.LOW_IMAGE_URL, null);
+                        String selfBio = preferences.getString(Constants.bio, null);
 
-                    DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
+                        DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
+                                .document(selfUid).collection("following")
+                                .document(questionModel.getAskerId());
+                        DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
+                                .document(questionModel.getAskerId()).collection("follower")
+                                .document(selfUid);
+                        DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
+                                .document(selfUid);
+                        DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
+                                .document(questionModel.getAskerId());
+
+                        Map<String, Object> selfFollowingMap = new HashMap<>();
+                        Map<String, Object> askerFollowerMap = new HashMap<>();
+                        Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                        Map<String, Object> askerFollowerCountMap = new HashMap<>();
+
+                        selfFollowingMap.put("followingId", questionModel.getAskerId());
+                        selfFollowingMap.put("followingName", questionModel.getAskerName());
+                        selfFollowingMap.put("followingImageUrl", questionModel.getAskerImageUrlLow());
+                        selfFollowingMap.put("followingBio", questionModel.getAskerBio());
+                        selfFollowingMap.put("selfId", selfUid);
+
+                        askerFollowerMap.put("followerId", selfUid);
+                        if(selfName!=null){
+                        askerFollowerMap.put("followerName", selfName);}
+                        if (selfImageUrl != null) {
+                            askerFollowerMap.put("followerImageUrl", selfImageUrl);
+                        }
+                        if (selfBio != null) {
+                            askerFollowerMap.put("followerBio", selfBio);
+                        }
+                        askerFollowerMap.put("selfId", questionModel.getAskerId());
+
+                        selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
+                        askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
+
+                        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                        batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
+                        batch.set(askerFollowerRef, askerFollowerMap, SetOptions.merge());
+                        batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                        batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
+
+
+                        if (isNetworkAvailable()) {
+                            followingListFromLocalDatabase.add(questionModel.getAskerId());
+                            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.i("TAG", "follower add successfully");
+                                    final String followingId = questionModel.getAskerId();
+                                    final String followingName = questionModel.getAskerName();
+                                    final String followingImageUrl = questionModel.getAskerImageUrlLow();
+                                    final String followingBio = questionModel.getAskerBio();
+                                    Following following = new Following(followingId, followingName, followingImageUrl
+                                            , followingBio);
+                                    final ArrayList<Following> followingsList = new ArrayList<>();
+                                    followingsList.add(following);
+                                    AsyncTask.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                            database.removeFollowingModel(followingId);
+                                            database.insertFollowingModel(followingsList);
+
+                                        }
+                                    });
+
+
+                                }
+                            });
+                        } else {
+                            homeMessageListener.onSomeMessage("No internet connection");
+
+                        }
+
+                    } catch (AssertionError e) {
+                        Log.i("TAG", "Assertion error occurs in following user :- " + e.getMessage());
+                    }
+                } else if (status == UNFOLLOW) {
+
+                    String selfUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DocumentReference selfFollowingRef = FirebaseFirestore.getInstance().collection("user")
                             .document(selfUid).collection("following")
                             .document(questionModel.getAskerId());
-                    DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
+                    DocumentReference askerFollowerRef = FirebaseFirestore.getInstance().collection("user")
                             .document(questionModel.getAskerId()).collection("follower")
                             .document(selfUid);
-                    DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
+                    DocumentReference selfFollowingCountRef = FirebaseFirestore.getInstance().collection("user")
                             .document(selfUid);
-                    DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
+                    DocumentReference askerFollowerCountRef = FirebaseFirestore.getInstance().collection("user")
                             .document(questionModel.getAskerId());
 
-                    Map<String,Object> selfFollowingMap=new HashMap<>();
-                    Map<String,Object> askerFollowerMap=new HashMap<>();
-                    Map<String ,Object> selfFollowingCountMap=new HashMap<>();
-                    Map<String,Object> askerFollowerCountMap=new HashMap<>();
+                    Map<String, Object> selfFollowingCountMap = new HashMap<>();
+                    Map<String, Object> askerFollowerCountMap = new HashMap<>();
 
-                    selfFollowingMap.put("followingId", questionModel.getAskerId());
-                    selfFollowingMap.put("followingName",questionModel.getAskerName());
-                    selfFollowingMap.put("followingImageUrl", questionModel.getAskerImageUrlLow());
-                    selfFollowingMap.put("followingBio",questionModel.getAskerBio());
-                    selfFollowingMap.put("selfId", selfUid);
+                    selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
+                    askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
 
-                    askerFollowerMap.put("followerId", selfUid);
-                    askerFollowerMap.put("followerName", selfName);
-                    if (selfImageUrl != null) {
-                        askerFollowerMap.put("followerImageUrl", selfImageUrl);
-                    }
-                    if (selfBio != null) {
-                        askerFollowerMap.put("followerBio",selfBio);
-                    }
-                    askerFollowerMap.put("selfId", questionModel.getAskerId());
-
-                    selfFollowingCountMap.put("followingCount", FieldValue.increment(1));
-                    askerFollowerCountMap.put("followerCount", FieldValue.increment(1));
-
-                    WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                    batch.set(selfFollowingRef, selfFollowingMap, SetOptions.merge());
-                    batch.set(askerFollowerRef, askerFollowerMap,SetOptions.merge());
-                    batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
-                    batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
+                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                    batch.delete(selfFollowingRef);
+                    batch.delete(askerFollowerRef);
+                    batch.set(selfFollowingCountRef, selfFollowingCountMap, SetOptions.merge());
+                    batch.set(askerFollowerCountRef, askerFollowerCountMap, SetOptions.merge());
 
 
-
-                    if(isNetworkAvailable()){
-                        followingListFromLocalDatabase.add(questionModel.getAskerId());
+                    if (isNetworkAvailable()) {
+                        followingListFromLocalDatabase.remove(questionModel.getAskerId());
                         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Log.i("TAG", "follower add successfully");
-                                final String followingId=questionModel.getAskerId();
-                                final String followingName=questionModel.getAskerName();
-                                final String followingImageUrl=questionModel.getAskerImageUrlLow();
-                                final String followingBio=questionModel.getAskerBio();
-                                Following following=new Following(followingId, followingName, followingImageUrl
-                                        , followingBio);
-                                final ArrayList<Following> followingsList=new ArrayList<>();
-                                followingsList.add(following);
+                                Log.i("TAG", "unfollow successfully");
                                 AsyncTask.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        LocalDatabase database=new LocalDatabase(context.getApplicationContext());
-                                        database.removeFollowingModel(followingId);
-                                        database.insertFollowingModel(followingsList);
-
+                                        LocalDatabase database = new LocalDatabase(context.getApplicationContext());
+                                        database.removeFollowingModel(questionModel.getAskerId());
                                     }
                                 });
 
 
                             }
                         });
-                    }else {
+
+                    } else {
                         homeMessageListener.onSomeMessage("No internet connection");
 
                     }
-
-                }catch (AssertionError e){
-                    Log.i("TAG", "Assertion error occurs in following user :- "+e.getMessage());
                 }
+            } else {
+                homeMessageListener.onSomeMessage("Facing some issue ,restart your app");
+                //sign in again
             }
-            else if (status == UNFOLLOW) {
+        }catch (NullPointerException e){
+            Log.i("TAG", "NullPointerException occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
+        }catch(Exception e){
+            Log.i("TAG", "Exception occurs in QuestionAnswerWithImageViewHolder ,"+e.getMessage());
 
-                String selfUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DocumentReference selfFollowingRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid).collection("following")
-                        .document(questionModel.getAskerId());
-                DocumentReference askerFollowerRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(questionModel.getAskerId()).collection("follower")
-                        .document(selfUid);
-                DocumentReference selfFollowingCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(selfUid);
-                DocumentReference askerFollowerCountRef=FirebaseFirestore.getInstance().collection("user")
-                        .document(questionModel.getAskerId());
-
-                Map<String ,Object> selfFollowingCountMap=new HashMap<>();
-                Map<String,Object> askerFollowerCountMap=new HashMap<>();
-
-                selfFollowingCountMap.put("followingCount", FieldValue.increment(-1));
-                askerFollowerCountMap.put("followerCount", FieldValue.increment(-1));
-
-                WriteBatch batch=FirebaseFirestore.getInstance().batch();
-                batch.delete(selfFollowingRef);
-                batch.delete(askerFollowerRef);
-                batch.set(selfFollowingCountRef, selfFollowingCountMap,SetOptions.merge());
-                batch.set(askerFollowerCountRef, askerFollowerCountMap,SetOptions.merge());
-
-
-                if(isNetworkAvailable()){
-                    followingListFromLocalDatabase.remove(questionModel.getAskerId());
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.i("TAG","unfollow successfully");
-                            AsyncTask.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    LocalDatabase  database=new LocalDatabase(context.getApplicationContext());
-                                    database.removeFollowingModel(questionModel.getAskerId());
-                                }
-                            });
-
-
-                        }
-                    });
-
-                }else {
-                    homeMessageListener.onSomeMessage("No internet connection");
-
-                }
-            }
-        }
-        else {
-
-            //sign in again
         }
     }
 }
