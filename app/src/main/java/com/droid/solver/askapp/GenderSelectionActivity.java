@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.droid.solver.askapp.Main.Constants;
 
 public class GenderSelectionActivity extends AppCompatActivity implements View .OnClickListener{
@@ -19,7 +18,6 @@ public class GenderSelectionActivity extends AppCompatActivity implements View .
     private TextView maleText,femaleText;
     private int selection=0;
     private SharedPreferences preferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

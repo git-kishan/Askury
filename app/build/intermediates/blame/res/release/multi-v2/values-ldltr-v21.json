@@ -4,7 +4,7 @@
             "outputFile": "/home/notebook/projects/AskApp/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-ldltr-v21/values-ldltr-v21.xml",
             "map": [
                 {
-                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/511c3723f5bfe64e0b5731253610df2b/res/values-ldltr-v21/values-ldltr-v21.xml",
+                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/fd8cd4d42251c8b2137866c5c1e1b39a/res/values-ldltr-v21/values-ldltr-v21.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

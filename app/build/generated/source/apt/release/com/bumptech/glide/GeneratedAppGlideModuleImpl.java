@@ -1,8 +1,8 @@
 package com.bumptech.glide;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.droid.solver.askapp.MyAppGlideModule;
 import java.lang.Class;
 import java.lang.Override;

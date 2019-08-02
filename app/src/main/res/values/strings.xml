@@ -94,10 +94,13 @@
     <string name="write_your_survey_question">Write your survey question</string>
     <string name="promote_nudity">Promote nudity or pornography</string>
     <string name="i_dont_like_imagepoll">I don\'t like the image poll</string>
+
     <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="ad_unit_id" translatable="false">ca-app-pub-3940256099942544/8135179316</string>
     <string name="placement_id" translatable="false">395972514579548_432196284290504</string>
 
+    <string name="final_admob_app_id" translatable="false">ca-app-pub-9174604719354987~2553838583</string>
+    <string name="final_admob_unit_id" translatable="false">ca-app-pub-9174604719354987/5252100218</string>
 
     <string name="Painting">Painting</string>
     <string name="Acting">Acting</string>

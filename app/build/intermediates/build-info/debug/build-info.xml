@@ -5,8 +5,8 @@
     build-mode="COLD"
     density="xhdpi"
     format="10"
-    plugin-version="3.4.1"
-    timestamp="1564252181911"
+    plugin-version="3.4.2"
+    timestamp="1564774924473"
     token="8254342186423293150"
     verifier="COLD_SWAP_REQUESTED" >
 
@@ -23,14 +23,17 @@
         name="verifier"
         duration="0" />
 
-    <artifact
-        location="/home/notebook/projects/AskApp/app/build/intermediates/instant-run-apk/debug/app-debug.apk"
-        type="SPLIT_MAIN" />
-
     <build
         build-mode="FULL"
-        timestamp="1564252006855"
-        verifier="FULL_BUILD_REQUESTED" >
+        ir-eligibility="FIELD_TYPE_CHANGE"
+        timestamp="1564771713473"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/dep/dependencies.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_2.apk"
+            type="SPLIT" />
         <artifact
             location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
             type="SPLIT" />
@@ -38,13 +41,7 @@
             location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_1.apk"
             type="SPLIT" />
         <artifact
-            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_2.apk"
-            type="SPLIT" />
-        <artifact
             location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_3.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_5.apk"
             type="SPLIT" />
         <artifact
             location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_4.apk"
@@ -53,28 +50,24 @@
             location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_6.apk"
             type="SPLIT" />
         <artifact
-            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_8.apk"
+            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
             type="SPLIT" />
         <artifact
-            location="/home/notebook/projects/AskApp/app/build/intermediates/instant-run-apk/debug/app-debug.apk"
-            type="SPLIT_MAIN" />
+            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_5.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_8.apk"
+            type="SPLIT" />
         <artifact
             location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
             type="SPLIT" />
         <artifact
-            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/dep/dependencies.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/notebook/projects/AskApp/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
-            type="SPLIT" />
-    </build>
-    <build
-        build-mode="COLD"
-        timestamp="1564252181911"
-        verifier="COLD_SWAP_REQUESTED" >
-        <artifact
             location="/home/notebook/projects/AskApp/app/build/intermediates/instant-run-apk/debug/app-debug.apk"
             type="SPLIT_MAIN" />
     </build>
+    <build
+        build-mode="COLD"
+        timestamp="1564774924473"
+        verifier="COLD_SWAP_REQUESTED" />
 
 </instant-run>

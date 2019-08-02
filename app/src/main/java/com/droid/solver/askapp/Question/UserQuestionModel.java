@@ -1,19 +1,21 @@
 package com.droid.solver.askapp.Question;
 
-import java.util.List;
+import androidx.annotation.Keep;
 
-public class UserQuestionModel {
-    private String questionId;
-    private String question;
-    private List<String> questionType;
-    private long timeOfAsking;
-    private String userId;
-    private String userName;
-    private String userImageUrlLow;
-    private String userBio;
-    private int answerCount;
-    private boolean anonymous;
-    private boolean userNotified;
+import java.util.List;
+@Keep
+public class UserQuestionModel{
+    public String questionId;
+    public String question;
+    public List<String> questionType;
+    public long timeOfAsking;
+    public String userId;
+    public String userName;
+    public String userImageUrlLow;
+    public String userBio;
+    public int answerCount;
+    public boolean anonymous;
+    public boolean userNotified;
 
     public UserQuestionModel(){}
 

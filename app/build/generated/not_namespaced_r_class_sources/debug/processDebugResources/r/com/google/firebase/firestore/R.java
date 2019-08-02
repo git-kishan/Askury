@@ -206,7 +206,7 @@ public final class R {
         public static final int common_open_on_phone = 0x7f100081;
         public static final int common_signin_button_text = 0x7f100082;
         public static final int common_signin_button_text_long = 0x7f100083;
-        public static final int status_bar_notification_info_overflow = 0x7f1000f5;
+        public static final int status_bar_notification_info_overflow = 0x7f1000f7;
     }
     public static final class style {
         private style() {}

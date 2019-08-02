@@ -4,7 +4,17 @@
             "outputFile": "/home/notebook/projects/AskApp/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/511c3723f5bfe64e0b5731253610df2b/res/values-v16/values-v16.xml",
+                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/f1f965c330a9ffd26e87e5d8b466e9fd/res/values-v16/values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                },
+                {
+                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/fd8cd4d42251c8b2137866c5c1e1b39a/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -20,16 +30,6 @@
                         "endLines": "6",
                         "endColumns": "12",
                         "endOffsets": "289"
-                    }
-                },
-                {
-                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/85187997d4a1bab3580802da8b34b342/res/values-v16/values-v16.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "65",
-                        "endOffsets": "116"
                     }
                 }
             ]

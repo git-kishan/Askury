@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,7 +71,6 @@ public class HomeFragment extends Fragment  {
     private ArrayList<String> answerLikeListFromLocalDatabase;
     private Handler handler;
     private final int NUMBER_OF_ADS =2;
-//    private int AD_COUNTER=0;
     private AdLoader adLoader;
     private List<UnifiedNativeAd> mNativeAds ;
 
@@ -307,7 +304,6 @@ public class HomeFragment extends Fragment  {
                                                         i2 = Integer.parseInt(s);
                                                     }
                                                 }
-
                                             }
                                             askImagePollModel.setOptionSelectedByMe(i2);
                                             imagePollModelStack.add(askImagePollModel);
@@ -762,7 +758,7 @@ public class HomeFragment extends Fragment  {
             @Override
             public void run() {
                 if(getActivity()!=null) {
-                    AdLoader.Builder builder = new AdLoader.Builder(getActivity(), getString(R.string.ad_unit_id));
+                    AdLoader.Builder builder = new AdLoader.Builder(getActivity(), getString(R.string.final_admob_unit_id));
                     adLoader = builder.forUnifiedNativeAd(
                             new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                                 @Override

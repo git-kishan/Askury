@@ -1,12 +1,15 @@
 package com.droid.solver.askapp.Question;
 
+import androidx.annotation.Keep;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Keep
 public class SurveyParticipated{
 
-    private HashMap<String,Integer> surveyMap;
-    private ArrayList<HashMap<String,Integer>> surveyMapList;
+    public HashMap<String,Integer> surveyMap;
+    public ArrayList<HashMap<String,Integer>> surveyMapList;
 
     //key will be surveyParticipatedId
     //value will be optionChoosenInThatParticipation

@@ -1,21 +1,23 @@
 package com.droid.solver.askapp.Main;
 
+import androidx.annotation.Keep;
 import java.util.ArrayList;
 
+@Keep
 public class UserInfoModel {
-   private  String userId;
-   private String userName;
-   private String profilePicUrlLow;
-   private String profilePicUrlHigh;
-   private String bio;
-   private int point;
-   private String country;
-   private String language;
-   private ArrayList<String> interest;
-   private int followerCount;
-   private int followingCount;
-   private int firstTimeUser;
-   private String gender;
+    public   String userId;
+    public String userName;
+    public String profilePicUrlLow;
+    public String profilePicUrlHigh;
+    public String bio;
+    public int point;
+    public String country;
+    public String language;
+    public ArrayList<String> interest;
+    public int followerCount;
+    public int followingCount;
+    public int firstTimeUser;
+    public String gender;
     //following list means list of object followed by user
     //follower list means list of object who is following to user
 
@@ -34,6 +36,12 @@ public class UserInfoModel {
        this.interest=interest;
        this.followerCount=followerCount;
        this.followingCount=followingCount;
+   }
+   public UserInfoModel(String userId,String userName,int point,int firstTimeUser){
+       this.userId = userId;
+       this.userName=userName;
+       this.point=point;
+       this.firstTimeUser=firstTimeUser;
    }
 
    public UserInfoModel(String userId,String userName,String profilePicUrlLow,String profilePicUrlHigh,

@@ -1,11 +1,14 @@
 package com.droid.solver.askapp.Question;
 
-public class Following{
-    private String followingId;
-    private String followingName;
-    private String followingImageUrl;
-    private  String followingBio;
-    private String selfId;
+import androidx.annotation.Keep;
+
+@Keep
+public class Following {
+    public String followingId;
+    public String followingName;
+    public String followingImageUrl;
+    public  String followingBio;
+    public String selfId;
 
     Following(){}
 

@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.droid.solver.askapp.Account.AccountFragment;
 import com.droid.solver.askapp.Notification.NotificationFragment;
 import com.droid.solver.askapp.Home.HomeFragment;
@@ -88,11 +89,12 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        MobileAds.initialize(this, getString(R.string.final_admob_app_id));
         AudienceNetworkAds.initialize(this);
         firestoreRoot = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
+            Toast.makeText(this, "User not recognized", Toast.LENGTH_LONG).show();
             progressFrameLayout.setVisibility(View.VISIBLE);
             clearDatabase();
         }
@@ -100,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements
         fetchUserInfo();
         fetchLikeDocumentsFromRemoteDatabase();
         toolbar = findViewById(R.id.toolbar);
-//        toolbar.inflateMenu(R.menu.toolbar_menu_main);
         frameLayout = findViewById(R.id.fragment_container);
         messageText=findViewById(R.id.message_text);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -125,38 +126,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-
-//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem menuItem) {
-//                if(menuItem.getItemId()==R.id.log_out){
-//                    progressFrameLayout.setVisibility(View.VISIBLE);
-//                    FirebaseAuth.getInstance().signOut();
-//                    SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-//                    SharedPreferences.Editor editor=sharedPreferences.edit();
-//                    editor.clear();
-//                    editor.apply();
-//                    AsyncTask.execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            clearDatabase();
-//                            Glide.get(MainActivity.this)
-//                                    .clearDiskCache();
-//                            handler.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    LoginManager.getInstance().logOut();
-//                                    signInAgain();
-//                                }
-//                            });
-//                        }
-//                    });
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-
         checkNotification();
     }
     @Override
@@ -249,6 +218,10 @@ public class MainActivity extends AppCompatActivity implements
 
                      }catch (IllegalStateException e){
                          Log.i("TAG", "illegal state exception in main page");
+                     }catch (NullPointerException e){
+                         Log.i("TAG", "NullPointerexception in main page");
+                     }catch (Exception e){
+                         Log.i("TAG", "Exception in main page");
                      }
                  }
                  @Override
@@ -257,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements
                  }
              });
         }
-
     }
 
     public  void changeToolbarFont(Toolbar toolbar) {
@@ -282,19 +254,24 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
                                 @Nullable FirebaseFirestoreException e) {
-
-                if (e != null) {
-                    Log.i("TAG", "realtime listener profile pic failed");
-                    return;
-                }
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    String lowProfilePicUrl = documentSnapshot.getString("profilePicUrlLow");
-                    String userName = documentSnapshot.getString("userName");
-                    SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString(Constants.userName, userName);
-                    editor.putString(Constants.LOW_IMAGE_URL, lowProfilePicUrl);
-                    editor.apply();
+                try {
+                    if (e != null) {
+                        Log.i("TAG", "realtime listener profile pic failed");
+                        return;
+                    }
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        String lowProfilePicUrl = documentSnapshot.getString("profilePicUrlLow");
+                        String userName = documentSnapshot.getString("userName");
+                        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(Constants.userName, userName);
+                        editor.putString(Constants.LOW_IMAGE_URL, lowProfilePicUrl);
+                        editor.apply();
+                    }
+                }catch (NullPointerException j){
+                    Log.i("TAG","NullPointerException occurs in getting profile ,"+j.getMessage());
+                }catch (Exception j){
+                    Log.i("TAG","Exception occurs in getting profile ,"+j.getMessage());
                 }
             }
         });
@@ -316,118 +293,142 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void fetchAnswerLikeDocuments(){
-        final Set<String> set = new LinkedHashSet<>();
-        String uid=user.getUid();
-        Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
-                .collection("answerLike");
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+        try {
+            final Set<String> set = new LinkedHashSet<>();
+            String uid = user.getUid();
+            Query query = FirebaseFirestore.getInstance().collection("user").document(uid)
+                    .collection("answerLike");
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
 
-                            if(task.isSuccessful()) {
-                                if(task.getResult()!=null)
+                            if (task.isSuccessful()) {
+                                if (task.getResult() != null)
                                     for (QueryDocumentSnapshot snapshots : task.getResult()) {
 
                                         AnswerLike answerLike = snapshots.toObject(AnswerLike.class);
-                                            answerLikeList=answerLike.getAnswerLikeId();
+                                        if(answerLike.getAnswerLikeId()!=null)
+                                           answerLikeList = answerLike.getAnswerLikeId();
                                     }
-                            }
-                            else {
+                                if (answerLikeList != null && answerLikeList.size() > 0) {
+                                    set.addAll(answerLikeList);
+                                    answerLikeList.clear();
+                                    answerLikeList.addAll(set);
+                                    LocalDatabase database = new LocalDatabase(getApplicationContext());
+                                    database.clearAnswerLikeModel();
+                                    database.insertAnswerLikeModel(answerLikeList);
+                                    set.clear();
+                                }
+                            } else {
                                 Log.i("TAG", "error in fetching answer like documents ");
                             }
-                            if(answerLikeList!=null) {
-                                set.addAll(answerLikeList);
-                                answerLikeList.clear();
-                                answerLikeList.addAll(set);
-                                LocalDatabase database = new LocalDatabase(getApplicationContext());
-                                database.clearAnswerLikeModel();
-                                database.insertAnswerLikeModel(answerLikeList);
-                                set.clear();
-                            }
-
                         }
                     });
-
-            }
-        });
+                }
+            });
+        }catch(NullPointerException e){
+            Log.i("TAG", "NullException occurs in fetching answer like list "+e.getMessage());
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in fetching answer like list "+e.getMessage());
+        }
     }
 
     private void fetchImagePollLikeDocuments(){
-        final HashMap<String,Integer> imagePollLikeMap=new HashMap<>();
-        final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
-        Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
-                .collection("imagePollLike");
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if(task.getResult()!=null)
-                                    for(QueryDocumentSnapshot snapshot:task.getResult()){
-                                        ImagePollLike imagePollLike=snapshot.toObject(ImagePollLike.class);
-                                        tempList.addAll(imagePollLike.getImagePollMapList());
+        try {
+            final HashMap<String, Integer> imagePollLikeMap = new HashMap<>();
+            final ArrayList<HashMap<String, Integer>> tempList = new ArrayList<>();
+            Query query = FirebaseFirestore.getInstance().collection("user").document(uid)
+                    .collection("imagePollLike");
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (task.getResult() != null)
+                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                            ImagePollLike imagePollLike = snapshot.toObject(ImagePollLike.class);
+                                            if(imagePollLike.getImagePollMapList()!=null)
+                                               tempList.addAll(imagePollLike.getImagePollMapList());
+                                        }
+                                    for (int i = 0; i < tempList.size(); i++) {
+                                        imagePollLikeMap.putAll(tempList.get(i));
                                     }
-                                for (int i = 0; i < tempList.size(); i++) {
-                                    imagePollLikeMap.putAll(tempList.get(i));
+                                    tempList.clear();
+                                    LocalDatabase localDatabase = new LocalDatabase(getApplicationContext());
+                                    localDatabase.clearImagePollLikeModel();
+                                    if(imagePollLikeMap.size()>0) {
+                                        localDatabase.insertImagePollLikeModel(imagePollLikeMap);
+                                        imagePollLikeMap.clear();
+                                    }
+                                } catch (NullPointerException e) {
+                                    Log.i("TAG", "NullpointerException occurs in retrieving image poll like map ," + e.getMessage());
                                 }
-                                tempList.clear();
-                                LocalDatabase localDatabase = new LocalDatabase(getApplicationContext());
-                                localDatabase.clearImagePollLikeModel();
-                                localDatabase.insertImagePollLikeModel(imagePollLikeMap);
-                                imagePollLikeMap.clear();
-                            }catch (NullPointerException e){
-                                Log.i("TAG", "NullpointerException occurs in retrieving image poll like map ,"+e.getMessage());
                             }
-                        }
-                    });
+                        });
 
 
-                }else {
-                    Log.i("TAG", "error in fetching image poll like");
+                    } else {
+                        Log.i("TAG", "error in fetching image poll like");
+                    }
                 }
-            }
-        }) ;
+            });
+        }catch(NullPointerException e){
+            Log.i("TAG", "NullpointerException occurs in retrieving image poll like map ," + e.getMessage());
+
+        }catch(Exception e){
+            Log.i("TAG", "NullpointerException occurs in retrieving image poll like map ," + e.getMessage());
+
+        }
     }
 
     private void fetchSurveyParticipatedDocuments(){
-        final HashMap<String,Integer> surveyParticipatedMap=new HashMap<>();
-        final ArrayList<HashMap<String,Integer>> tempList=new ArrayList<>();
-        Query query=FirebaseFirestore.getInstance().collection("user").document(uid)
-                .collection("surveyParticipated");
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull final Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(task.getResult()!=null)
-                                for(QueryDocumentSnapshot snapshots:task.getResult()){
-                                    SurveyParticipated surveyParticipated=snapshots.toObject(SurveyParticipated.class);
-                                    tempList.addAll(surveyParticipated.getSurveyMapList());
+        try {
+            final HashMap<String, Integer> surveyParticipatedMap = new HashMap<>();
+            final ArrayList<HashMap<String, Integer>> tempList = new ArrayList<>();
+            Query query = FirebaseFirestore.getInstance().collection("user").document(uid)
+                    .collection("surveyParticipated");
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (task.getResult() != null)
+                                    for (QueryDocumentSnapshot snapshots : task.getResult()) {
+                                        SurveyParticipated surveyParticipated = snapshots.toObject(SurveyParticipated.class);
+                                           if(surveyParticipated.getSurveyMapList()!=null)
+                                              tempList.addAll(surveyParticipated.getSurveyMapList());
+                                    }
+                                for (int i = 0; i < tempList.size(); i++) {
+                                    surveyParticipatedMap.putAll(tempList.get(i));
                                 }
-                            for(int i=0;i<tempList.size();i++){
-                                surveyParticipatedMap.putAll(tempList.get(i));
+                                tempList.clear();
+                                LocalDatabase localDatabase = new LocalDatabase(getApplicationContext());
+                                localDatabase.clearSurveyParticipatedModel();
+                                if(surveyParticipatedMap.size()>0) {
+                                    localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
+                                    surveyParticipatedMap.clear();
+                                }
                             }
-                            tempList.clear();
-                            LocalDatabase localDatabase=new LocalDatabase(getApplicationContext());
-                            localDatabase.clearSurveyParticipatedModel();
-                            localDatabase.insertSurveyParticipatedModel(surveyParticipatedMap);
-                            surveyParticipatedMap.clear();
-                        }
-                    });
+                        });
 
-                }else {
-                    Log.i("TAG", "task is not successful in fetching survey participated documents");
+                    } else {
+                        Log.i("TAG", "task is not successful in fetching survey participated documents");
+                    }
                 }
-            }
-        });
+            });
+        }catch (NullPointerException e){
+            Log.i("TAG","NullPointerException occurs in fetching survey participated list");
+        }catch (Exception e){
+            Log.i("TAG", "Exception occurs in fetching survey participated list");
+        }
     }
 
     private void clearDatabase(){
@@ -496,60 +497,73 @@ public class MainActivity extends AppCompatActivity implements
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    if(task.getResult()!=null) {
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                final UserInfoModel infoModel = task.getResult().toObject(UserInfoModel.class);
-                                if(infoModel!=null){
-                                    String userId=infoModel.getUserId();
-                                    String userName=infoModel.getUserName();
-                                    String profilePicUrlLow=infoModel.getProfilePicUrlLow();
-                                    String profilePicUrlHigh=infoModel.getProfilePicUrlHigh();
-                                    String bio=infoModel.getBio();
-                                    int point=infoModel.getPoint();
-                                    int followerCount=infoModel.getFollowerCount();
-                                    int followingCount=infoModel.getFollowingCount();
+                try {
+                    if (task.isSuccessful()) {
+                        try {
+                            if (task.getResult() != null) {
+                                AsyncTask.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        final UserInfoModel infoModel = task.getResult().toObject(UserInfoModel.class);
+                                        if (infoModel != null) {
+                                            String userId = infoModel.getUserId();
+                                            String userName = infoModel.getUserName();
+                                            String profilePicUrlLow = infoModel.getProfilePicUrlLow();
+                                            String profilePicUrlHigh = infoModel.getProfilePicUrlHigh();
+                                            String bio = infoModel.getBio();
+                                            int point = infoModel.getPoint();
+                                            int followerCount = infoModel.getFollowerCount();
+                                            int followingCount = infoModel.getFollowingCount();
 
-                                    String gender=infoModel.getGender();
-                                    ArrayList<String> interest=infoModel.getInterest();
+                                            String gender = infoModel.getGender();
+                                            ArrayList<String> interest = infoModel.getInterest();
 
-                                    StringBuilder builder=new StringBuilder();
-                                    StringBuilder bioBuilder=new StringBuilder();
-                                    if(interest!=null) {
-                                        for (int i = 0; i < interest.size(); i++) {
-                                            builder.append(interest.get(i));
-                                            builder.append("@");
-                                        }
-                                        if(bio==null){
-                                            for(int i=0;i<interest.size();i++){
-                                                bioBuilder.append(interest.get(i));
-                                                if(i!=interest.size())
-                                                    bioBuilder.append(" |");
+                                            StringBuilder builder = new StringBuilder();
+                                            StringBuilder bioBuilder = new StringBuilder();
+                                            if (interest != null) {
+                                                for (int i = 0; i < interest.size(); i++) {
+                                                    builder.append(interest.get(i));
+                                                    builder.append("@");
+                                                }
+                                                if (bio == null) {
+                                                    for (int i = 0; i < interest.size(); i++) {
+                                                        bioBuilder.append(interest.get(i));
+                                                        if (i != interest.size())
+                                                            bioBuilder.append(" |");
 
+                                                    }
+                                                }
                                             }
+                                            SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = preferences.edit();
+                                            editor.putString(Constants.userId, userId);
+                                            editor.putString(Constants.userName, userName);
+                                            editor.putString(Constants.profilePicLowUrl, profilePicUrlLow);
+                                            editor.putString(Constants.profilePicHighUrl, profilePicUrlHigh);
+                                            editor.putInt(Constants.point, point);
+                                            editor.putInt(Constants.followerCount, followerCount);
+                                            editor.putInt(Constants.followingCount, followingCount);
+                                            editor.putString(Constants.GENDER, gender);
+                                            editor.putString(Constants.bio, bioBuilder.toString());
+                                            editor.putString(Constants.INTEREST, builder.toString());
+                                            editor.apply();
                                         }
                                     }
-                                    SharedPreferences preferences=getSharedPreferences(Constants.PREFERENCE_NAME,MODE_PRIVATE );
-                                    SharedPreferences.Editor editor=preferences.edit();
-                                    editor.putString(Constants.userId, userId);
-                                    editor.putString(Constants.userName, userName);
-                                    editor.putString(Constants.profilePicLowUrl, profilePicUrlLow);
-                                    editor.putString(Constants.profilePicHighUrl, profilePicUrlHigh);
-                                    editor.putInt(Constants.point, point);
-                                    editor.putInt(Constants.followerCount, followerCount);
-                                    editor.putInt(Constants.followingCount, followingCount);
-                                    editor.putString(Constants.GENDER, gender);
-                                    editor.putString(Constants.bio, bioBuilder.toString());
-                                    editor.putString(Constants.INTEREST, builder.toString());
-                                    editor.apply();
-                                }
+                                });
+
+
                             }
-                        });
+                        } catch (NullPointerException e) {
+                            Log.i("TAG", "NullPointerException occurs in fetching user info mainActivity");
+                        } catch (Exception e) {
+                            Log.i("TAG", "Exception occurs in fetching user info mainActivity");
 
-
+                        }
                     }
+                }catch (NullPointerException e){
+                    Log.i("TAG", "NullPointerException occurs in fetcing user info");
+                }catch (Exception e){
+                    Log.i("TAG", "Exception occurs in fetcing user info");
                 }
             }
         });

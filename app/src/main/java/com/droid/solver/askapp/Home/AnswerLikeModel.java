@@ -1,16 +1,19 @@
 package com.droid.solver.askapp.Home;
 
-public class AnswerLikeModel {
-    private String likerId;
-    private String likerName;
-    private String likerImageUrl;
-    private String likerBio;
-    private String questionId;
-    private String askerId;
-    private String answerId;
-    private String answererId;
-    private String type;
-    private long notifiedTime;
+import androidx.annotation.Keep;
+
+@Keep
+public class AnswerLikeModel{
+    public String likerId;
+    public String likerName;
+    public String likerImageUrl;
+    public String likerBio;
+    public String questionId;
+    public String askerId;
+    public String answerId;
+    public String answererId;
+    public String type;
+    public long notifiedTime;
 
 
     public AnswerLikeModel(String likerId,String likerName,String likerImageUrl,String likeBio){

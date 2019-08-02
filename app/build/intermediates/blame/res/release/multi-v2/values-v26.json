@@ -4,7 +4,7 @@
             "outputFile": "/home/notebook/projects/AskApp/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-v26/values-v26.xml",
             "map": [
                 {
-                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/511c3723f5bfe64e0b5731253610df2b/res/values-v26/values-v26.xml",
+                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/fd8cd4d42251c8b2137866c5c1e1b39a/res/values-v26/values-v26.xml",
                     "from": {
                         "startLines": "2,3,4,8,12,16",
                         "startColumns": "4,4,4,4,4,4",

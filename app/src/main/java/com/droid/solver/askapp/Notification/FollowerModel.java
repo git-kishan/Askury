@@ -1,15 +1,18 @@
 package com.droid.solver.askapp.Notification;
 
-public class FollowerModel {
+import androidx.annotation.Keep;
 
-    private String followerId;
-    private String followerName;
-    private String followerBio;
-    private String followerImageUrl;
-    private String selfId;
-    private boolean isStoredLocally;
-    private long notifiedTime;
-    private String type;
+@Keep
+public class FollowerModel{
+
+    public String followerId;
+    public String followerName;
+    public String followerBio;
+    public String followerImageUrl;
+    public String selfId;
+    public boolean isStoredLocally;
+    public long notifiedTime;
+    public String type;
 
     public FollowerModel(){}
 

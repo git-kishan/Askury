@@ -1,12 +1,15 @@
 package com.droid.solver.askapp.Question;
 
+import androidx.annotation.Keep;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Keep
 public class ImagePollLike{
 
-    private HashMap<String,Integer> imagePollMap;
-    private ArrayList<HashMap<String,Integer>> imagePollMapList;
+    public HashMap<String,Integer> imagePollMap;
+    public ArrayList<HashMap<String,Integer>> imagePollMapList;
     //key will be imagePollId
     // value will be optionSelected , 1 for first one and 2 for second one
 

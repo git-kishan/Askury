@@ -1,18 +1,21 @@
 package com.droid.solver.askapp.Notification;
 
-public class QuestionModel {
+import androidx.annotation.Keep;
 
-    private String questionId;
-    private String askerId;
-    private String likerId;
-    private String likerName;
-    private String likerImageUrl;
-    private String likerBio;
-    private String answerId;
-    private String answererId;
-    private String type;
-    private long notifiedTime;
-    private boolean isStoredLocally;
+@Keep
+public class QuestionModel{
+
+    public String questionId;
+    public String askerId;
+    public String likerId;
+    public String likerName;
+    public String likerImageUrl;
+    public String likerBio;
+    public String answerId;
+    public String answererId;
+    public String type;
+    public long notifiedTime;
+    public boolean isStoredLocally;
 
 
     public QuestionModel(){}

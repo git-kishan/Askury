@@ -1,5 +1,8 @@
 package com.droid.solver.askapp.Main;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class Constants {
     public static final String PREFERENCE_NAME="user_preferences";
     public static final String LOW_PROFILE_PIC_PATH="low_profile_pic_path";

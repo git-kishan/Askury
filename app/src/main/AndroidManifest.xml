@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -144,7 +143,8 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id"/>
+            android:value="@string/final_admob_app_id"
+            />
         <meta-data
             android:name="fontProviderRequests"
             android:value="Noto Color Emoji Compat" />

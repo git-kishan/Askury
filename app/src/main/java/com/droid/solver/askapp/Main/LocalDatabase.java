@@ -1339,6 +1339,8 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 database.close();
         }catch (SQLiteException e){
             Log.i("TAG", "SqliteException occurs in clearing survey participated model ,"+e.getMessage());
+        }catch (Exception e){
+            Log.i("TAG","Exception occurs in clearign survey participated model ,"+e.getMessage());
         }
     }
     public HashMap<String,Integer> getSurveyParticipatedModel(){

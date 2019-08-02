@@ -1,6 +1,8 @@
 package com.droid.solver.askapp;
 
 import android.content.Context;
+
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
@@ -13,7 +15,7 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import java.io.InputStream;
 
-
+@Keep
 @GlideModule
 public class MyAppGlideModule extends AppGlideModule {
 

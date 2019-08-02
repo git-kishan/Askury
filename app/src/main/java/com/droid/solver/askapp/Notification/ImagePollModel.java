@@ -1,22 +1,25 @@
 package com.droid.solver.askapp.Notification;
 
-public class ImagePollModel {
+import androidx.annotation.Keep;
 
-    private String imagePollId;
-    private String question;
-    private String askerId;
-    private String askerName;
-    private String askerBio;
-    private String askerImageUrlLow;
-    private String image1Url;
-    private String image2Url;
-    private int image1LikeNo;
-    private int image2LikeNo;
-    private boolean containVioloanceOrAdult;
-    private boolean reported;
-    private String type;
-    private long notifiedTime;
-    private boolean isStoredLocally;
+@Keep
+public class ImagePollModel{
+
+    public String imagePollId;
+    public String question;
+    public String askerId;
+    public String askerName;
+    public String askerBio;
+    public String askerImageUrlLow;
+    public String image1Url;
+    public String image2Url;
+    public int image1LikeNo;
+    public int image2LikeNo;
+    public boolean containVioloanceOrAdult;
+    public boolean reported;
+    public String type;
+    public long notifiedTime;
+    public boolean isStoredLocally;
 
     public ImagePollModel(){}
 

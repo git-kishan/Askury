@@ -1,24 +1,25 @@
 package com.droid.solver.askapp.ImagePoll;
 
-import java.security.PublicKey;
+import androidx.annotation.Keep;
 
-public class AskImagePollModel {
+@Keep
+public class AskImagePollModel{
 
-    private String askerId;
-    private String askerName;
-    private String askerImageUrlLow;
-    private String askerBio;
-    private String question;
-    private String image1Url;
-    private String image2Url;
-    private long timeOfPolling;
-    private int image1LikeNo;
-    private int image2LikeNo;
-    private String imagePollId;
-    private boolean reported;
-    private boolean containVioloanceOrAdult;
-    private long lastTimeNotified;
-    private int optionSelectedByMe;
+    public String askerId;
+    public String askerName;
+    public String askerImageUrlLow;
+    public String askerBio;
+    public String question;
+    public String image1Url;
+    public String image2Url;
+    public long timeOfPolling;
+    public int image1LikeNo;
+    public int image2LikeNo;
+    public String imagePollId;
+    public boolean reported;
+    public boolean containVioloanceOrAdult;
+    public long lastTimeNotified;
+    public int optionSelectedByMe;
 
 
     public AskImagePollModel(){

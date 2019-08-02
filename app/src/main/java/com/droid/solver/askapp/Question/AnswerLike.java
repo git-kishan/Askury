@@ -1,11 +1,14 @@
 package com.droid.solver.askapp.Question;
 
+import androidx.annotation.Keep;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Keep
 public class AnswerLike {
 
-    private ArrayList<String> answerLikeId;
+    public ArrayList<String> answerLikeId;
     //answerId
     public AnswerLike(){}
     public AnswerLike(ArrayList<String> answerLikeId){

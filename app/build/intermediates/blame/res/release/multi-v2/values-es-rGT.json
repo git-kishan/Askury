@@ -4,7 +4,7 @@
             "outputFile": "/home/notebook/projects/AskApp/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-es-rGT/values-es-rGT.xml",
             "map": [
                 {
-                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/4a85e336eb5b18547c789637855bc5c6/res/values-es-rGT/values-es-rGT.xml",
+                    "source": "/home/notebook/.gradle/caches/transforms-2/files-2.1/74623af5f5d5d2e7767d5d3a8ce5e29c/res/values-es-rGT/values-es-rGT.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",

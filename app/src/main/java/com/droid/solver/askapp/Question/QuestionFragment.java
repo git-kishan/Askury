@@ -241,7 +241,6 @@ public class QuestionFragment extends Fragment implements NativeAdListener {
                             swipeRefreshLayout.setEnabled(false);
                             Log.i("TAG", "exception occurs in getting documents :- " + task.getException());
                             shimmerFrameLayout.setVisibility(View.GONE);
-
                             Toast.makeText(getActivity(), "Network response is not good", Toast.LENGTH_LONG).show();
                         }
                     }

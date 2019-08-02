@@ -6,8 +6,6 @@
     android:background="@drawable/sign_in_activity"
     android:id="@+id/root_layout"
     android:layout_height="match_parent">
-
-
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
@@ -29,6 +27,8 @@
             android:textAllCaps="false"
             android:textSize="16sp"
             android:visibility="visible"
+            android:clickable="true"
+            android:focusable="true"
             app:icon="@drawable/ic_facebook_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

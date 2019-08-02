@@ -65,14 +65,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         SharedPreferences sharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
         boolean genderSelection=sharedPreferences.getBoolean(Constants.GENDER_SELECTION, false);
         boolean interestSelection=sharedPreferences.getBoolean(Constants.INTEREST_SELECTION, false);
-        if(genderSelection && interestSelection) {
+        auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
+        if(genderSelection && interestSelection&&user!=null) {
             setContentView(R.layout.starting_name);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ConstraintLayout root=findViewById(R.id.root);
-           Animation fadeIn=new AlphaAnimation(0.2f, 1);
-           fadeIn.setInterpolator(new AccelerateInterpolator());
-           fadeIn.setDuration(1500);
-           fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            Animation fadeIn=new AlphaAnimation(0.2f, 1);
+            fadeIn.setInterpolator(new AccelerateInterpolator());
+            fadeIn.setDuration(1500);
+            fadeIn.setAnimationListener(new Animation.AnimationListener() {
                @Override
                public void onAnimationStart(Animation animation) {
 
@@ -108,7 +110,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
             auth=FirebaseAuth.getInstance();
-            FirebaseUser user=auth.getCurrentUser();
+            user=auth.getCurrentUser();
             if(user!=null){
                 if(!genderSelection) {
                     startActivity(new Intent(SignInActivity.this, GenderSelectionActivity.class));
@@ -358,13 +360,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 if (task.isSuccessful()) {
                     if (task.getResult() != null){
                         UserInfoModel userInfoModel = task.getResult().toObject(UserInfoModel.class);
-                    SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
+                        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCE_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
 
-                    if(userInfoModel!=null)
-                    editor.putString(Constants.userName, userInfoModel.getUserName());
-
-
+                    if(userInfoModel!=null) {
+                        editor.putString(Constants.userName, userInfoModel.getUserName());
+                    }
                     if (userInfoModel!=null&&userInfoModel.getInterest() == null) {
                         editor.putBoolean(Constants.INTEREST_SELECTION, false);
                         editor.putString(Constants.INTEREST, null);

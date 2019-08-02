@@ -1,28 +1,29 @@
 package com.droid.solver.askapp.Answer;
 
+import androidx.annotation.Keep;
 import java.util.List;
-
+@Keep
 public class UserAnswerModel {
 
-    private String askerId;
-    private String askerName;
-    private String askerImageUrl;
-    private String askerBio;
-    private String questionId;
-    private String question;
-    private List<String> questionType;
-    private long timeOfAsking;
-    private long timeOfAnswering;
-    private String answerId;
-    private String answererId;
-    private String answererName;
-    private boolean helpful;
-    private String answer;
-    private boolean imageAttached;
-    private String imageAttachedUrl;
-    private int fontUsed;
-    private int answerLikeCount;
-    private boolean anonymous;
+    public String askerId;
+    public String askerName;
+    public String askerImageUrl;
+    public String askerBio;
+    public String questionId;
+    public String question;
+    public List<String> questionType;
+    public long timeOfAsking;
+    public long timeOfAnswering;
+    public String answerId;
+    public String answererId;
+    public String answererName;
+    public boolean helpful;
+    public String answer;
+    public boolean imageAttached;
+    public String imageAttachedUrl;
+    public int fontUsed;
+    public int answerLikeCount;
+    public boolean anonymous;
 
 
 

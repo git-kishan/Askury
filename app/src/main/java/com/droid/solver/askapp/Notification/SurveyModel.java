@@ -1,29 +1,32 @@
 package com.droid.solver.askapp.Notification;
 
-public class SurveyModel {
+import androidx.annotation.Keep;
 
-    private String surveyId;
-    private String askerId;
-    private String askerName;
-    private String askerBio;
-    private String askerImageUrlLow;
-    private String question;
-    private long timeOfSurvey;
-    private String option1Value;
-    private String option2Value;
-    private String option3Value;
-    private String option4Value;
-    private int option1Count;
-    private int option2Count;
-    private int option3Count;
-    private int option4Count;
-    private boolean option1;
-    private boolean option2;
-    private boolean option3;
-    private boolean option4;
-    private String type;
-    private long notifiedTime;
-    private boolean isStoredLocally;
+@Keep
+public class SurveyModel{
+
+    public String surveyId;
+    public String askerId;
+    public String askerName;
+    public String askerBio;
+    public String askerImageUrlLow;
+    public String question;
+    public long timeOfSurvey;
+    public String option1Value;
+    public String option2Value;
+    public String option3Value;
+    public String option4Value;
+    public int option1Count;
+    public int option2Count;
+    public int option3Count;
+    public int option4Count;
+    public boolean option1;
+    public boolean option2;
+    public boolean option3;
+    public boolean option4;
+    public String type;
+    public long notifiedTime;
+    public boolean isStoredLocally;
 
     public SurveyModel(){}
 

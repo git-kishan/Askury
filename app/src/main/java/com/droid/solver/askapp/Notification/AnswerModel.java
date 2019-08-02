@@ -1,27 +1,30 @@
 package com.droid.solver.askapp.Notification;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class AnswerModel {
 
-    private String askerId;
-    private String askerName;
-    private String askerBio;
-    private String questionId;
-    private String question;
-    private long timeOfAsking;
-    private long timeOfAnswering;
-    private String answererId;
-    private String answererName;
-    private String answererBio;
-    private String answerId;
-    private String answer;
-    private boolean imageAttached;
-    private String imageAttachedUrl;
-    private int fontUsed;
-    private boolean anonymous;
-    private long notifiedTime;
-    int answerLikeCount;
-    private String type;
-    private boolean isStoredLocally;
+    public String askerId;
+    public String askerName;
+    public String askerBio;
+    public String questionId;
+    public String question;
+    public long timeOfAsking;
+    public long timeOfAnswering;
+    public String answererId;
+    public String answererName;
+    public String answererBio;
+    public String answerId;
+    public String answer;
+    public boolean imageAttached;
+    public String imageAttachedUrl;
+    public int fontUsed;
+    public boolean anonymous;
+    public long notifiedTime;
+    public int answerLikeCount;
+    public String type;
+    public boolean isStoredLocally;
 
     public AnswerModel(){}
 

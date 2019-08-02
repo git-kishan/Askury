@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.droid.solver.askapp"
     android:targetSandboxVersion="2"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="12"
+    android:versionName="1.0.0" >
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -35,7 +35,6 @@
         android:largeHeap="true"
         android:roundIcon="@drawable/circular_logo"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.droid.solver.askapp.setting.ReportActivity"
@@ -155,7 +154,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id" />
+            android:value="@string/final_admob_app_id" />
         <meta-data
             android:name="fontProviderRequests"
             android:value="Noto Color Emoji Compat" />
@@ -350,11 +349,6 @@
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
-
-        <provider
-            android:name="com.android.tools.ir.server.InstantRunContentProvider"
-            android:authorities="com.droid.solver.askapp.com.android.tools.ir.server.InstantRunContentProvider"
-            android:multiprocess="true" />
     </application>
 
 </manifest>

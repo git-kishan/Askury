@@ -1,33 +1,35 @@
 package com.droid.solver.askapp.homeAnswer;
 
-import java.util.List;
+import androidx.annotation.Keep;
 
+import java.util.List;
+@Keep
 public class AnswerModel {
 
-    private String askerId;
-    private String askerName;
-    private String askerBio;
-    private String askerImageUrlLow;
-    private List<String> questionType;
-    private String questionId;
-    private String question;
-    private long timeOfAsking;
-    private long timeOfAnswering;
-    private String answererId;
-    private String answererName;
-    private String answererImageUrl;
-    private String answererBio;
-    private boolean helpful;
-    private String answerId;
-    private String answer;
-    private boolean imageAttached;
-    private String imageAttachedUrl;
-    private boolean stringAttached;
-    private int fontUsed;
-    private boolean notifiedToAsker;
-    private int answerLikeCount;
+    public String askerId;
+    public String askerName;
+    public String askerBio;
+    public String askerImageUrlLow;
+    public List<String> questionType;
+    public String questionId;
+    public String question;
+    public long timeOfAsking;
+    public long timeOfAnswering;
+    public String answererId;
+    public String answererName;
+    public String answererImageUrl;
+    public String answererBio;
+    public boolean helpful;
+    public String answerId;
+    public String answer;
+    public boolean imageAttached;
+    public String imageAttachedUrl;
+    public boolean stringAttached;
+    public int fontUsed;
+    public boolean notifiedToAsker;
+    public int answerLikeCount;
 
-    private boolean isLikedByMe;
+    public boolean isLikedByMe;
 
     public AnswerModel(){}
     public AnswerModel(String askerId,
@@ -261,16 +263,17 @@ public class AnswerModel {
         isLikedByMe = likedByMe;
     }
 }
+@Keep
 class QuestionModel{
 
-    private String askerId;
-    private String askerName;
-    private String askerImageUrlLow;
-    private String askerBio;
-    private long timeOfAsking;
-    private boolean anonymous;
-    private String questionId;
-    private String question;
+    public String askerId;
+    public String askerName;
+    public String askerImageUrlLow;
+    public String askerBio;
+    public long timeOfAsking;
+    public boolean anonymous;
+    public String questionId;
+    public String question;
 
     public String getAskerId() {
         return askerId;

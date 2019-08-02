@@ -1,32 +1,34 @@
 package com.droid.solver.askapp.Question;
 
+import androidx.annotation.Keep;
+
 import java.util.List;
+@Keep
+public class RootQuestionModel{
 
-public class RootQuestionModel {
-
-    private String askerId;
-    private String askerName;
-    private String askerImageUrlLow;
-    private boolean anonymous;
-    private String askerBio;
-    private String questionId;
-    private String question;
-    private List <String>questionType;
-    private long timeOfAsking;
-    private long timeOfAnswering;
-    private String recentAnswererId;
-    private String recentAnswererImageUrlLow;
-    private String recentAnswererName;
-    private String recentAnswererBio;
-    private String recentAnswerId;
-    private String recentAnswer;
-    private boolean recentAnswerImageAttached;
-    private String recentAnswerImageUrl;
-    private int answerCount;
-    private int recentAnswerLikeCount;
-    private int fontUsed;
-    private int point;
-    private boolean isAnswered;
+    public String askerId;
+    public String askerName;
+    public String askerImageUrlLow;
+    public boolean anonymous;
+    public String askerBio;
+    public String questionId;
+    public String question;
+    public List <String>questionType;
+    public long timeOfAsking;
+    public long timeOfAnswering;
+    public String recentAnswererId;
+    public String recentAnswererImageUrlLow;
+    public String recentAnswererName;
+    public String recentAnswererBio;
+    public String recentAnswerId;
+    public String recentAnswer;
+    public boolean recentAnswerImageAttached;
+    public String recentAnswerImageUrl;
+    public int answerCount;
+    public int recentAnswerLikeCount;
+    public int fontUsed;
+    public int point;
+    public boolean isAnswered;
 
     private boolean likedByMe;
 

@@ -1,19 +1,22 @@
 package com.droid.solver.askapp.Survey;
 
-public class AskSurveyModel {
-    private String askerId;
-    private String askerName;
-    private String askerImageUrlLow;
-    private String askerBio;
-    private String question;
-    private long timeOfSurvey;
-    private boolean option1,option2,option3,option4;
-    private String option1Value,option2Value,option3Value,option4Value;
-    private int option1Count,option2Count,option3Count,option4Count;
-    private int languageSelectedIndex;
-    private String surveyId;
-    private long lastTimeNotified;
-    private int optionSelectedByMe;
+import androidx.annotation.Keep;
+
+@Keep
+public class AskSurveyModel{
+    public String askerId;
+    public String askerName;
+    public String askerImageUrlLow;
+    public String askerBio;
+    public String question;
+    public long timeOfSurvey;
+    public boolean option1,option2,option3,option4;
+    public String option1Value,option2Value,option3Value,option4Value;
+    public int option1Count,option2Count,option3Count,option4Count;
+    public int languageSelectedIndex;
+    public String surveyId;
+    public long lastTimeNotified;
+    public int optionSelectedByMe;
 
 
     public AskSurveyModel(){}

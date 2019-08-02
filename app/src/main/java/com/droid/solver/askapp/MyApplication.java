@@ -7,7 +7,15 @@ import androidx.core.provider.FontRequest;
 import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.text.FontRequestEmojiCompatConfig;
 
-public class MyApplication extends Application {
+import com.facebook.FacebookActivity;
+import com.facebook.FacebookSdk;
+import com.google.firebase.FirebaseApp;
+
+public class MyApplication extends Application{
+
+    public MyApplication(){
+        super();
+    }
 
     @Override
     public void onCreate() {
@@ -36,6 +44,8 @@ public class MyApplication extends Application {
                     }
                 });
         EmojiCompat.init(config);
+        FirebaseApp.initializeApp(getApplicationContext());
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
     }
 
